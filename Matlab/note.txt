@@ -1,0 +1,9 @@
+Backup and replace:
+/Applications/MATLAB_R2010b.app/toolbox/signal/signal/fircls.m
+with the one provided here.
+
+- Added a limit on the number of iterations (it would go in an infinite loop if unable to meet the constraints)
+- Changed to return the best filter found instead of the last one
+- Added possibility of providing a starting point
+- Changed error calculation a bit
+
