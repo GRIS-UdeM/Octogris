@@ -410,8 +410,8 @@ void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, Mi
 void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	//fprintf(stderr, "pb\n");
-	jassert(kNumberOfSources == getNumInputChannels());
-	jassert(kNumberOfSpeakers == getNumOutputChannels());
+//	jassert(kNumberOfSources == getNumInputChannels());
+//	jassert(kNumberOfSpeakers == getNumOutputChannels());
 	
 	double sampleRate = getSampleRate();
 	unsigned int oriFramesToProcess = buffer.getNumSamples();

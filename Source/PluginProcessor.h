@@ -28,8 +28,8 @@ size_t strlcpy(char * dst, const char * src, size_t dstsize);
 //==============================================================================
 
 
-#define kNumberOfSources JucePlugin_MaxNumInputChannels
-#define kNumberOfSpeakers JucePlugin_MaxNumOutputChannels
+#define kNumberOfSources 2 //JucePlugin_MaxNumInputChannels
+#define kNumberOfSpeakers 8 //JucePlugin_MaxNumOutputChannels
 
 // x, y, distance
 enum { kSourceX = 0, kSourceY = 1, kSourceD = 2, kSourceUnused = 3, kParamsPerSource = 4 };
