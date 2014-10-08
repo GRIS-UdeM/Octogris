@@ -424,7 +424,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			addLabel("Param smoothing (ms):", x, y, w, dh, box);
 			y += dh + 5;
 		
-			Slider *ds = addParamSlider(kParamSmooth, kSmooth, mFilter->getParameter(kSmooth), x, y, w, dh, box);
+			Slider *ds = addParamSlider(kParamSmooth, mFilter->kSmooth, mFilter->getParameter(mFilter->kSmooth), x, y, w, dh, box);
 			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
 			mSmoothing = ds;
 			y += dh + 5;
@@ -516,7 +516,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			addLabel("Volume center (db):", x, y, w, dh, box);
 			y += dh + 5;
 		
-			Slider *ds = addParamSlider(kParamVolumeNear, kVolumeNear, mFilter->getParameter(kVolumeNear), x, y, w, dh, box);
+			Slider *ds = addParamSlider(kParamVolumeNear, mFilter->kVolumeNear, mFilter->getParameter(mFilter->kVolumeNear), x, y, w, dh, box);
 			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
 			mVolumeNear = ds;
 			y += dh + 5;
@@ -526,7 +526,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			addLabel("Filter center:", x, y, w, dh, box);
 			y += dh + 5;
 		
-			Slider *ds = addParamSlider(kParamFilterNear, kFilterNear, mFilter->getParameter(kFilterNear), x, y, w, dh, box);
+			Slider *ds = addParamSlider(kParamFilterNear, mFilter->kFilterNear, mFilter->getParameter(mFilter->kFilterNear), x, y, w, dh, box);
 			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
 			mFilterNear = ds;
 			y += dh + 5;
@@ -545,7 +545,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			addLabel("Volume speakers (db):", x, y, w, dh, box);
 			y += dh + 5;
 		
-			Slider *ds = addParamSlider(kParamVolumeMid, kVolumeMid, mFilter->getParameter(kVolumeMid), x, y, w, dh, box);
+			Slider *ds = addParamSlider(kParamVolumeMid, mFilter->kVolumeMid, mFilter->getParameter(mFilter->kVolumeMid), x, y, w, dh, box);
 			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
 			mVolumeMid = ds;
 			y += dh + 5;
@@ -555,7 +555,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			addLabel("Filter speakers:", x, y, w, dh, box);
 			y += dh + 5;
 		
-			Slider *ds = addParamSlider(kParamFilterMid, kFilterMid, mFilter->getParameter(kFilterMid), x, y, w, dh, box);
+			Slider *ds = addParamSlider(kParamFilterMid, mFilter->kFilterMid, mFilter->getParameter(mFilter->kFilterMid), x, y, w, dh, box);
 			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
 			mFilterMid = ds;
 			y += dh + 5;
@@ -570,7 +570,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			addLabel("Volume far (db):", x, y, w, dh, box);
 			y += dh + 5;
 		
-			Slider *ds = addParamSlider(kParamVolumeFar, kVolumeFar, mFilter->getParameter(kVolumeFar), x, y, w, dh, box);
+			Slider *ds = addParamSlider(kParamVolumeFar, mFilter->kVolumeFar, mFilter->getParameter(mFilter->kVolumeFar), x, y, w, dh, box);
 			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
 			mVolumeFar = ds;
 			y += dh + 5;
@@ -580,7 +580,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			addLabel("Filter far:", x, y, w, dh, box);
 			y += dh + 5;
 		
-			Slider *ds = addParamSlider(kParamFilterFar, kFilterFar, mFilter->getParameter(kFilterFar), x, y, w, dh, box);
+			Slider *ds = addParamSlider(kParamFilterFar, mFilter->kFilterFar, mFilter->getParameter(mFilter->kFilterFar), x, y, w, dh, box);
 			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
 			mFilterFar = ds;
 			y += dh + 5;
@@ -889,7 +889,7 @@ void OctogrisAudioProcessorEditor::resized()
 void OctogrisAudioProcessorEditor::setOscLeapSource(int s)
 {
 	if (s < 0) s = 0;
-	if (s >= kNumberOfSources) s = kNumberOfSources - 1;
+	if (s >= mFilter->kNumberOfSources) s = mFilter->kNumberOfSources - 1;
 	mFilter->setOscLeapSource(s);
 	
 	const MessageManagerLock mmLock;
@@ -1020,7 +1020,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 		bool startAtTop = mSpStartAtTop->getToggleState();
 		bool clockwise = mSpClockwise->getToggleState();
 		
-		float anglePerSp = kThetaMax / kNumberOfSpeakers;
+		float anglePerSp = kThetaMax / mFilter->kNumberOfSpeakers;
 		
 		if (alternate)
 		{
@@ -1028,14 +1028,14 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 							? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
 							: (kQuarterCircle - anglePerSp/2);
 			float start = offset;
-			for (int i = clockwise ? 0 : 1; i < kNumberOfSpeakers; i += 2)
+			for (int i = clockwise ? 0 : 1; i < mFilter->kNumberOfSpeakers; i += 2)
 			{
 				mFilter->setSpeakerRT(i, FPoint(1, offset));
 				offset -= anglePerSp;
 			}
 			
 			offset = start + anglePerSp;
-			for (int i = clockwise ? 1 : 0; i < kNumberOfSpeakers; i += 2)
+			for (int i = clockwise ? 1 : 0; i < mFilter->kNumberOfSpeakers; i += 2)
 			{
 				mFilter->setSpeakerRT(i, FPoint(1, offset));
 				offset += anglePerSp;
@@ -1047,7 +1047,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 							? kQuarterCircle
 							: (clockwise ? (kQuarterCircle - anglePerSp/2) : (kQuarterCircle + anglePerSp/2));
 			float delta = clockwise ? -anglePerSp : anglePerSp;
-			for (int i = 0; i < kNumberOfSpeakers; i++)
+			for (int i = 0; i < mFilter->kNumberOfSpeakers; i++)
 			{
 				mFilter->setSpeakerRT(i, FPoint(1, offset));
 				offset += delta;
@@ -1075,7 +1075,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 		bool startAtTop = mSrcStartAtTop->getToggleState();
 		bool clockwise = mSrcClockwise->getToggleState();
 		
-		float anglePerSp = kThetaMax / kNumberOfSources;
+		float anglePerSp = kThetaMax / mFilter->kNumberOfSources;
 		
 		if (alternate)
 		{
@@ -1083,14 +1083,14 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 							? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
 							: (kQuarterCircle - anglePerSp/2);
 			float start = offset;
-			for (int i = clockwise ? 0 : 1; i < kNumberOfSources; i += 2)
+			for (int i = clockwise ? 0 : 1; i < mFilter->kNumberOfSources; i += 2)
 			{
 				mFilter->setSourceRT(i, FPoint(1, offset));
 				offset -= anglePerSp;
 			}
 			
 			offset = start + anglePerSp;
-			for (int i = clockwise ? 1 : 0; i < kNumberOfSources; i += 2)
+			for (int i = clockwise ? 1 : 0; i < mFilter->kNumberOfSources; i += 2)
 			{
 				mFilter->setSourceRT(i, FPoint(1, offset));
 				offset += anglePerSp;
@@ -1102,7 +1102,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 							? kQuarterCircle
 							: (clockwise ? (kQuarterCircle - anglePerSp/2) : (kQuarterCircle + anglePerSp/2));
 			float delta = clockwise ? -anglePerSp : anglePerSp;
-			for (int i = 0; i < kNumberOfSources; i++)
+			for (int i = 0; i < mFilter->kNumberOfSources; i++)
 			{
 				mFilter->setSourceRT(i, FPoint(1, offset));
 				offset += delta;
@@ -1223,10 +1223,10 @@ void OctogrisAudioProcessorEditor::timerCallback()
 
 	if (mNeedRepaint)
 	{
-		mSmoothing->setValue(mFilter->getParameter(kSmooth));
-		mVolumeFar->setValue(mFilter->getParameter(kVolumeFar));
-		mVolumeMid->setValue(mFilter->getParameter(kVolumeMid));
-		mVolumeNear->setValue(mFilter->getParameter(kVolumeNear));
+		mSmoothing->setValue(mFilter->getParameter(mFilter->kSmooth));
+		mVolumeFar->setValue(mFilter->getParameter(mFilter->kVolumeFar));
+		mVolumeMid->setValue(mFilter->getParameter(mFilter->kVolumeMid));
+		mVolumeNear->setValue(mFilter->getParameter(mFilter->kVolumeNear));
 		
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 		{

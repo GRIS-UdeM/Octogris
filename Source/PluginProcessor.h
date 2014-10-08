@@ -27,37 +27,64 @@ size_t strlcpy(char * dst, const char * src, size_t dstsize);
 
 //==============================================================================
 
-
-#define kNumberOfSources 2 //JucePlugin_MaxNumInputChannels
-#define kNumberOfSpeakers 8 //JucePlugin_MaxNumOutputChannels
-
 // x, y, distance
-enum { kSourceX = 0, kSourceY = 1, kSourceD = 2, kSourceUnused = 3, kParamsPerSource = 4 };
-#define ParamForSourceX(v) (kSourceX + v * kParamsPerSource)
-#define ParamForSourceY(v) (kSourceY + v * kParamsPerSource)
-#define ParamForSourceD(v) (kSourceD + v * kParamsPerSource)
+enum {
+    kSourceX = 0,
+    kSourceY,
+    kSourceD,
+    kSourceUnused,
+    kParamsPerSource
+};
+
 
 // x, y, attenuation, mute
-enum { kSpeakerX = 0, kSpeakerY = 1, kSpeakerA = 2, kSpeakerM = 3, kSpeakerUnused = 4, kParamsPerSpeakers = 5 };
-#define ParamForSpeakerX(v) (kSpeakerX + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
-#define ParamForSpeakerY(v) (kSpeakerY + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
-#define ParamForSpeakerA(v) (kSpeakerA + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
-#define ParamForSpeakerM(v) (kSpeakerM + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
+enum {
+    kSpeakerX = 0,
+    kSpeakerY,
+    kSpeakerA,
+    kSpeakerM,
+    kSpeakerUnused,
+    kParamsPerSpeakers };
 
-#define kConstantOffset (kNumberOfSources * kParamsPerSource + kNumberOfSpeakers * kParamsPerSpeakers)
-enum
-{
-	kLinkMovement =			0 + kConstantOffset,
-	kSmooth =				1 + kConstantOffset,
-	kVolumeNear =			2 + kConstantOffset,
-	kVolumeMid =			3 + kConstantOffset,
-	kVolumeFar =			4 + kConstantOffset,
-	kFilterNear =			5 + kConstantOffset,
-	kFilterMid =			6 + kConstantOffset,
-	kFilterFar =			7 + kConstantOffset,
-	kConstantParameters =	8
-};
-#define kNumberOfParameters (kConstantParameters + kConstantOffset)
+
+
+//#define kNumberOfSources JucePlugin_MaxNumInputChannels
+//#define kNumberOfSpeakers JucePlugin_MaxNumOutputChannels
+//
+//#define ParamForSourceX(v) (kSourceX + v * kParamsPerSource)
+//#define ParamForSourceY(v) (kSourceY + v * kParamsPerSource)
+//#define ParamForSourceD(v) (kSourceD + v * kParamsPerSource)
+//
+//#define ParamForSpeakerX(v) (kSpeakerX + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
+//#define ParamForSpeakerY(v) (kSpeakerY + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
+//#define ParamForSpeakerA(v) (kSpeakerA + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
+//#define ParamForSpeakerM(v) (kSpeakerM + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
+//
+//#define kConstantOffset (kNumberOfSources * kParamsPerSource + kNumberOfSpeakers * kParamsPerSpeakers)
+//
+//enum
+//{
+//	kLinkMovement =			0 + kConstantOffset,
+//	kSmooth =				1 + kConstantOffset,
+//	kVolumeNear =			2 + kConstantOffset,
+//	kVolumeMid =			3 + kConstantOffset,
+//	kVolumeFar =			4 + kConstantOffset,
+//	kFilterNear =			5 + kConstantOffset,
+//	kFilterMid =			6 + kConstantOffset,
+//	kFilterFar =			7 + kConstantOffset,
+//	kConstantParameters =	8
+//};
+//
+//#define kNumberOfParameters (kConstantParameters + kConstantOffset)
+
+
+
+
+
+
+
+
+
 
 enum
 {
@@ -194,24 +221,44 @@ public:
 
     //==============================================================================
 	// For editor
+
+    int kNumberOfSources = 2;//ucePlugin_MaxNumInputChannels;
+    int kNumberOfSpeakers = 4;//JucePlugin_MaxNumOutputChannels;
+    
+    int kConstantOffset = kNumberOfSources * kParamsPerSource + kNumberOfSpeakers * kParamsPerSpeakers;
+    
+    int kLinkMovement =			0 + kConstantOffset;
+    int kSmooth =				1 + kConstantOffset;
+    int kVolumeNear =			2 + kConstantOffset;
+    int kVolumeMid =			3 + kConstantOffset;
+    int kVolumeFar =			4 + kConstantOffset;
+    int kFilterNear =			5 + kConstantOffset;
+    int kFilterMid =			6 + kConstantOffset;
+    int kFilterFar =			7 + kConstantOffset;
+    int kConstantParameters =	8;
+    
+    int kNumberOfParameters = kConstantParameters + kConstantOffset;
+    
+    
+    
 	int getNumberOfSources() const { return kNumberOfSources; }
-	int getParamForSourceX(int index) const { return ParamForSourceX(index); }
-	int getParamForSourceY(int index) const { return ParamForSourceY(index); }
-	int getParamForSourceD(int index) const { return ParamForSourceD(index); }
-	float getSourceX(int index) const { return mParameters.getUnchecked(ParamForSourceX(index)); }
-	float getSourceY(int index) const { return mParameters.getUnchecked(ParamForSourceY(index)); }
-	float getSourceD(int index) const { return mParameters.getUnchecked(ParamForSourceD(index)); }
+	int getParamForSourceX(int index) const { return kSourceX + index * kParamsPerSource; }
+	int getParamForSourceY(int index) const { return kSourceY + index * kParamsPerSource; }
+	int getParamForSourceD(int index) const { return kSourceD + index * kParamsPerSource; }
+	float getSourceX(int index) const { return mParameters.getUnchecked(kSourceX + index * kParamsPerSource); }
+	float getSourceY(int index) const { return mParameters.getUnchecked(kSourceY + index * kParamsPerSource); }
+	float getSourceD(int index) const { return mParameters.getUnchecked(kSourceD + index * kParamsPerSource); }
 	float getDenormedSourceD(int index) const { return denormalize(kSourceMinDistance, kSourceMaxDistance, getSourceD(index)); }
 	
 	int getNumberOfSpeakers() const { return kNumberOfSpeakers; }
-	int getParamForSpeakerX(int index) const { return ParamForSpeakerX(index); }
-	int getParamForSpeakerY(int index) const { return ParamForSpeakerY(index); }
-	int getParamForSpeakerA(int index) const { return ParamForSpeakerA(index); }
-	int getParamForSpeakerM(int index) const { return ParamForSpeakerM(index); }
-	float getSpeakerX(int index) const { return mParameters.getUnchecked(ParamForSpeakerX(index)); }
-	float getSpeakerY(int index) const { return mParameters.getUnchecked(ParamForSpeakerY(index)); }
-	float getSpeakerA(int index) const { return mParameters.getUnchecked(ParamForSpeakerA(index)); }
-	float getSpeakerM(int index) const { return mParameters.getUnchecked(ParamForSpeakerM(index)); }
+    inline int getParamForSpeakerX(int index) const { return kSpeakerX + kNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
+	inline int getParamForSpeakerY(int index) const { return kSpeakerY + kNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
+	inline int getParamForSpeakerA(int index) const { return kSpeakerA + kNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
+	inline int getParamForSpeakerM(int index) const { return kSpeakerM + kNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
+	float getSpeakerX(int index) const { return mParameters.getUnchecked(getParamForSpeakerX(index)); }
+	float getSpeakerY(int index) const { return mParameters.getUnchecked(getParamForSpeakerY(index)); }
+	float getSpeakerA(int index) const { return mParameters.getUnchecked(getParamForSpeakerA(index)); }
+	float getSpeakerM(int index) const { return mParameters.getUnchecked(getParamForSpeakerM(index)); }
 	float getDenormedSpeakerA(int index) const { return denormalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, getSpeakerA(index)); }
 	
 	bool getApplyFilter() const { return mApplyFilter; }
@@ -425,8 +472,27 @@ private:
 	struct IOBuf { float b[kChunkSize]; };
 	Array<IOBuf> mInputsCopy;
 	Array<IOBuf> mSmoothedParametersRamps;
-	
-	FirFilter mFilters[kNumberOfSources];
+    
+    
+    ///////////////////////////
+    
+
+    
+    //int inline ParamForSourceX(int v) {return kSourceX + v * kParamsPerSource;}
+    //int inline ParamForSourceY(int v) {return kSourceY + v * kParamsPerSource;}
+    //int inline ParamForSourceD(int v) {return kSourceD + v * kParamsPerSource;}
+    
+//    int inline ParamForSpeakerX(int v) {return kSpeakerX + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers;}
+//    int inline ParamForSpeakerY(int v) {return kSpeakerY + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers;}
+//    int inline ParamForSpeakerA(int v) {return kSpeakerA + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers;}
+//    int inline ParamForSpeakerM(int v) {return kSpeakerM + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers;}
+    
+
+    
+    
+    ///////////////////////////
+    
+	FirFilter* mFilters;
 	
 	void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight);
 	void addToOutput(float s, float **outputs, int o, int f);

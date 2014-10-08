@@ -58,6 +58,8 @@ int IndexedAngleCompare(const void *a, const void *b)
 //==============================================================================
 OctogrisAudioProcessor::OctogrisAudioProcessor()
 {
+    mFilters = new FirFilter [kNumberOfSources];
+    
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
 	for (int i = 0; i < kNumberOfParameters; i++) mParameters.add(0);
 	
@@ -105,7 +107,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	
 	// default values for parameters
 	for (int i = 0; i < kNumberOfSources; i++)
-		mParameters.set(ParamForSourceD(i), normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
+		mParameters.set(getParamForSourceD(i), normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
 	
 	if (kNumberOfSources == 1)
 	{
@@ -163,8 +165,8 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 			axisOffset = anglePerSpeakers / 2;
 			for (int i = 0; i < kNumberOfSpeakers; i++)
 			{
-				mParameters.set(ParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-				mParameters.set(ParamForSpeakerM(i), 0);
+				mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+				mParameters.set(getParamForSpeakerM(i), 0);
 				
 				if(i%2 == 0)
 				{
@@ -187,8 +189,8 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 			offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
 			for (int i = 0; i < kNumberOfSpeakers; i++)
 			{
-				mParameters.set(ParamForSpeakerA(i), kSpeakerDefaultAttenuation);
-				mParameters.set(ParamForSpeakerM(i), 0);
+				mParameters.set(getParamForSpeakerA(i), kSpeakerDefaultAttenuation);
+				mParameters.set(getParamForSpeakerM(i), 0);
 				
 				if (offset < 0) offset += 360;
 				else if (offset > 360) offset -= 360;
@@ -202,6 +204,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 
 OctogrisAudioProcessor::~OctogrisAudioProcessor()
 {
+    delete[] mFilters;
 }
 
 
@@ -254,17 +257,27 @@ void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValu
 
 const String OctogrisAudioProcessor::getParameterName (int index)
 {
-	switch(index)
-	{
-		case kLinkMovement:	return "Link Movement";
-		case kSmooth:		return "Smooth Param";
-		case kVolumeNear:	return "Volume Near";
-		case kVolumeMid:	return "Volume Mid";
-		case kVolumeFar:	return "Volume Far";
-		case kFilterNear:	return "Filter Near";
-		case kFilterMid:	return "Filter Mid";
-		case kFilterFar:	return "Filter Far";
-	}
+//	switch(index)
+//	{
+//		case kLinkMovement:	return "Link Movement";
+//		case kSmooth:		return "Smooth Param";
+//		case kVolumeNear:	return "Volume Near";
+//		case kVolumeMid:	return "Volume Mid";
+//		case kVolumeFar:	return "Volume Far";
+//		case kFilterNear:	return "Filter Near";
+//		case kFilterMid:	return "Filter Mid";
+//		case kFilterFar:	return "Filter Far";
+//	}
+    
+    if (index == kLinkMovement) return "Link Movement";
+	if (index == kSmooth)		return "Smooth Param";
+    if (index ==  kVolumeNear)	return "Volume Near";
+	if (index ==  kVolumeMid)	return "Volume Mid";
+    if (index ==  kVolumeFar)	return "Volume Far";
+	if (index ==  kFilterNear)	return "Filter Near";
+	if (index ==  kFilterMid)	return "Filter Mid";
+	if (index ==  kFilterFar)	return "Filter Far";
+	
 
 	if (index < kNumberOfSources * kParamsPerSource)
 	{
@@ -455,30 +468,30 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	float *inputs[kNumberOfSources];
 	for (int i = 0; i < kNumberOfSources; i++)
 	{
-		inputs[i] = buffer.getSampleData(i);
-		params[ParamForSourceD(i)] = denormalize(kSourceMinDistance, kSourceMaxDistance, params[ParamForSourceD(i)]);
-		params[ParamForSourceX(i)] = params[ParamForSourceX(i)] * (2*kRadiusMax) - kRadiusMax;
-		params[ParamForSourceY(i)] = params[ParamForSourceY(i)] * (2*kRadiusMax) - kRadiusMax;
+		inputs[i] = buffer.getWritePointer(i);
+		params[getParamForSourceD(i)] = denormalize(kSourceMinDistance, kSourceMaxDistance, params[getParamForSourceD(i)]);
+		params[getParamForSourceX(i)] = params[getParamForSourceX(i)] * (2*kRadiusMax) - kRadiusMax;
+		params[getParamForSourceY(i)] = params[getParamForSourceY(i)] * (2*kRadiusMax) - kRadiusMax;
 	}
 	
 	float *outputs[kNumberOfSpeakers];
 	for (int o = 0; o < kNumberOfSpeakers; o++)
 	{
-		outputs[o] = buffer.getSampleData(o);
-		params[ParamForSpeakerA(o)] = denormalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, params[ParamForSpeakerA(o)]);
+		outputs[o] = buffer.getWritePointer(o);
+		params[getParamForSpeakerA(o)] = denormalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, params[getParamForSpeakerA(o)]);
 		
 		if (mProcessMode == kFreeVolumeMode)
 		{
-			params[ParamForSpeakerX(o)] = params[ParamForSpeakerX(o)] * (2*kRadiusMax) - kRadiusMax;
-			params[ParamForSpeakerY(o)] = params[ParamForSpeakerY(o)] * (2*kRadiusMax) - kRadiusMax;
+			params[getParamForSpeakerX(o)] = params[getParamForSpeakerX(o)] * (2*kRadiusMax) - kRadiusMax;
+			params[getParamForSpeakerY(o)] = params[getParamForSpeakerY(o)] * (2*kRadiusMax) - kRadiusMax;
 		}
 		else
 		{
-			float x = params[ParamForSpeakerX(o)] * (2*kRadiusMax) - kRadiusMax;
-			float y = params[ParamForSpeakerY(o)] * (2*kRadiusMax) - kRadiusMax;
+			float x = params[getParamForSpeakerX(o)] * (2*kRadiusMax) - kRadiusMax;
+			float y = params[getParamForSpeakerY(o)] * (2*kRadiusMax) - kRadiusMax;
 			float t = atan2f(y, x);
 			if (t < 0) t += kThetaMax;
-			params[ParamForSpeakerX(o)] = t;
+			params[getParamForSpeakerX(o)] = t;
 		}
 	}
 	
@@ -530,7 +543,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		
 		for (int o = 0; o < kNumberOfSpeakers; o++)
 		{
-			float *output = buffer.getSampleData(o);
+			float *output = buffer.getWritePointer(o);
 			float env = mLevels[o];
 			
 			for (unsigned int f = 0; f < oriFramesToProcess; f++)
@@ -564,7 +577,7 @@ void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int
 	dRight = kThetaMax;
 	for (int o = 0; o < kNumberOfSpeakers; o++)
 	{
-		float speakerT = params[ParamForSpeakerX(o)];
+		float speakerT = params[getParamForSpeakerX(o)];
 		float d = speakerT - t;
 		if (d >= 0)
 		{
@@ -616,8 +629,8 @@ void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int
 
 void OctogrisAudioProcessor::addToOutput(float s, float **outputs, int o, int f)
 {
-	float *output_m = mSmoothedParametersRamps.getReference(ParamForSpeakerM(o)).b;
-	float *output_a = mSmoothedParametersRamps.getReference(ParamForSpeakerA(o)).b;
+	float *output_m = mSmoothedParametersRamps.getReference(getParamForSpeakerM(o)).b;
+	float *output_a = mSmoothedParametersRamps.getReference(getParamForSpeakerA(o)).b;
 	float a = dbToLinear(output_a[f]);
 	float m = 1 - output_m[f];
 	float output_adj = a * m;
@@ -669,8 +682,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	for (int i = 0; i < kNumberOfSources; i++)
 	{
 		float *input = inputs[i];
-		float *input_x = mSmoothedParametersRamps.getReference(ParamForSourceX(i)).b;
-		float *input_y = mSmoothedParametersRamps.getReference(ParamForSourceY(i)).b;
+		float *input_x = mSmoothedParametersRamps.getReference(getParamForSourceX(i)).b;
+		float *input_y = mSmoothedParametersRamps.getReference(getParamForSourceY(i)).b;
 	
 		for (unsigned int f = 0; f < frames; f++)
 		{
@@ -846,12 +859,12 @@ void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **o
 	for (int o = 0; o < kNumberOfSpeakers; o++)
 	{
 		float *output = outputs[o];
-		float *output_x = mSmoothedParametersRamps.getReference(ParamForSpeakerX(o)).b;
-		float *output_y = mSmoothedParametersRamps.getReference(ParamForSpeakerY(o)).b;
+		float *output_x = mSmoothedParametersRamps.getReference(getParamForSpeakerX(o)).b;
+		float *output_y = mSmoothedParametersRamps.getReference(getParamForSpeakerY(o)).b;
 		float output_adj[kChunkSize];
 		{
-			float *output_m = mSmoothedParametersRamps.getReference(ParamForSpeakerM(o)).b;
-			float *output_a = mSmoothedParametersRamps.getReference(ParamForSpeakerA(o)).b;
+			float *output_m = mSmoothedParametersRamps.getReference(getParamForSpeakerM(o)).b;
+			float *output_a = mSmoothedParametersRamps.getReference(getParamForSpeakerA(o)).b;
 			
 			for (unsigned int f = 0; f < frames; f++)
 			{
@@ -864,9 +877,9 @@ void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **o
 		for (int i = 0; i < kNumberOfSources; i++)
 		{
 			float *input = inputs[i];
-			float *input_x = mSmoothedParametersRamps.getReference(ParamForSourceX(i)).b;
-			float *input_y = mSmoothedParametersRamps.getReference(ParamForSourceY(i)).b;
-			float *input_d = mSmoothedParametersRamps.getReference(ParamForSourceD(i)).b;
+			float *input_x = mSmoothedParametersRamps.getReference(getParamForSourceX(i)).b;
+			float *input_y = mSmoothedParametersRamps.getReference(getParamForSourceY(i)).b;
+			float *input_d = mSmoothedParametersRamps.getReference(getParamForSourceD(i)).b;
 			
 			if (i == 0)
 				for (unsigned int f = 0; f < frames; f++)
@@ -1018,16 +1031,16 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 	appendFloatData(destData, mParameters[kFilterFar]);
 	for (int i = 0; i < kNumberOfSources; i++)
 	{
-		appendFloatData(destData, mParameters[ParamForSourceX(i)]);
-		appendFloatData(destData, mParameters[ParamForSourceY(i)]);
-		appendFloatData(destData, mParameters[ParamForSourceD(i)]);
+		appendFloatData(destData, mParameters[getParamForSourceX(i)]);
+		appendFloatData(destData, mParameters[getParamForSourceY(i)]);
+		appendFloatData(destData, mParameters[getParamForSourceD(i)]);
 	}
 	for (int i = 0; i < kNumberOfSpeakers; i++)
 	{
-		appendFloatData(destData, mParameters[ParamForSpeakerX(i)]);
-		appendFloatData(destData, mParameters[ParamForSpeakerY(i)]);
-		appendFloatData(destData, mParameters[ParamForSpeakerA(i)]);
-		appendFloatData(destData, mParameters[ParamForSpeakerM(i)]);
+		appendFloatData(destData, mParameters[getParamForSpeakerX(i)]);
+		appendFloatData(destData, mParameters[getParamForSpeakerY(i)]);
+		appendFloatData(destData, mParameters[getParamForSpeakerA(i)]);
+		appendFloatData(destData, mParameters[getParamForSpeakerM(i)]);
 	}
 }
 void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -1068,16 +1081,16 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 			mParameters.set(kFilterFar, readFloatData(data, sizeInBytes, normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault)));
 			for (int i = 0; i < kNumberOfSources; i++)
 			{
-				mParameters.set(ParamForSourceX(i), readFloatData(data, sizeInBytes, 0));
-				mParameters.set(ParamForSourceY(i), readFloatData(data, sizeInBytes, 0));
-				mParameters.set(ParamForSourceD(i), readFloatData(data, sizeInBytes, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance)));
+				mParameters.set(getParamForSourceX(i), readFloatData(data, sizeInBytes, 0));
+				mParameters.set(getParamForSourceY(i), readFloatData(data, sizeInBytes, 0));
+				mParameters.set(getParamForSourceD(i), readFloatData(data, sizeInBytes, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance)));
 			}
 			for (int i = 0; i < kNumberOfSpeakers; i++)
 			{
-				mParameters.set(ParamForSpeakerX(i), readFloatData(data, sizeInBytes, 0));
-				mParameters.set(ParamForSpeakerY(i), readFloatData(data, sizeInBytes, 0));
-				mParameters.set(ParamForSpeakerA(i), readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation)));
-				mParameters.set(ParamForSpeakerM(i), readFloatData(data, sizeInBytes, 0));
+				mParameters.set(getParamForSpeakerX(i), readFloatData(data, sizeInBytes, 0));
+				mParameters.set(getParamForSpeakerY(i), readFloatData(data, sizeInBytes, 0));
+				mParameters.set(getParamForSpeakerA(i), readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation)));
+				mParameters.set(getParamForSpeakerM(i), readFloatData(data, sizeInBytes, 0));
 			}
 		}
 	}
