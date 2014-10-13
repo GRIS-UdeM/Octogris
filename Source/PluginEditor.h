@@ -16,6 +16,8 @@
 #include "LevelComponent.h"
 #include "SourceMover.h"
 
+class FieldComponent;
+
 class Box;
 enum
 {
@@ -84,6 +86,7 @@ private:
 	uint64_t mHostChangedParameter;
 	uint64_t mHostChangedProperty;
 	Array<Slider*> mDistances;
+	Array<Component*> mLabels;
 	Array<Slider*> mAttenuations;
 	Array<ToggleButton*> mMutes;
 	Array<LevelComponent*> mLevels;
@@ -140,13 +143,14 @@ private:
 	ComboBox *mOscLeapSourceCb;
 	HeartbeatComponent *mOsc;
 	
-	// for resizing:
+	// for resizing/repaint:
 	Component *mField;
-	Component *mSourcesBoxLabel;
+    Component *mSourcesBoxLabel;
 	Box *mSourcesBox;
 	Component *mSpeakersBoxLabel;
 	Box *mSpeakersBox;
-	//Component *mParametersBox;
+    void updateSources();
+    void updateSpeakers();
 	
 	Component* addLabel(const String &s, int x, int y, int w, int h, Component *into);
 	ToggleButton* addCheckbox(const String &s, bool v, int x, int y, int w, int h, Component *into);

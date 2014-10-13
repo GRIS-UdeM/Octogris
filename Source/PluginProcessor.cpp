@@ -58,8 +58,8 @@ int IndexedAngleCompare(const void *a, const void *b)
 //==============================================================================
 OctogrisAudioProcessor::OctogrisAudioProcessor()
 {
-    mFilters = new FirFilter [kNumberOfSources];
-    
+
+    //SET PARAMETERS
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
 	for (int i = 0; i < kNumberOfParameters; i++) mParameters.add(0);
 	
@@ -75,14 +75,16 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mSmoothedParametersInited = false;
 	mSmoothedParameters.ensureStorageAllocated(kNumberOfParameters);
 	for (int i = 0; i < kNumberOfParameters; i++) mSmoothedParameters.add(0);
+    
+    //SET SOURCES
+    setNumberOfSources(kNumberOfSources);
+    
 
+    
+    //SET SPEAKERS
+    setNumberOfSpeakers(kNumberOfSpeakers);
+    
 	mCalculateLevels = 0;
-	mLevels.ensureStorageAllocated(kNumberOfSpeakers);
-	for (int i = 0; i < kNumberOfSpeakers; i++) mLevels.add(0);
-	
-	mLockedThetas.ensureStorageAllocated(kNumberOfSources);
-	for (int i = 0; i < kNumberOfSources; i++) mLockedThetas.add(0);
-	
 	mApplyFilter = true;
 	mLinkDistances = false;
 	mMovementMode = 0;
@@ -102,104 +104,13 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mOscSendPort = 9000;
 	setOscSendIp("192.168.1.100");
 	
-	mInputsCopy.resize(kNumberOfSources);
+
 	mSmoothedParametersRamps.resize(kNumberOfParameters);
 	
 	// default values for parameters
-	for (int i = 0; i < kNumberOfSources; i++)
+	for (int i = 0; i < kNumberOfSources; i++){
 		mParameters.set(getParamForSourceD(i), normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
-	
-	if (kNumberOfSources == 1)
-	{
-		setSourceRT(0, FPoint(0, 0));
-	}
-	else
-	{
-		double anglePerSource = 360 / kNumberOfSources;
-		double offset, axisOffset;
-
-		if(kNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
-		{
-			axisOffset = anglePerSource / 2;
-			for (int i = 0; i < kNumberOfSources; i++)
-			{
-				if(i%2 == 0)
-				{
-					offset = 90 + axisOffset;
-				}
-				else
-				{
-					offset = 90 - axisOffset;
-					axisOffset += anglePerSource;
-				}
-				if (offset < 0) offset += 360;
-				else if (offset > 360) offset -= 360;
-				
-				setSourceRT(i, FPoint(1, offset/360*kThetaMax));
-			}
-		}
-		else //odd number of speakers, assign in circular fashion
-		{
-			offset = (anglePerSource + 180) / 2 - anglePerSource;
-			for (int i = 0; i < kNumberOfSources; i++)
-			{
-				if (offset < 0) offset += 360;
-				else if (offset > 360) offset -= 360;
-				
-				setSourceRT(i, FPoint(1, offset/360*kThetaMax));
-				offset += anglePerSource;
-			}
-		}
-	}
-	for (int i = 0; i < kNumberOfSources; i++)
-		mLockedThetas.set(i, getSourceRT(i).y);
-	
-	// - - - - - - - - - - - - - -
-	// Speakers default parameters
-	{
-		double anglePerSpeakers = 360 / kNumberOfSpeakers;
-		double offset, axisOffset;
-		
-		if(kNumberOfSpeakers%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
-		{
-			axisOffset = anglePerSpeakers / 2;
-			for (int i = 0; i < kNumberOfSpeakers; i++)
-			{
-				mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-				mParameters.set(getParamForSpeakerM(i), 0);
-				
-				if(i%2 == 0)
-				{
-					offset = 90 + axisOffset;
-				}
-				else
-				{
-					offset = 90 - axisOffset;
-					axisOffset += anglePerSpeakers;
-				}
-				
-				if (offset < 0) offset += 360;
-				else if (offset > 360) offset -= 360;
-				
-				setSpeakerRT(i, FPoint(1, offset/360*kThetaMax));
-			}
-		}
-		else //odd number of speakers, assign in circular fashion
-		{
-			offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
-			for (int i = 0; i < kNumberOfSpeakers; i++)
-			{
-				mParameters.set(getParamForSpeakerA(i), kSpeakerDefaultAttenuation);
-				mParameters.set(getParamForSpeakerM(i), 0);
-				
-				if (offset < 0) offset += 360;
-				else if (offset > 360) offset -= 360;
-				
-				setSpeakerRT(i, FPoint(1, offset/360*kThetaMax));
-				offset += anglePerSpeakers;
-			}
-		}
-	}
+    }
 }
 
 OctogrisAudioProcessor::~OctogrisAudioProcessor()
@@ -311,6 +222,120 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 	
     return String::empty;
 }
+
+void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
+    
+    kNumberOfSources = p_iNewNumberOfSources;
+    
+    mFilters = new FirFilter [kNumberOfSources];
+    
+    mLockedThetas.ensureStorageAllocated(kNumberOfSources);
+	for (int i = 0; i < kNumberOfSources; i++) mLockedThetas.add(0);
+    
+    mInputsCopy.resize(kNumberOfSources);
+    
+    if (kNumberOfSources == 1)
+	{
+		setSourceRT(0, FPoint(0, 0));
+	}
+	else
+	{
+		double anglePerSource = 360 / kNumberOfSources;
+		double offset, axisOffset;
+        
+		if(kNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
+		{
+			axisOffset = anglePerSource / 2;
+			for (int i = 0; i < kNumberOfSources; i++)
+			{
+				if(i%2 == 0)
+				{
+					offset = 90 + axisOffset;
+				}
+				else
+				{
+					offset = 90 - axisOffset;
+					axisOffset += anglePerSource;
+				}
+				if (offset < 0) offset += 360;
+				else if (offset > 360) offset -= 360;
+				
+				setSourceRT(i, FPoint(1, offset/360*kThetaMax));
+			}
+		}
+		else //odd number of speakers, assign in circular fashion
+		{
+			offset = (anglePerSource + 180) / 2 - anglePerSource;
+			for (int i = 0; i < kNumberOfSources; i++)
+			{
+				if (offset < 0) offset += 360;
+				else if (offset > 360) offset -= 360;
+				
+				setSourceRT(i, FPoint(1, offset/360*kThetaMax));
+				offset += anglePerSource;
+			}
+		}
+	}
+	for (int i = 0; i < kNumberOfSources; i++)
+		mLockedThetas.set(i, getSourceRT(i).y);
+    
+    mHostChangedParameter++;
+}
+
+void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
+    
+    kNumberOfSpeakers = p_iNewNumberOfSpeakers;
+
+    mLevels.ensureStorageAllocated(kNumberOfSpeakers);
+	for (int i = 0; i < kNumberOfSpeakers; i++) mLevels.add(0);
+    
+    
+    double anglePerSpeakers = 360 / kNumberOfSpeakers;
+    double offset, axisOffset;
+    
+    if(kNumberOfSpeakers%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
+    {
+        axisOffset = anglePerSpeakers / 2;
+        for (int i = 0; i < kNumberOfSpeakers; i++)
+        {
+            mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+            mParameters.set(getParamForSpeakerM(i), 0);
+            
+            if(i%2 == 0)
+            {
+                offset = 90 + axisOffset;
+            }
+            else
+            {
+                offset = 90 - axisOffset;
+                axisOffset += anglePerSpeakers;
+            }
+            
+            if (offset < 0) offset += 360;
+            else if (offset > 360) offset -= 360;
+            
+            setSpeakerRT(i, FPoint(1, offset/360*kThetaMax));
+        }
+    }
+    else //odd number of speakers, assign in circular fashion
+    {
+        offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
+        for (int i = 0; i < kNumberOfSpeakers; i++)
+        {
+            mParameters.set(getParamForSpeakerA(i), kSpeakerDefaultAttenuation);
+            mParameters.set(getParamForSpeakerM(i), 0);
+            
+            if (offset < 0) offset += 360;
+            else if (offset > 360) offset -= 360;
+            
+            setSpeakerRT(i, FPoint(1, offset/360*kThetaMax));
+            offset += anglePerSpeakers;
+        }
+    }
+	mHostChangedParameter++;
+    
+}
+
 
 const String OctogrisAudioProcessor::getParameterText (int index)
 {

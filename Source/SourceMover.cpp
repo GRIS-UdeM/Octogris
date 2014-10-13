@@ -54,7 +54,7 @@ void SourceMover::begin(int s, MoverType mt)
 		{
 			// need to calculate angular order
 			
-			IndexedAngle ia[mFilter->kNumberOfSources];
+			IndexedAngle ia[mFilter->getNumberOfSources()];
 			
 			for (int j = 0; j < mFilter->getNumberOfSources(); j++)
 			{

@@ -61,21 +61,21 @@ enum {
 //#define ParamForSpeakerM(v) (kSpeakerM + kNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
 //
 //#define kConstantOffset (kNumberOfSources * kParamsPerSource + kNumberOfSpeakers * kParamsPerSpeakers)
-//
-//enum
-//{
-//	kLinkMovement =			0 + kConstantOffset,
-//	kSmooth =				1 + kConstantOffset,
-//	kVolumeNear =			2 + kConstantOffset,
-//	kVolumeMid =			3 + kConstantOffset,
-//	kVolumeFar =			4 + kConstantOffset,
-//	kFilterNear =			5 + kConstantOffset,
-//	kFilterMid =			6 + kConstantOffset,
-//	kFilterFar =			7 + kConstantOffset,
-//	kConstantParameters =	8
-//};
-//
-//#define kNumberOfParameters (kConstantParameters + kConstantOffset)
+#define kConstantOffset (JucePlugin_MaxNumInputChannels * kParamsPerSource + JucePlugin_MaxNumOutputChannels * kParamsPerSpeakers)
+enum
+{
+	kLinkMovement =			0 + kConstantOffset,
+	kSmooth =				1 + kConstantOffset,
+	kVolumeNear =			2 + kConstantOffset,
+	kVolumeMid =			3 + kConstantOffset,
+	kVolumeFar =			4 + kConstantOffset,
+	kFilterNear =			5 + kConstantOffset,
+	kFilterMid =			6 + kConstantOffset,
+	kFilterFar =			7 + kConstantOffset,
+	kConstantParameters =	8
+};
+
+#define kNumberOfParameters (kConstantParameters + kConstantOffset)
 
 
 
@@ -222,23 +222,26 @@ public:
     //==============================================================================
 	// For editor
 
-    int kNumberOfSources = 2;//ucePlugin_MaxNumInputChannels;
-    int kNumberOfSpeakers = 4;//JucePlugin_MaxNumOutputChannels;
+
     
-    int kConstantOffset = kNumberOfSources * kParamsPerSource + kNumberOfSpeakers * kParamsPerSpeakers;
+//    //const int kConstantOffset = kNumberOfSources * kParamsPerSource + kNumberOfSpeakers * kParamsPerSpeakers;
+//    const int kConstantOffset = JucePlugin_MaxNumInputChannels * kParamsPerSource + JucePlugin_MaxNumOutputChannels * kParamsPerSpeakers;
+//    
+//    const int kLinkMovement =		0 + kConstantOffset;
+//    const int kSmooth =				1 + kConstantOffset;
+//    const int kVolumeNear =			2 + kConstantOffset;
+//    const int kVolumeMid =			3 + kConstantOffset;
+//    const int kVolumeFar =			4 + kConstantOffset;
+//    const int kFilterNear =			5 + kConstantOffset;
+//    const int kFilterMid =			6 + kConstantOffset;
+//    const int kFilterFar =			7 + kConstantOffset;
+//    const int kConstantParameters =	8;
+//    
+//    const int kNumberOfParameters = kConstantParameters + kConstantOffset;
     
-    int kLinkMovement =			0 + kConstantOffset;
-    int kSmooth =				1 + kConstantOffset;
-    int kVolumeNear =			2 + kConstantOffset;
-    int kVolumeMid =			3 + kConstantOffset;
-    int kVolumeFar =			4 + kConstantOffset;
-    int kFilterNear =			5 + kConstantOffset;
-    int kFilterMid =			6 + kConstantOffset;
-    int kFilterFar =			7 + kConstantOffset;
-    int kConstantParameters =	8;
-    
-    int kNumberOfParameters = kConstantParameters + kConstantOffset;
-    
+
+    void setNumberOfSources(int p_iNewNumberOfSources);
+    void setNumberOfSpeakers(int p_iNewNumberOfSpeakers);
     
     
 	int getNumberOfSources() const { return kNumberOfSources; }
@@ -475,7 +478,8 @@ private:
     
     
     ///////////////////////////
-    
+    int kNumberOfSources = 2;   //JucePlugin_MaxNumInputChannels;
+    int kNumberOfSpeakers = 4;  //JucePlugin_MaxNumOutputChannels;
 
     
     //int inline ParamForSourceX(int v) {return kSourceX + v * kParamsPerSource;}
