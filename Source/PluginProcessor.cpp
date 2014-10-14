@@ -225,7 +225,16 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 
 void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     
+    //prevents audio process thread from running
+    suspendProcessing (true);
+    
     kNumberOfSources = p_iNewNumberOfSources;
+    
+
+    
+    if (mFilters != nullptr) {
+        delete[] mFilters;
+    }
     
     mFilters = new FirFilter [kNumberOfSources];
     
@@ -280,9 +289,15 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 		mLockedThetas.set(i, getSourceRT(i).y);
     
     mHostChangedParameter++;
+    
+    //starts audio processing again
+    suspendProcessing (false);
 }
 
 void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
+    
+    //prevents audio process thread from running
+    suspendProcessing (true);
     
     kNumberOfSpeakers = p_iNewNumberOfSpeakers;
 
@@ -334,6 +349,8 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
     }
 	mHostChangedParameter++;
     
+    //starts audio processing again
+    suspendProcessing (false);
 }
 
 

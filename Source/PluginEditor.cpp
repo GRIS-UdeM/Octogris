@@ -321,15 +321,15 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         Component *ct = mSourcesBox->getContent();
         
         
-        int dh = kDefaultLabelHeight;
-        
-        int x = 0, y = 0, w = kCenterColumnWidth;
+        int dh = kDefaultLabelHeight, x = 0, y = 0, w = kCenterColumnWidth;
         
         mLinkDistances = addCheckbox("Link", mFilter->getLinkDistances(), x, y, w/2, dh, ct);
         addLabel("Distance", x+w/2, y, w/2, dh, ct);
         
+        mSrcSelect = new ComboBox();
+        mTabs->getTabContentComponent(3)->addAndMakeVisible(mSrcSelect);
+        mComponents.add(mSrcSelect);
 
-        
         updateSources();
     }
     
@@ -354,6 +354,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		mSpSelect = new ComboBox();
         mTabs->getTabContentComponent(2)->addAndMakeVisible(mSpSelect);
         mComponents.add(mSpSelect);
+        
         updateSpeakers();
     }
     
@@ -659,21 +660,9 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		
 		addLabel("Set XY position:", x, y, w - selectw, dh, box);
 		{
-			ComboBox *cb = new ComboBox();
-			int index = 1;
-			for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			{
-				String s; s << i+1;
-				cb->addItem(s, index++);
-			}
-			cb->setSelectedId(1);
-			cb->setSize(selectw, dh);
-			cb->setTopLeftPosition(x + w - selectw, y);
-			box->addAndMakeVisible(cb);
-			mComponents.add(cb);
-			
-			mSrcSelect = cb;
-		}
+			mSrcSelect->setSize(selectw, dh);
+			mSrcSelect->setTopLeftPosition(x + w - selectw, y);
+        }
 		
 		y += dh + 5;
 		
@@ -854,15 +843,10 @@ void OctogrisAudioProcessorEditor::resized()
 
 void OctogrisAudioProcessorEditor::updateSources(){
     
-  	int dh = kDefaultLabelHeight;
-
-    int x = 0, y = 0, w = kCenterColumnWidth;
+  	int dh = kDefaultLabelHeight, x = 0, y = 0, w = kCenterColumnWidth;
 	
     Component *ct = mSourcesBox->getContent();
 
-    y += dh + 5;
-    
-    
     //remove old stuff
     for (int iCurLevelComponent = 0; iCurLevelComponent < mDistances.size(); ++iCurLevelComponent){
         ct->removeChildComponent(mDistances.getUnchecked(iCurLevelComponent));
@@ -871,8 +855,13 @@ void OctogrisAudioProcessorEditor::updateSources(){
     
     mDistances.clear();
     mLabels.clear();
+    mSrcSelect->clear();
     
-    for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+    
+    //put new stuff
+    int iCurSources = mFilter->getNumberOfSources();
+    y += dh + 5;
+    for (int i = 0; i < iCurSources; i++)
     {
         String s; s << i+1; s << ":";
         Component *label = addLabel(s, x, y, w/3, dh, ct);
@@ -885,6 +874,15 @@ void OctogrisAudioProcessorEditor::updateSources(){
     }
     
     ct->setSize(w, y);
+    
+    //source position combobox in source tab
+
+    int index = 1;
+    for (int i = 0; i < iCurSources; i++){
+        String s; s << i+1;
+        mSrcSelect->addItem(s, index++);
+    }
+    mSrcSelect->setSelectedId(1);
     
 }
 
@@ -1071,10 +1069,10 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         
         
         mFilter->setNumberOfSources(x);
-        mFilter->setNumberOfSpeakers(y);
-        mField->repaint();
         updateSources();
+        mFilter->setNumberOfSpeakers(y);
         updateSpeakers();
+        mField->repaint();
         
 	}
 	else if (button == mSpSetRT)
