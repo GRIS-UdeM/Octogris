@@ -256,6 +256,9 @@ private:
 };
 
 //==================================== EDITOR ===================================================================
+enum InputOutputModes {
+      i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16
+};
 
 OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcessor* ownerFilter)
     :
@@ -442,7 +445,52 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		}
 		
 		mShowGridLines = addCheckbox("Show grid lines", mFilter->getShowGridLines(), x, y, w, dh, box);
-		y += dh + 20;
+		y += dh + 5;
+        
+        addLabel("Input/Ouput mode:", x, y, w, dh, box);
+        y += dh + 5;
+        {
+			mInputOutputMode = new ComboBox();
+			int index = 1;
+
+			mInputOutputMode->addItem("1x2", index++);
+            mInputOutputMode->addItem("1x4", index++);
+            mInputOutputMode->addItem("1x6", index++);
+            mInputOutputMode->addItem("1x8", index++);
+            mInputOutputMode->addItem("1x16", index++);
+            
+            mInputOutputMode->addItem("2x2", index++);
+            mInputOutputMode->addItem("2x4", index++);
+            mInputOutputMode->addItem("2x6", index++);
+            mInputOutputMode->addItem("2x8", index++);
+            mInputOutputMode->addItem("2x16", index++);
+            
+            mInputOutputMode->addItem("4x4", index++);
+            mInputOutputMode->addItem("4x6", index++);
+            mInputOutputMode->addItem("4x8", index++);
+            mInputOutputMode->addItem("4x16", index++);
+            
+            mInputOutputMode->addItem("6x6", index++);
+            mInputOutputMode->addItem("6x8", index++);
+            mInputOutputMode->addItem("6x16", index++);
+            
+            mInputOutputMode->addItem("8x8", index++);
+            mInputOutputMode->addItem("8x16", index++);
+			
+#warning make this something real, not getGuiSize
+			mInputOutputMode->setSelectedId(mFilter->getGuiSize() + 1);
+			mInputOutputMode->setSize(w, dh);
+			mInputOutputMode->setTopLeftPosition(x, y);
+			box->addAndMakeVisible(mInputOutputMode);
+			mComponents.add(mInputOutputMode);
+			y += dh + 5;
+
+			mInputOutputMode->addListener(this);
+
+		}
+
+        
+
 		
 		//-----------------------------
 		// start 3rd column
@@ -1065,15 +1113,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 		int sp = mSpSelect->getSelectedId() - 1;
 		float x = mSpX->getText().getFloatValue();
 		float y = mSpY->getText().getFloatValue();
-		//mFilter->setSpeakerXY01(sp, FPoint((x+kRadiusMax)/(kRadiusMax*2), (y+kRadiusMax)/(kRadiusMax*2)));
-        
-        
-        mFilter->setNumberOfSources(x);
-        updateSources();
-        mFilter->setNumberOfSpeakers(y);
-        updateSpeakers();
-        mField->repaint();
-        
+		mFilter->setSpeakerXY01(sp, FPoint((x+kRadiusMax)/(kRadiusMax*2), (y+kRadiusMax)/(kRadiusMax*2)));
 	}
 	else if (button == mSpSetRT)
 	{
@@ -1230,6 +1270,93 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	else if (comboBox == mOscLeapSourceCb)
 	{
 		mFilter->setOscLeapSource(comboBox->getSelectedId() - 1);
+	}
+    else if (comboBox == mInputOutputMode)
+	{
+		switch (mInputOutputMode->getSelectedItemIndex()){
+
+            case i1o2:
+                mFilter->setNumberOfSources(1);
+                mFilter->setNumberOfSpeakers(2);
+                break;
+            case i1o4:
+                mFilter->setNumberOfSources(1);
+                mFilter->setNumberOfSpeakers(4);
+                break;
+            case i1o6:
+                break;
+                mFilter->setNumberOfSources(1);
+                mFilter->setNumberOfSpeakers(6);
+            case i1o8:
+                mFilter->setNumberOfSources(1);
+                mFilter->setNumberOfSpeakers(8);
+                break;
+            case i1o16:
+                mFilter->setNumberOfSources(1);
+                mFilter->setNumberOfSpeakers(16);
+                break;
+            case i2o2:
+                mFilter->setNumberOfSources(2);
+                mFilter->setNumberOfSpeakers(2);
+                break;
+            case i2o4:
+                mFilter->setNumberOfSources(2);
+                mFilter->setNumberOfSpeakers(4);
+                break;
+            case i2o6:
+                mFilter->setNumberOfSources(2);
+                mFilter->setNumberOfSpeakers(6);
+                break;
+            case i2o8:
+                mFilter->setNumberOfSources(2);
+                mFilter->setNumberOfSpeakers(8);
+                break;
+            case i2o16:
+                mFilter->setNumberOfSources(2);
+                mFilter->setNumberOfSpeakers(16);
+                break;
+            case i4o4:
+                mFilter->setNumberOfSources(4);
+                mFilter->setNumberOfSpeakers(4);
+                break;
+            case i4o6:
+                mFilter->setNumberOfSources(4);
+                mFilter->setNumberOfSpeakers(6);
+                break;
+            case i4o8:
+                mFilter->setNumberOfSources(4);
+                mFilter->setNumberOfSpeakers(8);
+                break;
+            case i4o16:
+                mFilter->setNumberOfSources(4);
+                mFilter->setNumberOfSpeakers(16);
+                break;
+            case i6o6:
+                mFilter->setNumberOfSources(6);
+                mFilter->setNumberOfSpeakers(6);
+                break;
+            case i6o8:
+                mFilter->setNumberOfSources(6);
+                mFilter->setNumberOfSpeakers(8);
+                break;
+            case i6o16:
+                mFilter->setNumberOfSources(6);
+                mFilter->setNumberOfSpeakers(16);
+                break;
+            case i8o8:
+                mFilter->setNumberOfSources(8);
+                mFilter->setNumberOfSpeakers(8);
+                break;
+            case i8o16:
+                mFilter->setNumberOfSources(8);
+                mFilter->setNumberOfSpeakers(16);
+                break;
+        }
+        
+        updateSources();
+        updateSpeakers();
+        mField->repaint();
+
 	}
 	else
 	{

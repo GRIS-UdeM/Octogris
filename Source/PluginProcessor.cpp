@@ -229,9 +229,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     suspendProcessing (true);
     
     kNumberOfSources = p_iNewNumberOfSources;
-    
 
-    
     if (mFilters != nullptr) {
         delete[] mFilters;
     }
