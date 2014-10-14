@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>297675D3-65C7-4F97-8AD1-425FCB70025A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Octogris</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>2D8E8523-F404-4D6B-B4AB-054216F5F2F5</key>
+		<string>https://github.com/GRIS-UdeM/Octogris.git</string>
+		<key>7E6CB38F-A2B8-4F62-B88A-C1ECEE09399B</key>
+		<string>https://github.com/GRIS-UdeM/Octogris.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Builds/MacOSX/Octogris.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>2D8E8523-F404-4D6B-B4AB-054216F5F2F5</key>
+		<string>../../../..</string>
+		<key>7E6CB38F-A2B8-4F62-B88A-C1ECEE09399B</key>
+		<string>../../../../../Octogris copy</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/GRIS-UdeM/Octogris.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>2D8E8523-F404-4D6B-B4AB-054216F5F2F5</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2D8E8523-F404-4D6B-B4AB-054216F5F2F5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Octogris</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7E6CB38F-A2B8-4F62-B88A-C1ECEE09399B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Octogris copy</string>
+		</dict>
+	</array>
+</dict>
+</plist>
