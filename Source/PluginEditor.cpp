@@ -283,6 +283,31 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		mComponents.add(mField);
 
 	}
+    
+    // param box
+	Colour tabBg = Colour::fromRGB(200,200,200);
+	mTabs = new OctTabbedComponent(TabbedButtonBar::TabsAtTop, mFilter);
+	mTabs->addTab("Settings", tabBg, new Component(), true);
+	mTabs->addTab("V & F", tabBg, new Component(), true);
+	mTabs->addTab("Speakers", tabBg, new Component(), true);
+	mTabs->addTab("Sources", tabBg, new Component(), true);
+	mTabs->addTab("Trajectories", tabBg, new Component(), true);
+	{
+		mOsc = CreateOscComponent(mFilter, this);
+		if (mOsc) mTabs->addTab("OSC", tabBg, mOsc, true);
+	}
+	bool leapSupported = false;
+	{
+		Component *leap = CreateLeapComponent(mFilter, this);
+		if (leap)
+		{
+			mTabs->addTab("Leap", tabBg, leap, true);
+			leapSupported = true;
+		}
+	}
+	mTabs->setSize(kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
+	addAndMakeVisible(mTabs);
+	mComponents.add(mTabs);
 	
 	
 	// sources
@@ -326,34 +351,13 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         addLabel("Attenuation (db)", x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
         addLabel("Level", x+w*2/3, y, w/3, dh, ct);
 
-        
+		mSpSelect = new ComboBox();
+        mTabs->getTabContentComponent(2)->addAndMakeVisible(mSpSelect);
+        mComponents.add(mSpSelect);
         updateSpeakers();
     }
     
-	// param box
-	Colour tabBg = Colour::fromRGB(200,200,200);
-	mTabs = new OctTabbedComponent(TabbedButtonBar::TabsAtTop, mFilter);
-	mTabs->addTab("Settings", tabBg, new Component(), true);
-	mTabs->addTab("V & F", tabBg, new Component(), true);
-	mTabs->addTab("Speakers", tabBg, new Component(), true);
-	mTabs->addTab("Sources", tabBg, new Component(), true);
-	mTabs->addTab("Trajectories", tabBg, new Component(), true);
-	{
-		mOsc = CreateOscComponent(mFilter, this);
-		if (mOsc) mTabs->addTab("OSC", tabBg, mOsc, true);
-	}
-	bool leapSupported = false;
-	{
-		Component *leap = CreateLeapComponent(mFilter, this);
-		if (leap)
-		{
-			mTabs->addTab("Leap", tabBg, leap, true);
-			leapSupported = true;
-		}
-	}
-	mTabs->setSize(kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
-	addAndMakeVisible(mTabs);
-	mComponents.add(mTabs);
+
 	
     
     int dh = kDefaultLabelHeight;
@@ -575,79 +579,55 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
 		int setw = 60, selectw = 50;
 	
-		// column 1
+		//-------- column 1 --------
 		addLabel("Reset speakers:", x, y, w, dh, box);
 		y += dh + 5;
-		
 		mSpAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
 		y += dh + 5;
-		
 		mSpStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
 		y += dh + 5;
-		
 		mSpClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
 		y += dh + 5;
-		
 		mSpApply = addButton("Apply", x, y, setw, dh, box);
 		y += dh + 5;
-		
-		// column 2
+
+		//-------- column 2 --------
 		y = kMargin;
 		x += w + kMargin;
 		
 		addLabel("Set XY position:", x, y, w - selectw, dh, box);
 		{
-			ComboBox *cb = new ComboBox();
-			int index = 1;
-			for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-			{
-				String s; s << i+1;
-				cb->addItem(s, index++);
-			}
-			cb->setSelectedId(1);
-			cb->setSize(selectw, dh);
-			cb->setTopLeftPosition(x + w - selectw, y);
-			box->addAndMakeVisible(cb);
-			mComponents.add(cb);
-			
-			mSpSelect = cb;
+			mSpSelect->setSize(selectw, dh);
+			mSpSelect->setTopLeftPosition(x + w - selectw, y);
 		}
 		
 		y += dh + 5;
 		
 		addLabel("(-2 to 2)", x, y, w, dh, box);
 		y += dh + 5;
-		
 		int lw = 30, lwm = lw + kMargin;
-		
 		addLabel("X:", x, y, lw, dh, box);
 		mSpX = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
 		y += dh + 5;
-		
 		addLabel("Y:", x, y, lw, dh, box);
 		mSpY = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
 		y += dh + 5;
-		
 		mSpSetXY = addButton("Set", x, y, setw, dh, box);
 				
-		// column 3
+		//-------- column 3 --------
 		y = kMargin;
 		x += w + kMargin;
 		
 		addLabel("Set RA position:", x, y, w, dh, box);
 		y += dh + 5;
-		
 		addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
 		y += dh + 5;
-		
 		addLabel("R:", x, y, lw, dh, box);
 		mSpR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
 		y += dh + 5;
-		
 		addLabel("A:", x, y, lw, dh, box);
 		mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
 		y += dh + 5;
-		
 		mSpSetRT = addButton("Set", x, y, setw, dh, box);
 	}
 	
@@ -909,20 +889,9 @@ void OctogrisAudioProcessorEditor::updateSources(){
 }
 
 void OctogrisAudioProcessorEditor::updateSpeakers(){
-    
-   	int dh = kDefaultLabelHeight;
-    
-    int x = 0, y = 0, w = kRightColumnWidth;
-    
-    int iCurSpeakers = mFilter->getNumberOfSpeakers();
-    
-    Component *ct = mSpeakersBox->getContent();
-    //ct->deleteAllChildren();
-    
-    const int muteWidth = 50;
-    y += dh + 5;
-    
+
     //remove old stuff
+    Component *ct = mSpeakersBox->getContent();
     for (int iCurLevelComponent = 0; iCurLevelComponent < mLevels.size(); ++iCurLevelComponent){
         ct->removeChildComponent(mMutes.getUnchecked(iCurLevelComponent));
         ct->removeChildComponent(mAttenuations.getUnchecked(iCurLevelComponent));
@@ -930,11 +899,20 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
 
         mComponents.removeObject(mLevels.getUnchecked(iCurLevelComponent));
     }
-    
     mMutes.clear();
     mAttenuations.clear();
     mLevels.clear();
+    mSpSelect->clear();
     
+
+    
+    //put new stuff
+    int iCurSpeakers = mFilter->getNumberOfSpeakers();
+   	int dh = kDefaultLabelHeight, x = 0, y = 0, w = kRightColumnWidth;
+    
+    const int muteWidth = 50;
+    y += dh + 5;
+
     for (int i = 0; i < iCurSpeakers; i++)
     {
         String s; s << i+1; s << ":";
@@ -958,6 +936,16 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
     }
     
     ct->setSize(w, y);
+    
+    
+    //speaker position combo box in speakers tab
+    int index = 1;
+    for (int i = 0; i < iCurSpeakers; i++)
+    {
+        String s; s << i+1;
+        mSpSelect->addItem(s, index++);
+    }
+    mSpSelect->setSelectedId(1);
 }
 
 

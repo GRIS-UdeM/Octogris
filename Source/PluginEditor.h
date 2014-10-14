@@ -114,6 +114,7 @@ private:
 	TextEditor *mSpX, *mSpY, *mSpR, *mSpT;
 	TextButton *mSpSetXY, *mSpSetRT;
 	ComboBox *mSpSelect;
+
 	
 	// sources
 	ToggleButton *mSrcAlternate;
