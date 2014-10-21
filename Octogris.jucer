@@ -54,15 +54,15 @@
                        libraryPath="~/SDKs/LeapSDK/lib/libc++;~/SDKs/liblo/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../_others/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../_others/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../_others/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../_others/JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="../../_others/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../_others/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../_others/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../_others/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../_others/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../_others/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2010 targetFolder="Builds/VisualStudio2010" vstFolder="c:\SDKs\vstsdk2.4"

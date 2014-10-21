@@ -55,7 +55,8 @@ enum
 	kFilterNear =			5 + kConstantOffset,
 	kFilterMid =			6 + kConstantOffset,
 	kFilterFar =			7 + kConstantOffset,
-	kConstantParameters =	8
+	kMaxSpanVolume =		8 + kConstantOffset,
+	kConstantParameters =	9
 };
 #define kNumberOfParameters (kConstantParameters + kConstantOffset)
 
@@ -63,7 +64,8 @@ enum
 {
 	kFreeVolumeMode = 0,
 	kPanVolumeMode = 1,
-	kNumberOfModes = 2
+	kPanSpanMode = 2,
+	kNumberOfModes = 3
 };
 
 //==============================================================================
@@ -105,6 +107,10 @@ static const float kFilterMidDefault = 0;
 static const float kFilterFarMin = kMaxDistance;
 static const float kFilterFarMax = 0;
 static const float kFilterFarDefault = kMaxDistance;
+
+static const float kMaxSpanVolumeMin = 0;
+static const float kMaxSpanVolumeMax = 20;
+static const float kMaxSpanVolumeDefault = 10;
 
 static const float kRadiusMax = 2;
 static const float kHalfCircle = M_PI;
@@ -428,11 +434,12 @@ private:
 	
 	FirFilter mFilters[kNumberOfSources];
 	
-	void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight);
+	void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
 	void addToOutput(float s, float **outputs, int o, int f);
 	void ProcessData(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
+	void ProcessDataPanSpanMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)

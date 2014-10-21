@@ -27,7 +27,8 @@ enum
 	kParamVolumeNear,
 	kParamFilterFar,
 	kParamFilterMid,
-	kParamFilterNear
+	kParamFilterNear,
+	kParamMaxSpanVolume
 };
 
 class MiniProgressBar;
@@ -102,6 +103,7 @@ private:
 	Slider *mFilterFar;
 	Slider *mFilterMid;
 	Slider *mFilterNear;
+	Slider *mMaxSpanVolume;
 	
 	// speakers
 	ToggleButton *mSpAlternate;

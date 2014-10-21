@@ -152,6 +152,7 @@ public:
 				case kParamFilterFar: newVal = normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault); break;
 				case kParamFilterMid: newVal = normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault); break;
 				case kParamFilterNear: newVal = normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault); break;
+				case kParamMaxSpanVolume: newVal = normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault); break;
 			}
 		
 			if (mParamType == kParamSource && mLink->getToggleState())
@@ -220,9 +221,10 @@ public:
 			case kParamFilterFar: value = denormalize(-100, 0, value); break;
 			case kParamFilterMid: value = denormalize(-100, 0, value); break;
 			case kParamFilterNear: value = denormalize(-100, 0, value); break;
+			case kParamMaxSpanVolume: value = denormalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, value); break;
 		}
 		
-		if (mParamType >= kParamSmooth || mParamType <= kParamFilterNear) return String(roundToInt(value));
+		if (mParamType >= kParamSmooth || mParamType <= kParamMaxSpanVolume) return String(roundToInt(value));
 		return String(value, 1);
 	}
 	
@@ -243,6 +245,7 @@ public:
 			case kParamFilterFar: value = normalize(-100, 0, value); break;
 			case kParamFilterMid: value = normalize(-100, 0, value); break;
 			case kParamFilterNear: value = normalize(-100, 0, value); break;
+			case kParamMaxSpanVolume: value = normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, value); break;
 		}
 		return value;
 	}
@@ -292,9 +295,9 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		mComponents.add(mSourcesBox);
 		Component *ct = mSourcesBox->getContent();
 
-		mLinkDistances = addCheckbox("Link", mFilter->getLinkDistances(), x, y, w/2, dh, ct);
+		mLinkDistances = addCheckbox("Link", mFilter->getLinkDistances(), x, y, w/3, dh, ct);
 		
-		addLabel("Distance", x+w/2, y, w/2, dh, ct);
+		addLabel("Distance/Span", x+w/3+10, y, 2*w/3-10, dh, ct);
 		y += dh + 5;
 		
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
@@ -456,7 +459,17 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		}
 		
 		mShowGridLines = addCheckbox("Show grid lines", mFilter->getShowGridLines(), x, y, w, dh, box);
-		y += dh + 20;
+		y += dh + 5;
+		
+		{
+			addLabel("Max span volume (db):", x, y, w, dh, box);
+			y += dh + 5;
+		
+			Slider *ds = addParamSlider(kParamMaxSpanVolume, kMaxSpanVolume, mFilter->getParameter(kMaxSpanVolume), x, y, w, dh, box);
+			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+			mMaxSpanVolume = ds;
+			y += dh + 5;
+		}
 		
 		//-----------------------------
 		// start 3rd column
@@ -471,6 +484,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			int index = 1;
 			cb->addItem("Free volume", index++);
 			cb->addItem("Pan volume", index++);
+			cb->addItem("Pan span", index++);
 			cb->setSelectedId(mFilter->getProcessMode() + 1);
 			cb->setSize(w, dh);
 			cb->setTopLeftPosition(x, y);
@@ -1227,6 +1241,10 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mVolumeFar->setValue(mFilter->getParameter(kVolumeFar));
 		mVolumeMid->setValue(mFilter->getParameter(kVolumeMid));
 		mVolumeNear->setValue(mFilter->getParameter(kVolumeNear));
+		mFilterFar->setValue(mFilter->getParameter(kFilterFar));
+		mFilterMid->setValue(mFilter->getParameter(kFilterMid));
+		mFilterNear->setValue(mFilter->getParameter(kFilterNear));
+		mMaxSpanVolume->setValue(mFilter->getParameter(kMaxSpanVolume));
 		
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 		{

@@ -69,6 +69,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mParameters.set(kFilterNear, normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault));
 	mParameters.set(kFilterMid, normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault));
 	mParameters.set(kFilterFar, normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault));
+	mParameters.set(kMaxSpanVolume, normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault));
 
 	mSmoothedParametersInited = false;
 	mSmoothedParameters.ensureStorageAllocated(kNumberOfParameters);
@@ -264,6 +265,7 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 		case kFilterNear:	return "Filter Near";
 		case kFilterMid:	return "Filter Mid";
 		case kFilterFar:	return "Filter Far";
+		case kMaxSpanVolume:return "Max span volume";
 	}
 
 	if (index < kNumberOfSources * kParamsPerSource)
@@ -451,12 +453,19 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		params[kFilterMid] = denormalize(kFilterMidMin, kFilterMidMax, params[kFilterMid]);
 		params[kFilterFar] = denormalize(kFilterFarMin, kFilterFarMax, params[kFilterFar]);
 	}
+	if (mProcessMode == kPanSpanMode)
+	{
+		params[kMaxSpanVolume] = denormalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, params[kMaxSpanVolume]);
+	}
 	
 	float *inputs[kNumberOfSources];
 	for (int i = 0; i < kNumberOfSources; i++)
 	{
 		inputs[i] = buffer.getSampleData(i);
-		params[ParamForSourceD(i)] = denormalize(kSourceMinDistance, kSourceMaxDistance, params[ParamForSourceD(i)]);
+		
+		if (mProcessMode == kFreeVolumeMode)
+			params[ParamForSourceD(i)] = denormalize(kSourceMinDistance, kSourceMaxDistance, params[ParamForSourceD(i)]);
+		
 		params[ParamForSourceX(i)] = params[ParamForSourceX(i)] * (2*kRadiusMax) - kRadiusMax;
 		params[ParamForSourceY(i)] = params[ParamForSourceY(i)] * (2*kRadiusMax) - kRadiusMax;
 	}
@@ -553,10 +562,11 @@ void OctogrisAudioProcessor::ProcessData(float **inputs, float **outputs, float 
 	{
 		case kFreeVolumeMode:	ProcessDataFreeVolumeMode(inputs, outputs, params, sampleRate, frames);	break;
 		case kPanVolumeMode:	ProcessDataPanVolumeMode(inputs, outputs, params, sampleRate, frames);	break;
+		case kPanSpanMode:		ProcessDataPanSpanMode(inputs, outputs, params, sampleRate, frames);	break;
 	}
 }
 
-void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight)
+void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip)
 {
 	left = -1;
 	right = -1;
@@ -564,6 +574,8 @@ void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int
 	dRight = kThetaMax;
 	for (int o = 0; o < kNumberOfSpeakers; o++)
 	{
+		if (o == skip) continue;
+		
 		float speakerT = params[ParamForSpeakerX(o)];
 		float d = speakerT - t;
 		if (d >= 0)
@@ -813,6 +825,280 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	}
 }
 
+class Area
+{
+public:
+	Area() {}
+	Area(int sp, float ix1, float iy1, float ix2, float iy2)
+	:	speaker(sp),
+		x1(ix1), x2(ix2) //, y1(iy1), y2(iy2)
+	{
+		m = (iy2-iy1) / (ix2-ix1);
+		b = iy1 - m * ix1;
+	}
+	
+	float eval(float x) const { return m * x + b; }
+	
+	int speaker;
+	float x1, x2;
+	//float y1, y2;
+	float m, b;
+};
+
+#define kMaxAreas (kNumberOfSpeakers * 3)
+static void AddArea(int speaker, float ix1, float iy1, float ix2, float iy2, Area *areas, int &areaCount)
+{
+	assert(ix1 < ix2);
+	
+	//fprintf(stderr, "speaker: %d x1: %f x2: %f dc: %f\n", speaker, ix1, ix2, ix2 - ix1);
+	//fflush(stderr);
+	
+	if (ix1 < 0)
+	{
+		assert(ix2 >= 0 && ix2 <= kThetaMax);
+		assert(ix1 + kThetaMax > 0);
+		
+		float yc = (0 - ix1) / (ix2 - ix1) * (iy2 - iy1) + iy1;
+		
+		assert(areaCount < kMaxAreas);
+		areas[areaCount++] = Area(speaker, kThetaMax + ix1, iy1, kThetaMax, yc);
+		
+		assert(areaCount < kMaxAreas);
+		areas[areaCount++] = Area(speaker, 0, yc, ix2, iy2);
+	}
+	else if (ix2 > kThetaMax)
+	{
+		assert(ix1 >= 0 && ix1 <= kThetaMax);
+		assert(ix2 - kThetaMax < kThetaMax);
+		
+		float yc = (kThetaMax - ix1) / (ix2 - ix1) * (iy2 - iy1) + iy1;
+		
+		assert(areaCount < kMaxAreas);
+		areas[areaCount++] = Area(speaker, ix1, iy1, kThetaMax, yc);
+		
+		assert(areaCount < kMaxAreas);
+		areas[areaCount++] = Area(speaker, 0, yc, ix2 - kThetaMax, iy2);
+	}
+	else
+	{
+		assert(ix1 >= 0 && ix2 <= kThetaMax);
+		
+		assert(areaCount < kMaxAreas);
+		areas[areaCount++] = Area(speaker, ix1, iy1, ix2, iy2);
+	}
+}
+static void Integrate(float x1, float x2, const Area *areas, int areaCount, float *outFactors, float factor)
+{
+	assert(x1 < x2);
+	assert(x1 >= 0);
+	assert(x2 <= kThetaMax);
+	
+	for (int a = 0; a < areaCount; a++)
+	{
+		const Area &area = areas[a];
+		
+		if (x2 <= area.x1 || x1 >= area.x2)
+			continue; // completely outside
+	
+		float c1 = (x1 < area.x1) ? area.x1 : x1;
+		float c2 = (x2 > area.x2) ? area.x2 : x2;
+		
+		float y1 = area.eval(c1);
+		float y2 = area.eval(c2);
+		
+		float dc = c2 - c1;
+		//fprintf(stderr, "x1: %f x2: %f area.x1: %f area.x2: %f c1: %f c2: %f dc: %f\n", x1, x2, area.x1, area.x2, c1, c2, dc);
+		//fflush(stderr);
+		assert(dc > 0);
+		
+		float v = dc * (y1+y2); // * 0.5f;
+		assert(v > 0);
+		
+		outFactors[area.speaker] += v * factor;
+	}
+}
+
+void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
+{
+	const float smooth = denormalize(kSmoothMin, kSmoothMax, params[kSmooth]); // milliseconds
+	const float sm_o = powf(0.01f, 1000.f / (smooth * sampleRate));
+	const float sm_n = 1 - sm_o;
+	
+	// ramp all the parameters, except constant ones and speaker thetas
+	const int sourceParameters = kNumberOfSources * kParamsPerSource;
+	const int speakerParameters = kNumberOfSpeakers * kParamsPerSpeakers;
+	for (int i = 0; i < (kNumberOfParameters - kConstantParameters); i++)
+	{
+		bool isSpeakerXY = (i >= sourceParameters && i < (sourceParameters + speakerParameters) && ((i - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
+		if (isSpeakerXY) continue;
+	
+		float currentParam = mSmoothedParameters[i];
+		float targetParam = params[i];
+		float *ramp = mSmoothedParametersRamps.getReference(i).b;
+	
+		//float ori = currentParam;
+		
+		for (unsigned int f = 0; f < frames; f++)
+		{
+			currentParam = currentParam * sm_o + targetParam * sm_n;
+			ramp[f] = currentParam;
+		}
+		
+		//if (i == 0 && ori != currentParam) printf("param %i -> %f -> %f\n", i, ori, currentParam);
+
+		mSmoothedParameters.setUnchecked(i, currentParam);
+	}
+	
+	// clear outputs
+	for (int o = 0; o < kNumberOfSpeakers; o++)
+	{
+		float *output = outputs[o];
+		memset(output, 0, frames * sizeof(float));
+	}
+	
+
+	Area areas[kMaxAreas];
+	int areaCount = 0;
+	
+	if (kNumberOfSpeakers > 1)
+	{
+		for (int o = 0; o < kNumberOfSpeakers; o++)
+		{
+			float t = params[ParamForSpeakerX(o)];
+			int left, right;
+			float dLeft, dRight;
+			findSpeakers(t, params, left, right, dLeft, dRight, o);
+			assert(left >= 0 && right >= 0);
+			assert(dLeft > 0 && dRight > 0);
+			
+			AddArea(o, t - dLeft, 0, t, 1, areas, areaCount);
+			AddArea(o, t, 1, t + dRight, 0, areas, areaCount);
+		}
+	}
+	else
+	{
+		AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount);
+	}
+	assert(areaCount > 0);
+
+	// compute
+	// in this context: source T, R are actually source X, Y
+	for (int i = 0; i < kNumberOfSources; i++)
+	{
+		float *input = inputs[i];
+		float *input_x = mSmoothedParametersRamps.getReference(ParamForSourceX(i)).b;
+		float *input_y = mSmoothedParametersRamps.getReference(ParamForSourceY(i)).b;
+		float *input_d = mSmoothedParametersRamps.getReference(ParamForSourceD(i)).b;
+	
+		for (unsigned int f = 0; f < frames; f++)
+		{
+			float s = input[f];
+			float x = input_x[f];
+			float y = input_y[f];
+			float d = input_d[f];
+			
+			float tv = dbToLinear(d * params[kMaxSpanVolume]);
+			
+			// could use the Accelerate framework on mac for these
+			float r = hypotf(x, y);
+			if (r > kRadiusMax) r = kRadiusMax;
+			
+			float it = atan2f(y, x);
+			if (it < 0) it += kThetaMax;
+			
+			//if (r < 1 && d > 0.5) d = 0.5;
+			if (d < 1e-6) d = 1e-6;
+			float angle = d * M_PI;
+			
+			if (mApplyFilter)
+			{
+				float distance;
+				if (r >= 1) distance = denormalize(params[kFilterMid], params[kFilterFar], (r - 1));
+				else distance = denormalize(params[kFilterNear], params[kFilterMid], r);
+				s = mFilters[i].process(s, distance);
+			}
+			
+			// adjust input volume
+			{
+				float dbSource;
+				if (r >= 1) dbSource = denormalize(params[kVolumeMid], params[kVolumeFar], (r - 1));
+				else dbSource = denormalize(params[kVolumeNear], params[kVolumeMid], r);
+				s *= dbToLinear(dbSource);
+			}
+			
+			float t;
+			if (r >= kThetaLockRadius)
+			{
+				t = it;
+				mLockedThetas.setUnchecked(i, it);
+			}
+			else
+			{
+				float c = (r >= kThetaLockRampRadius) ? ((r - kThetaLockRampRadius) / (kThetaLockRadius - kThetaLockRampRadius)) : 0;
+				float lt = mLockedThetas.getUnchecked(i);
+				float dt = lt - it;
+				if (dt < 0) dt = -dt;
+				if (dt > kQuarterCircle)
+				{
+					// assume flipped side
+					if (lt > it) lt -= kHalfCircle;
+					else lt += kHalfCircle;
+				}
+				t = c * it + (1 - c) * lt;
+				
+				if (t < 0) t += kThetaMax;
+				else if (t >= kThetaMax) t -= kThetaMax;
+				
+				//if (f == 0) printf("it: %f lt: %f lt2: %f t: %f c: %f\n", it, mLockedThetas.getUnchecked(i), lt, t, c);
+			}
+			
+			assert(t >= 0 && t <= kThetaMax);
+			assert(angle > 0 && angle <= kHalfCircle);
+			
+			float outFactors[kNumberOfSpeakers];
+			memset(outFactors, 0, sizeof(outFactors));
+			
+			float factor = (r < 1) ? (r * 0.5f + 0.5f) : 1;
+
+			for (int side = 0; side < 2; side++)
+			{
+				float tl = t - angle, tr = t + angle;
+				
+				if (tl < 0)
+				{
+					Integrate(tl + kThetaMax, kThetaMax, areas, areaCount, outFactors, factor);
+					Integrate(0, tr, areas, areaCount, outFactors, factor);
+				}
+				else if (tr > kThetaMax)
+				{
+					Integrate(tl, kThetaMax, areas, areaCount, outFactors, factor);
+					Integrate(0, tr - kThetaMax, areas, areaCount, outFactors, factor);
+				}
+				else
+				{
+					Integrate(tl, tr, areas, areaCount, outFactors, factor);
+				}
+				
+				if (r < 1)
+				{
+					factor = 1 - factor;
+					t = (t < kHalfCircle) ? (t + kHalfCircle) : (t - kHalfCircle);
+				}
+				else break;
+			}
+			
+			float total = 0;
+			for (int o = 0; o < kNumberOfSpeakers; o++) total += outFactors[o];
+			assert(total > 0);
+			
+			float adj = tv / total;
+			for (int o = 0; o < kNumberOfSpeakers; o++)
+				if (outFactors[o])
+					addToOutput(s * outFactors[o] * adj, outputs, o, f);
+		}
+	}
+}
+
 void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
 {
 	const float smooth = denormalize(kSmoothMin, kSmoothMax, params[kSmooth]); // milliseconds
@@ -989,7 +1275,7 @@ static inline void readStringData(const void* &data, int &dataLength, const char
 	}
 }
 
-static const int kDataVersion = 8;
+static const int kDataVersion = 9;
 void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
 	//printf("Octogris: getStateInformation\n");
@@ -1016,6 +1302,8 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 	appendFloatData(destData, mParameters[kFilterNear]);
 	appendFloatData(destData, mParameters[kFilterMid]);
 	appendFloatData(destData, mParameters[kFilterFar]);
+	appendFloatData(destData, mParameters[kMaxSpanVolume]);
+	
 	for (int i = 0; i < kNumberOfSources; i++)
 	{
 		appendFloatData(destData, mParameters[ParamForSourceX(i)]);
@@ -1066,6 +1354,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 			mParameters.set(kFilterNear, readFloatData(data, sizeInBytes, normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault)));
 			if (version >= 5) mParameters.set(kFilterMid, readFloatData(data, sizeInBytes, normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault)));
 			mParameters.set(kFilterFar, readFloatData(data, sizeInBytes, normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault)));
+			if (version >= 9) mParameters.set(kMaxSpanVolume, readFloatData(data, sizeInBytes, normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault)));
 			for (int i = 0; i < kNumberOfSources; i++)
 			{
 				mParameters.set(ParamForSourceX(i), readFloatData(data, sizeInBytes, 0));
