@@ -40,7 +40,7 @@
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
       <PathRunnable
-         FilePath = "/Applications/Plugin Host.app">
+         FilePath = "/Applications/Digital Performer.app">
       </PathRunnable>
       <AdditionalOptions>
       </AdditionalOptions>

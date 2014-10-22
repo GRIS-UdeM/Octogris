@@ -256,9 +256,7 @@ private:
 };
 
 //==================================== EDITOR ===================================================================
-enum InputOutputModes {
-      i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16
-};
+
 
 OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcessor* ownerFilter)
     :
@@ -477,8 +475,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
             mInputOutputMode->addItem("8x8", index++);
             mInputOutputMode->addItem("8x16", index++);
 			
-#warning make this something real, not getGuiSize
-			mInputOutputMode->setSelectedId(mFilter->getGuiSize() + 1);
+#warning make this something real, not just 1
+			mInputOutputMode->setSelectedId(1);
 			mInputOutputMode->setSize(w, dh);
 			mInputOutputMode->setTopLeftPosition(x, y);
 			box->addAndMakeVisible(mInputOutputMode);
@@ -1273,85 +1271,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	}
     else if (comboBox == mInputOutputMode)
 	{
-		switch (mInputOutputMode->getSelectedItemIndex()){
-
-            case i1o2:
-                mFilter->setNumberOfSources(1);
-                mFilter->setNumberOfSpeakers(2);
-                break;
-            case i1o4:
-                mFilter->setNumberOfSources(1);
-                mFilter->setNumberOfSpeakers(4);
-                break;
-            case i1o6:
-                break;
-                mFilter->setNumberOfSources(1);
-                mFilter->setNumberOfSpeakers(6);
-            case i1o8:
-                mFilter->setNumberOfSources(1);
-                mFilter->setNumberOfSpeakers(8);
-                break;
-            case i1o16:
-                mFilter->setNumberOfSources(1);
-                mFilter->setNumberOfSpeakers(16);
-                break;
-            case i2o2:
-                mFilter->setNumberOfSources(2);
-                mFilter->setNumberOfSpeakers(2);
-                break;
-            case i2o4:
-                mFilter->setNumberOfSources(2);
-                mFilter->setNumberOfSpeakers(4);
-                break;
-            case i2o6:
-                mFilter->setNumberOfSources(2);
-                mFilter->setNumberOfSpeakers(6);
-                break;
-            case i2o8:
-                mFilter->setNumberOfSources(2);
-                mFilter->setNumberOfSpeakers(8);
-                break;
-            case i2o16:
-                mFilter->setNumberOfSources(2);
-                mFilter->setNumberOfSpeakers(16);
-                break;
-            case i4o4:
-                mFilter->setNumberOfSources(4);
-                mFilter->setNumberOfSpeakers(4);
-                break;
-            case i4o6:
-                mFilter->setNumberOfSources(4);
-                mFilter->setNumberOfSpeakers(6);
-                break;
-            case i4o8:
-                mFilter->setNumberOfSources(4);
-                mFilter->setNumberOfSpeakers(8);
-                break;
-            case i4o16:
-                mFilter->setNumberOfSources(4);
-                mFilter->setNumberOfSpeakers(16);
-                break;
-            case i6o6:
-                mFilter->setNumberOfSources(6);
-                mFilter->setNumberOfSpeakers(6);
-                break;
-            case i6o8:
-                mFilter->setNumberOfSources(6);
-                mFilter->setNumberOfSpeakers(8);
-                break;
-            case i6o16:
-                mFilter->setNumberOfSources(6);
-                mFilter->setNumberOfSpeakers(16);
-                break;
-            case i8o8:
-                mFilter->setNumberOfSources(8);
-                mFilter->setNumberOfSpeakers(8);
-                break;
-            case i8o16:
-                mFilter->setNumberOfSources(8);
-                mFilter->setNumberOfSpeakers(16);
-                break;
-        }
+		mFilter->setInputOutputMode(mInputOutputMode->getSelectedItemIndex());
         
         updateSources();
         updateSpeakers();

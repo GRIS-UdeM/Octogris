@@ -223,6 +223,88 @@ const String OctogrisAudioProcessor::getParameterName (int index)
     return String::empty;
 }
 
+void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
+    switch (p_iInputOutputMode){
+            
+        case i1o2:
+            setNumberOfSources(1);
+            setNumberOfSpeakers(2);
+            break;
+        case i1o4:
+            setNumberOfSources(1);
+            setNumberOfSpeakers(4);
+            break;
+        case i1o6:
+            break;
+            setNumberOfSources(1);
+            setNumberOfSpeakers(6);
+        case i1o8:
+            setNumberOfSources(1);
+            setNumberOfSpeakers(8);
+            break;
+        case i1o16:
+            setNumberOfSources(1);
+            setNumberOfSpeakers(16);
+            break;
+        case i2o2:
+            setNumberOfSources(2);
+            setNumberOfSpeakers(2);
+            break;
+        case i2o4:
+            setNumberOfSources(2);
+            setNumberOfSpeakers(4);
+            break;
+        case i2o6:
+            setNumberOfSources(2);
+            setNumberOfSpeakers(6);
+            break;
+        case i2o8:
+            setNumberOfSources(2);
+            setNumberOfSpeakers(8);
+            break;
+        case i2o16:
+            setNumberOfSources(2);
+            setNumberOfSpeakers(16);
+            break;
+        case i4o4:
+            setNumberOfSources(4);
+            setNumberOfSpeakers(4);
+            break;
+        case i4o6:
+            setNumberOfSources(4);
+            setNumberOfSpeakers(6);
+            break;
+        case i4o8:
+            setNumberOfSources(4);
+            setNumberOfSpeakers(8);
+            break;
+        case i4o16:
+            setNumberOfSources(4);
+            setNumberOfSpeakers(16);
+            break;
+        case i6o6:
+            setNumberOfSources(6);
+            setNumberOfSpeakers(6);
+            break;
+        case i6o8:
+            setNumberOfSources(6);
+            setNumberOfSpeakers(8);
+            break;
+        case i6o16:
+            setNumberOfSources(6);
+            setNumberOfSpeakers(16);
+            break;
+        case i8o8:
+            setNumberOfSources(8);
+            setNumberOfSpeakers(8);
+            break;
+        case i8o16:
+            setNumberOfSources(8);
+            setNumberOfSpeakers(16);
+            break;
+    }
+}
+
 void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     
     //prevents audio process thread from running
@@ -230,11 +312,19 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     
     kNumberOfSources = p_iNewNumberOfSources;
 
-    if (mFilters != nullptr) {
-        delete[] mFilters;
-    }
-    
+//    if (mFilters != nullptr) {
+//        int iSize = sizeof(mFilters) / sizeof(mFilters[0]);
+//        if (iSize < 2){
+//            delete mFilters;
+//        } else {
+//            delete[] mFilters;
+//        }
+//    }
     mFilters = new FirFilter [kNumberOfSources];
+
+    
+//    mFilters.clear();
+//    mFilters.resize(kNumberOfSources);
     
     mLockedThetas.ensureStorageAllocated(kNumberOfSources);
 	for (int i = 0; i < kNumberOfSources; i++) mLockedThetas.add(0);
@@ -410,12 +500,12 @@ double OctogrisAudioProcessor::getTailLengthSeconds() const
 
 int OctogrisAudioProcessor::getNumPrograms()
 {
-    return 0;
+    return 1;
 }
 
 int OctogrisAudioProcessor::getCurrentProgram()
 {
-    return 0;
+    return 1;
 }
 
 void OctogrisAudioProcessor::setCurrentProgram (int index)

@@ -25,6 +25,9 @@ size_t strlcpy(char * dst, const char * src, size_t dstsize);
 #include "FirFilter.h"
 #include "Trajectories.h"
 
+#include <memory>
+using namespace std;
+
 //==============================================================================
 
 // x, y, distance
@@ -79,10 +82,9 @@ enum
 
 
 
-
-
-
-
+enum InputOutputModes {
+    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16
+};
 
 
 
@@ -240,8 +242,7 @@ public:
 //    const int kNumberOfParameters = kConstantParameters + kConstantOffset;
     
 
-    void setNumberOfSources(int p_iNewNumberOfSources);
-    void setNumberOfSpeakers(int p_iNewNumberOfSpeakers);
+
     
     
 	int getNumberOfSources() const { return kNumberOfSources; }
@@ -284,6 +285,9 @@ public:
 	
 	int getGuiSize() const { return mGuiSize; }
 	void setGuiSize(int s) { mGuiSize = s; }
+    
+    int getInputOutputMode() const {return mInputOutputMode;}
+    void setInputOutputMode(int i);
 	
 	int getGuiTab() const { return mGuiTab; }
 	void setGuiTab(int s) { mGuiTab = s; }
@@ -452,6 +456,7 @@ private:
 	int mMovementMode;
 	bool mShowGridLines;
 	int mGuiSize;
+    int mInputOutputMode;
 	int mGuiTab;
 	int mOscLeapSource;
 	int mOscReceiveEnabled;
@@ -481,6 +486,8 @@ private:
     int kNumberOfSources = 2;   //JucePlugin_MaxNumInputChannels;
     int kNumberOfSpeakers = 4;  //JucePlugin_MaxNumOutputChannels;
 
+    void setNumberOfSources(int p_iNewNumberOfSources);
+    void setNumberOfSpeakers(int p_iNewNumberOfSpeakers);
     
     //int inline ParamForSourceX(int v) {return kSourceX + v * kParamsPerSource;}
     //int inline ParamForSourceY(int v) {return kSourceY + v * kParamsPerSource;}
@@ -497,6 +504,9 @@ private:
     ///////////////////////////
     
 	FirFilter* mFilters;
+    //std::unique_ptr<FirFilter[]> mFilters;
+    //std::vector<FirFilter> mFilters;
+
 	
 	void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight);
 	void addToOutput(float s, float **outputs, int o, int f);
