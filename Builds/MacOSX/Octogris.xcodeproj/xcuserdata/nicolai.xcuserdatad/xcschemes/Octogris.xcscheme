@@ -40,7 +40,7 @@
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
       <PathRunnable
-         FilePath = "/Applications/Digital Performer.app">
+         FilePath = "/Applications/Logic Pro X.app">
       </PathRunnable>
       <AdditionalOptions>
       </AdditionalOptions>

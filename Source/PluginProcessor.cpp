@@ -58,7 +58,7 @@ int IndexedAngleCompare(const void *a, const void *b)
 //==============================================================================
 OctogrisAudioProcessor::OctogrisAudioProcessor()
 {
-
+    
     //SET PARAMETERS
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
 	for (int i = 0; i < kNumberOfParameters; i++) mParameters.add(0);
@@ -76,19 +76,23 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mSmoothedParameters.ensureStorageAllocated(kNumberOfParameters);
 	for (int i = 0; i < kNumberOfParameters; i++) mSmoothedParameters.add(0);
     
-    //SET SOURCES
-    setNumberOfSources(kNumberOfSources);
     
-
+    int mNumberOfSources = 2;
+    int mNumberOfSpeakers = 2;
+    
+    //SET SOURCES
+    setNumberOfSources(mNumberOfSources);
     
     //SET SPEAKERS
-    setNumberOfSpeakers(kNumberOfSpeakers);
+    setNumberOfSpeakers(mNumberOfSpeakers);
     
 	mCalculateLevels = 0;
 	mApplyFilter = true;
 	mLinkDistances = false;
 	mMovementMode = 0;
 	mShowGridLines = false;
+    mIsNumberSourcesChanged = false;
+    mIsNumberSpeakersChanged = false;
 	mGuiSize = 1;
 	mGuiTab = 0;
 	mHostChangedParameter = 0;
@@ -108,22 +112,28 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mSmoothedParametersRamps.resize(kNumberOfParameters);
 	
 	// default values for parameters
-	for (int i = 0; i < kNumberOfSources; i++){
+	for (int i = 0; i < mNumberOfSources; i++){
 		mParameters.set(getParamForSourceD(i), normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
     }
 }
 
 OctogrisAudioProcessor::~OctogrisAudioProcessor()
 {
-    delete[] mFilters;
+    //delete[] mFilters;
 }
 
 
 //==============================================================================
 void OctogrisAudioProcessor::setCalculateLevels(bool c)
 {
+    //first check if number of speakers is valid
+//    int iCurSpeakers = getNumOutputChannels();
+//    if (mNumberOfSpeakers != iCurSpeakers){
+//        setNumberOfSpeakers(iCurSpeakers);
+//    }
+    
 	if (!mCalculateLevels && c)
-		for (int i = 0; i < kNumberOfSpeakers; i++)
+		for (int i = 0; i < mNumberOfSpeakers; i++)
 			mLevels.setUnchecked(i, 0);
 
 	// keep count of number of editors
@@ -138,9 +148,9 @@ const String OctogrisAudioProcessor::getName() const
 {
 	String name(JucePlugin_Name);
 	name << " ";
-	name << kNumberOfSources;
+	name << mNumberOfSources;
 	name << "x";
-	name << kNumberOfSpeakers;
+	name << mNumberOfSpeakers;
     return name;
 }
 
@@ -190,7 +200,7 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 	if (index ==  kFilterFar)	return "Filter Far";
 	
 
-	if (index < kNumberOfSources * kParamsPerSource)
+	if (index < mNumberOfSources * kParamsPerSource)
 	{
 		String s("Source ");
 		s << (index / kParamsPerSource + 1);
@@ -203,9 +213,9 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 		}
 		return s;
 	}
-	index -= kNumberOfSources * kParamsPerSource;
+	index -= mNumberOfSources * kParamsPerSource;
 	
-	if (index < kNumberOfSpeakers * kParamsPerSpeakers)
+	if (index < mNumberOfSpeakers * kParamsPerSpeakers)
 	{
 		String s("Speaker ");
 		s << (index / kParamsPerSpeakers + 1);
@@ -307,10 +317,17 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
 
 void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     
+    //if we not actually changing the number of sources, return
+    if (p_iNewNumberOfSources == mNumberOfSources){
+        return;
+    } else {
+        mIsNumberSourcesChanged = true;
+    }
+    
     //prevents audio process thread from running
     suspendProcessing (true);
     
-    kNumberOfSources = p_iNewNumberOfSources;
+    mNumberOfSources = p_iNewNumberOfSources;
 
 //    if (mFilters != nullptr) {
 //        int iSize = sizeof(mFilters) / sizeof(mFilters[0]);
@@ -320,30 +337,30 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 //            delete[] mFilters;
 //        }
 //    }
-    mFilters = new FirFilter [kNumberOfSources];
+//    mFilters = new FirFilter [mNumberOfSources];
 
     
-//    mFilters.clear();
-//    mFilters.resize(kNumberOfSources);
+    mFilters.clear();
+    mFilters.resize(mNumberOfSources);
     
-    mLockedThetas.ensureStorageAllocated(kNumberOfSources);
-	for (int i = 0; i < kNumberOfSources; i++) mLockedThetas.add(0);
+    mLockedThetas.ensureStorageAllocated(mNumberOfSources);
+	for (int i = 0; i < mNumberOfSources; i++) mLockedThetas.add(0);
     
-    mInputsCopy.resize(kNumberOfSources);
+    mInputsCopy.resize(mNumberOfSources);
     
-    if (kNumberOfSources == 1)
+    if (mNumberOfSources == 1)
 	{
 		setSourceRT(0, FPoint(0, 0));
 	}
 	else
 	{
-		double anglePerSource = 360 / kNumberOfSources;
+		double anglePerSource = 360 / mNumberOfSources;
 		double offset, axisOffset;
         
-		if(kNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
+		if(mNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
 		{
 			axisOffset = anglePerSource / 2;
-			for (int i = 0; i < kNumberOfSources; i++)
+			for (int i = 0; i < mNumberOfSources; i++)
 			{
 				if(i%2 == 0)
 				{
@@ -363,7 +380,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 		else //odd number of speakers, assign in circular fashion
 		{
 			offset = (anglePerSource + 180) / 2 - anglePerSource;
-			for (int i = 0; i < kNumberOfSources; i++)
+			for (int i = 0; i < mNumberOfSources; i++)
 			{
 				if (offset < 0) offset += 360;
 				else if (offset > 360) offset -= 360;
@@ -373,7 +390,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 			}
 		}
 	}
-	for (int i = 0; i < kNumberOfSources; i++)
+	for (int i = 0; i < mNumberOfSources; i++)
 		mLockedThetas.set(i, getSourceRT(i).y);
     
     mHostChangedParameter++;
@@ -384,22 +401,29 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 
 void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
     
+    //if we not actually changing the number of speakers, return
+    if (p_iNewNumberOfSpeakers == mNumberOfSpeakers){
+        return;
+    } else {
+        mIsNumberSpeakersChanged = true;
+    }
+    
     //prevents audio process thread from running
     suspendProcessing (true);
     
-    kNumberOfSpeakers = p_iNewNumberOfSpeakers;
+    mNumberOfSpeakers = p_iNewNumberOfSpeakers;
 
-    mLevels.ensureStorageAllocated(kNumberOfSpeakers);
-	for (int i = 0; i < kNumberOfSpeakers; i++) mLevels.add(0);
+    mLevels.ensureStorageAllocated(mNumberOfSpeakers);
+	for (int i = 0; i < mNumberOfSpeakers; i++) mLevels.add(0);
     
     
-    double anglePerSpeakers = 360 / kNumberOfSpeakers;
+    double anglePerSpeakers = 360 / mNumberOfSpeakers;
     double offset, axisOffset;
     
-    if(kNumberOfSpeakers%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
+    if(mNumberOfSpeakers%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
     {
         axisOffset = anglePerSpeakers / 2;
-        for (int i = 0; i < kNumberOfSpeakers; i++)
+        for (int i = 0; i < mNumberOfSpeakers; i++)
         {
             mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
             mParameters.set(getParamForSpeakerM(i), 0);
@@ -423,7 +447,7 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
     else //odd number of speakers, assign in circular fashion
     {
         offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
-        for (int i = 0; i < kNumberOfSpeakers; i++)
+        for (int i = 0; i < mNumberOfSpeakers; i++)
         {
             mParameters.set(getParamForSpeakerA(i), kSpeakerDefaultAttenuation);
             mParameters.set(getParamForSpeakerM(i), 0);
@@ -460,13 +484,13 @@ const String OctogrisAudioProcessor::getOutputChannelName (int channelIndex) con
 
 bool OctogrisAudioProcessor::isInputChannelStereoPair (int index) const
 {
-    return index == 0 && kNumberOfSources == 2;
+    return index == 0 && mNumberOfSources == 2;
 	//return false;
 }
 
 bool OctogrisAudioProcessor::isOutputChannelStereoPair (int index) const
 {
-    return index == 0 && kNumberOfSpeakers == 2;
+    return index == 0 && mNumberOfSpeakers == 2;
 	//return false;
 }
 
@@ -524,14 +548,29 @@ void OctogrisAudioProcessor::changeProgramName (int index, const String& newName
 //==============================================================================
 void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    
+    int iSources = getNumInputChannels();
+    int iSpeakers = getNumOutputChannels();
+    
+    cout << "PREPARE TO PLAY\n";
+    cout << "iSources = " << iSources << endl;
+    cout << "iSpeakers = " << iSpeakers << endl;
+
+    
+    //SET SOURCES
+    setNumberOfSources(getNumInputChannels());
+    
+    //SET SPEAKERS
+    setNumberOfSpeakers(getNumOutputChannels());
+    
 	if (mCalculateLevels)
-		for (int i = 0; i < kNumberOfSpeakers; i++)
+		for (int i = 0; i < mNumberOfSpeakers; i++)
 			mLevels.setUnchecked(i, 0);
 		
 	mSmoothedParametersInited = false;
 	
 	int sr = sampleRate;
-	for (int i = 0; i < kNumberOfSources; i++)
+	for (int i = 0; i < mNumberOfSources; i++)
 	{
 		mFilters[i].setSampleRate(sr);
 		mFilters[i].reset();
@@ -546,15 +585,30 @@ void OctogrisAudioProcessor::releaseResources()
 void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	//fprintf(stderr, "pb bypass\n");
-	//for (int c = kNumberOfSources; c < kNumberOfSpeakers; c++)
+	//for (int c = mNumberOfSources; c < mNumberOfSpeakers; c++)
 	//	buffer.clear(c, 0, buffer.getNumSamples());
 }
 
 void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	//fprintf(stderr, "pb\n");
-//	jassert(kNumberOfSources == getNumInputChannels());
-//	jassert(kNumberOfSpeakers == getNumOutputChannels());
+    
+//    jassert(mNumberOfSources == getNumInputChannels());
+//	jassert(mNumberOfSpeakers == getNumOutputChannels());
+    
+    int iSources = getNumInputChannels();
+    int iSpeakers = getNumOutputChannels();
+    
+    cout << "PROCESS BLOCK\n";
+    cout << "iSources = " << iSources << endl;
+    cout << "iSpeakers = " << iSpeakers << endl;
+    
+//    if (mNumberOfSources != iSources){
+//        setNumberOfSources(iSources);
+//    }
+//    if (mNumberOfSpeakers != iSpeakers){
+//        setNumberOfSpeakers(iSpeakers);
+//    }
 	
 	double sampleRate = getSampleRate();
 	unsigned int oriFramesToProcess = buffer.getNumSamples();
@@ -595,8 +649,8 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		params[kFilterFar] = denormalize(kFilterFarMin, kFilterFarMax, params[kFilterFar]);
 	}
 	
-	float *inputs[kNumberOfSources];
-	for (int i = 0; i < kNumberOfSources; i++)
+	float *inputs[mNumberOfSources];
+	for (int i = 0; i < mNumberOfSources; i++)
 	{
 		inputs[i] = buffer.getWritePointer(i);
 		params[getParamForSourceD(i)] = denormalize(kSourceMinDistance, kSourceMaxDistance, params[getParamForSourceD(i)]);
@@ -604,8 +658,8 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		params[getParamForSourceY(i)] = params[getParamForSourceY(i)] * (2*kRadiusMax) - kRadiusMax;
 	}
 	
-	float *outputs[kNumberOfSpeakers];
-	for (int o = 0; o < kNumberOfSpeakers; o++)
+	float *outputs[mNumberOfSpeakers];
+	for (int o = 0; o < mNumberOfSpeakers; o++)
 	{
 		outputs[o] = buffer.getWritePointer(o);
 		params[getParamForSpeakerA(o)] = denormalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, params[getParamForSpeakerA(o)]);
@@ -642,8 +696,8 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		
 		if (processesInPlaceIsIgnored)
 		{
-			float *inputsCopy[kNumberOfSources];
-			for (int i = 0; i < kNumberOfSources; i++)
+			float *inputsCopy[mNumberOfSources];
+			for (int i = 0; i < mNumberOfSources; i++)
 			{
 				memcpy(mInputsCopy.getReference(i).b, inputs[i], todo * sizeof(float));
 				inputsCopy[i] = mInputsCopy.getReference(i).b;
@@ -657,10 +711,10 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		inFramesToProcess -= todo;
 		if (inFramesToProcess == 0) break;
 		
-		for (int i = 0; i < kNumberOfSources; i++)
+		for (int i = 0; i < mNumberOfSources; i++)
 			inputs[i] += todo;
 			
-		for (int o = 0; o < kNumberOfSpeakers; o++)
+		for (int o = 0; o < mNumberOfSpeakers; o++)
 			outputs[o] += todo; 
 	}
 	
@@ -671,7 +725,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		const float ag = powf(0.01f, 1000.f / (attack * sampleRate));
 		const float rg = powf(0.01f, 1000.f / (release * sampleRate));
 		
-		for (int o = 0; o < kNumberOfSpeakers; o++)
+		for (int o = 0; o < mNumberOfSpeakers; o++)
 		{
 			float *output = buffer.getWritePointer(o);
 			float env = mLevels[o];
@@ -705,7 +759,7 @@ void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int
 	right = -1;
 	dLeft = kThetaMax;
 	dRight = kThetaMax;
-	for (int o = 0; o < kNumberOfSpeakers; o++)
+	for (int o = 0; o < mNumberOfSpeakers; o++)
 	{
 		float speakerT = params[getParamForSpeakerX(o)];
 		float d = speakerT - t;
@@ -775,8 +829,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	const float sm_n = 1 - sm_o;
 	
 	// ramp all the parameters, except constant ones and speaker thetas
-	const int sourceParameters = kNumberOfSources * kParamsPerSource;
-	const int speakerParameters = kNumberOfSpeakers * kParamsPerSpeakers;
+	const int sourceParameters = mNumberOfSources * kParamsPerSource;
+	const int speakerParameters = mNumberOfSpeakers * kParamsPerSpeakers;
 	for (int i = 0; i < (kNumberOfParameters - kConstantParameters); i++)
 	{
 		bool isSpeakerXY = (i >= sourceParameters && i < (sourceParameters + speakerParameters) && ((i - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
@@ -800,7 +854,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	}
 	
 	// clear outputs
-	for (int o = 0; o < kNumberOfSpeakers; o++)
+	for (int o = 0; o < mNumberOfSpeakers; o++)
 	{
 		float *output = outputs[o];
 		memset(output, 0, frames * sizeof(float));
@@ -809,7 +863,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 
 	// compute
 	// in this context: source T, R are actually source X, Y
-	for (int i = 0; i < kNumberOfSources; i++)
+	for (int i = 0; i < mNumberOfSources; i++)
 	{
 		float *input = inputs[i];
 		float *input_x = mSmoothedParametersRamps.getReference(getParamForSourceX(i)).b;
@@ -986,7 +1040,7 @@ void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **o
 	
 	// compute
 	const float adj_factor = 1 / sqrtf(2);
-	for (int o = 0; o < kNumberOfSpeakers; o++)
+	for (int o = 0; o < mNumberOfSpeakers; o++)
 	{
 		float *output = outputs[o];
 		float *output_x = mSmoothedParametersRamps.getReference(getParamForSpeakerX(o)).b;
@@ -1004,7 +1058,7 @@ void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **o
 			}
 		}
 		
-		for (int i = 0; i < kNumberOfSources; i++)
+		for (int i = 0; i < mNumberOfSources; i++)
 		{
 			float *input = inputs[i];
 			float *input_x = mSmoothedParametersRamps.getReference(getParamForSourceX(i)).b;
@@ -1159,13 +1213,13 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 	appendFloatData(destData, mParameters[kFilterNear]);
 	appendFloatData(destData, mParameters[kFilterMid]);
 	appendFloatData(destData, mParameters[kFilterFar]);
-	for (int i = 0; i < kNumberOfSources; i++)
+	for (int i = 0; i < mNumberOfSources; i++)
 	{
 		appendFloatData(destData, mParameters[getParamForSourceX(i)]);
 		appendFloatData(destData, mParameters[getParamForSourceY(i)]);
 		appendFloatData(destData, mParameters[getParamForSourceD(i)]);
 	}
-	for (int i = 0; i < kNumberOfSpeakers; i++)
+	for (int i = 0; i < mNumberOfSpeakers; i++)
 	{
 		appendFloatData(destData, mParameters[getParamForSpeakerX(i)]);
 		appendFloatData(destData, mParameters[getParamForSpeakerY(i)]);
@@ -1209,13 +1263,13 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 			mParameters.set(kFilterNear, readFloatData(data, sizeInBytes, normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault)));
 			if (version >= 5) mParameters.set(kFilterMid, readFloatData(data, sizeInBytes, normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault)));
 			mParameters.set(kFilterFar, readFloatData(data, sizeInBytes, normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault)));
-			for (int i = 0; i < kNumberOfSources; i++)
+			for (int i = 0; i < mNumberOfSources; i++)
 			{
 				mParameters.set(getParamForSourceX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSourceY(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSourceD(i), readFloatData(data, sizeInBytes, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance)));
 			}
-			for (int i = 0; i < kNumberOfSpeakers; i++)
+			for (int i = 0; i < mNumberOfSpeakers; i++)
 			{
 				mParameters.set(getParamForSpeakerX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSpeakerY(i), readFloatData(data, sizeInBytes, 0));

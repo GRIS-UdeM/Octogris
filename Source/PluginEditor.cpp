@@ -479,7 +479,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			mInputOutputMode->setSelectedId(1);
 			mInputOutputMode->setSize(w, dh);
 			mInputOutputMode->setTopLeftPosition(x, y);
-			box->addAndMakeVisible(mInputOutputMode);
+			//box->addAndMakeVisible(mInputOutputMode);
 			mComponents.add(mInputOutputMode);
 			y += dh + 5;
 
@@ -1269,15 +1269,15 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	{
 		mFilter->setOscLeapSource(comboBox->getSelectedId() - 1);
 	}
-    else if (comboBox == mInputOutputMode)
-	{
-		mFilter->setInputOutputMode(mInputOutputMode->getSelectedItemIndex());
-        
-        updateSources();
-        updateSpeakers();
-        mField->repaint();
-
-	}
+//    else if (comboBox == mInputOutputMode)
+//	{
+//		mFilter->setInputOutputMode(mInputOutputMode->getSelectedItemIndex());
+//        
+//        updateSources();
+//        updateSpeakers();
+//        mField->repaint();
+//
+//	}
 	else
 	{
 		printf("unknown combobox clicked...\n");
@@ -1329,14 +1329,25 @@ void OctogrisAudioProcessorEditor::timerCallback()
 	}
 
 	hcp = mFilter->getHostChangedParameter();
-	if (hcp != mHostChangedParameter)
-	{
+	if (hcp != mHostChangedParameter) {
 		mHostChangedParameter = hcp;
 		mNeedRepaint = true;
 	}
 	
 	if (mFieldNeedRepaint || mNeedRepaint){
 		mField->repaint();
+    }
+    
+    if (mFilter->getIsSourcesChanged()){
+        cout << "EDITOR SOURCES CHANGED\n";
+        updateSources();
+        mFilter->setIsSourcesChanged(false);
+    }
+    
+    if (mFilter->getIsSpeakersChanged()){
+        cout << "EDITOR SPEAKERS CHANGED\n";
+        updateSpeakers();
+        mFilter->setIsSpeakersChanged(false);
     }
     
     for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
