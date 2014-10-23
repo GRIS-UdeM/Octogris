@@ -549,12 +549,12 @@ void OctogrisAudioProcessor::changeProgramName (int index, const String& newName
 void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     
-    int iSources = getNumInputChannels();
-    int iSpeakers = getNumOutputChannels();
-    
-    cout << "PREPARE TO PLAY\n";
-    cout << "iSources = " << iSources << endl;
-    cout << "iSpeakers = " << iSpeakers << endl;
+//    int iSources = getNumInputChannels();
+//    int iSpeakers = getNumOutputChannels();
+//    
+//    cout << "PREPARE TO PLAY\n";
+//    cout << "iSources = " << iSources << endl;
+//    cout << "iSpeakers = " << iSpeakers << endl;
 
     
     //SET SOURCES
@@ -595,14 +595,11 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     
 //    jassert(mNumberOfSources == getNumInputChannels());
 //	jassert(mNumberOfSpeakers == getNumOutputChannels());
-    
-    int iSources = getNumInputChannels();
-    int iSpeakers = getNumOutputChannels();
-    
-    cout << "PROCESS BLOCK\n";
-    cout << "iSources = " << iSources << endl;
-    cout << "iSpeakers = " << iSpeakers << endl;
-    
+//    int iSources = getNumInputChannels();
+//    int iSpeakers = getNumOutputChannels();
+//    cout << "PROCESS BLOCK\n";
+//    cout << "iSources = " << iSources << endl;
+//    cout << "iSpeakers = " << iSpeakers << endl;
 //    if (mNumberOfSources != iSources){
 //        setNumberOfSources(iSources);
 //    }

@@ -447,7 +447,7 @@ public:
     bool getIsSpeakersChanged(){ return mIsNumberSpeakersChanged;}
     
     void setIsSourcesChanged(bool pIsNumberSourcesChanged){ mIsNumberSourcesChanged = pIsNumberSourcesChanged;}
-    void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSourcesChanged = pIsNumberSpeakersChanged;}
+    void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
 	
 private:
 	Trajectory::Ptr mTrajectory;

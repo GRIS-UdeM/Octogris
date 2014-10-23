@@ -447,45 +447,45 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         
         addLabel("Input/Ouput mode:", x, y, w, dh, box);
         y += dh + 5;
-        {
-			mInputOutputMode = new ComboBox();
-			int index = 1;
-
-			mInputOutputMode->addItem("1x2", index++);
-            mInputOutputMode->addItem("1x4", index++);
-            mInputOutputMode->addItem("1x6", index++);
-            mInputOutputMode->addItem("1x8", index++);
-            mInputOutputMode->addItem("1x16", index++);
-            
-            mInputOutputMode->addItem("2x2", index++);
-            mInputOutputMode->addItem("2x4", index++);
-            mInputOutputMode->addItem("2x6", index++);
-            mInputOutputMode->addItem("2x8", index++);
-            mInputOutputMode->addItem("2x16", index++);
-            
-            mInputOutputMode->addItem("4x4", index++);
-            mInputOutputMode->addItem("4x6", index++);
-            mInputOutputMode->addItem("4x8", index++);
-            mInputOutputMode->addItem("4x16", index++);
-            
-            mInputOutputMode->addItem("6x6", index++);
-            mInputOutputMode->addItem("6x8", index++);
-            mInputOutputMode->addItem("6x16", index++);
-            
-            mInputOutputMode->addItem("8x8", index++);
-            mInputOutputMode->addItem("8x16", index++);
-			
-#warning make this something real, not just 1
-			mInputOutputMode->setSelectedId(1);
-			mInputOutputMode->setSize(w, dh);
-			mInputOutputMode->setTopLeftPosition(x, y);
-			//box->addAndMakeVisible(mInputOutputMode);
-			mComponents.add(mInputOutputMode);
-			y += dh + 5;
-
-			mInputOutputMode->addListener(this);
-
-		}
+//        {
+//			mInputOutputMode = new ComboBox();
+//			int index = 1;
+//
+//			mInputOutputMode->addItem("1x2", index++);
+//            mInputOutputMode->addItem("1x4", index++);
+//            mInputOutputMode->addItem("1x6", index++);
+//            mInputOutputMode->addItem("1x8", index++);
+//            mInputOutputMode->addItem("1x16", index++);
+//            
+//            mInputOutputMode->addItem("2x2", index++);
+//            mInputOutputMode->addItem("2x4", index++);
+//            mInputOutputMode->addItem("2x6", index++);
+//            mInputOutputMode->addItem("2x8", index++);
+//            mInputOutputMode->addItem("2x16", index++);
+//            
+//            mInputOutputMode->addItem("4x4", index++);
+//            mInputOutputMode->addItem("4x6", index++);
+//            mInputOutputMode->addItem("4x8", index++);
+//            mInputOutputMode->addItem("4x16", index++);
+//            
+//            mInputOutputMode->addItem("6x6", index++);
+//            mInputOutputMode->addItem("6x8", index++);
+//            mInputOutputMode->addItem("6x16", index++);
+//            
+//            mInputOutputMode->addItem("8x8", index++);
+//            mInputOutputMode->addItem("8x16", index++);
+//			
+//#warning make this something real, not just 1
+//			mInputOutputMode->setSelectedId(1);
+//			mInputOutputMode->setSize(w, dh);
+//			mInputOutputMode->setTopLeftPosition(x, y);
+//			//box->addAndMakeVisible(mInputOutputMode);
+//			mComponents.add(mInputOutputMode);
+//			y += dh + 5;
+//
+//			mInputOutputMode->addListener(this);
+//
+//		}
 
         
 
@@ -1339,13 +1339,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
     }
     
     if (mFilter->getIsSourcesChanged()){
-        cout << "EDITOR SOURCES CHANGED\n";
         updateSources();
         mFilter->setIsSourcesChanged(false);
     }
     
     if (mFilter->getIsSpeakersChanged()){
-        cout << "EDITOR SPEAKERS CHANGED\n";
         updateSpeakers();
         mFilter->setIsSpeakersChanged(false);
     }
