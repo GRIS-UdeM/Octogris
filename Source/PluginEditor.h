@@ -74,6 +74,7 @@ public:
 	SourceMover * getMover() { return &mMover; }
 	
 private:
+    PluginHostType mHost;
 	OctogrisAudioProcessor *mFilter;
 	SourceMover mMover;
 	
@@ -96,7 +97,7 @@ private:
 	ToggleButton *mApplyFilter;
 	ComboBox *mMovementMode;
 	ComboBox *mGuiSize;
-    //ComboBox *mInputOutputMode;
+    ComboBox *mInputOutputMode;
 	ComboBox *mProcessMode;
 	OctTabbedComponent *mTabs;
 	Slider *mSmoothing;

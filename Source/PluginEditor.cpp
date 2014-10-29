@@ -444,48 +444,50 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		
 		mShowGridLines = addCheckbox("Show grid lines", mFilter->getShowGridLines(), x, y, w, dh, box);
 		y += dh + 5;
-        
-        addLabel("Input/Ouput mode:", x, y, w, dh, box);
-        y += dh + 5;
-//        {
-//			mInputOutputMode = new ComboBox();
-//			int index = 1;
-//
-//			mInputOutputMode->addItem("1x2", index++);
-//            mInputOutputMode->addItem("1x4", index++);
-//            mInputOutputMode->addItem("1x6", index++);
-//            mInputOutputMode->addItem("1x8", index++);
-//            mInputOutputMode->addItem("1x16", index++);
-//            
-//            mInputOutputMode->addItem("2x2", index++);
-//            mInputOutputMode->addItem("2x4", index++);
-//            mInputOutputMode->addItem("2x6", index++);
-//            mInputOutputMode->addItem("2x8", index++);
-//            mInputOutputMode->addItem("2x16", index++);
-//            
-//            mInputOutputMode->addItem("4x4", index++);
-//            mInputOutputMode->addItem("4x6", index++);
-//            mInputOutputMode->addItem("4x8", index++);
-//            mInputOutputMode->addItem("4x16", index++);
-//            
-//            mInputOutputMode->addItem("6x6", index++);
-//            mInputOutputMode->addItem("6x8", index++);
-//            mInputOutputMode->addItem("6x16", index++);
-//            
-//            mInputOutputMode->addItem("8x8", index++);
-//            mInputOutputMode->addItem("8x16", index++);
-//			
-//#warning make this something real, not just 1
-//			mInputOutputMode->setSelectedId(1);
-//			mInputOutputMode->setSize(w, dh);
-//			mInputOutputMode->setTopLeftPosition(x, y);
-//			//box->addAndMakeVisible(mInputOutputMode);
-//			mComponents.add(mInputOutputMode);
-//			y += dh + 5;
-//
-//			mInputOutputMode->addListener(this);
-//
-//		}
+        //only using the combo box in reaper, because other hosts set the inputs and outputs automatically
+        if (mHost.isReaper()) {
+            
+            addLabel("Input/Ouput mode:", x, y, w, dh, box);
+            y += dh + 5;
+
+			mInputOutputMode = new ComboBox();
+			int index = 1;
+
+			mInputOutputMode->addItem("1x2", index++);
+            mInputOutputMode->addItem("1x4", index++);
+            mInputOutputMode->addItem("1x6", index++);
+            mInputOutputMode->addItem("1x8", index++);
+            mInputOutputMode->addItem("1x16", index++);
+            
+            mInputOutputMode->addItem("2x2", index++);
+            mInputOutputMode->addItem("2x4", index++);
+            mInputOutputMode->addItem("2x6", index++);
+            mInputOutputMode->addItem("2x8", index++);
+            mInputOutputMode->addItem("2x16", index++);
+            
+            mInputOutputMode->addItem("4x4", index++);
+            mInputOutputMode->addItem("4x6", index++);
+            mInputOutputMode->addItem("4x8", index++);
+            mInputOutputMode->addItem("4x16", index++);
+            
+            mInputOutputMode->addItem("6x6", index++);
+            mInputOutputMode->addItem("6x8", index++);
+            mInputOutputMode->addItem("6x16", index++);
+            
+            mInputOutputMode->addItem("8x8", index++);
+            mInputOutputMode->addItem("8x16", index++);
+			
+#warning make this something real, not just 1
+			mInputOutputMode->setSelectedId(1);
+			mInputOutputMode->setSize(w, dh);
+			mInputOutputMode->setTopLeftPosition(x, y);
+			box->addAndMakeVisible(mInputOutputMode);
+			mComponents.add(mInputOutputMode);
+			y += dh + 5;
+
+			mInputOutputMode->addListener(this);
+
+		}
 
         
 
@@ -1269,15 +1271,15 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	{
 		mFilter->setOscLeapSource(comboBox->getSelectedId() - 1);
 	}
-//    else if (comboBox == mInputOutputMode)
-//	{
-//		mFilter->setInputOutputMode(mInputOutputMode->getSelectedItemIndex());
-//        
-//        updateSources();
-//        updateSpeakers();
-//        mField->repaint();
-//
-//	}
+    else if (mHost.isReaper() && comboBox == mInputOutputMode)
+	{
+		mFilter->setInputOutputMode(mInputOutputMode->getSelectedItemIndex());
+        
+        updateSources();
+        updateSpeakers();
+        mField->repaint();
+
+	}
 	else
 	{
 		printf("unknown combobox clicked...\n");

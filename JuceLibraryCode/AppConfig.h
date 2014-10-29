@@ -128,7 +128,7 @@
  #define JucePlugin_Build_RTAS             0
 #endif
 #ifndef  JucePlugin_Build_AAX
- #define JucePlugin_Build_AAX              0
+ #define JucePlugin_Build_AAX              1
 #endif
 #ifndef  JucePlugin_Name
  #define JucePlugin_Name                   "Octogris"
@@ -233,7 +233,7 @@
  #define JucePlugin_AAXProductId           JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AAXCategory
- #define JucePlugin_AAXCategory            AAX_ePlugInCategory_Dynamics
+ #define JucePlugin_AAXCategory            AAX_ePlugInCategory_SoundField
 #endif
 #ifndef  JucePlugin_AAXDisableBypass
  #define JucePlugin_AAXDisableBypass       0
