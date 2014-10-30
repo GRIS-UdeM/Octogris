@@ -60,9 +60,12 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 {
     
     //SET PARAMETERS
+    cout << kNumberOfParameters << endl;
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
-	for (int i = 0; i < kNumberOfParameters; i++) mParameters.add(0);
-	
+    for (int i = 0; i < kNumberOfParameters; i++){
+        mParameters.add(0);
+    }
+    
 	mParameters.set(kLinkMovement, 0);
 	mParameters.set(kSmooth, normalize(kSmoothMin, kSmoothMax, kSmoothDefault));
 	mParameters.set(kVolumeNear, normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault));
@@ -112,8 +115,10 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mSmoothedParametersRamps.resize(kNumberOfParameters);
 	
 	// default values for parameters
-	for (int i = 0; i < mNumberOfSources; i++){
-		mParameters.set(getParamForSourceD(i), normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
+    //whatever the actual mNumberOfSources, mParameters always has the same number of parameters, so might as well initialize
+    //everything (JucePlugin_MaxNumInputChannels) instead of just mNumberOfSources
+    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++){   	//for (int i = 0; i < mNumberOfSources; i++){
+        mParameters.set(getParamForSourceD(i), normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
     }
 }
 
@@ -245,9 +250,9 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
             setNumberOfSpeakers(4);
             break;
         case i1o6:
-            break;
             setNumberOfSources(1);
             setNumberOfSpeakers(6);
+            break;
         case i1o8:
             setNumberOfSources(1);
             setNumberOfSpeakers(8);
@@ -324,8 +329,8 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
         mIsNumberSourcesChanged = true;
     }
     
-    cout << "SET NUMBER OF SOURCES\n";
-    cout <<  "new number: " << p_iNewNumberOfSources << "\n";
+//    cout << "SET NUMBER OF SOURCES\n";
+//    cout <<  "new number: " << p_iNewNumberOfSources << "\n";
     
     //prevents audio process thread from running
     suspendProcessing (true);
@@ -411,8 +416,8 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
         mIsNumberSpeakersChanged = true;
     }
     
-    cout << "SET NUMBER OF SPEAKERS\n";
-    cout <<  "new number: " << p_iNewNumberOfSpeakers << "\n";
+//    cout << "SET NUMBER OF SPEAKERS\n";
+//    cout <<  "new number: " << p_iNewNumberOfSpeakers << "\n";
     
     //prevents audio process thread from running
     suspendProcessing (true);
@@ -555,11 +560,11 @@ void OctogrisAudioProcessor::changeProgramName (int index, const String& newName
 void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     
-    int iSources = mNumberOfSources;//getNumInputChannels();
-    int iSpeakers = mNumberOfSpeakers;//getNumOutputChannels();
-    cout << "PREPARE TO PLAY\n";
-    cout << "iSources = " << iSources << endl;
-    cout << "iSpeakers = " << iSpeakers << endl;
+//    int iSources = mNumberOfSources;//getNumInputChannels();
+//    int iSpeakers = mNumberOfSpeakers;//getNumOutputChannels();
+//    cout << "PREPARE TO PLAY\n";
+//    cout << "iSources = " << iSources << endl;
+//    cout << "iSpeakers = " << iSpeakers << endl;
 
     if (!mHost.isReaper()) {
         //SET SOURCES
@@ -600,11 +605,11 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     
 //    jassert(mNumberOfSources == getNumInputChannels());
 ////	jassert(mNumberOfSpeakers == getNumOutputChannels());
-    int iSources = mNumberOfSources;//getNumInputChannels();
-    int iSpeakers = mNumberOfSpeakers;//getNumOutputChannels();
-    cout << "PROCESS BLOCK\n";
-    cout << "iSources = " << iSources << endl;
-    cout << "iSpeakers = " << iSpeakers << endl;
+//    int iSources = mNumberOfSources;//getNumInputChannels();
+//    int iSpeakers = mNumberOfSpeakers;//getNumOutputChannels();
+//    cout << "PROCESS BLOCK\n";
+//    cout << "iSources = " << iSources << endl;
+//    cout << "iSpeakers = " << iSpeakers << endl;
 //    if (mNumberOfSources != iSources){
 //        setNumberOfSources(iSources);
 //    }
@@ -831,8 +836,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	const float sm_n = 1 - sm_o;
 	
 	// ramp all the parameters, except constant ones and speaker thetas
-	const int sourceParameters = mNumberOfSources * kParamsPerSource;
-	const int speakerParameters = mNumberOfSpeakers * kParamsPerSpeakers;
+	const int sourceParameters = JucePlugin_MaxNumInputChannels * kParamsPerSource;//const int sourceParameters = mNumberOfSources * kParamsPerSource;
+	const int speakerParameters = JucePlugin_MaxNumOutputChannels * kParamsPerSpeakers;//const int speakerParameters = mNumberOfSpeakers * kParamsPerSpeakers;
 	for (int i = 0; i < (kNumberOfParameters - kConstantParameters); i++)
 	{
 		bool isSpeakerXY = (i >= sourceParameters && i < (sourceParameters + speakerParameters) && ((i - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
@@ -1215,13 +1220,13 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 	appendFloatData(destData, mParameters[kFilterNear]);
 	appendFloatData(destData, mParameters[kFilterMid]);
 	appendFloatData(destData, mParameters[kFilterFar]);
-	for (int i = 0; i < mNumberOfSources; i++)
+    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
 	{
 		appendFloatData(destData, mParameters[getParamForSourceX(i)]);
 		appendFloatData(destData, mParameters[getParamForSourceY(i)]);
 		appendFloatData(destData, mParameters[getParamForSourceD(i)]);
 	}
-	for (int i = 0; i < mNumberOfSpeakers; i++)
+	    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
 	{
 		appendFloatData(destData, mParameters[getParamForSpeakerX(i)]);
 		appendFloatData(destData, mParameters[getParamForSpeakerY(i)]);
@@ -1265,13 +1270,13 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 			mParameters.set(kFilterNear, readFloatData(data, sizeInBytes, normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault)));
 			if (version >= 5) mParameters.set(kFilterMid, readFloatData(data, sizeInBytes, normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault)));
 			mParameters.set(kFilterFar, readFloatData(data, sizeInBytes, normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault)));
-			for (int i = 0; i < mNumberOfSources; i++)
+            for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
 			{
 				mParameters.set(getParamForSourceX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSourceY(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSourceD(i), readFloatData(data, sizeInBytes, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance)));
 			}
-			for (int i = 0; i < mNumberOfSpeakers; i++)
+            for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
 			{
 				mParameters.set(getParamForSpeakerX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSpeakerY(i), readFloatData(data, sizeInBytes, 0));

@@ -255,11 +255,20 @@ public:
 	float getDenormedSourceD(int index) const { return denormalize(kSourceMinDistance, kSourceMaxDistance, getSourceD(index)); }
 	
 	int getNumberOfSpeakers() const { return mNumberOfSpeakers; }
-    inline int getParamForSpeakerX(int index) const { return kSpeakerX + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
-	inline int getParamForSpeakerY(int index) const { return kSpeakerY + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
-	inline int getParamForSpeakerA(int index) const { return kSpeakerA + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
-	inline int getParamForSpeakerM(int index) const { return kSpeakerM + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
-	float getSpeakerX(int index) const { return mParameters.getUnchecked(getParamForSpeakerX(index)); }
+    
+    
+//    inline int getParamForSpeakerX(int index) const { return kSpeakerX + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
+//	inline int getParamForSpeakerY(int index) const { return kSpeakerY + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
+//	inline int getParamForSpeakerA(int index) const { return kSpeakerA + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
+//	inline int getParamForSpeakerM(int index) const { return kSpeakerM + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
+    inline int getParamForSpeakerX(int index) const { return kSpeakerX + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
+    inline int getParamForSpeakerY(int index) const { return kSpeakerY + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
+    inline int getParamForSpeakerA(int index) const { return kSpeakerA + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
+    inline int getParamForSpeakerM(int index) const { return kSpeakerM + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
+
+    
+    
+    float getSpeakerX(int index) const { return mParameters.getUnchecked(getParamForSpeakerX(index)); }
 	float getSpeakerY(int index) const { return mParameters.getUnchecked(getParamForSpeakerY(index)); }
 	float getSpeakerA(int index) const { return mParameters.getUnchecked(getParamForSpeakerA(index)); }
 	float getSpeakerM(int index) const { return mParameters.getUnchecked(getParamForSpeakerM(index)); }

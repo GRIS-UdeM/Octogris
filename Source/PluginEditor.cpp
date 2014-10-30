@@ -275,10 +275,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
     
 	// main field
 	{
-//		FieldComponent *fc = new FieldComponent(mFilter, &mMover);
-//		addAndMakeVisible(fc);
-//		mComponents.add(fc);
-//		mField = fc;
         mField = new FieldComponent(mFilter, &mMover);
 		addAndMakeVisible(mField);
 		mComponents.add(mField);
@@ -331,6 +327,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mTabs->getTabContentComponent(3)->addAndMakeVisible(mSrcSelect);
         mComponents.add(mSrcSelect);
 
+        mSrcApply = NULL;
         updateSources();
     }
     
@@ -355,7 +352,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		mSpSelect = new ComboBox();
         mTabs->getTabContentComponent(2)->addAndMakeVisible(mSpSelect);
         mComponents.add(mSpSelect);
-        
+
+        mSpApply = NULL;
         updateSpeakers();
     }
     
@@ -900,7 +898,6 @@ void OctogrisAudioProcessorEditor::updateSources(){
         ct->removeChildComponent(mDistances.getUnchecked(iCurLevelComponent));
         ct->removeChildComponent(mLabels.getUnchecked(iCurLevelComponent));
     }
-    
     mDistances.clear();
     mLabels.clear();
     mSrcSelect->clear();
@@ -909,8 +906,7 @@ void OctogrisAudioProcessorEditor::updateSources(){
     //put new stuff
     int iCurSources = mFilter->getNumberOfSources();
     y += dh + 5;
-    for (int i = 0; i < iCurSources; i++)
-    {
+    for (int i = 0; i < iCurSources; i++){
         String s; s << i+1; s << ":";
         Component *label = addLabel(s, x, y, w/3, dh, ct);
         mLabels.add(label);
@@ -924,14 +920,15 @@ void OctogrisAudioProcessorEditor::updateSources(){
     ct->setSize(w, y);
     
     //source position combobox in source tab
-
     int index = 1;
     for (int i = 0; i < iCurSources; i++){
         String s; s << i+1;
         mSrcSelect->addItem(s, index++);
     }
     mSrcSelect->setSelectedId(1);
-    
+    if (mSrcApply){
+        mSrcApply->triggerClick();
+    }
 }
 
 void OctogrisAudioProcessorEditor::updateSpeakers(){
@@ -951,7 +948,6 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
     mSpSelect->clear();
     
 
-    
     //put new stuff
     int iCurSpeakers = mFilter->getNumberOfSpeakers();
    	int dh = kDefaultLabelHeight, x = 0, y = 0, w = kRightColumnWidth;
@@ -992,6 +988,9 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
         mSpSelect->addItem(s, index++);
     }
     mSpSelect->setSelectedId(1);
+    if (mSpApply){
+        mSpApply->triggerClick();
+    }
 }
 
 
