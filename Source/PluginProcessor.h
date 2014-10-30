@@ -450,6 +450,7 @@ public:
     void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
 	
 private:
+    PluginHostType mHost;
 	Trajectory::Ptr mTrajectory;
 
 	Array<float> mParameters;

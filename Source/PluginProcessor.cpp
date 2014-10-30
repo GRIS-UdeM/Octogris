@@ -317,12 +317,15 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
 
 void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     
-    //if we not actually changing the number of sources, return
+    //if new number of sources is same as before, return
     if (p_iNewNumberOfSources == mNumberOfSources){
         return;
     } else {
         mIsNumberSourcesChanged = true;
     }
+    
+    cout << "SET NUMBER OF SOURCES\n";
+    cout <<  "new number: " << p_iNewNumberOfSources << "\n";
     
     //prevents audio process thread from running
     suspendProcessing (true);
@@ -401,12 +404,15 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 
 void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
     
-    //if we not actually changing the number of speakers, return
+    //if new number of speakers is same as before, return
     if (p_iNewNumberOfSpeakers == mNumberOfSpeakers){
         return;
     } else {
         mIsNumberSpeakersChanged = true;
     }
+    
+    cout << "SET NUMBER OF SPEAKERS\n";
+    cout <<  "new number: " << p_iNewNumberOfSpeakers << "\n";
     
     //prevents audio process thread from running
     suspendProcessing (true);
@@ -549,20 +555,19 @@ void OctogrisAudioProcessor::changeProgramName (int index, const String& newName
 void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     
-//    int iSources = getNumInputChannels();
-//    int iSpeakers = getNumOutputChannels();
-//    
-//    cout << "PREPARE TO PLAY\n";
-//    cout << "iSources = " << iSources << endl;
-//    cout << "iSpeakers = " << iSpeakers << endl;
+    int iSources = mNumberOfSources;//getNumInputChannels();
+    int iSpeakers = mNumberOfSpeakers;//getNumOutputChannels();
+    cout << "PREPARE TO PLAY\n";
+    cout << "iSources = " << iSources << endl;
+    cout << "iSpeakers = " << iSpeakers << endl;
 
-    
-    //SET SOURCES
-    setNumberOfSources(getNumInputChannels());
-    
-    //SET SPEAKERS
-    setNumberOfSpeakers(getNumOutputChannels());
-    
+    if (!mHost.isReaper()) {
+        //SET SOURCES
+        setNumberOfSources(getNumInputChannels());
+        
+        //SET SPEAKERS
+        setNumberOfSpeakers(getNumOutputChannels());
+    }
 	if (mCalculateLevels)
 		for (int i = 0; i < mNumberOfSpeakers; i++)
 			mLevels.setUnchecked(i, 0);
@@ -594,12 +599,12 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	//fprintf(stderr, "pb\n");
     
 //    jassert(mNumberOfSources == getNumInputChannels());
-//	jassert(mNumberOfSpeakers == getNumOutputChannels());
-//    int iSources = getNumInputChannels();
-//    int iSpeakers = getNumOutputChannels();
-//    cout << "PROCESS BLOCK\n";
-//    cout << "iSources = " << iSources << endl;
-//    cout << "iSpeakers = " << iSpeakers << endl;
+////	jassert(mNumberOfSpeakers == getNumOutputChannels());
+    int iSources = mNumberOfSources;//getNumInputChannels();
+    int iSpeakers = mNumberOfSpeakers;//getNumOutputChannels();
+    cout << "PROCESS BLOCK\n";
+    cout << "iSources = " << iSources << endl;
+    cout << "iSpeakers = " << iSpeakers << endl;
 //    if (mNumberOfSources != iSources){
 //        setNumberOfSources(iSources);
 //    }
