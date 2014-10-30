@@ -8,7 +8,6 @@
   ==============================================================================
 */
 
-//static const float kSourceDefaultRadius = 0.4f;
 
 //static const float kLevelAttackMin = 0.01;
 //static const float kLevelAttackMax = 100;
@@ -60,7 +59,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 {
     
     //SET PARAMETERS
-    cout << kNumberOfParameters << endl;
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
     for (int i = 0; i < kNumberOfParameters; i++){
         mParameters.add(0);
@@ -336,18 +334,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     suspendProcessing (true);
     
     mNumberOfSources = p_iNewNumberOfSources;
-
-//    if (mFilters != nullptr) {
-//        int iSize = sizeof(mFilters) / sizeof(mFilters[0]);
-//        if (iSize < 2){
-//            delete mFilters;
-//        } else {
-//            delete[] mFilters;
-//        }
-//    }
-//    mFilters = new FirFilter [mNumberOfSources];
-
-    
+  
     mFilters.clear();
     mFilters.resize(mNumberOfSources);
     
@@ -382,7 +369,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 				if (offset < 0) offset += 360;
 				else if (offset > 360) offset -= 360;
 				
-				setSourceRT(i, FPoint(1, offset/360*kThetaMax));
+				setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
 			}
 		}
 		else //odd number of speakers, assign in circular fashion
@@ -393,7 +380,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 				if (offset < 0) offset += 360;
 				else if (offset > 360) offset -= 360;
 				
-				setSourceRT(i, FPoint(1, offset/360*kThetaMax));
+				setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
 				offset += anglePerSource;
 			}
 		}
@@ -566,13 +553,15 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 //    cout << "iSources = " << iSources << endl;
 //    cout << "iSpeakers = " << iSpeakers << endl;
 
-    if (!mHost.isReaper()) {
-        //SET SOURCES
+    //set sources and speakers
+    if (mHost.isReaper()) {
+        setNumberOfSources(mNumberOfSources);
+        setNumberOfSpeakers(mNumberOfSpeakers);
+    } else {
         setNumberOfSources(getNumInputChannels());
-        
-        //SET SPEAKERS
         setNumberOfSpeakers(getNumOutputChannels());
     }
+    
 	if (mCalculateLevels)
 		for (int i = 0; i < mNumberOfSpeakers; i++)
 			mLevels.setUnchecked(i, 0);

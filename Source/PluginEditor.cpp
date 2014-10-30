@@ -286,8 +286,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	mTabs = new OctTabbedComponent(TabbedButtonBar::TabsAtTop, mFilter);
 	mTabs->addTab("Settings", tabBg, new Component(), true);
 	mTabs->addTab("V & F", tabBg, new Component(), true);
-	mTabs->addTab("Speakers", tabBg, new Component(), true);
 	mTabs->addTab("Sources", tabBg, new Component(), true);
+   	mTabs->addTab("Speakers", tabBg, new Component(), true);
 	mTabs->addTab("Trajectories", tabBg, new Component(), true);
 	{
 		mOsc = CreateOscComponent(mFilter, this);
@@ -620,66 +620,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		}
 	}
 	
-    //--------------- SPEAKERS TAB ---------------- //
-	box = mTabs->getTabContentComponent(2);
-	{
-		int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
-		int setw = 60, selectw = 50;
-	
-		//-------- column 1 --------
-		addLabel("Reset speakers:", x, y, w, dh, box);
-		y += dh + 5;
-		mSpAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
-		y += dh + 5;
-		mSpStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
-		y += dh + 5;
-		mSpClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
-		y += dh + 5;
-		mSpApply = addButton("Apply", x, y, setw, dh, box);
-		y += dh + 5;
-
-		//-------- column 2 --------
-		y = kMargin;
-		x += w + kMargin;
-		
-		addLabel("Set XY position:", x, y, w - selectw, dh, box);
-		{
-			mSpSelect->setSize(selectw, dh);
-			mSpSelect->setTopLeftPosition(x + w - selectw, y);
-		}
-		
-		y += dh + 5;
-		
-		addLabel("(-2 to 2)", x, y, w, dh, box);
-		y += dh + 5;
-		int lw = 30, lwm = lw + kMargin;
-		addLabel("X:", x, y, lw, dh, box);
-		mSpX = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-		y += dh + 5;
-		addLabel("Y:", x, y, lw, dh, box);
-		mSpY = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-		y += dh + 5;
-		mSpSetXY = addButton("Set", x, y, setw, dh, box);
-				
-		//-------- column 3 --------
-		y = kMargin;
-		x += w + kMargin;
-		
-		addLabel("Set RA position:", x, y, w, dh, box);
-		y += dh + 5;
-		addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
-		y += dh + 5;
-		addLabel("R:", x, y, lw, dh, box);
-		mSpR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
-		y += dh + 5;
-		addLabel("A:", x, y, lw, dh, box);
-		mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-		y += dh + 5;
-		mSpSetRT = addButton("Set", x, y, setw, dh, box);
-	}
-	
     //--------------- SOURCES TAB ---------------- //
-	box = mTabs->getTabContentComponent(3);
+	box = mTabs->getTabContentComponent(2);
 	{
 		int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
 		int setw = 60, selectw = 50;
@@ -747,6 +689,64 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		
 		mSrcSetRT = addButton("Set", x, y, setw, dh, box);
 	}
+    //--------------- SPEAKERS TAB ---------------- //
+    box = mTabs->getTabContentComponent(3);
+    {
+        int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
+        int setw = 60, selectw = 50;
+        
+        //-------- column 1 --------
+        addLabel("Reset speakers:", x, y, w, dh, box);
+        y += dh + 5;
+        mSpAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
+        y += dh + 5;
+        mSpStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
+        y += dh + 5;
+        mSpClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
+        y += dh + 5;
+        mSpApply = addButton("Apply", x, y, setw, dh, box);
+        y += dh + 5;
+        
+        //-------- column 2 --------
+        y = kMargin;
+        x += w + kMargin;
+        
+        addLabel("Set XY position:", x, y, w - selectw, dh, box);
+        {
+            mSpSelect->setSize(selectw, dh);
+            mSpSelect->setTopLeftPosition(x + w - selectw, y);
+        }
+        
+        y += dh + 5;
+        
+        addLabel("(-2 to 2)", x, y, w, dh, box);
+        y += dh + 5;
+        int lw = 30, lwm = lw + kMargin;
+        addLabel("X:", x, y, lw, dh, box);
+        mSpX = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
+        y += dh + 5;
+        addLabel("Y:", x, y, lw, dh, box);
+        mSpY = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
+        y += dh + 5;
+        mSpSetXY = addButton("Set", x, y, setw, dh, box);
+        
+        //-------- column 3 --------
+        y = kMargin;
+        x += w + kMargin;
+        
+        addLabel("Set RA position:", x, y, w, dh, box);
+        y += dh + 5;
+        addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
+        y += dh + 5;
+        addLabel("R:", x, y, lw, dh, box);
+        mSpR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
+        y += dh + 5;
+        addLabel("A:", x, y, lw, dh, box);
+        mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
+        y += dh + 5;
+        mSpSetRT = addButton("Set", x, y, setw, dh, box);
+    }
+    
 	
     //--------------- TRAJECTORIES TAB ---------------- //
 	box = mTabs->getTabContentComponent(4);
@@ -1193,14 +1193,14 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 			float start = offset;
 			for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSources(); i += 2)
 			{
-				mFilter->setSourceRT(i, FPoint(1, offset));
+				mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
 				offset -= anglePerSp;
 			}
 			
 			offset = start + anglePerSp;
 			for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSources(); i += 2)
 			{
-				mFilter->setSourceRT(i, FPoint(1, offset));
+				mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
 				offset += anglePerSp;
 			}
 		}

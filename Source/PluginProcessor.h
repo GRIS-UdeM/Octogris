@@ -141,6 +141,7 @@ static const float kQuarterCircle = M_PI / 2;
 static const float kThetaMax = M_PI * 2;
 static const float kThetaLockRadius = 0.05;
 static const float kThetaLockRampRadius = 0.025;
+static const float kSourceDefaultRadius = 1.005f;
 
 //==============================================================================
 static inline float normalize(float min, float max, float value)
