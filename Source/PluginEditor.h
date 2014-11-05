@@ -98,7 +98,7 @@ private:
 	ComboBox *mMovementMode;
 	ComboBox *mGuiSize;
     ComboBox *mInputOutputMode;
-	ComboBox *mProcessMode;
+	ComboBox *mProcessModeCombo;
 	OctTabbedComponent *mTabs;
 	Slider *mSmoothing;
 	Slider *mVolumeFar;

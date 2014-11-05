@@ -16,17 +16,27 @@ SourceMover::SourceMover(OctogrisAudioProcessor *filter)
 	mFilter(filter),
 	mMover(kVacant)
 {
-	mSourcesDownXY.ensureStorageAllocated(mFilter->getNumberOfSources());
-	mSourcesDownRT.ensureStorageAllocated(mFilter->getNumberOfSources());
-	mSourcesAngularOrder.ensureStorageAllocated(mFilter->getNumberOfSources());
-
-	for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-	{
-		mSourcesDownXY.add(FPoint(0,0));
-		mSourcesDownRT.add(FPoint(0,0));
-		mSourcesAngularOrder.add(0);
-	}
+    updateNumberOfSources();
 }
+
+void SourceMover::updateNumberOfSources(){
+    mSourcesDownXY.clear();
+    mSourcesDownRT.clear();
+    mSourcesAngularOrder.clear();
+    
+    mSourcesDownXY.ensureStorageAllocated(mFilter->getNumberOfSources());
+    mSourcesDownRT.ensureStorageAllocated(mFilter->getNumberOfSources());
+    mSourcesAngularOrder.ensureStorageAllocated(mFilter->getNumberOfSources());
+    
+    for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+    {
+        mSourcesDownXY.add(FPoint(0,0));
+        mSourcesDownRT.add(FPoint(0,0));
+        mSourcesAngularOrder.add(0);
+    }
+}
+
+
 
 void SourceMover::begin(int s, MoverType mt)
 {

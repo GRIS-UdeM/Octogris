@@ -25,6 +25,7 @@ class SourceMover
 {
 public:
 	SourceMover(OctogrisAudioProcessor *filter);
+    void updateNumberOfSources();
 	
 	void begin(int s, MoverType mt);
 	void move(FPoint p, MoverType mt);

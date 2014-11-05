@@ -285,7 +285,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	Colour tabBg = Colour::fromRGB(200,200,200);
 	mTabs = new OctTabbedComponent(TabbedButtonBar::TabsAtTop, mFilter);
 	mTabs->addTab("Settings", tabBg, new Component(), true);
-	mTabs->addTab("V & F", tabBg, new Component(), true);
+	mTabs->addTab("Volume & Filters", tabBg, new Component(), true);
 	mTabs->addTab("Sources", tabBg, new Component(), true);
    	mTabs->addTab("Speakers", tabBg, new Component(), true);
 	mTabs->addTab("Trajectories", tabBg, new Component(), true);
@@ -346,7 +346,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         Component *ct = mSpeakersBox->getContent();
         const int muteWidth = 50;
         addLabel("Mute", x, y, muteWidth, dh, ct);
-        addLabel("Attenuation (db)", x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
+        addLabel("Attenuation (dB)", x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
         addLabel("Level", x+w*2/3, y, w/3, dh, ct);
 
 		mSpSelect = new ComboBox();
@@ -475,8 +475,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
             mInputOutputMode->addItem("8x8", index++);
             mInputOutputMode->addItem("8x16", index++);
 			
-#warning make this something real, not just 1
-			mInputOutputMode->setSelectedId(1);
+#warning make this something from a preset, not just 1
+			mInputOutputMode->setSelectedId(mFilter->getInputOutputMode());
 			mInputOutputMode->setSize(w, dh);
 			mInputOutputMode->setTopLeftPosition(x, y);
 			box->addAndMakeVisible(mInputOutputMode);
@@ -487,10 +487,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 
 		}
 
-        
-
-		
-		//-----------------------------
+        //-----------------------------
 		// start 3rd column
 		y = kMargin;
 		x += w + kMargin;
@@ -499,41 +496,40 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		y += dh + 5;
 		
 		{
-			ComboBox *cb = new ComboBox();
+			mProcessModeCombo = new ComboBox();
 			int index = 1;
-			cb->addItem("Free volume", index++);
-			cb->addItem("Pan volume", index++);
-			cb->setSelectedId(mFilter->getProcessMode() + 1);
-			cb->setSize(w, dh);
-			cb->setTopLeftPosition(x, y);
-			box->addAndMakeVisible(cb);
-			mComponents.add(cb);
+			mProcessModeCombo->addItem("Free volume", index++);
+			mProcessModeCombo->addItem("Pan volume", index++);
+			mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
+			mProcessModeCombo->setSize(w, dh);
+			mProcessModeCombo->setTopLeftPosition(x, y);
+			box->addAndMakeVisible(mProcessModeCombo);
+			mComponents.add(mProcessModeCombo);
 			y += dh + 5;
 			
-			cb->addListener(this);
-			mProcessMode = cb;
+			mProcessModeCombo->addListener(this);
 		}
 		
 		addLabel(leapSupported ? "OSC/Leap source:" : "OSC source:", x, y, w, dh, box);
 		y += dh + 5;
 		
 		{
-			ComboBox *cb = new ComboBox();
+			mOscLeapSourceCb = new ComboBox();
 			int index = 1;
 			for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 			{
 				String s; s << i+1;
-				cb->addItem(s, index++);
+				mOscLeapSourceCb->addItem(s, index++);
 			}
-			cb->setSelectedId(mFilter->getOscLeapSource() + 1);
-			cb->setSize(w, dh);
-			cb->setTopLeftPosition(x, y);
-			box->addAndMakeVisible(cb);
-			mComponents.add(cb);
+#warning this is not in a preset
+			mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
+			mOscLeapSourceCb->setSize(w, dh);
+			mOscLeapSourceCb->setTopLeftPosition(x, y);
+			box->addAndMakeVisible(mOscLeapSourceCb);
+			mComponents.add(mOscLeapSourceCb);
 			y += dh + 5;
 			
-			cb->addListener(this);
-			mOscLeapSourceCb = cb;
+			mOscLeapSourceCb->addListener(this);
 		}
 	}
 	
@@ -546,7 +542,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		// start 1st column
 		
 		{
-			addLabel("Volume center (db):", x, y, w, dh, box);
+			addLabel("Volume center (dB):", x, y, w, dh, box);
 			y += dh + 5;
 		
 			Slider *ds = addParamSlider(kParamVolumeNear, kVolumeNear, mFilter->getParameter(kVolumeNear), x, y, w, dh, box);
@@ -575,7 +571,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		x += w + kMargin;
 		
 		{
-			addLabel("Volume speakers (db):", x, y, w, dh, box);
+			addLabel("Volume speakers (dB):", x, y, w, dh, box);
 			y += dh + 5;
 		
 			Slider *ds = addParamSlider(kParamVolumeMid, kVolumeMid, mFilter->getParameter(kVolumeMid), x, y, w, dh, box);
@@ -600,7 +596,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		x += w + kMargin;
 		
 		{
-			addLabel("Volume far (db):", x, y, w, dh, box);
+			addLabel("Volume far (dB):", x, y, w, dh, box);
 			y += dh + 5;
 		
 			Slider *ds = addParamSlider(kParamVolumeFar, kVolumeFar, mFilter->getParameter(kVolumeFar), x, y, w, dh, box);
@@ -905,6 +901,7 @@ void OctogrisAudioProcessorEditor::updateSources(){
     
     //put new stuff
     int iCurSources = mFilter->getNumberOfSources();
+    bool bIsFreeVolumeMode = mFilter->getProcessMode() == kPanVolumeMode;
     y += dh + 5;
     for (int i = 0; i < iCurSources; i++){
         String s; s << i+1; s << ":";
@@ -912,12 +909,17 @@ void OctogrisAudioProcessorEditor::updateSources(){
         mLabels.add(label);
         
         Slider *slider = addParamSlider(kParamSource, i, mFilter->getSourceD(i), x + w/3, y, w*2/3, dh, ct);
+        if (bIsFreeVolumeMode){
+            slider->setEnabled(false);
+        }
         mDistances.add(slider);
-        
+
         y += dh + 5;
     }
     
     ct->setSize(w, y);
+    
+    mMover.updateNumberOfSources();
     
     //source position combobox in source tab
     int index = 1;
@@ -1261,9 +1263,17 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 		mFilter->setGuiSize(comboBox->getSelectedId() - 1);
 		refreshSize();
 	}
-	else if (comboBox == mProcessMode)
+	else if (comboBox == mProcessModeCombo)
 	{
-		mFilter->setProcessMode(comboBox->getSelectedId() - 1);
+        int iSelectedMode = comboBox->getSelectedId() - 1;
+		mFilter->setProcessMode(iSelectedMode);
+        
+        if (iSelectedMode == kPanVolumeMode){
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(false);  }
+        } else {
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(true);   }
+        }
+        
 		repaint();
 	}
 	else if (comboBox == mOscLeapSourceCb)
@@ -1318,7 +1328,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mHostChangedProperty = hcp;
 		
 		mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
-		mProcessMode->setSelectedId(mFilter->getProcessMode() + 1);
+		mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
 		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
 		
 		mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
@@ -1359,9 +1369,8 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mVolumeMid->setValue(mFilter->getParameter(kVolumeMid));
 		mVolumeNear->setValue(mFilter->getParameter(kVolumeNear));
 		
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-		{
-			mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);
+		for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
+            mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);
 		
 			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
 		}

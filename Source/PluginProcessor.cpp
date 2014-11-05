@@ -1182,7 +1182,7 @@ static inline void readStringData(const void* &data, int &dataLength, const char
 	}
 }
 
-static const int kDataVersion = 8;
+static const int kDataVersion = 9;
 void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
 	//printf("Octogris: getStateInformation\n");
@@ -1200,6 +1200,10 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 	appendStringData(destData, mOscSendIp, sizeof(mOscSendIp));
 	appendIntData(destData, mProcessMode);
 	appendIntData(destData, mApplyFilter);
+    
+    //version 9
+ 	appendIntData(destData, mInputOutputMode);
+
 	
 	appendFloatData(destData, mParameters[kLinkMovement]);
 	appendFloatData(destData, mParameters[kSmooth]);
@@ -1225,7 +1229,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 }
 void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-	//printf("Octogris: setStateInformation\n");
+	//the weird order here is because the order has to match what is in getStateInformation
     int version = readIntData(data, sizeInBytes, 0);
 	if (version >= 1)
 	{
@@ -1248,6 +1252,10 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 		}
 		if (version >= 3) mProcessMode = readIntData(data, sizeInBytes, kPanVolumeMode);
 		if (version >= 6) mApplyFilter = readIntData(data, sizeInBytes, 1);
+        
+        if (version >= 9){
+            mInputOutputMode = readIntData(data, sizeInBytes, 0);
+        }
 		
 		if (version >= 4)
 		{
