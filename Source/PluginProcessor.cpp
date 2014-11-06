@@ -1206,9 +1206,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 	appendIntData(destData, mApplyFilter);
     
     //version 9
-    int i = mInputOutputMode;
  	appendIntData(destData, mInputOutputMode);
-
 	
 	appendFloatData(destData, mParameters[kLinkMovement]);
 	appendFloatData(destData, mParameters[kSmooth]);

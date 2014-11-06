@@ -522,7 +522,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 				String s; s << i+1;
 				mOscLeapSourceCb->addItem(s, index++);
 			}
-#warning this is not in a preset
+
 			mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
 			mOscLeapSourceCb->setSize(w, dh);
 			mOscLeapSourceCb->setTopLeftPosition(x, y);
@@ -1330,6 +1330,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
 		mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
 		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
+        mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
 		
         int iCurMode = mInputOutputModeCombo->getSelectedId();
         int iNewMode = mFilter->getInputOutputMode()+1;
