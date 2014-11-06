@@ -1258,7 +1258,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
         
         if (version >= 9){
             mInputOutputMode = readIntData(data, sizeInBytes, 1);
-                int i = mInputOutputMode;
         }
 		
 		if (version >= 4)

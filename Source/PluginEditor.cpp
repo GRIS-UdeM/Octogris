@@ -214,9 +214,6 @@ public:
 			case kParamVolumeFar: value = denormalize(kVolumeFarMin, kVolumeFarMax, value); break;
 			case kParamVolumeMid: value = denormalize(kVolumeMidMin, kVolumeMidMax, value); break;
 			case kParamVolumeNear: value = denormalize(kVolumeNearMin, kVolumeNearMax, value); break;
-			//case kParamFilterFar: value = denormalize(kFilterFarMin, kFilterFarMax, value); break;
-			//case kParamFilterMid: value = denormalize(kFilterMidMin, kFilterMidMax, value); break;
-			//case kParamFilterNear: value = denormalize(kFilterNearMin, kFilterNearMax, value); break;
 			case kParamFilterFar: value = denormalize(-100, 0, value); break;
 			case kParamFilterMid: value = denormalize(-100, 0, value); break;
 			case kParamFilterNear: value = denormalize(-100, 0, value); break;
@@ -237,9 +234,6 @@ public:
 			case kParamVolumeFar: value = normalize(kVolumeFarMin, kVolumeFarMax, value); break;
 			case kParamVolumeMid: value = normalize(kVolumeMidMin, kVolumeMidMax, value); break;
 			case kParamVolumeNear: value = normalize(kVolumeNearMin, kVolumeNearMax, value); break;
-			//case kParamFilterFar: value = normalize(kFilterFarMin, kFilterFarMax, value); break;
-			//case kParamFilterMid: value = normalize(kFilterMidMin, kFilterMidMax, value); break;
-			//case kParamFilterNear: value = normalize(kFilterNearMin, kFilterNearMax, value); break;
 			case kParamFilterFar: value = normalize(-100, 0, value); break;
 			case kParamFilterMid: value = normalize(-100, 0, value); break;
 			case kParamFilterNear: value = normalize(-100, 0, value); break;
@@ -475,7 +469,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
             mInputOutputModeCombo->addItem("8x8", index++);
             mInputOutputModeCombo->addItem("8x16", index++);
 			
-#warning make this something from a preset, not just 1
             int iID = mFilter->getInputOutputMode();
 			mInputOutputModeCombo->setSelectedId(iID + 1);
 			mInputOutputModeCombo->setSize(w, dh);
@@ -1359,6 +1352,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mField->repaint();
     }
     
+#warning this stuff should be removed and replaced by the calls in 	if (hcp != mHostChangedProperty) { at line 1325
     if (mFilter->getIsSourcesChanged()){
         updateSources();
         mFilter->setIsSourcesChanged(false);
@@ -1368,6 +1362,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         updateSpeakers();
         mFilter->setIsSpeakersChanged(false);
     }
+//end of the warning
     
     for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
 		mLevels.getUnchecked(i)->refreshIfNeeded();
@@ -1377,10 +1372,13 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mVolumeFar->setValue(mFilter->getParameter(kVolumeFar));
 		mVolumeMid->setValue(mFilter->getParameter(kVolumeMid));
 		mVolumeNear->setValue(mFilter->getParameter(kVolumeNear));
+        
+        mFilterNear->setValue(mFilter->getParameter(kFilterNear));
+        mFilterMid->setValue(mFilter->getParameter(kFilterMid));
+        mFilterFar->setValue(mFilter->getParameter(kFilterFar));
 		
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
             mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);
-		
 			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
 		}
 		
