@@ -97,7 +97,7 @@ private:
 	ToggleButton *mApplyFilter;
 	ComboBox *mMovementMode;
 	ComboBox *mGuiSize;
-    ComboBox *mInputOutputMode;
+    ComboBox *mInputOutputModeCombo;
 	ComboBox *mProcessModeCombo;
 	OctTabbedComponent *mTabs;
 	Slider *mSmoothing;

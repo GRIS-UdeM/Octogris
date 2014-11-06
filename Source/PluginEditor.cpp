@@ -445,45 +445,46 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         //only using the combo box in reaper, because other hosts set the inputs and outputs automatically
         if (mHost.isReaper()) {
             
-            addLabel("Input/Ouput mode:", x, y, w, dh, box);
+            addLabel("Input/Output mode:", x, y, w, dh, box);
             y += dh + 5;
 
-			mInputOutputMode = new ComboBox();
+			mInputOutputModeCombo = new ComboBox();
 			int index = 1;
 
-			mInputOutputMode->addItem("1x2", index++);
-            mInputOutputMode->addItem("1x4", index++);
-            mInputOutputMode->addItem("1x6", index++);
-            mInputOutputMode->addItem("1x8", index++);
-            mInputOutputMode->addItem("1x16", index++);
+			mInputOutputModeCombo->addItem("1x2", index++);
+            mInputOutputModeCombo->addItem("1x4", index++);
+            mInputOutputModeCombo->addItem("1x6", index++);
+            mInputOutputModeCombo->addItem("1x8", index++);
+            mInputOutputModeCombo->addItem("1x16", index++);
             
-            mInputOutputMode->addItem("2x2", index++);
-            mInputOutputMode->addItem("2x4", index++);
-            mInputOutputMode->addItem("2x6", index++);
-            mInputOutputMode->addItem("2x8", index++);
-            mInputOutputMode->addItem("2x16", index++);
+            mInputOutputModeCombo->addItem("2x2", index++);
+            mInputOutputModeCombo->addItem("2x4", index++);
+            mInputOutputModeCombo->addItem("2x6", index++);
+            mInputOutputModeCombo->addItem("2x8", index++);
+            mInputOutputModeCombo->addItem("2x16", index++);
             
-            mInputOutputMode->addItem("4x4", index++);
-            mInputOutputMode->addItem("4x6", index++);
-            mInputOutputMode->addItem("4x8", index++);
-            mInputOutputMode->addItem("4x16", index++);
+            mInputOutputModeCombo->addItem("4x4", index++);
+            mInputOutputModeCombo->addItem("4x6", index++);
+            mInputOutputModeCombo->addItem("4x8", index++);
+            mInputOutputModeCombo->addItem("4x16", index++);
             
-            mInputOutputMode->addItem("6x6", index++);
-            mInputOutputMode->addItem("6x8", index++);
-            mInputOutputMode->addItem("6x16", index++);
+            mInputOutputModeCombo->addItem("6x6", index++);
+            mInputOutputModeCombo->addItem("6x8", index++);
+            mInputOutputModeCombo->addItem("6x16", index++);
             
-            mInputOutputMode->addItem("8x8", index++);
-            mInputOutputMode->addItem("8x16", index++);
+            mInputOutputModeCombo->addItem("8x8", index++);
+            mInputOutputModeCombo->addItem("8x16", index++);
 			
 #warning make this something from a preset, not just 1
-			mInputOutputMode->setSelectedId(mFilter->getInputOutputMode());
-			mInputOutputMode->setSize(w, dh);
-			mInputOutputMode->setTopLeftPosition(x, y);
-			box->addAndMakeVisible(mInputOutputMode);
-			mComponents.add(mInputOutputMode);
+            int iID = mFilter->getInputOutputMode();
+			mInputOutputModeCombo->setSelectedId(iID + 1);
+			mInputOutputModeCombo->setSize(w, dh);
+			mInputOutputModeCombo->setTopLeftPosition(x, y);
+			box->addAndMakeVisible(mInputOutputModeCombo);
+			mComponents.add(mInputOutputModeCombo);
 			y += dh + 5;
 
-			mInputOutputMode->addListener(this);
+			mInputOutputModeCombo->addListener(this);
 
 		}
 
@@ -1280,9 +1281,9 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	{
 		mFilter->setOscLeapSource(comboBox->getSelectedId() - 1);
 	}
-    else if (mHost.isReaper() && comboBox == mInputOutputMode)
+    else if (mHost.isReaper() && comboBox == mInputOutputModeCombo)
 	{
-		mFilter->setInputOutputMode(mInputOutputMode->getSelectedItemIndex());
+		mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
         
         updateSources();
         updateSpeakers();
@@ -1323,18 +1324,26 @@ void OctogrisAudioProcessorEditor::timerCallback()
 
 		
 	uint64_t hcp = mFilter->getHostChangedProperty();
-	if (hcp != mHostChangedProperty)
-	{
+	if (hcp != mHostChangedProperty) {
 		mHostChangedProperty = hcp;
 		
 		mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
 		mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
 		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
 		
-		mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
+        int iCurMode = mInputOutputModeCombo->getSelectedId();
+        int iNewMode = mFilter->getInputOutputMode()+1;
+        if (iNewMode != iCurMode){
+            mInputOutputModeCombo->setSelectedId(iNewMode);
+            updateSources();
+            updateSpeakers();
+        }
+        
+        mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
 		mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
 		mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
 		mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);
+
 		
 		refreshSize();
 	}
@@ -1362,8 +1371,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
     for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
 		mLevels.getUnchecked(i)->refreshIfNeeded();
 
-	if (mNeedRepaint)
-	{
+	if (mNeedRepaint){
 		mSmoothing->setValue(mFilter->getParameter(kSmooth));
 		mVolumeFar->setValue(mFilter->getParameter(kVolumeFar));
 		mVolumeMid->setValue(mFilter->getParameter(kVolumeMid));

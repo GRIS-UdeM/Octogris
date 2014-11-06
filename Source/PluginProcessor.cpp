@@ -101,6 +101,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mProcessCounter = 0;
 	mLastTimeInSamples = -1;
 	mProcessMode = kPanVolumeMode;
+    mInputOutputMode = 0;
 	
 	mOscLeapSource = 0;
 	mOscReceiveEnabled = 0;
@@ -237,6 +238,9 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 }
 
 void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
+    
+    mInputOutputMode = p_iInputOutputMode;
+    
     switch (p_iInputOutputMode){
             
         case i1o2:
@@ -1202,6 +1206,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 	appendIntData(destData, mApplyFilter);
     
     //version 9
+    int i = mInputOutputMode;
  	appendIntData(destData, mInputOutputMode);
 
 	
@@ -1219,7 +1224,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 		appendFloatData(destData, mParameters[getParamForSourceY(i)]);
 		appendFloatData(destData, mParameters[getParamForSourceD(i)]);
 	}
-	    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
+    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
 	{
 		appendFloatData(destData, mParameters[getParamForSpeakerX(i)]);
 		appendFloatData(destData, mParameters[getParamForSpeakerY(i)]);
@@ -1254,7 +1259,8 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 		if (version >= 6) mApplyFilter = readIntData(data, sizeInBytes, 1);
         
         if (version >= 9){
-            mInputOutputMode = readIntData(data, sizeInBytes, 0);
+            mInputOutputMode = readIntData(data, sizeInBytes, 1);
+                int i = mInputOutputMode;
         }
 		
 		if (version >= 4)
