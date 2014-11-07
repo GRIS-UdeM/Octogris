@@ -130,13 +130,18 @@ public:
 		mParamIndex(paramIndex),
 		mParamType(paramType),
 		mLink(link),
-		mFilter(filter)
+		mFilter(filter),
+		mBeganGesture(false),
+		mMouseDown(false)
 	{
 		jassert(mLink || mParamType != kParamSource);
 	}
 	
 	void mouseDown (const MouseEvent &e)
 	{
+		mBeganGesture = false;
+		mMouseDown = true;
+		
 		bool resetToDefault = e.mods.isAltDown();
 		if (resetToDefault)
 		{
@@ -176,10 +181,59 @@ public:
 		}
 	}
 	
+	void mouseUp (const MouseEvent &e)
+	{
+		//fprintf(stderr, "paremslider :: mouseUp\n");
+		Slider::mouseUp(e);
+		
+		if (mBeganGesture)
+		{
+			//fprintf(stderr, "paremslider :: endParameter\n");
+		
+			if (mParamType == kParamSource && mLink->getToggleState())
+			{
+				for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+				{
+					int paramIndex = mFilter->getParamForSourceD(i);
+					mFilter->endParameterChangeGesture(paramIndex);
+				}
+			}
+			else
+			{
+				mFilter->endParameterChangeGesture(mParamIndex);
+			}
+		}
+		
+		mMouseDown = false;
+		mBeganGesture = false;
+	}
+	
 	void valueChanged()
 	{
+		if (mMouseDown && !mBeganGesture)
+		{
+			//fprintf(stderr, "paremslider :: beginParameter\n");
+			
+			if (mParamType == kParamSource && mLink->getToggleState())
+			{
+				for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+				{
+					int paramIndex = mFilter->getParamForSourceD(i);
+					mFilter->beginParameterChangeGesture(paramIndex);
+				}
+			}
+			else
+			{
+				mFilter->beginParameterChangeGesture(mParamIndex);
+			}
+			
+			mBeganGesture = true;
+		}
+		
 		if (mParamType == kParamSource)
 		{
+			//fprintf(stderr, "paremslider :: setParameterNotifyingHost\n");
+		
 			const float newVal = 1.f - (float)getValue();
 			
 			if (mLink->getToggleState())
@@ -254,6 +308,7 @@ private:
 	int mParamIndex, mParamType;
 	ToggleButton *mLink;
 	OctogrisAudioProcessor *mFilter;
+	bool mBeganGesture, mMouseDown;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParamSlider)
 };

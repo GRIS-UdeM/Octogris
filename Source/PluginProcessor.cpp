@@ -889,6 +889,12 @@ static void AddArea(int speaker, float ix1, float iy1, float ix2, float iy2, Are
 }
 static void Integrate(float x1, float x2, const Area *areas, int areaCount, float *outFactors, float factor)
 {
+	if (x1 == x2)
+	{
+		//fprintf(stderr, "x1 == x2 (%f == %f)\n", x1, x2);
+		return;
+	}
+	
 	assert(x1 < x2);
 	assert(x1 >= 0);
 	assert(x2 <= kThetaMax);
