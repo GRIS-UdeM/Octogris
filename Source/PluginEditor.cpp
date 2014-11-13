@@ -619,51 +619,35 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		// column 1
 		addLabel("Reset sources:", x, y, w, dh, box);
 		y += dh + 5;
-		
-		mSrcAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
+        
+        mSrcAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
+        mSrcAlternate->setExplicitFocusOrder(1);
 		y += dh + 5;
 		
 		mSrcStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
+        mSrcStartAtTop->setExplicitFocusOrder(2);
 		y += dh + 5;
 		
 		mSrcClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
+        mSrcClockwise->setExplicitFocusOrder(3);
 		y += dh + 5;
 		
 		mSrcApply = addButton("Apply", x, y, setw, dh, box);
+        mSrcApply->setExplicitFocusOrder(4);
 		y += dh + 5;
 		
 		// column 2
 		y = kMargin;
 		x += w + kMargin;
 		
-		addLabel("Set XY position:", x, y, w - selectw, dh, box);
-		{
-			mSrcSelect->setSize(selectw, dh);
-			mSrcSelect->setTopLeftPosition(x + w - selectw, y);
-        }
+		addLabel("Set RA position:", x, y, w - selectw, dh, box);
 		
-		y += dh + 5;
-		
-		addLabel("(-2 to 2)", x, y, w, dh, box);
-		y += dh + 5;
-		
+        mSrcSelect->setSize(selectw, dh);
+        mSrcSelect->setTopLeftPosition(x + w - selectw, y);
+        mSrcSelect->setExplicitFocusOrder(5);
+				
 		int lw = 30, lwm = lw + kMargin;
-		
-		addLabel("X:", x, y, lw, dh, box);
-		mSrcX = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-		y += dh + 5;
-		
-		addLabel("Y:", x, y, lw, dh, box);
-		mSrcY = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-		y += dh + 5;
-		
-		mSrcSetXY = addButton("Set", x, y, setw, dh, box);
-		
-		// column 3
-		y = kMargin;
-		x += w + kMargin;
-		
-		addLabel("Set RA position:", x, y, w, dh, box);
+
 		y += dh + 5;
 		
 		addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
@@ -671,13 +655,16 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		
 		addLabel("R:", x, y, lw, dh, box);
 		mSrcR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
+        mSrcR->setExplicitFocusOrder(6);
 		y += dh + 5;
 		
 		addLabel("A:", x, y, lw, dh, box);
 		mSrcT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
+        mSrcT->setExplicitFocusOrder(7);
 		y += dh + 5;
 		
 		mSrcSetRT = addButton("Set", x, y, setw, dh, box);
+        mSrcSetRT->setExplicitFocusOrder(8);
 	}
     //--------------- SPEAKERS TAB ---------------- //
     box = mTabs->getTabContentComponent(3);
@@ -689,52 +676,44 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         addLabel("Reset speakers:", x, y, w, dh, box);
         y += dh + 5;
         mSpAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
+        mSpAlternate->setExplicitFocusOrder(1);
         y += dh + 5;
         mSpStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
+        mSpStartAtTop->setExplicitFocusOrder(2);
         y += dh + 5;
         mSpClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
+        mSpClockwise->setExplicitFocusOrder(3);
         y += dh + 5;
         mSpApply = addButton("Apply", x, y, setw, dh, box);
+        mSpApply->setExplicitFocusOrder(4);
         y += dh + 5;
         
         //-------- column 2 --------
         y = kMargin;
         x += w + kMargin;
         
-        addLabel("Set XY position:", x, y, w - selectw, dh, box);
-        {
-            mSpSelect->setSize(selectw, dh);
-            mSpSelect->setTopLeftPosition(x + w - selectw, y);
-        }
+        addLabel("Set RA position:", x, y, w - selectw, dh, box);
+        mSpSelect->setSize(selectw, dh);
+        mSpSelect->setTopLeftPosition(x + w - selectw, y);
+        mSpSelect->setExplicitFocusOrder(5);
         
-        y += dh + 5;
-        
-        addLabel("(-2 to 2)", x, y, w, dh, box);
-        y += dh + 5;
         int lw = 30, lwm = lw + kMargin;
-        addLabel("X:", x, y, lw, dh, box);
-        mSpX = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-        y += dh + 5;
-        addLabel("Y:", x, y, lw, dh, box);
-        mSpY = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-        y += dh + 5;
-        mSpSetXY = addButton("Set", x, y, setw, dh, box);
         
-        //-------- column 3 --------
-        y = kMargin;
-        x += w + kMargin;
         
-        addLabel("Set RA position:", x, y, w, dh, box);
         y += dh + 5;
         addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
         y += dh + 5;
         addLabel("R:", x, y, lw, dh, box);
         mSpR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
+        mSpR->setExplicitFocusOrder(6);
         y += dh + 5;
         addLabel("A:", x, y, lw, dh, box);
         mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
+        mSpT->setExplicitFocusOrder(7);
         y += dh + 5;
         mSpSetRT = addButton("Set", x, y, setw, dh, box);
+        mSpSetRT->setExplicitFocusOrder(8);
+
     }
     
 	
@@ -1103,13 +1082,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 	{
 		mFilter->setApplyFilter(button->getToggleState());
 	}
-	else if (button == mSpSetXY)
-	{
-		int sp = mSpSelect->getSelectedId() - 1;
-		float x = mSpX->getText().getFloatValue();
-		float y = mSpY->getText().getFloatValue();
-		mFilter->setSpeakerXY01(sp, FPoint((x+kRadiusMax)/(kRadiusMax*2), (y+kRadiusMax)/(kRadiusMax*2)));
-	}
 	else if (button == mSpSetRT)
 	{
 		int sp = mSpSelect->getSelectedId() - 1;
@@ -1157,13 +1129,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 				offset += delta;
 			}
 		}
-	}
-	else if (button == mSrcSetXY)
-	{
-		int sp = mSrcSelect->getSelectedId() - 1;
-		float x = mSrcX->getText().getFloatValue();
-		float y = mSrcY->getText().getFloatValue();
-		mFilter->setSourceXY01(sp, FPoint((x+kRadiusMax)/(kRadiusMax*2), (y+kRadiusMax)/(kRadiusMax*2)));
 	}
 	else if (button == mSrcSetRT)
 	{

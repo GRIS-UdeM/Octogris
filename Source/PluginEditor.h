@@ -113,8 +113,8 @@ private:
 	ToggleButton *mSpStartAtTop;
 	ToggleButton *mSpClockwise;
 	TextButton *mSpApply;
-	TextEditor *mSpX, *mSpY, *mSpR, *mSpT;
-	TextButton *mSpSetXY, *mSpSetRT;
+	TextEditor *mSpR, *mSpT;
+	TextButton *mSpSetRT;
 	ComboBox *mSpSelect;
 
 	
@@ -123,8 +123,8 @@ private:
 	ToggleButton *mSrcStartAtTop;
 	ToggleButton *mSrcClockwise;
 	TextButton *mSrcApply;
-	TextEditor *mSrcX, *mSrcY, *mSrcR, *mSrcT;
-	TextButton *mSrcSetXY, *mSrcSetRT;
+	TextEditor *mSrcR, *mSrcT;
+	TextButton *mSrcSetRT;
 	ComboBox *mSrcSelect;
 	
 	// trajectories
