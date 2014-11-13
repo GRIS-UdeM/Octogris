@@ -322,6 +322,22 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
     }
 }
 
+void OctogrisAudioProcessor::setSrcPlacementMode(int p_i){
+    mSrcPlacementMode = p_i;
+}
+
+void OctogrisAudioProcessor::setSpPlacementMode(int p_i){
+    mSpPlacementMode = p_i;
+}
+
+void OctogrisAudioProcessor::setSrcSelected(int p_i){
+    mSrcSelected = p_i;
+}
+
+void OctogrisAudioProcessor::setSpSelected(int p_i){
+    mSpSelected = p_i;
+}
+
 void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     
     //if new number of sources is same as before, return
@@ -1228,6 +1244,10 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     
     //version 9
  	appendIntData(destData, mInputOutputMode);
+    appendIntData(destData, mSrcPlacementMode);
+    appendIntData(destData, mSpPlacementMode);
+    appendIntData(destData, mSrcSelected);
+    appendIntData(destData, mSpSelected);
 	
 	appendFloatData(destData, mParameters[kLinkMovement]);
 	appendFloatData(destData, mParameters[kSmooth]);
@@ -1279,6 +1299,10 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
         
         if (version >= 9){
             mInputOutputMode = readIntData(data, sizeInBytes, 1);
+            mSrcPlacementMode = readIntData(data, sizeInBytes, 1);
+            mSpPlacementMode = readIntData(data, sizeInBytes, 1);
+            mSrcSelected = readIntData(data, sizeInBytes, 1);
+            mSpSelected = readIntData(data, sizeInBytes, 1);
         }
 		
 		if (version >= 4)

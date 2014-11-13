@@ -298,6 +298,18 @@ public:
     
     int getInputOutputMode() const {return mInputOutputMode;}
     void setInputOutputMode(int i);
+
+    int getSrcPlacementMode() const {return mSrcPlacementMode;}
+    void setSrcPlacementMode(int i);
+
+    int getSpPlacementMode() const {return mSpPlacementMode;}
+    void setSpPlacementMode(int i);
+    
+    int getSrcSelected() const {return mSrcSelected;}
+    void setSrcSelected(int i);
+    
+    int getSpSelected() const {return mSpSelected;}
+    void setSpSelected(int i);
 	
 	int getGuiTab() const { return mGuiTab; }
 	void setGuiTab(int s) { mGuiTab = s; }
@@ -474,6 +486,10 @@ private:
 	bool mShowGridLines;
 	int mGuiSize;
     int mInputOutputMode;
+    int mSrcPlacementMode;
+    int mSrcSelected;
+    int mSpPlacementMode;
+    int mSpSelected;
 	int mGuiTab;
 	int mOscLeapSource;
 	int mOscReceiveEnabled;

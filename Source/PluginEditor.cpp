@@ -471,8 +471,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
             mInputOutputModeCombo->addItem("8x8", index++);
             mInputOutputModeCombo->addItem("8x16", index++);
 			
-            int iID = mFilter->getInputOutputMode();
-			mInputOutputModeCombo->setSelectedId(iID + 1);
+			mInputOutputModeCombo->setSelectedId(mFilter->getInputOutputMode() + 1);
 			mInputOutputModeCombo->setSize(w, dh);
 			mInputOutputModeCombo->setTopLeftPosition(x, y);
 			box->addAndMakeVisible(mInputOutputModeCombo);
@@ -629,6 +628,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSrcPlacement->addItem("Left Clockwise", kLeftClockwise);
         mSrcPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
 
+        mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode());
         box->addAndMakeVisible(mSrcPlacement);
         mComponents.add(mSrcPlacement);
         mSrcPlacement->setSize(w, dh);
@@ -641,8 +641,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		x += w + kMargin;
 		
 		addLabel("Set RA position:", x, y, w - selectw, dh, box);
-		
-#warning set mSrcSelect->setSelectedId() to whatever selected position is in the presets
+		mSrcSelect->setSelectedId(mFilter->getSrcSelected());
         mSrcSelect->setSize(selectw, dh);
         mSrcSelect->setTopLeftPosition(x + w - selectw, y);
         mSrcSelect->setExplicitFocusOrder(5);
@@ -685,6 +684,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSpPlacement->addItem("Left Alternate", kLeftAlternate);
         mSpPlacement->addItem("Left Clockwise", kLeftClockwise);
         mSpPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
+        mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
         
         box->addAndMakeVisible(mSpPlacement);
         mComponents.add(mSpPlacement);
@@ -698,8 +698,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         x += w + kMargin;
         
         addLabel("Set RA position:", x, y, w - selectw, dh, box);
-#warning set mSpSelect->setSelectedId() to whatever selected position is in the presets
-
+        mSpSelect->setSelectedId(mFilter->getSpSelected());
         mSpSelect->setSize(selectw, dh);
         mSpSelect->setTopLeftPosition(x + w - selectw, y);
         mSpSelect->setExplicitFocusOrder(5);
@@ -739,7 +738,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			int index = 1;
 			for (int i = 0; i < Trajectory::NumberOfTrajectories(); i++)
 				cb->addItem(Trajectory::GetTrajectoryName(i), index++);
-			cb->setSelectedId(1);
+#warning need preset
+            cb->setSelectedId(1);
 			cb->setSize(cbw, dh);
 			cb->setTopLeftPosition(x, y);
 			box->addAndMakeVisible(cb);
@@ -775,6 +775,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			int index = 1;
 			cb->addItem("Beat(s)", index++);
 			cb->addItem("Second(s)", index++);
+#warning need preset
 			cb->setSelectedId(1);
 			cb->setSize(tew, dh);
 			cb->setTopLeftPosition(x, y);
@@ -911,8 +912,7 @@ void OctogrisAudioProcessorEditor::updateSources(){
         String s; s << i+1;
         mSrcSelect->addItem(s, index++);
     }
-#warning this setSelectedId should probably come from a preset?
-    mSrcSelect->setSelectedId(1);
+    mSrcSelect->setSelectedId(mFilter->getSrcSelected());
     if (mSrcApply){
         mSrcApply->triggerClick();
     }
@@ -974,7 +974,7 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
         String s; s << i+1;
         mSpSelect->addItem(s, index++);
     }
-    mSpSelect->setSelectedId(1);
+    mSpSelect->setSelectedId(mFilter->getSpSelected());
     if (mSpApply){
         mSpApply->triggerClick();
     }
@@ -1276,6 +1276,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
             }
         }
         updateSourceLocationTextEditor();
+        mFilter->setSrcPlacementMode(mSrcPlacement->getSelectedId());
     }
     else if (comboBox == mSpPlacement)
     {
@@ -1336,6 +1337,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
             }
         }
         updateSpeakerLocationTextEditor();
+        mFilter->setSpPlacementMode(mSpPlacement->getSelectedId());
     }
     else if (comboBox == mSrcSelect){
         updateSourceLocationTextEditor();
@@ -1350,15 +1352,17 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 }
 
 void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
-    FPoint curPosition = mFilter->getSourceRT(mSrcSelect->getSelectedId()-1);
+    FPoint curPosition = mFilter->getSourceRT(mSrcSelect->getSelectedId());
     mSrcR->setText(String(curPosition.x));
     mSrcT->setText(String(curPosition.y * 180. / M_PI));
+    mFilter->setSrcSelected(mSrcSelect->getSelectedId());
 }
 
 void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
-    FPoint curPosition = mFilter->getSpeakerRT(mSpSelect->getSelectedId()-1);
+    FPoint curPosition = mFilter->getSpeakerRT(mSpSelect->getSelectedId());
     mSpR->setText(String(curPosition.x));
     mSpT->setText(String(curPosition.y * 180. / M_PI));
+    mFilter->setSpSelected(mSpSelect->getSelectedId());
 }
 
 //==============================================================================
@@ -1403,6 +1407,10 @@ void OctogrisAudioProcessorEditor::timerCallback()
             updateSources();
             updateSpeakers();
         }
+        mSrcSelect->setSelectedId(mFilter->getSrcSelected());
+        mSpSelect->setSelectedId(mFilter->getSpSelected());
+        mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode());
+        mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
         
         mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
 		mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
