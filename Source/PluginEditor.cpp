@@ -318,7 +318,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         addLabel("Distance", x+w/2, y, w/2, dh, ct);
         
         mSrcSelect = new ComboBox();
-        mTabs->getTabContentComponent(3)->addAndMakeVisible(mSrcSelect);
+        mTabs->getTabContentComponent(2)->addAndMakeVisible(mSrcSelect);
         mComponents.add(mSrcSelect);
 
         mSrcApply = NULL;
@@ -344,7 +344,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         addLabel("Level", x+w*2/3, y, w/3, dh, ct);
 
 		mSpSelect = new ComboBox();
-        mTabs->getTabContentComponent(2)->addAndMakeVisible(mSpSelect);
+        mTabs->getTabContentComponent(3)->addAndMakeVisible(mSpSelect);
         mComponents.add(mSpSelect);
 
         mSpApply = NULL;
@@ -617,25 +617,38 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		int setw = 60, selectw = 50;
 	
 		// column 1
-		addLabel("Reset sources:", x, y, w, dh, box);
+		addLabel("Source placement:", x, y, w, dh, box);
 		y += dh + 5;
         
-        mSrcAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
-        mSrcAlternate->setExplicitFocusOrder(1);
-		y += dh + 5;
-		
-		mSrcStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
-        mSrcStartAtTop->setExplicitFocusOrder(2);
-		y += dh + 5;
-		
-		mSrcClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
-        mSrcClockwise->setExplicitFocusOrder(3);
-		y += dh + 5;
-		
-		mSrcApply = addButton("Apply", x, y, setw, dh, box);
-        mSrcApply->setExplicitFocusOrder(4);
-		y += dh + 5;
-		
+//        mSrcAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
+//        mSrcAlternate->setExplicitFocusOrder(1);
+//		y += dh + 5;
+//		
+//		mSrcStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
+//        mSrcStartAtTop->setExplicitFocusOrder(2);
+//		y += dh + 5;
+//		
+//		mSrcClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
+//        mSrcClockwise->setExplicitFocusOrder(3);
+//		y += dh + 5;
+//		
+//		mSrcApply = addButton("Apply", x, y, setw, dh, box);
+//        mSrcApply->setExplicitFocusOrder(4);
+//		y += dh + 5;
+        mSrcPlacement = new ComboBox();
+        mSrcPlacement->addItem("Top Clockwise", kTopClockwise);
+        mSrcPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
+        mSrcPlacement->addItem("Left Alternate", kLeftAlternate);
+        mSrcPlacement->addItem("Left Clockwise", kLeftClockwise);
+        mSrcPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
+
+        box->addAndMakeVisible(mSrcPlacement);
+        mComponents.add(mSrcPlacement);
+        mSrcPlacement->setSize(w, dh);
+        mSrcPlacement->setTopLeftPosition(x, y);
+        mSrcPlacement->setExplicitFocusOrder(5);
+        mSrcPlacement->addListener(this);
+        
 		// column 2
 		y = kMargin;
 		x += w + kMargin;
@@ -673,20 +686,34 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         int setw = 60, selectw = 50;
         
         //-------- column 1 --------
-        addLabel("Reset speakers:", x, y, w, dh, box);
+        addLabel("Speaker placement:", x, y, w, dh, box);
         y += dh + 5;
-        mSpAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
-        mSpAlternate->setExplicitFocusOrder(1);
-        y += dh + 5;
-        mSpStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
-        mSpStartAtTop->setExplicitFocusOrder(2);
-        y += dh + 5;
-        mSpClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
-        mSpClockwise->setExplicitFocusOrder(3);
-        y += dh + 5;
-        mSpApply = addButton("Apply", x, y, setw, dh, box);
-        mSpApply->setExplicitFocusOrder(4);
-        y += dh + 5;
+//        mSpAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
+//        mSpAlternate->setExplicitFocusOrder(1);
+//        y += dh + 5;
+//        mSpStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
+//        mSpStartAtTop->setExplicitFocusOrder(2);
+//        y += dh + 5;
+//        mSpClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
+//        mSpClockwise->setExplicitFocusOrder(3);
+//        y += dh + 5;
+//        mSpApply = addButton("Apply", x, y, setw, dh, box);
+//        mSpApply->setExplicitFocusOrder(4);
+//        y += dh + 5;
+        
+        mSpPlacement = new ComboBox();
+        mSpPlacement->addItem("Top Clockwise", kTopClockwise);
+        mSpPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
+        mSpPlacement->addItem("Left Alternate", kLeftAlternate);
+        mSpPlacement->addItem("Left Clockwise", kLeftClockwise);
+        mSpPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
+        
+        box->addAndMakeVisible(mSpPlacement);
+        mComponents.add(mSpPlacement);
+        mSpPlacement->setSize(w, dh);
+        mSpPlacement->setTopLeftPosition(x, y);
+        mSpPlacement->setExplicitFocusOrder(5);
+        mSpPlacement->addListener(this);
         
         //-------- column 2 --------
         y = kMargin;
@@ -1082,54 +1109,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 	{
 		mFilter->setApplyFilter(button->getToggleState());
 	}
-	else if (button == mSpSetRT)
-	{
-		int sp = mSpSelect->getSelectedId() - 1;
-		float r = mSpR->getText().getFloatValue();
-		float t = mSpT->getText().getFloatValue();
-		if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
-		mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
-	}
-	else if (button == mSpApply)
-	{
-		bool alternate = mSpAlternate->getToggleState();
-		bool startAtTop = mSpStartAtTop->getToggleState();
-		bool clockwise = mSpClockwise->getToggleState();
-		
-		float anglePerSp = kThetaMax / mFilter->getNumberOfSpeakers();
-		
-		if (alternate)
-		{
-			float offset = startAtTop
-							? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
-							: (kQuarterCircle - anglePerSp/2);
-			float start = offset;
-			for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSpeakers(); i += 2)
-			{
-				mFilter->setSpeakerRT(i, FPoint(1, offset));
-				offset -= anglePerSp;
-			}
-			
-			offset = start + anglePerSp;
-			for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSpeakers(); i += 2)
-			{
-				mFilter->setSpeakerRT(i, FPoint(1, offset));
-				offset += anglePerSp;
-			}
-		}
-		else
-		{
-			float offset = startAtTop
-							? kQuarterCircle
-							: (clockwise ? (kQuarterCircle - anglePerSp/2) : (kQuarterCircle + anglePerSp/2));
-			float delta = clockwise ? -anglePerSp : anglePerSp;
-			for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-			{
-				mFilter->setSpeakerRT(i, FPoint(1, offset));
-				offset += delta;
-			}
-		}
-	}
 	else if (button == mSrcSetRT)
 	{
 		int sp = mSrcSelect->getSelectedId() - 1;
@@ -1138,46 +1117,141 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 		if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
 		mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
 	}
-	else if (button == mSrcApply)
-	{
-		bool alternate = mSrcAlternate->getToggleState();
-		bool startAtTop = mSrcStartAtTop->getToggleState();
-		bool clockwise = mSrcClockwise->getToggleState();
-		
-		float anglePerSp = kThetaMax / mFilter->getNumberOfSources();
-		
-		if (alternate)
-		{
-			float offset = startAtTop
-							? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
-							: (kQuarterCircle - anglePerSp/2);
-			float start = offset;
-			for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSources(); i += 2)
-			{
-				mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
-				offset -= anglePerSp;
-			}
-			
-			offset = start + anglePerSp;
-			for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSources(); i += 2)
-			{
-				mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
-				offset += anglePerSp;
-			}
-		}
-		else
-		{
-			float offset = startAtTop
-							? kQuarterCircle
-							: (clockwise ? (kQuarterCircle - anglePerSp/2) : (kQuarterCircle + anglePerSp/2));
-			float delta = clockwise ? -anglePerSp : anglePerSp;
-			for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			{
-				mFilter->setSourceRT(i, FPoint(1, offset));
-				offset += delta;
-			}
-		}
-	}
+//	else if (button == mSrcApply)
+//	{
+////		bool alternate = mSrcAlternate->getToggleState();
+////		bool startAtTop = mSrcStartAtTop->getToggleState();
+////		bool clockwise = mSrcClockwise->getToggleState();
+//        
+//        bool alternate = false;
+//        bool startAtTop = false;
+//        bool clockwise = false;
+//        
+//        switch (mSrcPlacement->getSelectedId()){
+//            case kAlternate:
+//                alternate = true;
+//                break;
+//            case kTopClockwise:
+//                startAtTop = true;
+//                clockwise = true;
+//                break;
+//            case kTopCounterClockwise:
+//                startAtTop = true;
+//                break;
+//            case kLeftClockwise:
+//                break;
+//                clockwise = true;
+//            case kLeftCounterClockWise:
+//                break;
+//                
+//        }
+//        
+//        
+//		float anglePerSp = kThetaMax / mFilter->getNumberOfSources();
+//		
+//		if (alternate)
+//		{
+//			float offset = startAtTop
+//							? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
+//							: (kQuarterCircle - anglePerSp/2);
+//			float start = offset;
+//			for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSources(); i += 2)
+//			{
+//				mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
+//				offset -= anglePerSp;
+//			}
+//			
+//			offset = start + anglePerSp;
+//			for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSources(); i += 2)
+//			{
+//				mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
+//				offset += anglePerSp;
+//			}
+//		}
+//		else
+//		{
+//			float offset = startAtTop
+//							? kQuarterCircle
+//							: (clockwise ? (kQuarterCircle - anglePerSp/2) : (kQuarterCircle + anglePerSp/2));
+//			float delta = clockwise ? -anglePerSp : anglePerSp;
+//			for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+//			{
+//				mFilter->setSourceRT(i, FPoint(1, offset));
+//				offset += delta;
+//			}
+//		}
+//	}
+    else if (button == mSpSetRT)
+    {
+        int sp = mSpSelect->getSelectedId() - 1;
+        float r = mSpR->getText().getFloatValue();
+        float t = mSpT->getText().getFloatValue();
+        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
+        mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
+    }
+//    else if (button == mSpApply)
+//    {
+////        bool alternate = mSpAlternate->getToggleState();
+////        bool startAtTop = mSpStartAtTop->getToggleState();
+////        bool clockwise = mSpClockwise->getToggleState();
+//
+//        bool alternate = false;
+//        bool startAtTop = false;
+//        bool clockwise = false;
+//        
+//        switch (mSpPlacement->getSelectedId()){
+//            case kAlternate:
+//                alternate = true;
+//                break;
+//            case kTopClockwise:
+//                startAtTop = true;
+//                clockwise = true;
+//                break;
+//            case kTopCounterClockwise:
+//                startAtTop = true;
+//                break;
+//            case kLeftClockwise:
+//                break;
+//                clockwise = true;
+//            case kLeftCounterClockWise:
+//                break;
+//                
+//        }
+//        
+//        float anglePerSp = kThetaMax / mFilter->getNumberOfSpeakers();
+//        
+//        if (alternate)
+//        {
+//            float offset = startAtTop
+//            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
+//            : (kQuarterCircle - anglePerSp/2);
+//            float start = offset;
+//            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSpeakers(); i += 2)
+//            {
+//                mFilter->setSpeakerRT(i, FPoint(1, offset));
+//                offset -= anglePerSp;
+//            }
+//            
+//            offset = start + anglePerSp;
+//            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSpeakers(); i += 2)
+//            {
+//                mFilter->setSpeakerRT(i, FPoint(1, offset));
+//                offset += anglePerSp;
+//            }
+//        }
+//        else
+//        {
+//            float offset = startAtTop
+//            ? kQuarterCircle
+//            : (clockwise ? (kQuarterCircle - anglePerSp/2) : (kQuarterCircle + anglePerSp/2));
+//            float delta = clockwise ? -anglePerSp : anglePerSp;
+//            for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
+//            {
+//                mFilter->setSpeakerRT(i, FPoint(1, offset));
+//                offset += delta;
+//            }
+//        }
+//    }
 	else if (button == mTrWrite)
 	{
 		Trajectory::Ptr t = mFilter->getTrajectory();
@@ -1248,6 +1322,129 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
         mField->repaint();
 
 	}
+    else if (comboBox == mSrcPlacement)
+    {
+        //		bool alternate = mSrcAlternate->getToggleState();
+        //		bool startAtTop = mSrcStartAtTop->getToggleState();
+        //		bool clockwise = mSrcClockwise->getToggleState();
+        
+        bool alternate = false;
+        bool startAtTop = false;
+        bool clockwise = false;
+        
+        switch (mSrcPlacement->getSelectedId()){
+            case kLeftAlternate:
+                alternate = true;
+                break;
+            case kTopClockwise:
+                startAtTop = true;
+                clockwise = true;
+                break;
+            case kTopCounterClockwise:
+                startAtTop = true;
+                break;
+            case kLeftClockwise:
+                clockwise = true;
+                break;
+            case kLeftCounterClockWise:
+                break;
+                
+        }
+        
+        
+        float anglePerSp = kThetaMax / mFilter->getNumberOfSources();
+        
+        if (alternate)
+        {
+            float offset = startAtTop
+            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
+            : (kQuarterCircle - anglePerSp/2);
+            float start = offset;
+            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSources(); i += 2)
+            {
+                mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
+                offset -= anglePerSp;
+            }
+            
+            offset = start + anglePerSp;
+            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSources(); i += 2)
+            {
+                mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
+                offset += anglePerSp;
+            }
+        }
+        else
+        {
+            float offset = startAtTop ? kQuarterCircle : kQuarterCircle + anglePerSp/2;
+            float delta = clockwise ? -anglePerSp : anglePerSp;
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+            {
+                mFilter->setSourceRT(i, FPoint(1, offset));
+                offset += delta;
+            }
+        }
+    }
+    else if (comboBox == mSpPlacement)
+    {
+        //        bool alternate = mSpAlternate->getToggleState();
+        //        bool startAtTop = mSpStartAtTop->getToggleState();
+        //        bool clockwise = mSpClockwise->getToggleState();
+        
+        bool alternate = false;
+        bool startAtTop = false;
+        bool clockwise = false;
+        
+        switch (mSpPlacement->getSelectedId()){
+            case kLeftAlternate:
+                alternate = true;
+                break;
+            case kTopClockwise:
+                startAtTop = true;
+                clockwise = true;
+                break;
+            case kTopCounterClockwise:
+                startAtTop = true;
+                break;
+            case kLeftClockwise:
+                clockwise = true;
+                break;
+            case kLeftCounterClockWise:
+                break;
+                
+        }
+        
+        float anglePerSp = kThetaMax / mFilter->getNumberOfSpeakers();
+        
+        if (alternate)
+        {
+            float offset = startAtTop
+            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
+            : (kQuarterCircle - anglePerSp/2);
+            float start = offset;
+            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSpeakers(); i += 2)
+            {
+                mFilter->setSpeakerRT(i, FPoint(1, offset));
+                offset -= anglePerSp;
+            }
+            
+            offset = start + anglePerSp;
+            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSpeakers(); i += 2)
+            {
+                mFilter->setSpeakerRT(i, FPoint(1, offset));
+                offset += anglePerSp;
+            }
+        }
+        else
+        {
+            float offset = startAtTop ? kQuarterCircle : kQuarterCircle + anglePerSp/2;
+            float delta = clockwise ? -anglePerSp : anglePerSp;
+            for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
+            {
+                mFilter->setSpeakerRT(i, FPoint(1, offset));
+                offset += delta;
+            }
+        }
+    }
 	else
 	{
 		printf("unknown combobox clicked...\n");

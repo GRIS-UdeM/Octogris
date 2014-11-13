@@ -32,6 +32,14 @@ enum
 	kParamFilterNear
 };
 
+enum placement{
+    kTopClockwise = 1,
+    kTopCounterClockwise,
+    kLeftAlternate,
+    kLeftClockwise,
+    kLeftCounterClockWise
+};
+
 class MiniProgressBar;
 class ParamSlider;
 class OctTabbedComponent;
@@ -108,25 +116,24 @@ private:
 	Slider *mFilterMid;
 	Slider *mFilterNear;
 	
-	// speakers
+    // sources
+    ToggleButton *mSrcAlternate;
+    ToggleButton *mSrcStartAtTop;
+    ToggleButton *mSrcClockwise;
+    TextButton *mSrcApply;
+    TextEditor *mSrcR, *mSrcT;
+    TextButton *mSrcSetRT;
+    ComboBox *mSrcSelect, *mSrcPlacement;
+    
+    // speakers
 	ToggleButton *mSpAlternate;
 	ToggleButton *mSpStartAtTop;
 	ToggleButton *mSpClockwise;
 	TextButton *mSpApply;
 	TextEditor *mSpR, *mSpT;
 	TextButton *mSpSetRT;
-	ComboBox *mSpSelect;
+	ComboBox *mSpSelect, *mSpPlacement;
 
-	
-	// sources
-	ToggleButton *mSrcAlternate;
-	ToggleButton *mSrcStartAtTop;
-	ToggleButton *mSrcClockwise;
-	TextButton *mSrcApply;
-	TextEditor *mSrcR, *mSrcT;
-	TextButton *mSrcSetRT;
-	ComboBox *mSrcSelect;
-	
 	// trajectories
 	ComboBox *mTrType;
 	TextEditor *mTrDuration;
