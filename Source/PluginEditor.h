@@ -54,6 +54,7 @@ public:
 class OctogrisAudioProcessorEditor  : public AudioProcessorEditor,
 									  public Button::Listener,
 									  public ComboBox::Listener,
+                                      public TextEditor::Listener,
 									  private AudioProcessorListener,
 									  private Timer
 {
@@ -67,6 +68,7 @@ public:
 	
 	void buttonClicked (Button *button);
 	void comboBoxChanged (ComboBox* comboBox);
+    void textEditorReturnKeyPressed(TextEditor &textEditor);
 	
 	void timerCallback();
 	void audioProcessorChanged (AudioProcessor* processor);
@@ -161,6 +163,8 @@ private:
 	Box *mSpeakersBox;
     void updateSources();
     void updateSpeakers();
+    void updateSourceLocationTextEditor();
+    void updateSpeakerLocationTextEditor();
 	
 	Component* addLabel(const String &s, int x, int y, int w, int h, Component *into);
 	ToggleButton* addCheckbox(const String &s, bool v, int x, int y, int w, int h, Component *into);

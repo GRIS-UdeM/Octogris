@@ -320,6 +320,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSrcSelect = new ComboBox();
         mTabs->getTabContentComponent(2)->addAndMakeVisible(mSrcSelect);
         mComponents.add(mSrcSelect);
+        mSrcSelect->addListener(this);
 
         mSrcApply = NULL;
         updateSources();
@@ -346,6 +347,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		mSpSelect = new ComboBox();
         mTabs->getTabContentComponent(3)->addAndMakeVisible(mSpSelect);
         mComponents.add(mSpSelect);
+        mSpSelect->addListener(this);
 
         mSpApply = NULL;
         updateSpeakers();
@@ -620,21 +622,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		addLabel("Source placement:", x, y, w, dh, box);
 		y += dh + 5;
         
-//        mSrcAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
-//        mSrcAlternate->setExplicitFocusOrder(1);
-//		y += dh + 5;
-//		
-//		mSrcStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
-//        mSrcStartAtTop->setExplicitFocusOrder(2);
-//		y += dh + 5;
-//		
-//		mSrcClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
-//        mSrcClockwise->setExplicitFocusOrder(3);
-//		y += dh + 5;
-//		
-//		mSrcApply = addButton("Apply", x, y, setw, dh, box);
-//        mSrcApply->setExplicitFocusOrder(4);
-//		y += dh + 5;
         mSrcPlacement = new ComboBox();
         mSrcPlacement->addItem("Top Clockwise", kTopClockwise);
         mSrcPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
@@ -655,6 +642,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		
 		addLabel("Set RA position:", x, y, w - selectw, dh, box);
 		
+#warning set mSrcSelect->setSelectedId() to whatever selected position is in the presets
         mSrcSelect->setSize(selectw, dh);
         mSrcSelect->setTopLeftPosition(x + w - selectw, y);
         mSrcSelect->setExplicitFocusOrder(5);
@@ -669,13 +657,15 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		addLabel("R:", x, y, lw, dh, box);
 		mSrcR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
         mSrcR->setExplicitFocusOrder(6);
+        mSrcR->addListener(this);
 		y += dh + 5;
 		
 		addLabel("A:", x, y, lw, dh, box);
 		mSrcT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
         mSrcT->setExplicitFocusOrder(7);
-		y += dh + 5;
-		
+        mSrcT->addListener(this);
+
+        		y += dh + 5;
 		mSrcSetRT = addButton("Set", x, y, setw, dh, box);
         mSrcSetRT->setExplicitFocusOrder(8);
 	}
@@ -688,18 +678,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         //-------- column 1 --------
         addLabel("Speaker placement:", x, y, w, dh, box);
         y += dh + 5;
-//        mSpAlternate = addCheckbox("Alternate", true, x, y, w, dh, box);
-//        mSpAlternate->setExplicitFocusOrder(1);
-//        y += dh + 5;
-//        mSpStartAtTop = addCheckbox("Start at top", false, x, y, w, dh, box);
-//        mSpStartAtTop->setExplicitFocusOrder(2);
-//        y += dh + 5;
-//        mSpClockwise = addCheckbox("Clockwise", false, x, y, w, dh, box);
-//        mSpClockwise->setExplicitFocusOrder(3);
-//        y += dh + 5;
-//        mSpApply = addButton("Apply", x, y, setw, dh, box);
-//        mSpApply->setExplicitFocusOrder(4);
-//        y += dh + 5;
         
         mSpPlacement = new ComboBox();
         mSpPlacement->addItem("Top Clockwise", kTopClockwise);
@@ -720,6 +698,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         x += w + kMargin;
         
         addLabel("Set RA position:", x, y, w - selectw, dh, box);
+#warning set mSpSelect->setSelectedId() to whatever selected position is in the presets
+
         mSpSelect->setSize(selectw, dh);
         mSpSelect->setTopLeftPosition(x + w - selectw, y);
         mSpSelect->setExplicitFocusOrder(5);
@@ -733,10 +713,14 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         addLabel("R:", x, y, lw, dh, box);
         mSpR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
         mSpR->setExplicitFocusOrder(6);
+        mSpR->addListener(this);
+        
         y += dh + 5;
         addLabel("A:", x, y, lw, dh, box);
         mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
         mSpT->setExplicitFocusOrder(7);
+        mSpT->addListener(this);
+        
         y += dh + 5;
         mSpSetRT = addButton("Set", x, y, setw, dh, box);
         mSpSetRT->setExplicitFocusOrder(8);
@@ -927,6 +911,7 @@ void OctogrisAudioProcessorEditor::updateSources(){
         String s; s << i+1;
         mSrcSelect->addItem(s, index++);
     }
+#warning this setSelectedId should probably come from a preset?
     mSrcSelect->setSelectedId(1);
     if (mSrcApply){
         mSrcApply->triggerClick();
@@ -1079,6 +1064,43 @@ Slider* OctogrisAudioProcessorEditor::addParamSlider(int paramType, int si, floa
 
 
 //==============================================================================
+void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textEditor){
+    
+    
+//    if (&textEditor == mSrcR){
+//        //use getSourceRT to get current location
+//        
+//    }
+//    else if (&textEditor == mSrcT){
+//        
+//    }
+//    else if (&textEditor == mSpR){
+//        
+//    }
+//    else if (&textEditor == mSpT){
+//        
+//    }
+//    
+//
+//    if (textEditor == mSrcSetRT)
+//    {
+//        int sp = mSrcSelect->getSelectedId() - 1;
+//        float r = mSrcR->getText().getFloatValue();
+//        float t = mSrcT->getText().getFloatValue();
+//        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
+//        mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
+//    }
+//    else if (textEditor == mSpSetRT)
+//    {
+//        int sp = mSpSelect->getSelectedId() - 1;
+//        float r = mSpR->getText().getFloatValue();
+//        float t = mSpT->getText().getFloatValue();
+//        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
+//        mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
+//    }
+
+}
+
 void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 {
 	for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
@@ -1117,70 +1139,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 		if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
 		mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
 	}
-//	else if (button == mSrcApply)
-//	{
-////		bool alternate = mSrcAlternate->getToggleState();
-////		bool startAtTop = mSrcStartAtTop->getToggleState();
-////		bool clockwise = mSrcClockwise->getToggleState();
-//        
-//        bool alternate = false;
-//        bool startAtTop = false;
-//        bool clockwise = false;
-//        
-//        switch (mSrcPlacement->getSelectedId()){
-//            case kAlternate:
-//                alternate = true;
-//                break;
-//            case kTopClockwise:
-//                startAtTop = true;
-//                clockwise = true;
-//                break;
-//            case kTopCounterClockwise:
-//                startAtTop = true;
-//                break;
-//            case kLeftClockwise:
-//                break;
-//                clockwise = true;
-//            case kLeftCounterClockWise:
-//                break;
-//                
-//        }
-//        
-//        
-//		float anglePerSp = kThetaMax / mFilter->getNumberOfSources();
-//		
-//		if (alternate)
-//		{
-//			float offset = startAtTop
-//							? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
-//							: (kQuarterCircle - anglePerSp/2);
-//			float start = offset;
-//			for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSources(); i += 2)
-//			{
-//				mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
-//				offset -= anglePerSp;
-//			}
-//			
-//			offset = start + anglePerSp;
-//			for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSources(); i += 2)
-//			{
-//				mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
-//				offset += anglePerSp;
-//			}
-//		}
-//		else
-//		{
-//			float offset = startAtTop
-//							? kQuarterCircle
-//							: (clockwise ? (kQuarterCircle - anglePerSp/2) : (kQuarterCircle + anglePerSp/2));
-//			float delta = clockwise ? -anglePerSp : anglePerSp;
-//			for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-//			{
-//				mFilter->setSourceRT(i, FPoint(1, offset));
-//				offset += delta;
-//			}
-//		}
-//	}
     else if (button == mSpSetRT)
     {
         int sp = mSpSelect->getSelectedId() - 1;
@@ -1189,69 +1147,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
         mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
     }
-//    else if (button == mSpApply)
-//    {
-////        bool alternate = mSpAlternate->getToggleState();
-////        bool startAtTop = mSpStartAtTop->getToggleState();
-////        bool clockwise = mSpClockwise->getToggleState();
-//
-//        bool alternate = false;
-//        bool startAtTop = false;
-//        bool clockwise = false;
-//        
-//        switch (mSpPlacement->getSelectedId()){
-//            case kAlternate:
-//                alternate = true;
-//                break;
-//            case kTopClockwise:
-//                startAtTop = true;
-//                clockwise = true;
-//                break;
-//            case kTopCounterClockwise:
-//                startAtTop = true;
-//                break;
-//            case kLeftClockwise:
-//                break;
-//                clockwise = true;
-//            case kLeftCounterClockWise:
-//                break;
-//                
-//        }
-//        
-//        float anglePerSp = kThetaMax / mFilter->getNumberOfSpeakers();
-//        
-//        if (alternate)
-//        {
-//            float offset = startAtTop
-//            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
-//            : (kQuarterCircle - anglePerSp/2);
-//            float start = offset;
-//            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSpeakers(); i += 2)
-//            {
-//                mFilter->setSpeakerRT(i, FPoint(1, offset));
-//                offset -= anglePerSp;
-//            }
-//            
-//            offset = start + anglePerSp;
-//            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSpeakers(); i += 2)
-//            {
-//                mFilter->setSpeakerRT(i, FPoint(1, offset));
-//                offset += anglePerSp;
-//            }
-//        }
-//        else
-//        {
-//            float offset = startAtTop
-//            ? kQuarterCircle
-//            : (clockwise ? (kQuarterCircle - anglePerSp/2) : (kQuarterCircle + anglePerSp/2));
-//            float delta = clockwise ? -anglePerSp : anglePerSp;
-//            for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-//            {
-//                mFilter->setSpeakerRT(i, FPoint(1, offset));
-//                offset += delta;
-//            }
-//        }
-//    }
 	else if (button == mTrWrite)
 	{
 		Trajectory::Ptr t = mFilter->getTrajectory();
@@ -1324,9 +1219,6 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	}
     else if (comboBox == mSrcPlacement)
     {
-        //		bool alternate = mSrcAlternate->getToggleState();
-        //		bool startAtTop = mSrcStartAtTop->getToggleState();
-        //		bool clockwise = mSrcClockwise->getToggleState();
         
         bool alternate = false;
         bool startAtTop = false;
@@ -1383,12 +1275,11 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
                 offset += delta;
             }
         }
+        updateSourceLocationTextEditor();
     }
     else if (comboBox == mSpPlacement)
     {
-        //        bool alternate = mSpAlternate->getToggleState();
-        //        bool startAtTop = mSpStartAtTop->getToggleState();
-        //        bool clockwise = mSpClockwise->getToggleState();
+
         
         bool alternate = false;
         bool startAtTop = false;
@@ -1444,6 +1335,13 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
                 offset += delta;
             }
         }
+        updateSpeakerLocationTextEditor();
+    }
+    else if (comboBox == mSrcSelect){
+        updateSourceLocationTextEditor();
+    }
+    else if (comboBox == mSpSelect){
+        updateSpeakerLocationTextEditor();
     }
 	else
 	{
@@ -1451,6 +1349,17 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	}
 }
 
+void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
+    FPoint curPosition = mFilter->getSourceRT(mSrcSelect->getSelectedId()-1);
+    mSrcR->setText(String(curPosition.x));
+    mSrcT->setText(String(curPosition.y * 180. / M_PI));
+}
+
+void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
+    FPoint curPosition = mFilter->getSpeakerRT(mSpSelect->getSelectedId()-1);
+    mSpR->setText(String(curPosition.x));
+    mSpT->setText(String(curPosition.y * 180. / M_PI));
+}
 
 //==============================================================================
 void OctogrisAudioProcessorEditor::timerCallback()
