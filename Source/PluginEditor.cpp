@@ -738,8 +738,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			int index = 1;
 			for (int i = 0; i < Trajectory::NumberOfTrajectories(); i++)
 				cb->addItem(Trajectory::GetTrajectoryName(i), index++);
-#warning need preset
-            cb->setSelectedId(1);
+
+            cb->setSelectedId(mFilter->getTrType()+1);
 			cb->setSize(cbw, dh);
 			cb->setTopLeftPosition(x, y);
 			box->addAndMakeVisible(cb);
@@ -757,7 +757,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 				String s("Source "); s << i+1;
 				cb->addItem(s, index++);
 			}
-			cb->setSelectedId(1);
+            cb->setSelectedId(mFilter->getTrSrcSelect());
 			cb->setSize(100, dh);
 			cb->setTopLeftPosition(x + cbw + 5, y);
 			box->addAndMakeVisible(cb);
@@ -768,15 +768,16 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		y += dh + 5;
 		
 		int tew = 80;
-		mTrDuration = addTextEditor("1", x, y, tew, dh, box);
+
+        mTrDuration = addTextEditor(String(mFilter->getTrDuration()), x, y, tew, dh, box);
 		x += tew + kMargin;
 		{
 			ComboBox *cb = new ComboBox();
 			int index = 1;
 			cb->addItem("Beat(s)", index++);
 			cb->addItem("Second(s)", index++);
-#warning need preset
-			cb->setSelectedId(1);
+
+			cb->setSelectedId(mFilter->getTrUnits()+1);
 			cb->setSize(tew, dh);
 			cb->setTopLeftPosition(x, y);
 			box->addAndMakeVisible(cb);
@@ -790,8 +791,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		
 		y += dh + 5;
 		x = kMargin;
-		
-		mTrRepeats = addTextEditor("1", x, y, tew, dh, box);
+
+		mTrRepeats = addTextEditor(String(mFilter->getTrRepeats()), x, y, tew, dh, box);
 		x += tew + kMargin;
 		
 		addLabel("cycle(s)", x, y, w, dh, box);
@@ -1161,10 +1162,17 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 		else
 		{
 			float duration = mTrDuration->getText().getFloatValue();
-			bool beats = mTrUnits->getSelectedId() == 1;
+            bool beats = mTrUnits->getSelectedId() == 1;
 			float repeats = mTrRepeats->getText().getFloatValue();
-			int type = mTrType->getSelectedId() - 1;
-			int source = mTrSrcSelect->getSelectedId() - 2;
+			int type = mTrType->getSelectedId()-1;
+			int source = mTrSrcSelect->getSelectedId();
+
+#warning those call to set in mFilter need to be in event callbacks for out of focus textEditors or something
+            mFilter->setTrDuration(duration);
+            beats ? mFilter->setTrUnits(0) : mFilter->setTrUnits(1);
+            mFilter->setTrRepeats(repeats);
+            mFilter->setTrType(type);
+            mFilter->setTrSrcSelect(source);
 			
 			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, repeats, source));
 			mTrWrite->setButtonText("Cancel");
@@ -1411,6 +1419,14 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mSpSelect->setSelectedId(mFilter->getSpSelected());
         mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode());
         mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
+        
+        mTrType->setSelectedId(mFilter->getTrType()+1);
+        mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect());
+        mTrDuration->setText(String(mFilter->getTrDuration()));
+        mTrUnits->setSelectedId(mFilter->getTrUnits()+1);
+        mTrRepeats->setText(String(mFilter->getTrRepeats()));
+        
+        
         
         mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
 		mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);

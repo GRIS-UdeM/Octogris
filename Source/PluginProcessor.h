@@ -226,23 +226,6 @@ public:
 	// For editor
 
 
-    
-//    //const int kConstantOffset = mNumberOfSources * kParamsPerSource + mNumberOfSpeakers * kParamsPerSpeakers;
-//    const int kConstantOffset = JucePlugin_MaxNumInputChannels * kParamsPerSource + JucePlugin_MaxNumOutputChannels * kParamsPerSpeakers;
-//    
-//    const int kLinkMovement =		0 + kConstantOffset;
-//    const int kSmooth =				1 + kConstantOffset;
-//    const int kVolumeNear =			2 + kConstantOffset;
-//    const int kVolumeMid =			3 + kConstantOffset;
-//    const int kVolumeFar =			4 + kConstantOffset;
-//    const int kFilterNear =			5 + kConstantOffset;
-//    const int kFilterMid =			6 + kConstantOffset;
-//    const int kFilterFar =			7 + kConstantOffset;
-//    const int kConstantParameters =	8;
-//    
-//    const int kNumberOfParameters = kConstantParameters + kConstantOffset;
-    
-
 
     
     
@@ -258,10 +241,6 @@ public:
 	int getNumberOfSpeakers() const { return mNumberOfSpeakers; }
     
     
-//    inline int getParamForSpeakerX(int index) const { return kSpeakerX + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
-//	inline int getParamForSpeakerY(int index) const { return kSpeakerY + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
-//	inline int getParamForSpeakerA(int index) const { return kSpeakerA + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
-//	inline int getParamForSpeakerM(int index) const { return kSpeakerM + mNumberOfSources * kParamsPerSource + index * kParamsPerSpeakers; }
     inline int getParamForSpeakerX(int index) const { return kSpeakerX + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
     inline int getParamForSpeakerY(int index) const { return kSpeakerY + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
     inline int getParamForSpeakerA(int index) const { return kSpeakerA + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
@@ -296,6 +275,7 @@ public:
 	int getGuiSize() const { return mGuiSize; }
 	void setGuiSize(int s) { mGuiSize = s; }
     
+    //version 9
     int getInputOutputMode() const {return mInputOutputMode;}
     void setInputOutputMode(int i);
 
@@ -310,7 +290,27 @@ public:
     
     int getSpSelected() const {return mSpSelected;}
     void setSpSelected(int i);
-	
+    
+    
+
+    int getTrType() const {return m_iTrType;}
+    void setTrType(int i){m_iTrType = i;}
+
+    int getTrSrcSelect() const {return m_iTrSrcSelect;}
+    void setTrSrcSelect(int i){m_iTrSrcSelect = i;}
+
+    float getTrDuration() const {return m_fTrDuration;}
+    void setTrDuration(float i){m_fTrDuration = i;}
+    
+    int getTrUnits() const {return m_iTrUnits;}
+    void setTrUnits(int i){m_iTrUnits = i;}
+
+    float getTrRepeats() const {return m_fTrRepeats;}
+    void setTrRepeats(float i){m_fTrRepeats = i;}
+    
+
+    
+    
 	int getGuiTab() const { return mGuiTab; }
 	void setGuiTab(int s) { mGuiTab = s; }
 	
@@ -485,12 +485,20 @@ private:
 	int mMovementMode;
 	bool mShowGridLines;
 	int mGuiSize;
+
+    //version 9
     int mInputOutputMode;
     int mSrcPlacementMode;
     int mSrcSelected;
     int mSpPlacementMode;
     int mSpSelected;
-	int mGuiTab;
+    int m_iTrType;
+    int m_iTrSrcSelect;
+    float m_fTrDuration;
+    int m_iTrUnits; //0 = beats, 1 = seconds
+    float m_fTrRepeats;
+
+    int mGuiTab;
 	int mOscLeapSource;
 	int mOscReceiveEnabled;
 	int mOscReceivePort;

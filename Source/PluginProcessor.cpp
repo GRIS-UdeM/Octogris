@@ -101,7 +101,17 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mProcessCounter = 0;
 	mLastTimeInSamples = -1;
 	mProcessMode = kPanVolumeMode;
+    //version 9
     mInputOutputMode = 0;
+    mSrcPlacementMode = 0;
+    mSrcSelected = 0;
+    mSpPlacementMode = 0;
+    mSpSelected = 0;
+    m_iTrType = 0;
+    m_iTrSrcSelect = 0;
+    m_fTrDuration = 0.f;
+    m_iTrUnits = 0;
+    m_fTrRepeats = 0.f;
 	
 	mOscLeapSource = 0;
 	mOscReceiveEnabled = 0;
@@ -1248,6 +1258,12 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     appendIntData(destData, mSpPlacementMode);
     appendIntData(destData, mSrcSelected);
     appendIntData(destData, mSpSelected);
+    appendIntData(destData, m_iTrType);
+    appendIntData(destData, m_iTrSrcSelect);
+    appendFloatData(destData, m_fTrDuration);
+    appendIntData(destData, m_iTrUnits);
+    appendFloatData(destData, m_fTrRepeats);
+
 	
 	appendFloatData(destData, mParameters[kLinkMovement]);
 	appendFloatData(destData, mParameters[kSmooth]);
@@ -1303,6 +1319,13 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mSpPlacementMode = readIntData(data, sizeInBytes, 1);
             mSrcSelected = readIntData(data, sizeInBytes, 1);
             mSpSelected = readIntData(data, sizeInBytes, 1);
+            
+            m_iTrType = readIntData(data, sizeInBytes, 0);
+            m_iTrSrcSelect = readIntData(data, sizeInBytes, 1);
+            m_fTrDuration = readFloatData(data, sizeInBytes, 1);
+            m_iTrUnits = readIntData(data, sizeInBytes, 0);
+            m_fTrRepeats = readFloatData(data, sizeInBytes, 1);
+
         }
 		
 		if (version >= 4)
