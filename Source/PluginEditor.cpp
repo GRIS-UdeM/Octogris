@@ -323,6 +323,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSrcSelect->addListener(this);
 
         mSrcApply = NULL;
+        mTrSrcSelect = nullptr;
         updateSources();
     }
     
@@ -746,6 +747,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			mComponents.add(cb);
 			
 			mTrType = cb;
+            mTrType->addListener(this);
 		}
 		
 		{
@@ -764,13 +766,15 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			mComponents.add(cb);
 			
 			mTrSrcSelect = cb;
+            mTrSrcSelect->addListener(this);
 		}
 		y += dh + 5;
 		
 		int tew = 80;
 
         mTrDuration = addTextEditor(String(mFilter->getTrDuration()), x, y, tew, dh, box);
-		x += tew + kMargin;
+        mTrDuration->addListener(this);
+        x += tew + kMargin;
 		{
 			ComboBox *cb = new ComboBox();
 			int index = 1;
@@ -784,6 +788,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			mComponents.add(cb);
 			
 			mTrUnits = cb;
+            mTrUnits->addListener(this);
 		}
 		x += tew + kMargin;
 		
@@ -793,7 +798,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		x = kMargin;
 
 		mTrRepeats = addTextEditor(String(mFilter->getTrRepeats()), x, y, tew, dh, box);
-		x += tew + kMargin;
+		mTrRepeats->addListener(this);
+        x += tew + kMargin;
 		
 		addLabel("cycle(s)", x, y, w, dh, box);
 		
@@ -883,6 +889,9 @@ void OctogrisAudioProcessorEditor::updateSources(){
     mDistances.clear();
     mLabels.clear();
     mSrcSelect->clear();
+    if (mTrSrcSelect != nullptr){
+        mTrSrcSelect->clear();
+    }
     
     
     //put new stuff
@@ -916,6 +925,18 @@ void OctogrisAudioProcessorEditor::updateSources(){
     mSrcSelect->setSelectedId(mFilter->getSrcSelected());
     if (mSrcApply){
         mSrcApply->triggerClick();
+    }
+    
+    //source selection combo in trajectory tab
+    if (mTrSrcSelect != nullptr){
+        int index = 1;
+        mTrSrcSelect->addItem("All sources", index++);
+        for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+        {
+            String s("Source "); s << i+1;
+            mTrSrcSelect->addItem(s, index++);
+        }
+        mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect());
     }
 }
 
@@ -1067,38 +1088,34 @@ Slider* OctogrisAudioProcessorEditor::addParamSlider(int paramType, int si, floa
 //==============================================================================
 void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textEditor){
     
+    if (&textEditor == mSrcR || &textEditor == mSrcT)
+    {
+        int sp = mSrcSelect->getSelectedId() - 1;
+        float r = mSrcR->getText().getFloatValue();
+        float t = mSrcT->getText().getFloatValue();
+        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
+        mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
+    }
+    else if (&textEditor == mSpR || &textEditor == mSpT)
+    {
+        int sp = mSpSelect->getSelectedId() - 1;
+        float r = mSpR->getText().getFloatValue();
+        float t = mSpT->getText().getFloatValue();
+        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
+        mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
+    }
     
-//    if (&textEditor == mSrcR){
-//        //use getSourceRT to get current location
-//        
-//    }
-//    else if (&textEditor == mSrcT){
-//        
-//    }
-//    else if (&textEditor == mSpR){
-//        
-//    }
-//    else if (&textEditor == mSpT){
-//        
-//    }
-//    
-//
-//    if (textEditor == mSrcSetRT)
-//    {
-//        int sp = mSrcSelect->getSelectedId() - 1;
-//        float r = mSrcR->getText().getFloatValue();
-//        float t = mSrcT->getText().getFloatValue();
-//        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
-//        mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
-//    }
-//    else if (textEditor == mSpSetRT)
-//    {
-//        int sp = mSpSelect->getSelectedId() - 1;
-//        float r = mSpR->getText().getFloatValue();
-//        float t = mSpT->getText().getFloatValue();
-//        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
-//        mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
-//    }
+    
+
+    else
+    {
+        printf("unknown TextEditor clicked...\n");
+    }
+
+    //if called from actually pressing enter, put focus on something else
+    if (!m_bIsReturnKeyPressedCalledFromFocusLost){
+        mLinkDistances->grabKeyboardFocus();
+    }
 
 }
 
@@ -1132,22 +1149,22 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 	{
 		mFilter->setApplyFilter(button->getToggleState());
 	}
-	else if (button == mSrcSetRT)
-	{
-		int sp = mSrcSelect->getSelectedId() - 1;
-		float r = mSrcR->getText().getFloatValue();
-		float t = mSrcT->getText().getFloatValue();
-		if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
-		mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
-	}
-    else if (button == mSpSetRT)
-    {
-        int sp = mSpSelect->getSelectedId() - 1;
-        float r = mSpR->getText().getFloatValue();
-        float t = mSpT->getText().getFloatValue();
-        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
-        mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
-    }
+//	else if (button == mSrcSetRT)
+//	{
+//		int sp = mSrcSelect->getSelectedId() - 1;
+//		float r = mSrcR->getText().getFloatValue();
+//		float t = mSrcT->getText().getFloatValue();
+//		if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
+//		mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
+//	}
+//    else if (button == mSpSetRT)
+//    {
+//        int sp = mSpSelect->getSelectedId() - 1;
+//        float r = mSpR->getText().getFloatValue();
+//        float t = mSpT->getText().getFloatValue();
+//        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
+//        mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
+//    }
 	else if (button == mTrWrite)
 	{
 		Trajectory::Ptr t = mFilter->getTrajectory();
@@ -1167,7 +1184,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 			int type = mTrType->getSelectedId()-1;
 			int source = mTrSrcSelect->getSelectedId();
 
-#warning those call to set in mFilter need to be in event callbacks for out of focus textEditors or something
             mFilter->setTrDuration(duration);
             beats ? mFilter->setTrUnits(0) : mFilter->setTrUnits(1);
             mFilter->setTrRepeats(repeats);
@@ -1186,6 +1202,12 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 	{
 		printf("unknown button clicked...\n");
 	}
+}
+
+void OctogrisAudioProcessorEditor::textEditorFocusLost (TextEditor &textEditor){
+    m_bIsReturnKeyPressedCalledFromFocusLost = true;
+    textEditorReturnKeyPressed(textEditor);
+    m_bIsReturnKeyPressedCalledFromFocusLost = false;
 }
 
 void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
@@ -1288,8 +1310,6 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     }
     else if (comboBox == mSpPlacement)
     {
-
-        
         bool alternate = false;
         bool startAtTop = false;
         bool clockwise = false;
@@ -1353,11 +1373,28 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     else if (comboBox == mSpSelect){
         updateSpeakerLocationTextEditor();
     }
+    else if (comboBox == mTrUnits)
+    {
+#warning this is ridiculous, clean this
+        bool beats = mTrUnits->getSelectedId() == 1;
+        beats ? mFilter->setTrUnits(0) : mFilter->setTrUnits(1);
+    }
+    else if (comboBox == mTrType)
+    {
+        int type = mTrType->getSelectedId()-1;
+        mFilter->setTrType(type);
+    }
+    else if (comboBox == mTrSrcSelect)
+    {
+        int source = mTrSrcSelect->getSelectedId();
+        mFilter->setTrSrcSelect(source);
+    }
 	else
 	{
 		printf("unknown combobox clicked...\n");
 	}
 }
+
 
 void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
     FPoint curPosition = mFilter->getSourceRT(mSrcSelect->getSelectedId());
@@ -1376,8 +1413,6 @@ void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
 //==============================================================================
 void OctogrisAudioProcessorEditor::timerCallback()
 {
-    
-    
 	switch(mTrState)
 	{
 		case kTrWriting:
@@ -1396,8 +1431,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		}
 		break;
 	}
-
-
 		
 	uint64_t hcp = mFilter->getHostChangedProperty();
 	if (hcp != mHostChangedProperty) {

@@ -68,6 +68,7 @@ public:
 	
 	void buttonClicked (Button *button);
 	void comboBoxChanged (ComboBox* comboBox);
+    void textEditorFocusLost (TextEditor &textEditor);
     void textEditorReturnKeyPressed(TextEditor &textEditor);
 	
 	void timerCallback();
@@ -94,7 +95,8 @@ private:
 	// for interactions:
 	bool mNeedRepaint;
 	bool mFieldNeedRepaint;
-	uint64_t mHostChangedParameter;
+    bool m_bIsReturnKeyPressedCalledFromFocusLost;
+    uint64_t mHostChangedParameter;
 	uint64_t mHostChangedProperty;
 	Array<Slider*> mDistances;
 	Array<Component*> mLabels;
@@ -117,6 +119,7 @@ private:
 	Slider *mFilterFar;
 	Slider *mFilterMid;
 	Slider *mFilterNear;
+
 	
     // sources
     ToggleButton *mSrcAlternate;
