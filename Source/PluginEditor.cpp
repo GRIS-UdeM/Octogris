@@ -285,7 +285,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	mTabs->addTab("Trajectories", tabBg, new Component(), true);
 	{
 		mOsc = CreateOscComponent(mFilter, this);
-		if (mOsc) mTabs->addTab("OSC", tabBg, mOsc, true);
+        
+        if (mOsc) mTabs->addTab("OSC", tabBg, mOsc, true);
 	}
 	bool leapSupported = false;
 	{
@@ -665,9 +666,9 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSrcT->setExplicitFocusOrder(7);
         mSrcT->addListener(this);
 
-        		y += dh + 5;
-		mSrcSetRT = addButton("Set", x, y, setw, dh, box);
-        mSrcSetRT->setExplicitFocusOrder(8);
+//        y += dh + 5;
+//		mSrcSetRT = addButton("Set", x, y, setw, dh, box);
+//        mSrcSetRT->setExplicitFocusOrder(8);
 	}
     //--------------- SPEAKERS TAB ---------------- //
     box = mTabs->getTabContentComponent(3);
@@ -721,9 +722,9 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSpT->setExplicitFocusOrder(7);
         mSpT->addListener(this);
         
-        y += dh + 5;
-        mSpSetRT = addButton("Set", x, y, setw, dh, box);
-        mSpSetRT->setExplicitFocusOrder(8);
+//        y += dh + 5;
+//        mSpSetRT = addButton("Set", x, y, setw, dh, box);
+//        mSpSetRT->setExplicitFocusOrder(8);
 
     }
     
@@ -1397,14 +1398,14 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 
 
 void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
-    FPoint curPosition = mFilter->getSourceRT(mSrcSelect->getSelectedId());
+    FPoint curPosition = mFilter->getSourceRT(mSrcSelect->getSelectedId()-1);
     mSrcR->setText(String(curPosition.x));
     mSrcT->setText(String(curPosition.y * 180. / M_PI));
     mFilter->setSrcSelected(mSrcSelect->getSelectedId());
 }
 
 void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
-    FPoint curPosition = mFilter->getSpeakerRT(mSpSelect->getSelectedId());
+    FPoint curPosition = mFilter->getSpeakerRT(mSpSelect->getSelectedId()-1);
     mSpR->setText(String(curPosition.x));
     mSpT->setText(String(curPosition.y * 180. / M_PI));
     mFilter->setSpSelected(mSpSelect->getSelectedId());
@@ -1459,7 +1460,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrUnits->setSelectedId(mFilter->getTrUnits()+1);
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
         
-        
+        updateOscComponent(mOsc);
         
         mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
 		mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);

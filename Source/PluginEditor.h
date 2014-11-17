@@ -127,7 +127,7 @@ private:
     //ToggleButton *mSrcClockwise;
     //TextButton *mSrcApply;
     TextEditor *mSrcR, *mSrcT;
-    TextButton *mSrcSetRT;
+    //TextButton *mSrcSetRT;
     ComboBox *mSrcSelect, *mSrcPlacement;
     
     // speakers
@@ -136,7 +136,7 @@ private:
 	//ToggleButton *mSpClockwise;
 	//TextButton *mSpApply;
 	TextEditor *mSpR, *mSpT;
-	TextButton *mSpSetRT;
+	//TextButton *mSpSetRT;
 	ComboBox *mSpSelect, *mSpPlacement;
 
 	// trajectories

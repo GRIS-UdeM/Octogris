@@ -91,6 +91,17 @@ public:
 		if (mReceive->getToggleState()) buttonClicked(mReceive);
 		if (mSend->getToggleState()) buttonClicked(mSend);
 	}
+    
+    void updateInfo(){
+        mReceive->setToggleState(mFilter->getOscReceiveEnabled(), dontSendNotification);
+        mReceivePort->setText(String(mFilter->getOscReceivePort()));
+        mSend->setToggleState(mFilter->getOscSendEnabled(), dontSendNotification);
+        mSendIp->setText(String(mFilter->getOscSendIp()));
+        mSendPort->setText(String(mFilter->getOscSendPort()));
+        
+        if (mReceive->getToggleState()) buttonClicked(mReceive);
+        if (mSend->getToggleState()) buttonClicked(mSend);
+    };
 	
 	~OscComponent()
 	{
@@ -287,6 +298,10 @@ private:
 HeartbeatComponent * CreateOscComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
 {
 	return new OscComponent(filter, editor);
+}
+
+void updateOscComponent(HeartbeatComponent* oscComponent){
+    dynamic_cast<OscComponent*>(oscComponent)->updateInfo();
 }
 
 static int osc_method_handler(const char *path, const char *types,

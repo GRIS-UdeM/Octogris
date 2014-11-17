@@ -13,6 +13,9 @@
 
 #include "PluginEditor.h"
 
+class OscComponent;
+
 HeartbeatComponent * CreateOscComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor);
+void updateOscComponent(HeartbeatComponent* oscComponent);
 
 #endif  // OSCCOMPONENT_H_INCLUDED
