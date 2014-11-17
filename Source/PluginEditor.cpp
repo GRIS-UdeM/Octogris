@@ -759,7 +759,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 				String s("Source "); s << i+1;
 				cb->addItem(s, index++);
 			}
-            cb->setSelectedId(mFilter->getTrSrcSelect());
+            cb->setSelectedId(mFilter->getTrSrcSelect()+2);
 			cb->setSize(100, dh);
 			cb->setTopLeftPosition(x + cbw + 5, y);
 			box->addAndMakeVisible(cb);
@@ -936,7 +936,7 @@ void OctogrisAudioProcessorEditor::updateSources(){
             String s("Source "); s << i+1;
             mTrSrcSelect->addItem(s, index++);
         }
-        mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect());
+        mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);
     }
 }
 
@@ -1182,7 +1182,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             bool beats = mTrUnits->getSelectedId() == 1;
 			float repeats = mTrRepeats->getText().getFloatValue();
 			int type = mTrType->getSelectedId()-1;
-			int source = mTrSrcSelect->getSelectedId();
+			int source = mTrSrcSelect->getSelectedId()-2;
 
             mFilter->setTrDuration(duration);
             beats ? mFilter->setTrUnits(0) : mFilter->setTrUnits(1);
@@ -1386,7 +1386,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     }
     else if (comboBox == mTrSrcSelect)
     {
-        int source = mTrSrcSelect->getSelectedId();
+        int source = mTrSrcSelect->getSelectedId()-2;
         mFilter->setTrSrcSelect(source);
     }
 	else
@@ -1454,7 +1454,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
         
         mTrType->setSelectedId(mFilter->getTrType()+1);
-        mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect());
+        mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);
         mTrDuration->setText(String(mFilter->getTrDuration()));
         mTrUnits->setSelectedId(mFilter->getTrUnits()+1);
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
