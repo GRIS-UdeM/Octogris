@@ -322,7 +322,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
 
-        mSrcApply = NULL;
+        //mSrcApply = NULL;
         mTrSrcSelect = nullptr;
         updateSources();
     }
@@ -350,7 +350,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mComponents.add(mSpSelect);
         mSpSelect->addListener(this);
 
-        mSpApply = NULL;
+        //mSpApply = NULL;
         updateSpeakers();
     }
     
@@ -923,9 +923,9 @@ void OctogrisAudioProcessorEditor::updateSources(){
         mSrcSelect->addItem(s, index++);
     }
     mSrcSelect->setSelectedId(mFilter->getSrcSelected());
-    if (mSrcApply){
-        mSrcApply->triggerClick();
-    }
+//    if (mSrcApply){
+//        mSrcApply->triggerClick();
+//    }
     
     //source selection combo in trajectory tab
     if (mTrSrcSelect != nullptr){
@@ -997,9 +997,9 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
         mSpSelect->addItem(s, index++);
     }
     mSpSelect->setSelectedId(mFilter->getSpSelected());
-    if (mSpApply){
-        mSpApply->triggerClick();
-    }
+//    if (mSpApply){
+//        mSpApply->triggerClick();
+//    }
 }
 
 
@@ -1166,7 +1166,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 //        mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
 //    }
 	else if (button == mTrWrite)
-	{
+	{ 
 		Trajectory::Ptr t = mFilter->getTrajectory();
 		if (t)
 		{

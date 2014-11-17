@@ -122,19 +122,19 @@ private:
 
 	
     // sources
-    ToggleButton *mSrcAlternate;
-    ToggleButton *mSrcStartAtTop;
-    ToggleButton *mSrcClockwise;
-    TextButton *mSrcApply;
+    //ToggleButton *mSrcAlternate;
+    //ToggleButton *mSrcStartAtTop;
+    //ToggleButton *mSrcClockwise;
+    //TextButton *mSrcApply;
     TextEditor *mSrcR, *mSrcT;
     TextButton *mSrcSetRT;
     ComboBox *mSrcSelect, *mSrcPlacement;
     
     // speakers
-	ToggleButton *mSpAlternate;
-	ToggleButton *mSpStartAtTop;
-	ToggleButton *mSpClockwise;
-	TextButton *mSpApply;
+	//ToggleButton *mSpAlternate;
+	//ToggleButton *mSpStartAtTop;
+	//ToggleButton *mSpClockwise;
+	//TextButton *mSpApply;
 	TextEditor *mSpR, *mSpT;
 	TextButton *mSpSetRT;
 	ComboBox *mSpSelect, *mSpPlacement;
