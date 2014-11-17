@@ -357,8 +357,8 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
         mIsNumberSourcesChanged = true;
     }
     
-    cout << "SET NUMBER OF SOURCES\n";
-    cout <<  "new number: " << p_iNewNumberOfSources << "\n";
+//    cout << "SET NUMBER OF SOURCES\n";
+//    cout <<  "new number: " << p_iNewNumberOfSources << "\n";
     
     //prevents audio process thread from running
     suspendProcessing (true);
@@ -433,8 +433,8 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
         mIsNumberSpeakersChanged = true;
     }
     
-    cout << "SET NUMBER OF SPEAKERS\n";
-    cout <<  "new number: " << p_iNewNumberOfSpeakers << "\n";
+//    cout << "SET NUMBER OF SPEAKERS\n";
+//    cout <<  "new number: " << p_iNewNumberOfSpeakers << "\n";
     
     //prevents audio process thread from running
     suspendProcessing (true);
