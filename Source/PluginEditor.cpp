@@ -290,10 +290,10 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	}
 	bool leapSupported = false;
 	{
-		Component *leap = CreateLeapComponent(mFilter, this);
-		if (leap)
+		Component* mleap = CreateLeapComponent(mFilter, this);
+		if (mleap)
 		{
-			mTabs->addTab("Leap", tabBg, leap, true);
+			mTabs->addTab("Leap", tabBg, mleap, true);
 			leapSupported = true;
 		}
 	}
@@ -904,7 +904,16 @@ void OctogrisAudioProcessorEditor::updateSources(){
         Component *label = addLabel(s, x, y, w/3, dh, ct);
         mLabels.add(label);
         
-        Slider *slider = addParamSlider(kParamSource, i, mFilter->getSourceD(i), x + w/3, y, w*2/3, dh, ct);
+        
+        
+#warning here getSourceD is valid
+        float fuck = mFilter->getSourceD(i);
+        cout << "update source: source distance " << fuck << endl;
+        Slider *slider = addParamSlider(kParamSource, i, fuck, x + w/3, y, w*2/3, dh, ct);
+        
+        
+        
+        
         if (bIsFreeVolumeMode){
             slider->setEnabled(false);
         }
@@ -972,7 +981,24 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
         ToggleButton *mute = addCheckbox(s, mFilter->getSpeakerM(i), x, y, muteWidth, dh, ct);
         mMutes.add(mute);
         
-        Slider *slider = addParamSlider(kParamSpeaker, i, mFilter->getSpeakerA(i), x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
+        
+        
+        
+        float fuck = mFilter->getSpeakerA(i);
+        
+//        float fuck = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+//        cout << "speaker attenuation: " << fuck << endl;
+//        mParameters.set(getParamForSpeakerA(i), fuck);
+        
+        
+#warning here getSpeakerA does not return correct values
+        cout << "speaker att " << fuck << endl;
+        Slider *slider = addParamSlider(kParamSpeaker, i, fuck, x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
+        
+        
+        
+        
+        
         slider->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
         mAttenuations.add(slider);
         
@@ -1446,8 +1472,9 @@ void OctogrisAudioProcessorEditor::timerCallback()
         int iNewMode = mFilter->getInputOutputMode()+1;
         if (iNewMode != iCurMode){
             mInputOutputModeCombo->setSelectedId(iNewMode);
-            updateSources();
-            updateSpeakers();
+            //those functions will be called automatically
+//            updateSources();
+//            updateSpeakers();
         }
         mSrcSelect->setSelectedId(mFilter->getSrcSelected());
         mSpSelect->setSelectedId(mFilter->getSpSelected());
@@ -1461,6 +1488,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
         
         updateOscComponent(mOsc);
+        //updateLeapComponent(mleap);
         
         mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
 		mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
@@ -1481,16 +1509,16 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mField->repaint();
     }
     
-#warning this stuff should be removed and replaced by the calls in 	if (hcp != mHostChangedProperty) { at line 1325
-    if (mFilter->getIsSourcesChanged()){
-        updateSources();
-        mFilter->setIsSourcesChanged(false);
-    }
-    
-    if (mFilter->getIsSpeakersChanged()){
-        updateSpeakers();
-        mFilter->setIsSpeakersChanged(false);
-    }
+//#warning this stuff should be removed and replaced by the calls in 	if (hcp != mHostChangedProperty) { at line 1325
+//    if (mFilter->getIsSourcesChanged()){
+//        updateSources();
+//        mFilter->setIsSourcesChanged(false);
+//    }
+//    
+//    if (mFilter->getIsSpeakersChanged()){
+//        updateSpeakers();
+//        mFilter->setIsSpeakersChanged(false);
+//    }
 //end of the warning
     
     for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)

@@ -42,7 +42,7 @@ public:
 		mEnable->setSize(cw, dh);
 		mEnable->setTopLeftPosition(x, y);
 		mEnable->addListener(this);
-		mEnable->setToggleState(false, dontSendNotification);
+		mEnable->setToggleState(mFilter->getIsLeapEnabled(), dontSendNotification);
 		addAndMakeVisible(mEnable);
 		
 		y += dh + m;
@@ -60,7 +60,9 @@ public:
 	{
 		if (button == mEnable)
 		{
-			if (mEnable->getToggleState())
+            bool state = mEnable->getToggleState();
+            mFilter->setIsLeapEnabled(state);
+			if (state)
 			{
 				if (!mController)
 				{
@@ -171,6 +173,10 @@ public:
 			}
 		}
 	}
+    
+    void update(){
+        mEnable->setToggleState(mFilter->getIsLeapEnabled(), dontSendNotification);
+    }
 
 private:
 	OctogrisAudioProcessor *mFilter;
@@ -192,6 +198,10 @@ private:
 Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
 {
 	return new OctoLeap(filter, editor);
+}
+
+void updateLeapComponent(Component * leapComponent){
+    dynamic_cast<OctoLeap*>(leapComponent)->update();
 }
 
 #endif

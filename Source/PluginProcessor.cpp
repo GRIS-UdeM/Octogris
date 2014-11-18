@@ -453,8 +453,9 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
         axisOffset = anglePerSpeakers / 2;
         for (int i = 0; i < mNumberOfSpeakers; i++)
         {
-            mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-            mParameters.set(getParamForSpeakerM(i), 0);
+#warning maybe those lines are the probleM?
+//            mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+//            mParameters.set(getParamForSpeakerM(i), 0);
             
             if(i%2 == 0)
             {
@@ -477,8 +478,9 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers){
         offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
         for (int i = 0; i < mNumberOfSpeakers; i++)
         {
-            mParameters.set(getParamForSpeakerA(i), kSpeakerDefaultAttenuation);
-            mParameters.set(getParamForSpeakerM(i), 0);
+#warning and here?
+//            mParameters.set(getParamForSpeakerA(i), kSpeakerDefaultAttenuation);
+//            mParameters.set(getParamForSpeakerM(i), 0);
             
             if (offset < 0) offset += 360;
             else if (offset > 360) offset -= 360;
@@ -1263,6 +1265,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     appendFloatData(destData, m_fTrDuration);
     appendIntData(destData, m_iTrUnits);
     appendFloatData(destData, m_fTrRepeats);
+    appendIntData(destData, mLeapEnabled);
 
 	
 	appendFloatData(destData, mParameters[kLinkMovement]);
@@ -1325,6 +1328,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_fTrDuration = readFloatData(data, sizeInBytes, 1);
             m_iTrUnits = readIntData(data, sizeInBytes, 0);
             m_fTrRepeats = readFloatData(data, sizeInBytes, 1);
+            mLeapEnabled = readIntData(data, sizeInBytes, 0);
 
         }
 		
@@ -1342,13 +1346,17 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 			{
 				mParameters.set(getParamForSourceX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSourceY(i), readFloatData(data, sizeInBytes, 0));
-				mParameters.set(getParamForSourceD(i), readFloatData(data, sizeInBytes, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance)));
+                float fuck = readFloatData(data, sizeInBytes, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
+                cout << "set state source distance: " << fuck << endl;
+				mParameters.set(getParamForSourceD(i), fuck);
 			}
             for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
 			{
 				mParameters.set(getParamForSpeakerX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSpeakerY(i), readFloatData(data, sizeInBytes, 0));
-				mParameters.set(getParamForSpeakerA(i), readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation)));
+                float fuck = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+                cout << "speaker attenuation: " << fuck << endl;
+				mParameters.set(getParamForSpeakerA(i), fuck);
 				mParameters.set(getParamForSpeakerM(i), readFloatData(data, sizeInBytes, 0));
 			}
 		}

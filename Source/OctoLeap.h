@@ -14,5 +14,6 @@
 #include "PluginEditor.h"
 
 Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor);
+void updateLeapComponent(Component * leapComponent);
 
 #endif  // OCTOLEAP_H_INCLUDED

@@ -313,6 +313,9 @@ public:
     
 	int getGuiTab() const { return mGuiTab; }
 	void setGuiTab(int s) { mGuiTab = s; }
+    
+    int getIsLeapEnabled() const { return mLeapEnabled; }
+    void setIsLeapEnabled(int s) { mLeapEnabled = s; }
 	
 	int getOscLeapSource() const { return mOscLeapSource; }
 	void setOscLeapSource(int s) { mOscLeapSource = s; }
@@ -499,6 +502,7 @@ private:
     float m_fTrRepeats;
 
     int mGuiTab;
+    int mLeapEnabled;
 	int mOscLeapSource;
 	int mOscReceiveEnabled;
 	int mOscReceivePort;
