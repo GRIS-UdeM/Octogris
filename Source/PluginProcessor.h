@@ -535,7 +535,7 @@ private:
     int mNumberOfSpeakers;  //JucePlugin_MaxNumOutputChannels;
     
     void setNumberOfSources(int p_iNewNumberOfSources);
-    void setNumberOfSpeakers(int p_iNewNumberOfSpeakers);
+    void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool isCallFromConstructor);
     
     //int inline ParamForSourceX(int v) {return kSourceX + v * kParamsPerSource;}
     //int inline ParamForSourceY(int v) {return kSourceY + v * kParamsPerSource;}

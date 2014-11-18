@@ -905,10 +905,8 @@ void OctogrisAudioProcessorEditor::updateSources(){
         mLabels.add(label);
         
         
-        
-#warning here getSourceD is valid
         float fuck = mFilter->getSourceD(i);
-        cout << "update source: source distance " << fuck << endl;
+//        cout << "update source: source distance " << fuck << endl;
         Slider *slider = addParamSlider(kParamSource, i, fuck, x + w/3, y, w*2/3, dh, ct);
         
         
@@ -986,13 +984,7 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
         
         float fuck = mFilter->getSpeakerA(i);
         
-//        float fuck = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-//        cout << "speaker attenuation: " << fuck << endl;
-//        mParameters.set(getParamForSpeakerA(i), fuck);
-        
-        
-#warning here getSpeakerA does not return correct values
-        cout << "speaker att " << fuck << endl;
+        //cout << "speaker att " << fuck << endl;
         Slider *slider = addParamSlider(kParamSpeaker, i, fuck, x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
         
         
@@ -1462,12 +1454,14 @@ void OctogrisAudioProcessorEditor::timerCallback()
 	uint64_t hcp = mFilter->getHostChangedProperty();
 	if (hcp != mHostChangedProperty) {
 		mHostChangedProperty = hcp;
-		
+
 		mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
 		mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
 		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
         mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
-		
+
+        
+#warning only if reaper
         int iCurMode = mInputOutputModeCombo->getSelectedId();
         int iNewMode = mFilter->getInputOutputMode()+1;
         if (iNewMode != iCurMode){
@@ -1476,6 +1470,8 @@ void OctogrisAudioProcessorEditor::timerCallback()
 //            updateSources();
 //            updateSpeakers();
         }
+        
+        
         mSrcSelect->setSelectedId(mFilter->getSrcSelected());
         mSpSelect->setSelectedId(mFilter->getSpSelected());
         mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode());

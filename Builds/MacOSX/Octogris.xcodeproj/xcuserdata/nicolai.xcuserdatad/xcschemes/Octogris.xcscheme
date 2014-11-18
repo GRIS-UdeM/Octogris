@@ -40,7 +40,7 @@
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
       <PathRunnable
-         FilePath = "/Applications/REAPER64.app">
+         FilePath = "/Applications/Logic Pro X.app">
       </PathRunnable>
       <MacroExpansion>
          <BuildableReference
