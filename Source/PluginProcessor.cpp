@@ -103,15 +103,15 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mProcessMode = kPanVolumeMode;
     //version 9
     mInputOutputMode = 0;
-    mSrcPlacementMode = 0;
-    mSrcSelected = 0;
-    mSpPlacementMode = 0;
-    mSpSelected = 0;
+    mSrcPlacementMode = 1;
+    mSrcSelected = 1;
+    mSpPlacementMode = 1;
+    mSpSelected = 1;
     m_iTrType = 0;
-    m_iTrSrcSelect = 0;
-    m_fTrDuration = 0.f;
-    m_iTrUnits = 0;
-    m_fTrRepeats = 0.f;
+    m_iTrSrcSelect = -1;//0;
+    m_fTrDuration = 1.f;
+    m_iTrUnits = 1;
+    m_fTrRepeats = 1.f;
 	
 	mOscLeapSource = 0;
 	mOscReceiveEnabled = 0;
@@ -1364,7 +1364,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 				mParameters.set(getParamForSpeakerX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSpeakerY(i), readFloatData(data, sizeInBytes, 0));
                 float fuck = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-                cout << "speaker attenuation: " << fuck << endl;
+                //cout << "speaker attenuation: " << fuck << endl;
 				mParameters.set(getParamForSpeakerA(i), fuck);
 				mParameters.set(getParamForSpeakerM(i), readFloatData(data, sizeInBytes, 0));
 			}

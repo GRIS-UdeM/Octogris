@@ -643,7 +643,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		x += w + kMargin;
 		
 		addLabel("Set RA position:", x, y, w - selectw, dh, box);
-		mSrcSelect->setSelectedId(mFilter->getSrcSelected());
+        int iasdf = mFilter->getSrcSelected();
+		mSrcSelect->setSelectedId(iasdf);
         mSrcSelect->setSize(selectw, dh);
         mSrcSelect->setTopLeftPosition(x + w - selectw, y);
         mSrcSelect->setExplicitFocusOrder(5);
@@ -1123,8 +1124,14 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
         if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
         mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
     }
-    
-    
+    else if (&textEditor == mTrDuration){
+        float duration = mTrDuration->getText().getFloatValue();
+        mFilter->setTrDuration(duration);
+    }
+    else if (&textEditor == mTrRepeats){
+        float repeats = mTrRepeats->getText().getFloatValue();
+        mFilter->setTrRepeats(repeats);
+    }
 
     else
     {
@@ -1416,7 +1423,9 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 
 
 void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
-    FPoint curPosition = mFilter->getSourceRT(mSrcSelect->getSelectedId()-1);
+    int i = mSrcSelect->getSelectedId();
+    i = (i <= 0) ? 1: i;
+    FPoint curPosition = mFilter->getSourceRT(i-1);
     mSrcR->setText(String(curPosition.x));
     mSrcT->setText(String(curPosition.y * 180. / M_PI));
     mFilter->setSrcSelected(mSrcSelect->getSelectedId());
@@ -1462,13 +1471,12 @@ void OctogrisAudioProcessorEditor::timerCallback()
 
         
 #warning only if reaper
-        int iCurMode = mInputOutputModeCombo->getSelectedId();
-        int iNewMode = mFilter->getInputOutputMode()+1;
-        if (iNewMode != iCurMode){
-            mInputOutputModeCombo->setSelectedId(iNewMode);
-            //those functions will be called automatically
-//            updateSources();
-//            updateSpeakers();
+        if (mHost.isReaper()){
+            int iCurMode = mInputOutputModeCombo->getSelectedId();
+            int iNewMode = mFilter->getInputOutputMode()+1;
+            if (iNewMode != iCurMode){
+                mInputOutputModeCombo->setSelectedId(iNewMode);
+            }
         }
         
         
