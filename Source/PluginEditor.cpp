@@ -372,32 +372,31 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		y += dh + 5;
 		
 		{
-			ComboBox *cb = new ComboBox();
+			mMovementMode = new ComboBox();
 			int index = 1;
-			cb->addItem("Independent", index++);
+			mMovementMode->addItem("Independent", index++);
 			if (mFilter->getNumberOfSources() == 2)
 			{
-				cb->addItem("Symmetric X", index++);
-				cb->addItem("Symmetric Y", index++);
-				cb->addItem("Symmetric X & Y", index++);
+				mMovementMode->addItem("Symmetric X", index++);
+				mMovementMode->addItem("Symmetric Y", index++);
+				mMovementMode->addItem("Symmetric X & Y", index++);
 			}
 			if (mFilter->getNumberOfSources() >= 2)
 			{
-				cb->addItem("Circular", index++);
-				cb->addItem("Circular Fixed Radius", index++);
-				cb->addItem("Circular Fixed Angle", index++);
-				cb->addItem("Circular Fully Fixed", index++);
-				cb->addItem("Delta Lock", index++);
+				mMovementMode->addItem("Circular", index++);
+				mMovementMode->addItem("Circular Fixed Radius", index++);
+				mMovementMode->addItem("Circular Fixed Angle", index++);
+				mMovementMode->addItem("Circular Fully Fixed", index++);
+				mMovementMode->addItem("Delta Lock", index++);
 			}
-			cb->setSelectedId(mFilter->getMovementMode() + 1);
-			cb->setSize(w, dh);
-			cb->setTopLeftPosition(x, y);
-			box->addAndMakeVisible(cb);
-			mComponents.add(cb);
+			mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
+			mMovementMode->setSize(w, dh);
+			mMovementMode->setTopLeftPosition(x, y);
+			box->addAndMakeVisible(mMovementMode);
+			mComponents.add(mMovementMode);
 			y += dh + 5;
 			
-			cb->addListener(this);
-			mMovementMode = cb;
+			mMovementMode->addListener(this);
 		}
 		
 		mLinkMovement = addCheckbox("Link movement", mFilter->getLinkMovement(), x, y, w, dh, box);
@@ -617,18 +616,18 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	box = mTabs->getTabContentComponent(2);
 	{
 		int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
-		int setw = 60, selectw = 50;
+		int selectw = 50;
 	
 		// column 1
 		addLabel("Source placement:", x, y, w, dh, box);
 		y += dh + 5;
         
         mSrcPlacement = new ComboBox();
-        mSrcPlacement->addItem("Top Clockwise", kTopClockwise);
-        mSrcPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
         mSrcPlacement->addItem("Left Alternate", kLeftAlternate);
         mSrcPlacement->addItem("Left Clockwise", kLeftClockwise);
         mSrcPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
+        mSrcPlacement->addItem("Top Clockwise", kTopClockwise);
+        mSrcPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
 
         mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode());
         box->addAndMakeVisible(mSrcPlacement);
@@ -667,26 +666,24 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSrcT->setExplicitFocusOrder(7);
         mSrcT->addListener(this);
 
-//        y += dh + 5;
-//		mSrcSetRT = addButton("Set", x, y, setw, dh, box);
-//        mSrcSetRT->setExplicitFocusOrder(8);
 	}
     //--------------- SPEAKERS TAB ---------------- //
     box = mTabs->getTabContentComponent(3);
     {
         int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
-        int setw = 60, selectw = 50;
+        int selectw = 50;
         
         //-------- column 1 --------
         addLabel("Speaker placement:", x, y, w, dh, box);
         y += dh + 5;
         
         mSpPlacement = new ComboBox();
-        mSpPlacement->addItem("Top Clockwise", kTopClockwise);
-        mSpPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
         mSpPlacement->addItem("Left Alternate", kLeftAlternate);
         mSpPlacement->addItem("Left Clockwise", kLeftClockwise);
         mSpPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
+        mSpPlacement->addItem("Top Clockwise", kTopClockwise);
+        mSpPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
+
         mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
         
         box->addAndMakeVisible(mSpPlacement);
@@ -722,10 +719,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
         mSpT->setExplicitFocusOrder(7);
         mSpT->addListener(this);
-        
-//        y += dh + 5;
-//        mSpSetRT = addButton("Set", x, y, setw, dh, box);
-//        mSpSetRT->setExplicitFocusOrder(8);
 
     }
     
@@ -932,9 +925,7 @@ void OctogrisAudioProcessorEditor::updateSources(){
         mSrcSelect->addItem(s, index++);
     }
     mSrcSelect->setSelectedId(mFilter->getSrcSelected());
-//    if (mSrcApply){
-//        mSrcApply->triggerClick();
-//    }
+
     
     //source selection combo in trajectory tab
     if (mTrSrcSelect != nullptr){
@@ -984,8 +975,8 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
         
         
         float fuck = mFilter->getSpeakerA(i);
-        
-        //cout << "speaker att " << fuck << endl;
+//        cout << "speaker " << i << " att " << fuck << endl;
+//        cout << "speaker " << i << " att2 " << fuck2 << endl;
         Slider *slider = addParamSlider(kParamSpeaker, i, fuck, x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
         
         
@@ -1175,22 +1166,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 	{
 		mFilter->setApplyFilter(button->getToggleState());
 	}
-//	else if (button == mSrcSetRT)
-//	{
-//		int sp = mSrcSelect->getSelectedId() - 1;
-//		float r = mSrcR->getText().getFloatValue();
-//		float t = mSrcT->getText().getFloatValue();
-//		if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
-//		mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
-//	}
-//    else if (button == mSpSetRT)
-//    {
-//        int sp = mSpSelect->getSelectedId() - 1;
-//        float r = mSpR->getText().getFloatValue();
-//        float t = mSpT->getText().getFloatValue();
-//        if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
-//        mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
-//    }
+
 	else if (button == mTrWrite)
 	{ 
 		Trajectory::Ptr t = mFilter->getTrajectory();
@@ -1428,14 +1404,14 @@ void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
     FPoint curPosition = mFilter->getSourceRT(i-1);
     mSrcR->setText(String(curPosition.x));
     mSrcT->setText(String(curPosition.y * 180. / M_PI));
-    mFilter->setSrcSelected(mSrcSelect->getSelectedId());
+    //mFilter->setSrcSelected(mSrcSelect->getSelectedId());
 }
 
 void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
     FPoint curPosition = mFilter->getSpeakerRT(mSpSelect->getSelectedId()-1);
     mSpR->setText(String(curPosition.x));
     mSpT->setText(String(curPosition.y * 180. / M_PI));
-    mFilter->setSpSelected(mSpSelect->getSelectedId());
+    //mFilter->setSpSelected(mSpSelect->getSelectedId());
 }
 
 //==============================================================================
@@ -1469,8 +1445,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
         mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
 
-        
-#warning only if reaper
         if (mHost.isReaper()){
             int iCurMode = mInputOutputModeCombo->getSelectedId();
             int iNewMode = mFilter->getInputOutputMode()+1;
@@ -1482,7 +1456,8 @@ void OctogrisAudioProcessorEditor::timerCallback()
         
         mSrcSelect->setSelectedId(mFilter->getSrcSelected());
         mSpSelect->setSelectedId(mFilter->getSpSelected());
-        mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode());
+        mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode(), dontSendNotification);
+        updateSourceLocationTextEditor();
         mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
         
         mTrType->setSelectedId(mFilter->getTrType()+1);
@@ -1512,18 +1487,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 	if (mFieldNeedRepaint || mNeedRepaint){
 		mField->repaint();
     }
-    
-//#warning this stuff should be removed and replaced by the calls in 	if (hcp != mHostChangedProperty) { at line 1325
-//    if (mFilter->getIsSourcesChanged()){
-//        updateSources();
-//        mFilter->setIsSourcesChanged(false);
-//    }
-//    
-//    if (mFilter->getIsSpeakersChanged()){
-//        updateSpeakers();
-//        mFilter->setIsSpeakersChanged(false);
-//    }
-//end of the warning
     
     for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
 		mLevels.getUnchecked(i)->refreshIfNeeded();

@@ -18,7 +18,7 @@
 			<key>type</key>
 			<string>aufx</string>
 			<key>version</key>
-			<integer>131082</integer>
+			<integer>131083</integer>
 		</dict>
 	</array>
 	<key>BuildMachineOSBuild</key>
@@ -28,15 +28,15 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.UdeM.Octogris</string>
 	<key>CFBundleName</key>
-	<string>Octogris</string>
+	<string>Octogris2</string>
 	<key>CFBundlePackageType</key>
 	<string>TDMw</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.10</string>
+	<string>2.0.11</string>
 	<key>CFBundleSignature</key>
 	<string>PTul</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.10</string>
+	<string>2.0.11</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>

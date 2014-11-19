@@ -185,8 +185,9 @@ void FieldComponent::paint (Graphics& g)
 			float r = rt.x;
 			float t = rt.y;
 			FPoint p1 = convertSourceRT(1, t);
-			FPoint p2 = convertSourceRT((r >= 1) ? 2 : -1, t);
-			g.drawLine(Line<float>(p1, p2));
+			FPoint p2 = convertSourceRT((r >= .999) ? 2 : -1, t);
+			//draw the line that goes with every source
+            g.drawLine(Line<float>(p1, p2));
 		}
 		
 		g.setColour(Colour::fromHSV(hue, 1, 1, 1));

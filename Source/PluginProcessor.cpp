@@ -82,7 +82,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
     int mNumberOfSpeakers = 2;
     
     //SET SOURCES
-    setNumberOfSources(mNumberOfSources);
+    setNumberOfSources(mNumberOfSources, true);
     
     //SET SPEAKERS
     setNumberOfSpeakers(mNumberOfSpeakers, true);
@@ -129,6 +129,13 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
     for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++){   	//for (int i = 0; i < mNumberOfSources; i++){
         mParameters.set(getParamForSourceD(i), normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
     }
+
+    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++){   	//for (int i = 0; i < mNumberOfSources; i++){
+        mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+        mParameters.set(getParamForSpeakerM(i), 0);
+    }
+    
+
 }
 
 OctogrisAudioProcessor::~OctogrisAudioProcessor()
@@ -254,79 +261,79 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
     switch (p_iInputOutputMode){
             
         case i1o2:
-            setNumberOfSources(1);
+            setNumberOfSources(1, false);
             setNumberOfSpeakers(2, false);
             break;
         case i1o4:
-            setNumberOfSources(1);
+            setNumberOfSources(1, false);
             setNumberOfSpeakers(4, false);
             break;
         case i1o6:
-            setNumberOfSources(1);
+            setNumberOfSources(1, false);
             setNumberOfSpeakers(6, false);
             break;
         case i1o8:
-            setNumberOfSources(1);
+            setNumberOfSources(1, false);
             setNumberOfSpeakers(8, false);
             break;
         case i1o16:
-            setNumberOfSources(1);
+            setNumberOfSources(1, false);
             setNumberOfSpeakers(16, false);
             break;
         case i2o2:
-            setNumberOfSources(2);
+            setNumberOfSources(2, false);
             setNumberOfSpeakers(2, false);
             break;
         case i2o4:
-            setNumberOfSources(2);
+            setNumberOfSources(2, false);
             setNumberOfSpeakers(4, false);
             break;
         case i2o6:
-            setNumberOfSources(2);
+            setNumberOfSources(2, false);
             setNumberOfSpeakers(6, false);
             break;
         case i2o8:
-            setNumberOfSources(2);
+            setNumberOfSources(2, false);
             setNumberOfSpeakers(8, false);
             break;
         case i2o16:
-            setNumberOfSources(2);
+            setNumberOfSources(2, false);
             setNumberOfSpeakers(16, false);
             break;
         case i4o4:
-            setNumberOfSources(4);
+            setNumberOfSources(4, false);
             setNumberOfSpeakers(4, false);
             break;
         case i4o6:
-            setNumberOfSources(4);
+            setNumberOfSources(4, false);
             setNumberOfSpeakers(6, false);
             break;
         case i4o8:
-            setNumberOfSources(4);
+            setNumberOfSources(4, false);
             setNumberOfSpeakers(8, false);
             break;
         case i4o16:
-            setNumberOfSources(4);
+            setNumberOfSources(4, false);
             setNumberOfSpeakers(16, false);
             break;
         case i6o6:
-            setNumberOfSources(6);
+            setNumberOfSources(6, false);
             setNumberOfSpeakers(6, false);
             break;
         case i6o8:
-            setNumberOfSources(6);
+            setNumberOfSources(6, false);
             setNumberOfSpeakers(8, false);
             break;
         case i6o16:
-            setNumberOfSources(6);
+            setNumberOfSources(6, false);
             setNumberOfSpeakers(16, false);
             break;
         case i8o8:
-            setNumberOfSources(8);
+            setNumberOfSources(8, false);
             setNumberOfSpeakers(8, false);
             break;
         case i8o16:
-            setNumberOfSources(8);
+            setNumberOfSources(8, false);
             setNumberOfSpeakers(16, false);
             break;
     }
@@ -348,7 +355,7 @@ void OctogrisAudioProcessor::setSpSelected(int p_i){
     mSpSelected = p_i;
 }
 
-void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
+void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues){
     
     //if new number of sources is same as before, return
     if (p_iNewNumberOfSources == mNumberOfSources){
@@ -369,14 +376,22 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
     mFilters.resize(mNumberOfSources);
     
     mLockedThetas.ensureStorageAllocated(mNumberOfSources);
-	for (int i = 0; i < mNumberOfSources; i++) mLockedThetas.add(0);
-    
+    for (int i = 0; i < mNumberOfSources; i++){
+        mLockedThetas.add(0);
+    }
     mInputsCopy.resize(mNumberOfSources);
     
+#warning this is not always called with 1 source, but should be
     if (mNumberOfSources == 1)
 	{
 		setSourceRT(0, FPoint(0, 0));
 	}
+    else if (!bUseDefaultValues){
+        for (int i = 0; i < mNumberOfSources; ++i){
+            setSourceRT(i, getSourceRT(i));
+        }
+        
+    }
 	else
 	{
 		double anglePerSource = 360 / mNumberOfSources;
@@ -415,16 +430,16 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources){
 			}
 		}
 	}
-	for (int i = 0; i < mNumberOfSources; i++)
+    for (int i = 0; i < mNumberOfSources; i++){
 		mLockedThetas.set(i, getSourceRT(i).y);
-    
+    }
     mHostChangedParameter++;
     
-    //starts audio processing again
+    //restart audio processing
     suspendProcessing (false);
 }
 
-void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bIsCallFromConstructor){
+void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultAttenuation){
     
     //if new number of speakers is same as before, return
     if (p_iNewNumberOfSpeakers == mNumberOfSpeakers){
@@ -453,14 +468,14 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
         axisOffset = anglePerSpeakers / 2;
         for (int i = 0; i < mNumberOfSpeakers; i++)
         {
-#warning maybe those lines are the probleM?
-            if (bIsCallFromConstructor){
-                mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-                mParameters.set(getParamForSpeakerM(i), 0);
-            } else {
+
+//            if (bUseDefaultAttenuation){
+//                mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+//                mParameters.set(getParamForSpeakerM(i), 0);
+//            } else {
                 mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
                 mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
-            }
+//            }
             if(i%2 == 0)
             {
                 offset = 90 + axisOffset;
@@ -482,15 +497,15 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
         offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
         for (int i = 0; i < mNumberOfSpeakers; i++)
         {
-#warning and here?
-            if (bIsCallFromConstructor){
-                mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-                mParameters.set(getParamForSpeakerM(i), 0);
-            } else {
+
+//            if (bUseDefaultAttenuation){
+//                mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+//                mParameters.set(getParamForSpeakerM(i), 0);
+//            } else {
                 mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
                 mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
-            }
-            
+//            }
+        
             if (offset < 0) offset += 360;
             else if (offset > 360) offset -= 360;
             
@@ -596,10 +611,10 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 
     //set sources and speakers
     if (mHost.isReaper()) {
-        setNumberOfSources(mNumberOfSources);
+        setNumberOfSources(mNumberOfSources, true);
         setNumberOfSpeakers(mNumberOfSpeakers, true);
     } else {
-        setNumberOfSources(getNumInputChannels());
+        setNumberOfSources(getNumInputChannels(), true);
         setNumberOfSpeakers(getNumOutputChannels(), true);
     }
     

@@ -141,7 +141,7 @@ static const float kQuarterCircle = M_PI / 2;
 static const float kThetaMax = M_PI * 2;
 static const float kThetaLockRadius = 0.05;
 static const float kThetaLockRampRadius = 0.025;
-static const float kSourceDefaultRadius = 1.005f;
+static const float kSourceDefaultRadius = 1.f;
 
 //==============================================================================
 static inline float normalize(float min, float max, float value)
@@ -534,8 +534,8 @@ private:
     int mNumberOfSources;   //JucePlugin_MaxNumInputChannels;
     int mNumberOfSpeakers;  //JucePlugin_MaxNumOutputChannels;
     
-    void setNumberOfSources(int p_iNewNumberOfSources);
-    void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool isCallFromConstructor);
+    void setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues);
+    void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues);
     
     //int inline ParamForSourceX(int v) {return kSourceX + v * kParamsPerSource;}
     //int inline ParamForSourceY(int v) {return kSourceY + v * kParamsPerSource;}

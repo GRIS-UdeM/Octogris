@@ -33,11 +33,12 @@ enum
 };
 
 enum placement{
-    kTopClockwise = 1,
-    kTopCounterClockwise,
-    kLeftAlternate,
+    kLeftAlternate = 1,
     kLeftClockwise,
-    kLeftCounterClockWise
+    kLeftCounterClockWise,
+    kTopClockwise,
+    kTopCounterClockwise,
+
 };
 
 class MiniProgressBar;
