@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="ZtKxiG" name="Octogris" projectType="audioplug" version="2.0.10"
+<JUCERPROJECT id="ZtKxiG" name="Octogris2" projectType="audioplug" version="2.0.11"
               bundleIdentifier="com.UdeM.Octogris" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="0" buildAU="1" buildRTAS="0" buildAAX="1"
               pluginName="Octogris" pluginDesc="Octogris" pluginManufacturer="UdeM"
@@ -9,7 +9,7 @@
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris"
               pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.0">
-  <MAINGROUP id="rRl79u" name="Octogris">
+  <MAINGROUP id="rRl79u" name="Octogris2">
     <GROUP id="{DDD6EC5A-36B8-F104-E1BB-430270FB5F9C}" name="liblo">
       <GROUP id="{FB530947-3781-87A5-DA16-CF82F7FC1F81}" name="lo">
         <FILE id="EY9iTk" name="lo.h" compile="0" resource="0" file="../Octogris copy/liblo/lo/lo.h"/>

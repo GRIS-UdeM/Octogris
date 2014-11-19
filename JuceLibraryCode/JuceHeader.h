@@ -33,9 +33,9 @@
 #if ! JUCE_DONT_DECLARE_PROJECTINFO
 namespace ProjectInfo
 {
-    const char* const  projectName    = "Octogris";
-    const char* const  versionString  = "2.0.10";
-    const int          versionNumber  = 0x2000a;
+    const char* const  projectName    = "Octogris2";
+    const char* const  versionString  = "2.0.11";
+    const int          versionNumber  = 0x2000b;
 }
 #endif
 

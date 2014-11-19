@@ -978,7 +978,7 @@
 					A5E64476E68FFA24159EBE0C, ); name = Source; sourceTree = "<group>"; };
 		5BD0C6BDC5067957B9ABAD06 = {isa = PBXGroup; children = (
 					1BDF63FA1BB4426DD422DEA0,
-					AC289CC86FF4B31656CB718A, ); name = Octogris; sourceTree = "<group>"; };
+					AC289CC86FF4B31656CB718A, ); name = Octogris2; sourceTree = "<group>"; };
 		5038F0E40114375CFE3BB7FE = {isa = PBXGroup; children = (
 					F7AF57EECE028441DFA9016C,
 					C8C29230F3AC01C64A3C1570,
@@ -2155,7 +2155,7 @@
 					9B535A1C434303D4AA33E340,
 					AFBAB6135653C9B7B9F10AA5,
 					AE1FAB299C5E8BE3F6E82000,
-					ACB59ACAAF55A1838119385D, ); buildRules = ( ); dependencies = ( ); name = Octogris; productName = Octogris; productReference = 40C2BC6072129AFCE484F588; productInstallPath = "$(HOME)/Library/Audio/Plug-Ins/Components/"; productType = "com.apple.product-type.bundle"; };
+					ACB59ACAAF55A1838119385D, ); buildRules = ( ); dependencies = ( ); name = Octogris2; productName = Octogris2; productReference = 40C2BC6072129AFCE484F588; productInstallPath = "$(HOME)/Library/Audio/Plug-Ins/Components/"; productType = "com.apple.product-type.bundle"; };
 		46CB48D29713829397AFADF0 = {isa = PBXProject; buildConfigurationList = 465764387A5B1C8F5EA3A7C6; attributes = { LastUpgradeCheck = 0440; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = 3911563B807D9CFB0D98CEFA; projectDirPath = ""; projectRoot = ""; targets = ( DD282B42F4192E0F53777C29 ); };
 	};
 	rootObject = 46CB48D29713829397AFADF0;
