@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="ZtKxiG" name="Octogris2" projectType="audioplug" version="2.0.11"
-              bundleIdentifier="com.UdeM.Octogris" includeBinaryInAppConfig="1"
+<JUCERPROJECT id="ZtKxiG" name="Octogris2" projectType="audioplug" version="2.0.12"
+              bundleIdentifier="com.UdeM.Octogris2" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="0" buildAU="1" buildRTAS="0" buildAAX="1"
-              pluginName="Octogris" pluginDesc="Octogris" pluginManufacturer="UdeM"
+              pluginName="Octogris2" pluginDesc="Octogris2" pluginManufacturer="UdeM"
               pluginManufacturerCode="UdeM" pluginCode="Octo" pluginChannelConfigs="{1,2}, {1,4}, {1,6}, {1,8}, {1,16}, {2,2}, {2,4}, {2,6}, {2,8}, {2,16}, {4,4}, {4,6}, {4,8}, {4,16}, {6,6}, {6,8}, {6,16}, {8,8}, {8,16}"
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
-              pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris"
+              pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
               pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.0">
   <MAINGROUP id="rRl79u" name="Octogris2">
     <GROUP id="{DDD6EC5A-36B8-F104-E1BB-430270FB5F9C}" name="liblo">
@@ -76,11 +76,11 @@
                externalLibraries="Leap" aaxFolder="~/Documents/sdks/AAX_SDK_2p1p1/">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="Native"
-                       isDebug="1" optimisation="1" targetName="Octogris" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
+                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
                        libraryPath="~/Documents/sdks/LeapSDK/lib/libc++&#10;"/>
         <CONFIGURATION name="Release" osxSDK="10.9 SDK" osxCompatibility="10.9 SDK"
                        osxArchitecture="64BitUniversal" isDebug="0" optimisation="3"
-                       targetName="Octogris" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
+                       targetName="Octogris2" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
                        libraryPath="~/Documents/sdks/LeapSDK/lib/libc++&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

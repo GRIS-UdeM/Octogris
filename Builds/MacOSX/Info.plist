@@ -8,7 +8,7 @@
     <key>CFBundleIconFile</key>
     <string></string>
     <key>CFBundleIdentifier</key>
-    <string>com.UdeM.Octogris</string>
+    <string>com.UdeM.Octogris2</string>
     <key>CFBundleName</key>
     <string>Octogris2</string>
     <key>CFBundlePackageType</key>
@@ -16,9 +16,9 @@
     <key>CFBundleSignature</key>
     <string>PTul</string>
     <key>CFBundleShortVersionString</key>
-    <string>2.0.11</string>
+    <string>2.0.12</string>
     <key>CFBundleVersion</key>
-    <string>2.0.11</string>
+    <string>2.0.12</string>
     <key>NSHumanReadableCopyright</key>
     <string></string>
     <key>NSHighResolutionCapable</key>
@@ -27,9 +27,9 @@
     <array>
       <dict>
         <key>name</key>
-        <string>UdeM: Octogris</string>
+        <string>UdeM: Octogris2</string>
         <key>description</key>
-        <string>Octogris</string>
+        <string>Octogris2</string>
         <key>factoryFunction</key>
         <string>OctogrisAUFactory</string>
         <key>manufacturer</key>
@@ -39,7 +39,7 @@
         <key>subtype</key>
         <string>Octo</string>
         <key>version</key>
-        <integer>131083</integer>
+        <integer>131084</integer>
       </dict>
     </array>
   </dict>

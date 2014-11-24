@@ -6,13 +6,13 @@
 	<array>
 		<dict>
 			<key>description</key>
-			<string>Octogris</string>
+			<string>Octogris2</string>
 			<key>factoryFunction</key>
 			<string>OctogrisAUFactory</string>
 			<key>manufacturer</key>
 			<string>UdeM</string>
 			<key>name</key>
-			<string>UdeM: Octogris</string>
+			<string>UdeM: Octogris2</string>
 			<key>subtype</key>
 			<string>Octo</string>
 			<key>type</key>

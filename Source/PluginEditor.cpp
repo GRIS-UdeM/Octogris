@@ -290,7 +290,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	}
 	bool leapSupported = false;
 	{
-		Component* mleap = CreateLeapComponent(mFilter, this);
+		mleap = CreateLeapComponent(mFilter, this);
 		if (mleap)
 		{
 			mTabs->addTab("Leap", tabBg, mleap, true);
@@ -325,7 +325,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 
         //mSrcApply = NULL;
         mTrSrcSelect = nullptr;
-        updateSources();
+        //updateSources();
     }
     
 	// speakers
@@ -916,7 +916,11 @@ void OctogrisAudioProcessorEditor::updateSources(){
     
     ct->setSize(w, y);
     
+#warning need to call whatever is called to reset source placement
     mMover.updateNumberOfSources();
+
+        //mSrcPlacement->setSelectedId(mSrcPlacement->getSelectedId());
+    comboBoxChanged(mSrcPlacement);
     
     //source position combobox in source tab
     int index = 1;
@@ -1467,7 +1471,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
         
         updateOscComponent(mOsc);
-        //updateLeapComponent(mleap);
+        updateLeapComponent(mleap);
         
         mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
 		mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);

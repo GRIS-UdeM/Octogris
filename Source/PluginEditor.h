@@ -157,7 +157,7 @@ private:
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
-    //Component *mleap;
+    Component *mleap;
 	HeartbeatComponent *mOsc;
 	
 	// for resizing/repaint:
