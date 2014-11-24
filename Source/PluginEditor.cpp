@@ -1492,11 +1492,13 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
             mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);
-			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
+//			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
 		}
 		
-		for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
+        for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++){
 			mAttenuations.getUnchecked(i)->setValue(mFilter->getSpeakerA(i), dontSendNotification);
+            mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
+        }
 	}
 	
 	mNeedRepaint = false;

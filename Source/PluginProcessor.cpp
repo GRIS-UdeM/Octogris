@@ -1311,7 +1311,8 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 		appendFloatData(destData, mParameters[getParamForSpeakerX(i)]);
 		appendFloatData(destData, mParameters[getParamForSpeakerY(i)]);
 		appendFloatData(destData, mParameters[getParamForSpeakerA(i)]);
-		appendFloatData(destData, mParameters[getParamForSpeakerM(i)]);
+        float mute = mParameters[getParamForSpeakerM(i)];
+		appendFloatData(destData, mute);
 	}
 }
 void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -1379,7 +1380,8 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 				mParameters.set(getParamForSpeakerY(i), readFloatData(data, sizeInBytes, 0));
                 float att = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
 				mParameters.set(getParamForSpeakerA(i), att);
-				mParameters.set(getParamForSpeakerM(i), readFloatData(data, sizeInBytes, 0));
+                float mute = readFloatData(data, sizeInBytes, 0);
+				mParameters.set(getParamForSpeakerM(i), mute );
 			}
 		}
 	}
