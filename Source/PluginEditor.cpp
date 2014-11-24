@@ -268,12 +268,10 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	mFilter->addListener(this);
     
 	// main field
-	{
-        mField = new FieldComponent(mFilter, &mMover);
-		addAndMakeVisible(mField);
-		mComponents.add(mField);
+    mField = new FieldComponent(mFilter, &mMover);
+    addAndMakeVisible(mField);
+    mComponents.add(mField);
 
-	}
     
     // param box
 	Colour tabBg = Colour::fromRGB(200,200,200);
@@ -898,13 +896,8 @@ void OctogrisAudioProcessorEditor::updateSources(){
         Component *label = addLabel(s, x, y, w/3, dh, ct);
         mLabels.add(label);
         
-        
-        float fuck = mFilter->getSourceD(i);
-//        cout << "update source: source distance " << fuck << endl;
-        Slider *slider = addParamSlider(kParamSource, i, fuck, x + w/3, y, w*2/3, dh, ct);
-        
-        
-        
+        float distance = mFilter->getSourceD(i);
+        Slider *slider = addParamSlider(kParamSource, i, distance, x + w/3, y, w*2/3, dh, ct);
         
         if (bIsFreeVolumeMode){
             slider->setEnabled(false);
@@ -916,10 +909,8 @@ void OctogrisAudioProcessorEditor::updateSources(){
     
     ct->setSize(w, y);
     
-#warning need to call whatever is called to reset source placement
     mMover.updateNumberOfSources();
 
-        //mSrcPlacement->setSelectedId(mSrcPlacement->getSelectedId());
     comboBoxChanged(mSrcPlacement);
     
     //source position combobox in source tab
@@ -974,19 +965,10 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
         
         ToggleButton *mute = addCheckbox(s, mFilter->getSpeakerM(i), x, y, muteWidth, dh, ct);
         mMutes.add(mute);
-        
-        
-        
-        
-        float fuck = mFilter->getSpeakerA(i);
-//        cout << "speaker " << i << " att " << fuck << endl;
-//        cout << "speaker " << i << " att2 " << fuck2 << endl;
-        Slider *slider = addParamSlider(kParamSpeaker, i, fuck, x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
-        
-        
-        
-        
-        
+
+        float att = mFilter->getSpeakerA(i);
+        Slider *slider = addParamSlider(kParamSpeaker, i, att, x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
+
         slider->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
         mAttenuations.add(slider);
         
@@ -1237,13 +1219,15 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
         } else {
             for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(true);   }
         }
-        
+        updateSources();
+        updateSpeakers();
 		repaint();
 	}
 	else if (comboBox == mOscLeapSourceCb)
 	{
 		mFilter->setOscLeapSource(comboBox->getSelectedId() - 1);
 	}
+    
     else if (mHost.isReaper() && comboBox == mInputOutputModeCombo)
 	{
 		mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
@@ -1381,9 +1365,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     }
     else if (comboBox == mTrUnits)
     {
-#warning this is ridiculous, clean this
-        bool beats = mTrUnits->getSelectedId() == 1;
-        beats ? mFilter->setTrUnits(0) : mFilter->setTrUnits(1);
+        mFilter->setTrUnits(mTrUnits->getSelectedId());
     }
     else if (comboBox == mTrType)
     {
@@ -1504,6 +1486,9 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mFilterNear->setValue(mFilter->getParameter(kFilterNear));
         mFilterMid->setValue(mFilter->getParameter(kFilterMid));
         mFilterFar->setValue(mFilter->getParameter(kFilterFar));
+        
+        updateSourceLocationTextEditor();
+        updateSpeakerLocationTextEditor();
 		
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
             mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);

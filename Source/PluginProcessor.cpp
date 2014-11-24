@@ -188,7 +188,7 @@ float OctogrisAudioProcessor::getParameter (int index)
 void OctogrisAudioProcessor::setParameter (int index, float newValue)
 {
 	mParameters.set(index, newValue);
-	mHostChangedParameter++;
+	cout << mHostChangedParameter++ << endl;
 }
 
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
@@ -1370,17 +1370,15 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 			{
 				mParameters.set(getParamForSourceX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSourceY(i), readFloatData(data, sizeInBytes, 0));
-                float fuck = readFloatData(data, sizeInBytes, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
-                //cout << "set state source distance: " << fuck << endl;
-				mParameters.set(getParamForSourceD(i), fuck);
+                float distance = readFloatData(data, sizeInBytes, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
+				mParameters.set(getParamForSourceD(i), distance);
 			}
             for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
 			{
 				mParameters.set(getParamForSpeakerX(i), readFloatData(data, sizeInBytes, 0));
 				mParameters.set(getParamForSpeakerY(i), readFloatData(data, sizeInBytes, 0));
-                float fuck = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-                //cout << "speaker attenuation: " << fuck << endl;
-				mParameters.set(getParamForSpeakerA(i), fuck);
+                float att = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
+				mParameters.set(getParamForSpeakerA(i), att);
 				mParameters.set(getParamForSpeakerM(i), readFloatData(data, sizeInBytes, 0));
 			}
 		}
