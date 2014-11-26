@@ -97,6 +97,7 @@ private:
 	bool mNeedRepaint;
 	bool mFieldNeedRepaint;
     bool m_bIsReturnKeyPressedCalledFromFocusLost;
+    bool m_bLoadingPreset;
     uint64_t mHostChangedParameter;
 	uint64_t mHostChangedProperty;
 	Array<Slider*> mDistances;

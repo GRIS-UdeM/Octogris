@@ -1239,9 +1239,14 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     else if (mHost.isReaper() && comboBox == mInputOutputModeCombo)
 	{
 		mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
+        cout << "combo box updated with this " << mInputOutputModeCombo->getSelectedItemIndex() << endl;
         
         updateSources();
         updateSpeakers();
+        if (m_bLoadingPreset){
+            mFilter->restoreCurrentLocations();
+            m_bLoadingPreset = false;
+        }
         mField->repaint();
 
 	}
@@ -1443,6 +1448,8 @@ void OctogrisAudioProcessorEditor::timerCallback()
             int iCurMode = mInputOutputModeCombo->getSelectedId();
             int iNewMode = mFilter->getInputOutputMode()+1;
             if (iNewMode != iCurMode){
+                mFilter->storeCurrentLocations();
+                m_bLoadingPreset = true;
                 mInputOutputModeCombo->setSelectedId(iNewMode);
             }
         }
@@ -1450,9 +1457,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
         
         mSrcSelect->setSelectedId(mFilter->getSrcSelected());
         mSpSelect->setSelectedId(mFilter->getSpSelected());
+        
         mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode(), dontSendNotification);
         updateSourceLocationTextEditor();
-        mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
+        mSpPlacement->setSelectedId(mFilter->getSpPlacementMode(), dontSendNotification);
+        updateSpeakerLocationTextEditor();
         
         mTrType->setSelectedId(mFilter->getTrType()+1);
         mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);

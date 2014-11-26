@@ -224,9 +224,6 @@ public:
 
     //==============================================================================
 	// For editor
-
-
-
     
     
 	int getNumberOfSources() const { return mNumberOfSources; }
@@ -473,6 +470,9 @@ public:
     
     void setIsSourcesChanged(bool pIsNumberSourcesChanged){ mIsNumberSourcesChanged = pIsNumberSourcesChanged;}
     void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
+    
+    void storeCurrentLocations();
+    void restoreCurrentLocations();
 	
 private:
     PluginHostType mHost;
@@ -529,6 +529,14 @@ private:
 	Array<IOBuf> mInputsCopy;
 	Array<IOBuf> mSmoothedParametersRamps;
     
+    float mBufferSrcLocX[JucePlugin_MaxNumInputChannels];
+    float mBufferSrcLocY[JucePlugin_MaxNumInputChannels];
+    float mBufferSrcLocD[JucePlugin_MaxNumInputChannels];
+    
+    float mBufferSpLocX[JucePlugin_MaxNumOutputChannels];
+    float mBufferSpLocY[JucePlugin_MaxNumOutputChannels];
+    float mBufferSpLocA[JucePlugin_MaxNumOutputChannels];
+    float mBufferSpLocM[JucePlugin_MaxNumOutputChannels];
     
     ///////////////////////////
     int mNumberOfSources;   //JucePlugin_MaxNumInputChannels;

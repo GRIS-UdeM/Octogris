@@ -1315,6 +1315,40 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 		appendFloatData(destData, mute);
 	}
 }
+
+void OctogrisAudioProcessor::storeCurrentLocations(){
+    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
+    {
+        mBufferSrcLocX[i] = mParameters[getParamForSourceX(i)];
+        mBufferSrcLocY[i] = mParameters[getParamForSourceY(i)];
+        mBufferSrcLocD[i] = mParameters[getParamForSourceD(i)];
+    }
+    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
+    {
+        mBufferSpLocX[i] =  mParameters[getParamForSpeakerX(i)];
+        mBufferSpLocY[i] = mParameters[getParamForSpeakerY(i)];
+        mBufferSpLocA[i] = mParameters[getParamForSpeakerA(i)];
+        mBufferSpLocM[i] = mParameters[getParamForSpeakerM(i)];
+    }
+}
+
+void OctogrisAudioProcessor::restoreCurrentLocations(){
+    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
+    {
+        mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
+        mParameters.set(getParamForSourceY(i), mBufferSrcLocY[i]);
+        mParameters.set(getParamForSourceD(i), mBufferSrcLocD[i]);
+    }
+    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
+    {
+        mParameters.set(getParamForSpeakerX(i), mBufferSpLocX[i]);
+        mParameters.set(getParamForSpeakerY(i), mBufferSpLocY[i]);
+        mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);
+        mParameters.set(getParamForSpeakerM(i), mBufferSpLocM[i]);
+    }
+}
+
+
 void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
 	//the weird order here is because the order has to match what is in getStateInformation
