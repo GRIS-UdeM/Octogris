@@ -251,9 +251,7 @@ private:
 
 //==================================== EDITOR ===================================================================
 
-
-OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcessor* ownerFilter)
-    :
+OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcessor* ownerFilter):
 		AudioProcessorEditor (ownerFilter),
 		mFilter(ownerFilter),
 		mMover(ownerFilter)
@@ -323,6 +321,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 
         //mSrcApply = NULL;
         mTrSrcSelect = nullptr;
+#warning DP needs this line, probably logic too
         //updateSources();
     }
     
@@ -371,23 +370,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		
 		{
 			mMovementMode = new ComboBox();
-			int index = 1;
-			mMovementMode->addItem("Independent", index++);
-			if (mFilter->getNumberOfSources() == 2)
-			{
-				mMovementMode->addItem("Symmetric X", index++);
-				mMovementMode->addItem("Symmetric Y", index++);
-				mMovementMode->addItem("Symmetric X & Y", index++);
-			}
-			if (mFilter->getNumberOfSources() >= 2)
-			{
-				mMovementMode->addItem("Circular", index++);
-				mMovementMode->addItem("Circular Fixed Radius", index++);
-				mMovementMode->addItem("Circular Fixed Angle", index++);
-				mMovementMode->addItem("Circular Fully Fixed", index++);
-				mMovementMode->addItem("Delta Lock", index++);
-			}
-			mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
+            updateMovementModeCombo();
+			
 			mMovementMode->setSize(w, dh);
 			mMovementMode->setTopLeftPosition(x, y);
 			box->addAndMakeVisible(mMovementMode);
@@ -881,12 +865,14 @@ void OctogrisAudioProcessorEditor::updateSources(){
     }
     mDistances.clear();
     mLabels.clear();
-    mSrcSelect->clear();
+    mSrcSelect->clear(dontSendNotification);
     if (mTrSrcSelect != nullptr){
-        mTrSrcSelect->clear();
+        mTrSrcSelect->clear(dontSendNotification);
     }
     
-    
+    mMovementMode->clear(dontSendNotification);
+    updateMovementModeCombo();
+
     //put new stuff
     int iCurSources = mFilter->getNumberOfSources();
     bool bIsFreeVolumeMode = mFilter->getProcessMode() == kPanVolumeMode;
@@ -994,9 +980,28 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
         mSpSelect->addItem(s, index++);
     }
     mSpSelect->setSelectedId(mFilter->getSpSelected());
-//    if (mSpApply){
-//        mSpApply->triggerClick();
-//    }
+}
+
+void OctogrisAudioProcessorEditor::updateMovementModeCombo(){
+    int index = 1;
+    mMovementMode->addItem("Independent", index++);
+    if (mFilter->getNumberOfSources() == 2)
+    {
+        mMovementMode->addItem("Symmetric X", index++);
+        mMovementMode->addItem("Symmetric Y", index++);
+        mMovementMode->addItem("Symmetric X & Y", index++);
+    }
+    if (mFilter->getNumberOfSources() >= 2)
+    {
+        mMovementMode->addItem("Circular", index++);
+        mMovementMode->addItem("Circular Fixed Radius", index++);
+        mMovementMode->addItem("Circular Fixed Angle", index++);
+        mMovementMode->addItem("Circular Fully Fixed", index++);
+        mMovementMode->addItem("Delta Lock", index++);
+    }
+    int iCurMode = mFilter->getMovementMode() + 1;
+    iCurMode > mMovementMode->getNumItems() ? mMovementMode->setSelectedId(1) : mMovementMode->setSelectedId(iCurMode);
+
 }
 
 
@@ -1219,8 +1224,11 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
         } else {
             for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(true);   }
         }
-        updateSources();
-        updateSpeakers();
+        
+#warning not sure why I put this?
+        //updateSources();
+        //updateSpeakers();
+        
 		repaint();
 	}
 	else if (comboBox == mOscLeapSourceCb)
@@ -1492,7 +1500,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
             mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);
-//			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
 		}
 		
         for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++){

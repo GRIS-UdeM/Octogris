@@ -123,21 +123,11 @@ private:
 
 	
     // sources
-    //ToggleButton *mSrcAlternate;
-    //ToggleButton *mSrcStartAtTop;
-    //ToggleButton *mSrcClockwise;
-    //TextButton *mSrcApply;
     TextEditor *mSrcR, *mSrcT;
-    //TextButton *mSrcSetRT;
     ComboBox *mSrcSelect, *mSrcPlacement;
     
     // speakers
-	//ToggleButton *mSpAlternate;
-	//ToggleButton *mSpStartAtTop;
-	//ToggleButton *mSpClockwise;
-	//TextButton *mSpApply;
 	TextEditor *mSpR, *mSpT;
-	//TextButton *mSpSetRT;
 	ComboBox *mSpSelect, *mSpPlacement;
 
 	// trajectories
@@ -170,6 +160,7 @@ private:
     void updateSpeakers();
     void updateSourceLocationTextEditor();
     void updateSpeakerLocationTextEditor();
+    void updateMovementModeCombo();
 	
 	Component* addLabel(const String &s, int x, int y, int w, int h, Component *into);
 	ToggleButton* addCheckbox(const String &s, bool v, int x, int y, int w, int h, Component *into);
