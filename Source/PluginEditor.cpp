@@ -320,9 +320,10 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSrcSelect->addListener(this);
 
         //mSrcApply = NULL;
-        mTrSrcSelect = nullptr;
-#warning DP needs this line, probably logic too
-        //updateSources();
+        //mTrSrcSelect = nullptr;
+
+        if (!mHost.isReaper())
+            updateSources(true);
     }
     
 	// speakers
@@ -369,7 +370,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		y += dh + 5;
 		
 		{
-			mMovementMode = new ComboBox();
+            
+            mMovementMode = new ComboBox();
             updateMovementModeCombo();
 			
 			mMovementMode->setSize(w, dh);
@@ -852,7 +854,7 @@ void OctogrisAudioProcessorEditor::resized()
 }
 
 
-void OctogrisAudioProcessorEditor::updateSources(){
+void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
     
   	int dh = kDefaultLabelHeight, x = 0, y = 0, w = kCenterColumnWidth;
 	
@@ -865,13 +867,17 @@ void OctogrisAudioProcessorEditor::updateSources(){
     }
     mDistances.clear();
     mLabels.clear();
-    mSrcSelect->clear(dontSendNotification);
-    if (mTrSrcSelect != nullptr){
+    
+    
+    
+    if (!p_bCalledFromConstructor){
+        mSrcSelect->clear(dontSendNotification);
         mTrSrcSelect->clear(dontSendNotification);
+        mMovementMode->clear(dontSendNotification);
+        updateMovementModeCombo();
     }
     
-    mMovementMode->clear(dontSendNotification);
-    updateMovementModeCombo();
+    
 
     //put new stuff
     int iCurSources = mFilter->getNumberOfSources();
@@ -897,7 +903,9 @@ void OctogrisAudioProcessorEditor::updateSources(){
     
     mMover.updateNumberOfSources();
 
-    comboBoxChanged(mSrcPlacement);
+    if (!p_bCalledFromConstructor){
+        comboBoxChanged(mSrcPlacement);
+    }
     
     //source position combobox in source tab
     int index = 1;
@@ -909,7 +917,7 @@ void OctogrisAudioProcessorEditor::updateSources(){
 
     
     //source selection combo in trajectory tab
-    if (mTrSrcSelect != nullptr){
+    if (!p_bCalledFromConstructor){
         int index = 1;
         mTrSrcSelect->addItem("All sources", index++);
         for (int i = 0; i < mFilter->getNumberOfSources(); i++)
@@ -1241,7 +1249,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 		mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
         cout << "combo box updated with this " << mInputOutputModeCombo->getSelectedItemIndex() << endl;
         
-        updateSources();
+        updateSources(false);
         updateSpeakers();
         if (m_bLoadingPreset){
             mFilter->restoreCurrentLocations();

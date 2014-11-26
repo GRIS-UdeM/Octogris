@@ -1333,6 +1333,7 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
 }
 
 void OctogrisAudioProcessor::restoreCurrentLocations(){
+#warning should probably use actual number of speakers, to test
     for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
     {
         mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
