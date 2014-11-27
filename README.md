@@ -1,4 +1,4 @@
-Octogris
+Octogris2
 ========
 
 Copyright (C) 2014  GRIS-UdeM, octogris@gmail.com
@@ -15,13 +15,4 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-===========
-
-Download links :
-
-- Mac :
-			http://www.metakine.com/octogris/octogris_20141001_mac.zip
-- Windows :
-			http://www.metakine.com/octogris/octogris_20141001_win.zip
 
