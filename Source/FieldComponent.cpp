@@ -344,13 +344,11 @@ void FieldComponent::mouseUp(const MouseEvent &event)
 //						mFilter->getParamForSourceY(mSelectedItem),
 //						mSelectedItem);
 			mMover->end(kField);
-            #warning need to trigger editor::updateSourceLocation
 			break;
 			
 		case kSelectedSpeaker:
 			mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerX(mSelectedItem));
 			mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerY(mSelectedItem));
-            #warning need to trigger editor::updateSpeakerLocation
 			break;
 	}
 

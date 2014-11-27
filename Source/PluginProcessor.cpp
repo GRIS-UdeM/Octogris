@@ -358,11 +358,11 @@ void OctogrisAudioProcessor::setSpSelected(int p_i){
 void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues){
     
     //if new number of sources is same as before, return
-    if (p_iNewNumberOfSources == mNumberOfSources){
-        return;
-    } else {
-        mIsNumberSourcesChanged = true;
-    }
+//    if (p_iNewNumberOfSources == mNumberOfSources){
+//        return;
+//    } else {
+//        mIsNumberSourcesChanged = true;
+//    }
     
 //    cout << "SET NUMBER OF SOURCES\n";
 //    cout <<  "new number: " << p_iNewNumberOfSources << "\n";
@@ -1333,7 +1333,6 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
 }
 
 void OctogrisAudioProcessor::restoreCurrentLocations(){
-#warning should probably use actual number of speakers, to test
     for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
     {
         mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);

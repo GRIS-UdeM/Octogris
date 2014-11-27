@@ -267,8 +267,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
     
 	// main field
     mField = new FieldComponent(mFilter, &mMover);
-    addAndMakeVisible(mField);
-    mComponents.add(mField);
 
     
     // param box
@@ -322,7 +320,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         //mSrcApply = NULL;
         //mTrSrcSelect = nullptr;
 
-        if (!mHost.isReaper())
+        //if (!mHost.isReaper())
             updateSources(true);
     }
     
@@ -808,6 +806,10 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	mTabs->initDone();
 	
 	mFilter->setCalculateLevels(true);
+
+    addAndMakeVisible(mField);
+    mComponents.add(mField);
+    
 	refreshSize();
 }
 
@@ -1246,8 +1248,10 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     
     else if (mHost.isReaper() && comboBox == mInputOutputModeCombo)
 	{
+        return;
+
 		mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
-        cout << "combo box updated with this " << mInputOutputModeCombo->getSelectedItemIndex() << endl;
+//        cout << "processor sent this option from mInputOutputModeCombo" << mInputOutputModeCombo->getSelectedItemIndex() << endl;
         
         updateSources(false);
         updateSpeakers();
@@ -1260,6 +1264,12 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	}
     else if (comboBox == mSrcPlacement)
     {
+        return;
+        
+        if (mFilter->getNumberOfSources() == 1){
+            mFilter->setSourceRT(0, FPoint(0, 0));
+            return;
+        }
         
         bool alternate = false;
         bool startAtTop = false;
@@ -1321,6 +1331,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     }
     else if (comboBox == mSpPlacement)
     {
+        return;
         bool alternate = false;
         bool startAtTop = false;
         bool clockwise = false;
