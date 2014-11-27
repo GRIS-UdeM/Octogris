@@ -268,7 +268,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	// main field
     mField = new FieldComponent(mFilter, &mMover);
 
-    
     // param box
 	Colour tabBg = Colour::fromRGB(200,200,200);
 	mTabs = new OctTabbedComponent(TabbedButtonBar::TabsAtTop, mFilter);
@@ -355,6 +354,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	
     
     int dh = kDefaultLabelHeight;
+    int iButtonW = 50;
     
     //--------------- SETTINGS TAB ---------------- //
 	Component *box = mTabs->getTabContentComponent(0);
@@ -421,8 +421,11 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		
 		mShowGridLines = addCheckbox("Show grid lines", mFilter->getShowGridLines(), x, y, w, dh, box);
 		y += dh + 5;
+
         //only using the combo box in reaper, because other hosts set the inputs and outputs automatically
         if (mHost.isReaper()) {
+            
+
             
             addLabel("Input/Output mode:", x, y, w, dh, box);
             y += dh + 5;
@@ -455,13 +458,13 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
             mInputOutputModeCombo->addItem("8x16", index++);
 			
 			mInputOutputModeCombo->setSelectedId(mFilter->getInputOutputMode() + 1);
-			mInputOutputModeCombo->setSize(w, dh);
+			mInputOutputModeCombo->setSize(w - iButtonW, dh);
 			mInputOutputModeCombo->setTopLeftPosition(x, y);
 			box->addAndMakeVisible(mInputOutputModeCombo);
 			mComponents.add(mInputOutputModeCombo);
-			y += dh + 5;
-
-			mInputOutputModeCombo->addListener(this);
+			//mInputOutputModeCombo->addListener(this);
+            
+            mApplyInputOutputModeButton = addButton("Apply", x + w - iButtonW, y, iButtonW, dh, box);
 
 		}
 
@@ -617,7 +620,9 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSrcPlacement->setSize(w, dh);
         mSrcPlacement->setTopLeftPosition(x, y);
         mSrcPlacement->setExplicitFocusOrder(5);
-        mSrcPlacement->addListener(this);
+        //mSrcPlacement->addListener(this);
+        y += dh + 5;
+        mApplySrcPlacementButton = addButton("Apply", x, y, iButtonW, dh, box);
         
 		// column 2
 		y = kMargin;
@@ -673,7 +678,10 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mSpPlacement->setSize(w, dh);
         mSpPlacement->setTopLeftPosition(x, y);
         mSpPlacement->setExplicitFocusOrder(5);
-        mSpPlacement->addListener(this);
+        //mSpPlacement->addListener(this);
+        y += dh + 5;
+        mApplySpPlacementButton = addButton("Apply", x, y, iButtonW, dh, box);
+
         
         //-------- column 2 --------
         y = kMargin;
@@ -906,7 +914,9 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
     mMover.updateNumberOfSources();
 
     if (!p_bCalledFromConstructor){
-        comboBoxChanged(mSrcPlacement);
+#warning are we sure we want to reset source location here? I think so
+        buttonClicked(mApplySrcPlacementButton);
+        //comboBoxChanged(mSrcPlacement);
     }
     
     //source position combobox in source tab
@@ -1149,8 +1159,149 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 			return;
 		}
 	}
+    
+    if (mHost.isReaper() && button == mApplyInputOutputModeButton)
+    {
+        mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
+        cout << "processor sent this option from mInputOutputModeCombo" << mInputOutputModeCombo->getSelectedItemIndex() << endl;
+        
+        updateSources(false);
+        updateSpeakers();
+        if (m_bLoadingPreset){
+            mFilter->restoreCurrentLocations();
+            m_bLoadingPreset = false;
+        }
+        mField->repaint();
+        
+    }
+    else if (button == mApplySrcPlacementButton)
+    {
+        
+        if (mFilter->getNumberOfSources() == 1){
+            mFilter->setSourceRT(0, FPoint(0, 0));
+            return;
+        }
+        
+        bool alternate = false;
+        bool startAtTop = false;
+        bool clockwise = false;
+        
+        switch (mSrcPlacement->getSelectedId()){
+            case kLeftAlternate:
+                alternate = true;
+                break;
+            case kTopClockwise:
+                startAtTop = true;
+                clockwise = true;
+                break;
+            case kTopCounterClockwise:
+                startAtTop = true;
+                break;
+            case kLeftClockwise:
+                clockwise = true;
+                break;
+            case kLeftCounterClockWise:
+                break;
+                
+        }
+        
+        
+        float anglePerSp = kThetaMax / mFilter->getNumberOfSources();
+        
+        if (alternate)
+        {
+            float offset = startAtTop
+            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
+            : (kQuarterCircle - anglePerSp/2);
+            float start = offset;
+            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSources(); i += 2)
+            {
+                mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
+                offset -= anglePerSp;
+            }
+            
+            offset = start + anglePerSp;
+            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSources(); i += 2)
+            {
+                mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
+                offset += anglePerSp;
+            }
+        }
+        else
+        {
+            float offset = startAtTop ? kQuarterCircle : kQuarterCircle + anglePerSp/2;
+            float delta = clockwise ? -anglePerSp : anglePerSp;
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+            {
+                mFilter->setSourceRT(i, FPoint(1, offset));
+                offset += delta;
+            }
+        }
+        updateSourceLocationTextEditor();
+        mFilter->setSrcPlacementMode(mSrcPlacement->getSelectedId());
+    }
+    else if (button == mApplySpPlacementButton)
+    {
+        
+        bool alternate = false;
+        bool startAtTop = false;
+        bool clockwise = false;
+        
+        switch (mSpPlacement->getSelectedId()){
+            case kLeftAlternate:
+                alternate = true;
+                break;
+            case kTopClockwise:
+                startAtTop = true;
+                clockwise = true;
+                break;
+            case kTopCounterClockwise:
+                startAtTop = true;
+                break;
+            case kLeftClockwise:
+                clockwise = true;
+                break;
+            case kLeftCounterClockWise:
+                break;
+                
+        }
+        
+        float anglePerSp = kThetaMax / mFilter->getNumberOfSpeakers();
+        
+        if (alternate)
+        {
+            float offset = startAtTop
+            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
+            : (kQuarterCircle - anglePerSp/2);
+            float start = offset;
+            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSpeakers(); i += 2)
+            {
+                mFilter->setSpeakerRT(i, FPoint(1, offset));
+                offset -= anglePerSp;
+            }
+            
+            offset = start + anglePerSp;
+            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSpeakers(); i += 2)
+            {
+                mFilter->setSpeakerRT(i, FPoint(1, offset));
+                offset += anglePerSp;
+            }
+        }
+        else
+        {
+            float offset = startAtTop ? kQuarterCircle : kQuarterCircle + anglePerSp/2;
+            float delta = clockwise ? -anglePerSp : anglePerSp;
+            for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
+            {
+                mFilter->setSpeakerRT(i, FPoint(1, offset));
+                offset += delta;
+            }
+        }
+        updateSpeakerLocationTextEditor();
+        mFilter->setSpPlacementMode(mSpPlacement->getSelectedId());
+    }
 
-	if (button == mShowGridLines)
+	else if (button == mShowGridLines)
 	{
 		mFilter->setShowGridLines(button->getToggleState());
 		mField->repaint();
@@ -1245,150 +1396,6 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	{
 		mFilter->setOscLeapSource(comboBox->getSelectedId() - 1);
 	}
-    
-    else if (mHost.isReaper() && comboBox == mInputOutputModeCombo)
-	{
-        return;
-
-		mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
-//        cout << "processor sent this option from mInputOutputModeCombo" << mInputOutputModeCombo->getSelectedItemIndex() << endl;
-        
-        updateSources(false);
-        updateSpeakers();
-        if (m_bLoadingPreset){
-            mFilter->restoreCurrentLocations();
-            m_bLoadingPreset = false;
-        }
-        mField->repaint();
-
-	}
-    else if (comboBox == mSrcPlacement)
-    {
-        return;
-        
-        if (mFilter->getNumberOfSources() == 1){
-            mFilter->setSourceRT(0, FPoint(0, 0));
-            return;
-        }
-        
-        bool alternate = false;
-        bool startAtTop = false;
-        bool clockwise = false;
-        
-        switch (mSrcPlacement->getSelectedId()){
-            case kLeftAlternate:
-                alternate = true;
-                break;
-            case kTopClockwise:
-                startAtTop = true;
-                clockwise = true;
-                break;
-            case kTopCounterClockwise:
-                startAtTop = true;
-                break;
-            case kLeftClockwise:
-                clockwise = true;
-                break;
-            case kLeftCounterClockWise:
-                break;
-                
-        }
-        
-        
-        float anglePerSp = kThetaMax / mFilter->getNumberOfSources();
-        
-        if (alternate)
-        {
-            float offset = startAtTop
-            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
-            : (kQuarterCircle - anglePerSp/2);
-            float start = offset;
-            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSources(); i += 2)
-            {
-                mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
-                offset -= anglePerSp;
-            }
-            
-            offset = start + anglePerSp;
-            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSources(); i += 2)
-            {
-                mFilter->setSourceRT(i, FPoint(kSourceDefaultRadius, offset));
-                offset += anglePerSp;
-            }
-        }
-        else
-        {
-            float offset = startAtTop ? kQuarterCircle : kQuarterCircle + anglePerSp/2;
-            float delta = clockwise ? -anglePerSp : anglePerSp;
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-            {
-                mFilter->setSourceRT(i, FPoint(1, offset));
-                offset += delta;
-            }
-        }
-        updateSourceLocationTextEditor();
-        mFilter->setSrcPlacementMode(mSrcPlacement->getSelectedId());
-    }
-    else if (comboBox == mSpPlacement)
-    {
-        return;
-        bool alternate = false;
-        bool startAtTop = false;
-        bool clockwise = false;
-        
-        switch (mSpPlacement->getSelectedId()){
-            case kLeftAlternate:
-                alternate = true;
-                break;
-            case kTopClockwise:
-                startAtTop = true;
-                clockwise = true;
-                break;
-            case kTopCounterClockwise:
-                startAtTop = true;
-                break;
-            case kLeftClockwise:
-                clockwise = true;
-                break;
-            case kLeftCounterClockWise:
-                break;
-                
-        }
-        
-        float anglePerSp = kThetaMax / mFilter->getNumberOfSpeakers();
-        
-        if (alternate)
-        {
-            float offset = startAtTop
-            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
-            : (kQuarterCircle - anglePerSp/2);
-            float start = offset;
-            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSpeakers(); i += 2)
-            {
-                mFilter->setSpeakerRT(i, FPoint(1, offset));
-                offset -= anglePerSp;
-            }
-            
-            offset = start + anglePerSp;
-            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSpeakers(); i += 2)
-            {
-                mFilter->setSpeakerRT(i, FPoint(1, offset));
-                offset += anglePerSp;
-            }
-        }
-        else
-        {
-            float offset = startAtTop ? kQuarterCircle : kQuarterCircle + anglePerSp/2;
-            float delta = clockwise ? -anglePerSp : anglePerSp;
-            for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-            {
-                mFilter->setSpeakerRT(i, FPoint(1, offset));
-                offset += delta;
-            }
-        }
-        updateSpeakerLocationTextEditor();
-        mFilter->setSpPlacementMode(mSpPlacement->getSelectedId());
-    }
     else if (comboBox == mSrcSelect){
         updateSourceLocationTextEditor();
     }
@@ -1470,6 +1477,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
                 mFilter->storeCurrentLocations();
                 m_bLoadingPreset = true;
                 mInputOutputModeCombo->setSelectedId(iNewMode);
+                buttonClicked(mApplyInputOutputModeButton);
             }
         }
         

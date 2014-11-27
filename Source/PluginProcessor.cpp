@@ -79,7 +79,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
     
     
     int mNumberOfSources = 2;
-    int mNumberOfSpeakers = 2;
+    int mNumberOfSpeakers = 8;
     
     //SET SOURCES
     setNumberOfSources(mNumberOfSources, true);
@@ -102,7 +102,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mLastTimeInSamples = -1;
 	mProcessMode = kPanVolumeMode;
     //version 9
-    mInputOutputMode = 0;
+    mInputOutputMode = 8;
     mSrcPlacementMode = 1;
     mSrcSelected = 1;
     mSpPlacementMode = 1;

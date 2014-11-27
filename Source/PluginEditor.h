@@ -112,6 +112,7 @@ private:
 	ComboBox *mMovementMode;
 	ComboBox *mGuiSize;
     ComboBox *mInputOutputModeCombo;
+    TextButton *mApplyInputOutputModeButton;
 	ComboBox *mProcessModeCombo;
 	OctTabbedComponent *mTabs;
 	Slider *mSmoothing;
@@ -121,13 +122,14 @@ private:
 	Slider *mFilterFar;
 	Slider *mFilterMid;
 	Slider *mFilterNear;
-
 	
     // sources
+    TextButton *mApplySrcPlacementButton;
     TextEditor *mSrcR, *mSrcT;
     ComboBox *mSrcSelect, *mSrcPlacement;
     
     // speakers
+    TextButton *mApplySpPlacementButton;
 	TextEditor *mSpR, *mSpT;
 	ComboBox *mSpSelect, *mSpPlacement;
 
