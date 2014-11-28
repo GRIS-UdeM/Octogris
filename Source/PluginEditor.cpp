@@ -267,6 +267,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
     
 	// main field
     mField = new FieldComponent(mFilter, &mMover);
+    addAndMakeVisible(mField);
+    mComponents.add(mField);
 
     // param box
 	Colour tabBg = Colour::fromRGB(200,200,200);
@@ -814,9 +816,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 	mTabs->initDone();
 	
 	mFilter->setCalculateLevels(true);
-
-    addAndMakeVisible(mField);
-    mComponents.add(mField);
     
 	refreshSize();
 }
