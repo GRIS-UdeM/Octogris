@@ -18,7 +18,7 @@
 class FirFilter
 {
 public:
-	FirFilter() { reset(); setSampleRate(0); }
+    FirFilter():mFir(0), mPos(0) { reset(); setSampleRate(0); }
 	
 	void reset();
 	void setSampleRate(int sr);

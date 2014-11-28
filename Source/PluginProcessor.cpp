@@ -55,7 +55,7 @@ int IndexedAngleCompare(const void *a, const void *b)
 }
 
 //==============================================================================
-OctogrisAudioProcessor::OctogrisAudioProcessor()
+OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 {
     
     //SET PARAMETERS
@@ -625,11 +625,13 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 	mSmoothedParametersInited = false;
 	
 	int sr = sampleRate;
-	for (int i = 0; i < mNumberOfSources; i++)
-	{
-		mFilters[i].setSampleRate(sr);
-		mFilters[i].reset();
-	}
+
+    for (int i = 0; i < mNumberOfSources; i++)
+    {
+        mFilters[i].setSampleRate(sr);
+        mFilters[i].reset();
+    }
+
 }
 
 void OctogrisAudioProcessor::releaseResources()
