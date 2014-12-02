@@ -77,9 +77,9 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 	mSmoothedParameters.ensureStorageAllocated(kNumberOfParameters);
 	for (int i = 0; i < kNumberOfParameters; i++) mSmoothedParameters.add(0);
     
-    
-    int mNumberOfSources = 2;
-    int mNumberOfSpeakers = 8;
+#warning, does this make a difference in reaper (seems fine in logic + DP, but to confirm)? SHouldn't it be the max?
+    int mNumberOfSources  = 2; //JucePlugin_MaxNumInputChannels;
+    int mNumberOfSpeakers = 8; //JucePlugin_MaxNumOutputChannels;
     
     //SET SOURCES
     setNumberOfSources(mNumberOfSources, true);
@@ -188,7 +188,7 @@ float OctogrisAudioProcessor::getParameter (int index)
 void OctogrisAudioProcessor::setParameter (int index, float newValue)
 {
 	mParameters.set(index, newValue);
-	cout << mHostChangedParameter++ << endl;
+	//cout << mHostChangedParameter++ << endl;
 }
 
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
@@ -199,18 +199,7 @@ void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValu
 
 const String OctogrisAudioProcessor::getParameterName (int index)
 {
-//	switch(index)
-//	{
-//		case kLinkMovement:	return "Link Movement";
-//		case kSmooth:		return "Smooth Param";
-//		case kVolumeNear:	return "Volume Near";
-//		case kVolumeMid:	return "Volume Mid";
-//		case kVolumeFar:	return "Volume Far";
-//		case kFilterNear:	return "Filter Near";
-//		case kFilterMid:	return "Filter Mid";
-//		case kFilterFar:	return "Filter Far";
-//	}
-    
+   
     if (index == kLinkMovement) return "Link Movement";
 	if (index == kSmooth)		return "Smooth Param";
     if (index ==  kVolumeNear)	return "Volume Near";
@@ -220,8 +209,7 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 	if (index ==  kFilterMid)	return "Filter Mid";
 	if (index ==  kFilterFar)	return "Filter Far";
 	
-
-	if (index < mNumberOfSources * kParamsPerSource)
+    if (index < mNumberOfSources * kParamsPerSource)
 	{
 		String s("Source ");
 		s << (index / kParamsPerSource + 1);
@@ -229,14 +217,15 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 		{
 			case kSourceX: s << " - X"; break;
 			case kSourceY: s << " - Y"; break;
-			case kSourceD: s << " - D"; break;
+			case kSourceD: s << " - D"; break; 
 			case kSourceUnused: s << " - Unused"; break;
 		}
+        //cout << "getParameterNameJimBob1: " << s << endl;
 		return s;
 	}
 	index -= mNumberOfSources * kParamsPerSource;
 	
-	if (index < mNumberOfSpeakers * kParamsPerSpeakers)
+    if (index < mNumberOfSpeakers * kParamsPerSpeakers)
 	{
 		String s("Speaker ");
 		s << (index / kParamsPerSpeakers + 1);
@@ -248,9 +237,11 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 			case kSpeakerM: s << " - M"; break;
 			case kSpeakerUnused: s << " - Unused"; break;
 		}
+        //cout << "getParameterNameJimBob1: " << s << endl;
 		return s;
 	}
 	
+    //cout << "getParameterNameJimBob: empty1" << endl;
     return String::empty;
 }
 
