@@ -188,7 +188,7 @@ float OctogrisAudioProcessor::getParameter (int index)
 void OctogrisAudioProcessor::setParameter (int index, float newValue)
 {
 	mParameters.set(index, newValue);
-	//cout << mHostChangedParameter++ << endl;
+	mHostChangedParameter++;
 }
 
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
