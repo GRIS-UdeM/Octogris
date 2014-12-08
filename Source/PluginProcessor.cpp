@@ -75,11 +75,15 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 
 	mSmoothedParametersInited = false;
 	mSmoothedParameters.ensureStorageAllocated(kNumberOfParameters);
+    
 	for (int i = 0; i < kNumberOfParameters; i++) mSmoothedParameters.add(0);
     
 #warning, does this make a difference in reaper (seems fine in logic + DP, but to confirm)? SHouldn't it be the max?
-    int mNumberOfSources  = 2; //JucePlugin_MaxNumInputChannels;
-    int mNumberOfSpeakers = 8; //JucePlugin_MaxNumOutputChannels;
+    int mNumberOfSources  = JucePlugin_MaxNumInputChannels;
+    int mNumberOfSpeakers = JucePlugin_MaxNumOutputChannels;
+    
+//    int mNumberOfSources  = 2;
+//    int mNumberOfSpeakers = 8;
     
     //SET SOURCES
     setNumberOfSources(mNumberOfSources, true);
@@ -177,6 +181,7 @@ const String OctogrisAudioProcessor::getName() const
 
 int OctogrisAudioProcessor::getNumParameters()
 {
+    int i = kNumberOfParameters;
     return kNumberOfParameters;
 }
 
@@ -199,6 +204,7 @@ void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValu
 
 const String OctogrisAudioProcessor::getParameterName (int index)
 {
+    //cout << index << "\t";
    
     if (index == kLinkMovement) return "Link Movement";
 	if (index == kSmooth)		return "Smooth Param";
@@ -605,8 +611,10 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
         setNumberOfSources(mNumberOfSources, true);
         setNumberOfSpeakers(mNumberOfSpeakers, true);
     } else {
-        setNumberOfSources(getNumInputChannels(), true);
-        setNumberOfSpeakers(getNumOutputChannels(), true);
+        int sources = getNumInputChannels();
+        int speakers = getNumOutputChannels();
+        setNumberOfSources(sources, true);
+        setNumberOfSpeakers(speakers, true);
     }
     
 	if (mCalculateLevels)
