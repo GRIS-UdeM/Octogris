@@ -159,14 +159,16 @@ public:
 				for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 				{
 					int paramIndex = mFilter->getParamForSourceD(i);
-					if (mFilter->getParameter(paramIndex) != newVal)
+                    if (mFilter->getParameter(paramIndex) != newVal){
 						mFilter->setParameterNotifyingHost(paramIndex, newVal);
+                    }
 				}
 			}
 			else
 			{
-				if (mFilter->getParameter(mParamIndex) != newVal)
+                if (mFilter->getParameter(mParamIndex) != newVal){
 					mFilter->setParameterNotifyingHost(mParamIndex, newVal);
+                }
 			}
 		}
 		else
@@ -192,8 +194,11 @@ public:
 			}
 			else
 			{
-				if (mFilter->getParameter(mParamIndex) != newVal)
-					mFilter->setParameterNotifyingHost(mParamIndex, newVal);
+                if (mFilter->getParameter(mParamIndex) != newVal){
+                    mFilter->beginParameterChangeGesture(mParamIndex);
+                    mFilter->setParameterNotifyingHost(mParamIndex, newVal);
+                    mFilter->endParameterChangeGesture(mParamIndex);
+                }
 			}
 		}
 		else
@@ -898,6 +903,7 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
         mLabels.add(label);
         
         float distance = mFilter->getSourceD(i);
+#warning shouldn't this send events to allow for automation of source distance?
         Slider *slider = addParamSlider(kParamSource, i, distance, x + w/3, y, w*2/3, dh, ct);
         
         if (bIsFreeVolumeMode){

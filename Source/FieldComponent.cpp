@@ -260,8 +260,8 @@ void FieldComponent::mouseDown(const MouseEvent &event)
 			mSelectionType = kSelectedSpeaker;
 			mSelectedItem = i;
 
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSpeakerX(mSelectedItem));
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSpeakerY(mSelectedItem));
+			//mFilter->beginParameterChangeGesture(mFilter->getParamForSpeakerX(mSelectedItem));
+			//mFilter->beginParameterChangeGesture(mFilter->getParamForSpeakerY(mSelectedItem));
 			return;
 		}
 	}
@@ -347,8 +347,8 @@ void FieldComponent::mouseUp(const MouseEvent &event)
 			break;
 			
 		case kSelectedSpeaker:
-			mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerX(mSelectedItem));
-			mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerY(mSelectedItem));
+			//mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerX(mSelectedItem));
+			//mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerY(mSelectedItem));
 			break;
 	}
 

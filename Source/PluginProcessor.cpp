@@ -78,12 +78,8 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
     
 	for (int i = 0; i < kNumberOfParameters; i++) mSmoothedParameters.add(0);
     
-#warning, does this make a difference in reaper (seems fine in logic + DP, but to confirm)? SHouldn't it be the max?
     int mNumberOfSources  = JucePlugin_MaxNumInputChannels;
     int mNumberOfSpeakers = JucePlugin_MaxNumOutputChannels;
-    
-//    int mNumberOfSources  = 2;
-//    int mNumberOfSpeakers = 8;
     
     //SET SOURCES
     setNumberOfSources(mNumberOfSources, true);
@@ -181,7 +177,6 @@ const String OctogrisAudioProcessor::getName() const
 
 int OctogrisAudioProcessor::getNumParameters()
 {
-    int i = kNumberOfParameters;
     return kNumberOfParameters;
 }
 
@@ -224,7 +219,9 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 			case kSourceX: s << " - X"; break;
 			case kSourceY: s << " - Y"; break;
 			case kSourceD: s << " - D"; break; 
-			case kSourceUnused: s << " - Unused"; break;
+//			case kSourceUnused: s << " - Unused"; break;
+            default: return String::empty;
+
 		}
         //cout << "getParameterNameJimBob1: " << s << endl;
 		return s;
@@ -237,11 +234,12 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 		s << (index / kParamsPerSpeakers + 1);
 		switch(index % kParamsPerSpeakers)
 		{
-			case kSpeakerX: s << " - X"; break;
-			case kSpeakerY: s << " - Y"; break;
-			case kSpeakerA: s << " - A"; break;
-			case kSpeakerM: s << " - M"; break;
-			case kSpeakerUnused: s << " - Unused"; break;
+//			case kSpeakerX: s << " - X"; break;
+//			case kSpeakerY: s << " - Y"; break;
+//			case kSpeakerA: s << " - A"; break;
+//			case kSpeakerM: s << " - M"; break;
+//			case kSpeakerUnused: s << " - Unused"; break;
+            default: return String::empty;
 		}
         //cout << "getParameterNameJimBob1: " << s << endl;
 		return s;
