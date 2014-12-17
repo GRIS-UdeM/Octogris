@@ -23,6 +23,7 @@
 #include "modules/juce_graphics/juce_graphics.h"
 #include "modules/juce_gui_basics/juce_gui_basics.h"
 #include "modules/juce_gui_extra/juce_gui_extra.h"
+#include "BinaryData.h"
 
 #if ! DONT_SET_USING_JUCE_NAMESPACE
  // If your code uses a lot of JUCE classes, then this will obviously save you
@@ -34,8 +35,8 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "Octogris2";
-    const char* const  versionString  = "2.0.12a";
-    const int          versionNumber  = 0x2000c;
+    const char* const  versionString  = "2.0.14";
+    const int          versionNumber  = 0x2000e;
 }
 #endif
 
