@@ -75,11 +75,11 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 
 	mSmoothedParametersInited = false;
 	mSmoothedParameters.ensureStorageAllocated(kNumberOfParameters);
+    
 	for (int i = 0; i < kNumberOfParameters; i++) mSmoothedParameters.add(0);
     
-    
-    int mNumberOfSources = 2;
-    int mNumberOfSpeakers = 8;
+    int mNumberOfSources  = JucePlugin_MaxNumInputChannels;
+    int mNumberOfSpeakers = JucePlugin_MaxNumOutputChannels;
     
     //SET SOURCES
     setNumberOfSources(mNumberOfSources, true);
@@ -188,7 +188,7 @@ float OctogrisAudioProcessor::getParameter (int index)
 void OctogrisAudioProcessor::setParameter (int index, float newValue)
 {
 	mParameters.set(index, newValue);
-	cout << mHostChangedParameter++ << endl;
+	mHostChangedParameter++;
 }
 
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
@@ -199,18 +199,8 @@ void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValu
 
 const String OctogrisAudioProcessor::getParameterName (int index)
 {
-//	switch(index)
-//	{
-//		case kLinkMovement:	return "Link Movement";
-//		case kSmooth:		return "Smooth Param";
-//		case kVolumeNear:	return "Volume Near";
-//		case kVolumeMid:	return "Volume Mid";
-//		case kVolumeFar:	return "Volume Far";
-//		case kFilterNear:	return "Filter Near";
-//		case kFilterMid:	return "Filter Mid";
-//		case kFilterFar:	return "Filter Far";
-//	}
-    
+    //cout << index << "\t";
+   
     if (index == kLinkMovement) return "Link Movement";
 	if (index == kSmooth)		return "Smooth Param";
     if (index ==  kVolumeNear)	return "Volume Near";
@@ -220,8 +210,7 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 	if (index ==  kFilterMid)	return "Filter Mid";
 	if (index ==  kFilterFar)	return "Filter Far";
 	
-
-	if (index < mNumberOfSources * kParamsPerSource)
+    if (index < mNumberOfSources * kParamsPerSource)
 	{
 		String s("Source ");
 		s << (index / kParamsPerSource + 1);
@@ -229,28 +218,34 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 		{
 			case kSourceX: s << " - X"; break;
 			case kSourceY: s << " - Y"; break;
-			case kSourceD: s << " - D"; break;
-			case kSourceUnused: s << " - Unused"; break;
+			case kSourceD: s << " - D"; break; 
+//			case kSourceUnused: s << " - Unused"; break;
+            default: return String::empty;
+
 		}
+        //cout << "getParameterNameJimBob1: " << s << endl;
 		return s;
 	}
 	index -= mNumberOfSources * kParamsPerSource;
 	
-	if (index < mNumberOfSpeakers * kParamsPerSpeakers)
+    if (index < mNumberOfSpeakers * kParamsPerSpeakers)
 	{
 		String s("Speaker ");
 		s << (index / kParamsPerSpeakers + 1);
 		switch(index % kParamsPerSpeakers)
 		{
-			case kSpeakerX: s << " - X"; break;
-			case kSpeakerY: s << " - Y"; break;
-			case kSpeakerA: s << " - A"; break;
-			case kSpeakerM: s << " - M"; break;
-			case kSpeakerUnused: s << " - Unused"; break;
+//			case kSpeakerX: s << " - X"; break;
+//			case kSpeakerY: s << " - Y"; break;
+//			case kSpeakerA: s << " - A"; break;
+//			case kSpeakerM: s << " - M"; break;
+//			case kSpeakerUnused: s << " - Unused"; break;
+            default: return String::empty;
 		}
+        //cout << "getParameterNameJimBob1: " << s << endl;
 		return s;
 	}
 	
+    //cout << "getParameterNameJimBob: empty1" << endl;
     return String::empty;
 }
 
@@ -614,8 +609,10 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
         setNumberOfSources(mNumberOfSources, true);
         setNumberOfSpeakers(mNumberOfSpeakers, true);
     } else {
-        setNumberOfSources(getNumInputChannels(), true);
-        setNumberOfSpeakers(getNumOutputChannels(), true);
+        int sources = getNumInputChannels();
+        int speakers = getNumOutputChannels();
+        setNumberOfSources(sources, true);
+        setNumberOfSpeakers(speakers, true);
     }
     
 	if (mCalculateLevels)
