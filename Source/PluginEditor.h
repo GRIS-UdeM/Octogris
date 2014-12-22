@@ -29,7 +29,8 @@ enum
 	kParamVolumeNear,
 	kParamFilterFar,
 	kParamFilterMid,
-	kParamFilterNear
+	kParamFilterNear,
+	kParamMaxSpanVolume
 };
 
 enum placement{
@@ -122,6 +123,7 @@ private:
 	Slider *mFilterFar;
 	Slider *mFilterMid;
 	Slider *mFilterNear;
+	Slider *mMaxSpanVolume;
 	
     // sources
     TextButton *mApplySrcPlacementButton;

@@ -141,6 +141,68 @@ void FieldComponent::paint (Graphics& g)
 		g.drawEllipse(p.x - radius, p.y - radius, diameter, diameter, 1);
 	}
 	
+	if (processMode == kPanSpanMode)
+	for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+	{
+		float hue = (float)i / mFilter->getNumberOfSources() + 0.577251;
+		if (hue > 1) hue -= 1;
+		
+		
+	
+		FPoint rt = mFilter->getSourceRT(i);
+		float r = rt.x;
+	
+		float angle = mFilter->getSourceD(i) * M_PI;
+		
+		float t[2] = { rt.y + angle, rt.y - angle };
+		//for (int j = 0; j < 2; j++)
+		{
+			//FPoint p1 = convertSourceRT(1, t[j]);
+			//FPoint p2 = convertSourceRT((r >= 1) ? 2 : -1, t[j]);
+			//g.drawLine(Line<float>(p1, p2));
+			
+			float fs = fieldWidth - kSourceDiameter;
+			//float x = (r >= 1) ? 0 : fs*0.25 + kSourceRadius;
+			//float y = (r >= 1) ? 0 : fs*0.25 + kSourceRadius;
+			float x = fs*0.25 + kSourceRadius;
+			float y = fs*0.25 + kSourceRadius;
+			//float w = (r >= 1) ? fs : fs*0.5;
+			//float h = (r >= 1) ? fs : fs*0.5;
+			float w = fs*0.5;
+			float h = fs*0.5;
+			float r1 = 0.5*M_PI-t[0];
+			float r2 = 0.5*M_PI-t[1];
+			float ir = (r >= 1) ? 2 : 0;
+			
+			if (r >= 1)
+			{
+				g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f));
+				Path p;
+				p.addPieSegment(x, y, w, h, r1, r2, ir);
+				g.fillPath(p);
+			}
+			else
+			{
+				float front = r * 0.5f + 0.5f;
+				float back = 1 - front;
+				{
+					g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f * front));
+					Path p;
+					p.addPieSegment(x, y, w, h, r1, r2, ir);
+					g.fillPath(p);
+				}
+				{
+					g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f * back));
+					Path p;
+					p.addPieSegment(x, y, w, h, r1 + M_PI, r2 + M_PI, ir);
+					g.fillPath(p);
+				}
+			}
+			
+			
+		}
+	}
+	
 	// - - - - - - - - - - - -
 	// draw speakers
 	// - - - - - - - - - - - -
@@ -351,7 +413,6 @@ void FieldComponent::mouseUp(const MouseEvent &event)
 			//mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerY(mSelectedItem));
 			break;
 	}
-
 	
 	mSelectionType = kNoSelection;
 }

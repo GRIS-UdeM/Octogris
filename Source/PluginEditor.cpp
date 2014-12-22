@@ -130,13 +130,18 @@ public:
 		mParamIndex(paramIndex),
 		mParamType(paramType),
 		mLink(link),
-		mFilter(filter)
+		mFilter(filter),
+		mBeganGesture(false),
+		mMouseDown(false)
 	{
 		jassert(mLink || mParamType != kParamSource);
 	}
 	
 	void mouseDown (const MouseEvent &e)
 	{
+		mBeganGesture = false;
+		mMouseDown = true;
+		
 		bool resetToDefault = e.mods.isAltDown();
 		if (resetToDefault)
 		{
@@ -152,6 +157,7 @@ public:
 				case kParamFilterFar: newVal = normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault); break;
 				case kParamFilterMid: newVal = normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault); break;
 				case kParamFilterNear: newVal = normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault); break;
+				case kParamMaxSpanVolume: newVal = normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault); break;
 			}
 		
 			if (mParamType == kParamSource && mLink->getToggleState())
@@ -177,8 +183,55 @@ public:
 		}
 	}
 	
+	void mouseUp (const MouseEvent &e)
+	{
+		//fprintf(stderr, "paremslider :: mouseUp\n");
+		Slider::mouseUp(e);
+		
+		if (mBeganGesture)
+		{
+			//fprintf(stderr, "paremslider :: endParameter\n");
+		
+			if (mParamType == kParamSource && mLink->getToggleState())
+			{
+				for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+				{
+					int paramIndex = mFilter->getParamForSourceD(i);
+					mFilter->endParameterChangeGesture(paramIndex);
+				}
+			}
+			else
+			{
+				mFilter->endParameterChangeGesture(mParamIndex);
+			}
+		}
+		
+		mMouseDown = false;
+		mBeganGesture = false;
+	}
+	
 	void valueChanged()
 	{
+		if (mMouseDown && !mBeganGesture)
+		{
+			//fprintf(stderr, "paremslider :: beginParameter\n");
+			
+			if (mParamType == kParamSource && mLink->getToggleState())
+			{
+				for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+				{
+					int paramIndex = mFilter->getParamForSourceD(i);
+					mFilter->beginParameterChangeGesture(paramIndex);
+				}
+			}
+			else
+			{
+				mFilter->beginParameterChangeGesture(mParamIndex);
+			}
+			
+			mBeganGesture = true;
+		}
+		
 		if (mParamType == kParamSource)
 		{
 			const float newVal = 1.f - (float)getValue();
@@ -222,8 +275,10 @@ public:
 			case kParamFilterFar: value = denormalize(-100, 0, value); break;
 			case kParamFilterMid: value = denormalize(-100, 0, value); break;
 			case kParamFilterNear: value = denormalize(-100, 0, value); break;
+			case kParamMaxSpanVolume: value = denormalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, value); break;
 		}
 		
+		if (mParamType >= kParamSmooth || mParamType <= kParamMaxSpanVolume) return String(roundToInt(value));
 		if (mParamType >= kParamSmooth || mParamType <= kParamFilterNear) return String(roundToInt(value));
 		return String(value, 1);
 	}
@@ -242,6 +297,7 @@ public:
 			case kParamFilterFar: value = normalize(-100, 0, value); break;
 			case kParamFilterMid: value = normalize(-100, 0, value); break;
 			case kParamFilterNear: value = normalize(-100, 0, value); break;
+			case kParamMaxSpanVolume: value = normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, value); break;
 		}
 		return value;
 	}
@@ -250,6 +306,7 @@ private:
 	int mParamIndex, mParamType;
 	ToggleButton *mLink;
 	OctogrisAudioProcessor *mFilter;
+	bool mBeganGesture, mMouseDown;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParamSlider)
 };
@@ -316,7 +373,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         int dh = kDefaultLabelHeight, x = 0, y = 0, w = kCenterColumnWidth;
         
         mLinkDistances = addCheckbox("Link", mFilter->getLinkDistances(), x, y, w/2, dh, ct);
-        addLabel("Distance", x+w/2, y, w/2, dh, ct);
+        addLabel("Distance/Span", x+w/2, y, w/2, dh, ct);
         
         mSrcSelect = new ComboBox();
         mTabs->getTabContentComponent(2)->addAndMakeVisible(mSrcSelect);
@@ -473,6 +530,17 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
             
             mApplyInputOutputModeButton = addButton("Apply", x + w - iButtonW, y, iButtonW, dh, box);
 
+		}
+		
+		{
+#warning FIGURE OUT WHERE TO PUT THIS
+			addLabel("Max span volume (db):", x, y, w, dh, box);
+			y += dh + 5;
+		
+			Slider *ds = addParamSlider(kParamMaxSpanVolume, kMaxSpanVolume, mFilter->getParameter(kMaxSpanVolume), x, y, w, dh, box);
+			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+			mMaxSpanVolume = ds;
+			y += dh + 5;
 		}
 
         //-----------------------------
@@ -1384,7 +1452,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	{
         int iSelectedMode = comboBox->getSelectedId() - 1;
 		mFilter->setProcessMode(iSelectedMode);
-        
+        #warning what if panspanmode?
         if (iSelectedMode == kPanVolumeMode){
             for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(false);  }
         } else {
@@ -1531,6 +1599,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mVolumeFar->setValue(mFilter->getParameter(kVolumeFar));
 		mVolumeMid->setValue(mFilter->getParameter(kVolumeMid));
 		mVolumeNear->setValue(mFilter->getParameter(kVolumeNear));
+		mMaxSpanVolume->setValue(mFilter->getParameter(kMaxSpanVolume));
         
         mFilterNear->setValue(mFilter->getParameter(kFilterNear));
         mFilterMid->setValue(mFilter->getParameter(kFilterMid));
