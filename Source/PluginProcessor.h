@@ -50,21 +50,8 @@ enum {
     kParamsPerSpeakers };
 
 
-
-//#define mNumberOfSources JucePlugin_MaxNumInputChannels
-//#define mNumberOfSpeakers JucePlugin_MaxNumOutputChannels
-//
-//#define ParamForSourceX(v) (kSourceX + v * kParamsPerSource)
-//#define ParamForSourceY(v) (kSourceY + v * kParamsPerSource)
-//#define ParamForSourceD(v) (kSourceD + v * kParamsPerSource)
-//
-//#define ParamForSpeakerX(v) (kSpeakerX + mNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
-//#define ParamForSpeakerY(v) (kSpeakerY + mNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
-//#define ParamForSpeakerA(v) (kSpeakerA + mNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
-//#define ParamForSpeakerM(v) (kSpeakerM + mNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers)
-//
-//#define kConstantOffset (mNumberOfSources * kParamsPerSource + mNumberOfSpeakers * kParamsPerSpeakers)
 #define kConstantOffset (JucePlugin_MaxNumInputChannels * kParamsPerSource + JucePlugin_MaxNumOutputChannels * kParamsPerSpeakers)
+
 enum
 {
 	kLinkMovement =			0 + kConstantOffset,
@@ -81,7 +68,7 @@ enum
 
 #define kNumberOfParameters (kConstantParameters + kConstantOffset)
 
-
+static const int s_iMaxAreas = 3; //this number is used as a multiplicator of mNumberOfSpeakers
 
 enum InputOutputModes {
     i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16
@@ -574,7 +561,7 @@ private:
     std::vector<FirFilter> mFilters;
 
 	
-	void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight);
+	void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
 	void addToOutput(float s, float **outputs, int o, int f);
 	void ProcessData(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);

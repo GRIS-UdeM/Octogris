@@ -489,8 +489,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         //only using the combo box in reaper, because other hosts set the inputs and outputs automatically
         if (mHost.isReaper()) {
             
-
-            
             addLabel("Input/Output mode:", x, y, w, dh, box);
             y += dh + 5;
 
@@ -532,17 +530,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 
 		}
 		
-		{
-#warning FIGURE OUT WHERE TO PUT THIS
-			addLabel("Max span volume (db):", x, y, w, dh, box);
-			y += dh + 5;
-		
-			Slider *ds = addParamSlider(kParamMaxSpanVolume, kMaxSpanVolume, mFilter->getParameter(kMaxSpanVolume), x, y, w, dh, box);
-			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-			mMaxSpanVolume = ds;
-			y += dh + 5;
-		}
-
         //-----------------------------
 		// start 3rd column
 		y = kMargin;
@@ -556,6 +543,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			int index = 1;
 			mProcessModeCombo->addItem("Free volume", index++);
 			mProcessModeCombo->addItem("Pan volume", index++);
+            mProcessModeCombo->addItem("Pan span", index++);
 			mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
 			mProcessModeCombo->setSize(w, dh);
 			mProcessModeCombo->setTopLeftPosition(x, y);
@@ -565,9 +553,9 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			
 			mProcessModeCombo->addListener(this);
 		}
-		
-		addLabel(leapSupported ? "OSC/Leap source:" : "OSC source:", x, y, w, dh, box);
-		y += dh + 5;
+        int comboW = 40;
+		addLabel(leapSupported ? "OSC/Leap source:" : "OSC source:", x, y, w-comboW, dh, box);
+		//y += dh + 5;
 		
 		{
 			mOscLeapSourceCb = new ComboBox();
@@ -579,14 +567,24 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			}
 
 			mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
-			mOscLeapSourceCb->setSize(w, dh);
-			mOscLeapSourceCb->setTopLeftPosition(x, y);
+			mOscLeapSourceCb->setSize(comboW, dh);
+			mOscLeapSourceCb->setTopLeftPosition(x+w-comboW, y);
 			box->addAndMakeVisible(mOscLeapSourceCb);
 			mComponents.add(mOscLeapSourceCb);
 			y += dh + 5;
 			
 			mOscLeapSourceCb->addListener(this);
 		}
+        
+        {
+            addLabel("Max span volume (db):", x, y, w, dh, box);
+            y += dh + 5;
+            
+            Slider *ds = addParamSlider(kParamMaxSpanVolume, kMaxSpanVolume, mFilter->getParameter(kMaxSpanVolume), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mMaxSpanVolume = ds;
+            y += dh + 5;
+        }
 	}
 	
         //--------------- V & F TAB ---------------- //
@@ -1452,16 +1450,11 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	{
         int iSelectedMode = comboBox->getSelectedId() - 1;
 		mFilter->setProcessMode(iSelectedMode);
-        #warning what if panspanmode?
         if (iSelectedMode == kPanVolumeMode){
             for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(false);  }
         } else {
             for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(true);   }
         }
-        
-#warning not sure why I put this?
-        //updateSources();
-        //updateSpeakers();
         
 		repaint();
 	}

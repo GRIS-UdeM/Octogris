@@ -832,7 +832,7 @@ void OctogrisAudioProcessor::ProcessData(float **inputs, float **outputs, float 
 	}
 }
 
-void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight)
+void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip)
 {
 	left = -1;
 	right = -1;
@@ -840,6 +840,8 @@ void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int
 	dRight = kThetaMax;
 	for (int o = 0; o < mNumberOfSpeakers; o++)
 	{
+        if (o == skip) continue;
+        
 		float speakerT = params[getParamForSpeakerX(o)];
 		float d = speakerT - t;
 		if (d >= 0)
@@ -1109,8 +1111,8 @@ public:
     float m, b;
 };
 
-#define kMaxAreas (kNumberOfSpeakers * 3)
-static void AddArea(int speaker, float ix1, float iy1, float ix2, float iy2, Area *areas, int &areaCount)
+
+static void AddArea(int speaker, float ix1, float iy1, float ix2, float iy2, vector<Area> &areas, int &areaCount, int &speakerCount)
 {
     assert(ix1 < ix2);
     
@@ -1124,10 +1126,10 @@ static void AddArea(int speaker, float ix1, float iy1, float ix2, float iy2, Are
         
         float yc = (0 - ix1) / (ix2 - ix1) * (iy2 - iy1) + iy1;
         
-        assert(areaCount < kMaxAreas);
+        assert(areaCount < speakerCount * s_iMaxAreas);
         areas[areaCount++] = Area(speaker, kThetaMax + ix1, iy1, kThetaMax, yc);
         
-        assert(areaCount < kMaxAreas);
+        assert(areaCount < speakerCount * s_iMaxAreas);
         areas[areaCount++] = Area(speaker, 0, yc, ix2, iy2);
     }
     else if (ix2 > kThetaMax)
@@ -1137,21 +1139,21 @@ static void AddArea(int speaker, float ix1, float iy1, float ix2, float iy2, Are
         
         float yc = (kThetaMax - ix1) / (ix2 - ix1) * (iy2 - iy1) + iy1;
         
-        assert(areaCount < kMaxAreas);
+        assert(areaCount < speakerCount * s_iMaxAreas);
         areas[areaCount++] = Area(speaker, ix1, iy1, kThetaMax, yc);
         
-        assert(areaCount < kMaxAreas);
+        assert(areaCount < speakerCount * s_iMaxAreas);
         areas[areaCount++] = Area(speaker, 0, yc, ix2 - kThetaMax, iy2);
     }
     else
     {
         assert(ix1 >= 0 && ix2 <= kThetaMax);
         
-        assert(areaCount < kMaxAreas);
+        assert(areaCount < speakerCount * s_iMaxAreas);
         areas[areaCount++] = Area(speaker, ix1, iy1, ix2, iy2);
     }
 }
-static void Integrate(float x1, float x2, const Area *areas, int areaCount, float *outFactors, float factor)
+static void Integrate(float x1, float x2, const vector<Area> &areas, int areaCount, float *outFactors, float factor)
 {
     if (x1 == x2)
     {
@@ -1187,8 +1189,6 @@ static void Integrate(float x1, float x2, const Area *areas, int areaCount, floa
         outFactors[area.speaker] += v * factor;
     }
 }
-
-//------------- DEBUT DE ANTOINE  ---------------
 
 void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
 {
@@ -1228,28 +1228,31 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
         memset(output, 0, frames * sizeof(float));
     }
     
-    
-    Area areas[kMaxAreas];
+    //int iMaxAreas  = mNumberOfSpeakers * s_iMaxAreas;
+    //Area* areas = new Area[iMaxAreas];
+    vector<Area> areas;
+    areas.resize(mNumberOfSpeakers * s_iMaxAreas);
+
     int areaCount = 0;
     
     if (mNumberOfSpeakers > 1)
     {
         for (int o = 0; o < mNumberOfSpeakers; o++)
         {
-            float t = params[ParamForSpeakerX(o)];
+            float t = params[getParamForSpeakerX(o)];
             int left, right;
             float dLeft, dRight;
             findSpeakers(t, params, left, right, dLeft, dRight, o);
             assert(left >= 0 && right >= 0);
             assert(dLeft > 0 && dRight > 0);
             
-            AddArea(o, t - dLeft, 0, t, 1, areas, areaCount);
-            AddArea(o, t, 1, t + dRight, 0, areas, areaCount);
+            AddArea(o, t - dLeft, 0, t, 1, areas, areaCount, mNumberOfSpeakers);
+            AddArea(o, t, 1, t + dRight, 0, areas, areaCount, mNumberOfSpeakers);
         }
     }
     else
     {
-        AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount);
+        AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount, mNumberOfSpeakers);
     }
     assert(areaCount > 0);
     
@@ -1258,9 +1261,9 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     for (int i = 0; i < mNumberOfSources; i++)
     {
         float *input = inputs[i];
-        float *input_x = mSmoothedParametersRamps.getReference(ParamForSourceX(i)).b;
-        float *input_y = mSmoothedParametersRamps.getReference(ParamForSourceY(i)).b;
-        float *input_d = mSmoothedParametersRamps.getReference(ParamForSourceD(i)).b;
+        float *input_x = mSmoothedParametersRamps.getReference(getParamForSourceX(i)).b;
+        float *input_y = mSmoothedParametersRamps.getReference(getParamForSourceY(i)).b;
+        float *input_d = mSmoothedParametersRamps.getReference(getParamForSourceD(i)).b;
         
         for (unsigned int f = 0; f < frames; f++)
         {
@@ -1370,8 +1373,6 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
         }
     }
 }
-
-//------------- FIN DE ANTOINE  ---------------
 
 void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
 {
@@ -1549,7 +1550,7 @@ static inline void readStringData(const void* &data, int &dataLength, const char
 	}
 }
 
-static const int kDataVersion = 9;
+static const int kDataVersion = 10;
 void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
 	//printf("Octogris: getStateInformation\n");
@@ -1580,7 +1581,9 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     appendIntData(destData, m_iTrUnits);
     appendFloatData(destData, m_fTrRepeats);
     appendIntData(destData, mLeapEnabled);
-
+    
+    //version 10
+    appendFloatData(destData, mParameters[kMaxSpanVolume]);
 	
 	appendFloatData(destData, mParameters[kLinkMovement]);
 	appendFloatData(destData, mParameters[kSmooth]);
@@ -1590,7 +1593,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 	appendFloatData(destData, mParameters[kFilterNear]);
 	appendFloatData(destData, mParameters[kFilterMid]);
 	appendFloatData(destData, mParameters[kFilterFar]);
-	appendFloatData(destData, mParameters[kMaxSpanVolume]);
+	
     for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
 	{
 		appendFloatData(destData, mParameters[getParamForSourceX(i)]);
@@ -1679,7 +1682,10 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_iTrUnits = readIntData(data, sizeInBytes, 0);
             m_fTrRepeats = readFloatData(data, sizeInBytes, 1);
             mLeapEnabled = readIntData(data, sizeInBytes, 0);
-
+        }
+        
+        if (version >= 10){
+            mParameters.set(kMaxSpanVolume, readFloatData(data, sizeInBytes, normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault)));
         }
 		
 		if (version >= 4)
@@ -1692,7 +1698,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 			mParameters.set(kFilterNear, readFloatData(data, sizeInBytes, normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault)));
 			if (version >= 5) mParameters.set(kFilterMid, readFloatData(data, sizeInBytes, normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault)));
 			mParameters.set(kFilterFar, readFloatData(data, sizeInBytes, normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault)));
-			if (version >= 9) mParameters.set(kMaxSpanVolume, readFloatData(data, sizeInBytes, normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault)));
             for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
 			{
 				mParameters.set(getParamForSourceX(i), readFloatData(data, sizeInBytes, 0));
