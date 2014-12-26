@@ -838,54 +838,40 @@ void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int
 	right = -1;
 	dLeft = kThetaMax;
 	dRight = kThetaMax;
-	for (int o = 0; o < mNumberOfSpeakers; o++)
-	{
-        if (o == skip) continue;
+	for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
+        if (iCurSpeaker == skip) continue;
         
-		float speakerT = params[getParamForSpeakerX(o)];
+		float speakerT = params[getParamForSpeakerX(iCurSpeaker)];
 		float d = speakerT - t;
-		if (d >= 0)
-		{
-			if (d > kHalfCircle)
-			{
+		if (d >= 0) {
+			if (d > kHalfCircle) {
 				// right
 				d = kThetaMax - d;
-				if (d < dRight)
-				{
+				if (d < dRight) {
 					dRight = d;
-					right = o;
+					right = iCurSpeaker;
 				}
-			}
-			else
-			{
+			} else {
 				// left
-				if (d < dLeft)
-				{
+				if (d < dLeft) {
 					dLeft = d;
-					left = o;
+					left = iCurSpeaker;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			d = -d;
-			if (d > kHalfCircle)
-			{
+			if (d > kHalfCircle) {
 				// left
 				d = kThetaMax - d;
-				if (d < dLeft)
-				{
+				if (d < dLeft) {
 					dLeft = d;
-					left = o;
+					left = iCurSpeaker;
 				}
-			}
-			else
-			{
+			} else {
 				// right
-				if (d < dRight)
-				{
+				if (d < dRight) {
 					dRight = d;
-					right = o;
+					right = iCurSpeaker;
 				}
 			}
 		}
@@ -1239,9 +1225,17 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     {
         for (int o = 0; o < mNumberOfSpeakers; o++)
         {
+#warning we assume here that getX returns a theta, is that true? 
             float t = params[getParamForSpeakerX(o)];
+
+            float x = params[getParamForSpeakerX(o)] * (2*kRadiusMax) - kRadiusMax;
+            float y = params[getParamForSpeakerY(o)] * (2*kRadiusMax) - kRadiusMax;
+            float t2 = atan2f(y, x);
+            
+            
             int left, right;
             float dLeft, dRight;
+#warning this crashes if less than 3 speakers. What is the skip parameter for?
             findSpeakers(t, params, left, right, dLeft, dRight, o);
             assert(left >= 0 && right >= 0);
             assert(dLeft > 0 && dRight > 0);
@@ -1328,6 +1322,7 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             }
             
             assert(t >= 0 && t <= kThetaMax);
+#warning angle is bigger than kHalfCircle if more than 2 speakers...
             assert(angle > 0 && angle <= kHalfCircle);
             
             float outFactors[mNumberOfSpeakers];

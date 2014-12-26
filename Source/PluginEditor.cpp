@@ -248,9 +248,10 @@ public:
 			else
 			{
                 if (mFilter->getParameter(mParamIndex) != newVal){
-                    mFilter->beginParameterChangeGesture(mParamIndex);
+#warning had to comment this for panspan to work... does this break other things?link
+                    //mFilter->beginParameterChangeGesture(mParamIndex);
                     mFilter->setParameterNotifyingHost(mParamIndex, newVal);
-                    mFilter->endParameterChangeGesture(mParamIndex);
+                    //mFilter->endParameterChangeGesture(mParamIndex);
                 }
 			}
 		}
@@ -372,8 +373,8 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         
         int dh = kDefaultLabelHeight, x = 0, y = 0, w = kCenterColumnWidth;
         
-        mLinkDistances = addCheckbox("Link", mFilter->getLinkDistances(), x, y, w/2, dh, ct);
-        addLabel("Distance/Span", x+w/2, y, w/2, dh, ct);
+        mLinkDistances = addCheckbox("Link", mFilter->getLinkDistances(), x, y, w/3, dh, ct);
+        addLabel("Distance/Span", x+w/3, y, w*2/3, dh, ct);
         
         mSrcSelect = new ComboBox();
         mTabs->getTabContentComponent(2)->addAndMakeVisible(mSrcSelect);
@@ -553,6 +554,17 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			
 			mProcessModeCombo->addListener(this);
 		}
+        
+        {
+            addLabel("Max span volume (db):", x, y, w, dh, box);
+            y += dh + 5;
+            
+            Slider *ds = addParamSlider(kParamMaxSpanVolume, kMaxSpanVolume, mFilter->getParameter(kMaxSpanVolume), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mMaxSpanVolume = ds;
+            y += dh + 5;
+        }
+        
         int comboW = 40;
 		addLabel(leapSupported ? "OSC/Leap source:" : "OSC source:", x, y, w-comboW, dh, box);
 		//y += dh + 5;
@@ -576,15 +588,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 			mOscLeapSourceCb->addListener(this);
 		}
         
-        {
-            addLabel("Max span volume (db):", x, y, w, dh, box);
-            y += dh + 5;
-            
-            Slider *ds = addParamSlider(kParamMaxSpanVolume, kMaxSpanVolume, mFilter->getParameter(kMaxSpanVolume), x, y, w, dh, box);
-            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-            mMaxSpanVolume = ds;
-            y += dh + 5;
-        }
+
 	}
 	
         //--------------- V & F TAB ---------------- //
