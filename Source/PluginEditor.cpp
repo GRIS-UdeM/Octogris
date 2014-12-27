@@ -973,7 +973,7 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
         mLabels.add(label);
         
         float distance = mFilter->getSourceD(i);
-#warning shouldn't this send events to allow for automation of source distance?
+#warning is this causing problems with the pan span?
         Slider *slider = addParamSlider(kParamSource, i, distance, x + w/3, y, w*2/3, dh, ct);
         
         if (bIsFreeVolumeMode){

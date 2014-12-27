@@ -128,7 +128,8 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
     //whatever the actual mNumberOfSources, mParameters always has the same number of parameters, so might as well initialize
     //everything (JucePlugin_MaxNumInputChannels) instead of just mNumberOfSources
     for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++){   	//for (int i = 0; i < mNumberOfSources; i++){
-        mParameters.set(getParamForSourceD(i), normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance));
+        float fDefaultVal = normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance);
+        mParameters.set(getParamForSourceD(i), fDefaultVal);
     }
 
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++){   	//for (int i = 0; i < mNumberOfSources; i++){
@@ -731,7 +732,11 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	for (int i = 0; i < iActualNumberOfSources; i++)
 	{
 		inputs[i] = buffer.getWritePointer(i);
-		params[getParamForSourceD(i)] = denormalize(kSourceMinDistance, kSourceMaxDistance, params[getParamForSourceD(i)]);
+
+        if (mProcessMode == kFreeVolumeMode){
+            float fValue = denormalize(kSourceMinDistance, kSourceMaxDistance, params[getParamForSourceD(i)]);
+            params[getParamForSourceD(i)] = fValue;
+        }
 		params[getParamForSourceX(i)] = params[getParamForSourceX(i)] * (2*kRadiusMax) - kRadiusMax;
 		params[getParamForSourceY(i)] = params[getParamForSourceY(i)] * (2*kRadiusMax) - kRadiusMax;
 	}
@@ -1185,14 +1190,26 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     // ramp all the parameters, except constant ones and speaker thetas
     const int sourceParameters = mNumberOfSources * kParamsPerSource;
     const int speakerParameters = mNumberOfSpeakers * kParamsPerSpeakers;
-    for (int i = 0; i < (kNumberOfParameters - kConstantParameters); i++)
+    
+    std::cout << "sourceParameters " << sourceParameters << std::endl;
+    std::cout << "speakerParameters " << speakerParameters << std::endl;
+    std::cout << "kNumberOfParameters " << kNumberOfParameters << std::endl;
+    std::cout << "kConstantParameters " << kConstantParameters << std::endl;
+    
+    for (int iCurParamId= 0; iCurParamId < (kNumberOfParameters - kConstantParameters); iCurParamId++)
     {
-        bool isSpeakerXY = (i >= sourceParameters && i < (sourceParameters + speakerParameters) && ((i - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
+        bool isSpeakerXY = (iCurParamId >= sourceParameters && iCurParamId < (sourceParameters + speakerParameters) && ((iCurParamId - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
         if (isSpeakerXY) continue;
         
-        float currentParam = mSmoothedParameters[i];
-        float targetParam = params[i];
-        float *ramp = mSmoothedParametersRamps.getReference(i).b;
+        float currentParam = mSmoothedParameters[iCurParamId];
+        float targetParam = params[iCurParamId];
+        float *ramp = mSmoothedParametersRamps.getReference(iCurParamId).b;
+        
+        int iCurSource = 0;
+        int iCurDistanceParamId = getParamForSourceD(iCurSource);
+        if (iCurParamId == iCurDistanceParamId){
+            std::cout << "distance for source " << iCurSource << " is " << ramp[0] << std::endl;
+        }
         
         //float ori = currentParam;
         
@@ -1204,7 +1221,7 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
         
         //if (i == 0 && ori != currentParam) printf("param %i -> %f -> %f\n", i, ori, currentParam);
         
-        mSmoothedParameters.setUnchecked(i, currentParam);
+        mSmoothedParameters.setUnchecked(iCurParamId, currentParam);
     }
     
     // clear outputs
@@ -1225,18 +1242,20 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     {
         for (int o = 0; o < mNumberOfSpeakers; o++)
         {
-#warning we assume here that getX returns a theta, is that true? 
             float t = params[getParamForSpeakerX(o)];
-
-            float x = params[getParamForSpeakerX(o)] * (2*kRadiusMax) - kRadiusMax;
-            float y = params[getParamForSpeakerY(o)] * (2*kRadiusMax) - kRadiusMax;
-            float t2 = atan2f(y, x);
-            
             
             int left, right;
             float dLeft, dRight;
 #warning this crashes if less than 3 speakers. What is the skip parameter for?
             findSpeakers(t, params, left, right, dLeft, dRight, o);
+            
+            if (o == 0){
+                std::cout << "left: " << left << "\n"
+                << "right: " << right << "\n"
+                << "dLeft: " << dLeft << "\n"
+                << "dRight: " << dRight << "\n";
+            }
+            
             assert(left >= 0 && right >= 0);
             assert(dLeft > 0 && dRight > 0);
             
@@ -1249,6 +1268,12 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
         AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount, mNumberOfSpeakers);
     }
     assert(areaCount > 0);
+
+    for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; ++iCurSpeaker){
+        cout << "distance " << iCurSpeaker << ": " << getParamForSourceD(iCurSpeaker) << std::endl;
+        cout << "distance smoothed " << iCurSpeaker << ": " << *mSmoothedParametersRamps.getReference(getParamForSourceD(iCurSpeaker)).b << std::endl;
+    }
+    
     
     // compute
     // in this context: source T, R are actually source X, Y
@@ -1265,6 +1290,7 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             float x = input_x[f];
             float y = input_y[f];
             float d = input_d[f];
+            cout << "d:" << d << endl;
             
             float tv = dbToLinear(d * params[kMaxSpanVolume]);
             
@@ -1610,7 +1636,9 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
     {
         mBufferSrcLocX[i] = mParameters[getParamForSourceX(i)];
         mBufferSrcLocY[i] = mParameters[getParamForSourceY(i)];
-        mBufferSrcLocD[i] = mParameters[getParamForSourceD(i)];
+        float fValye = mParameters[getParamForSourceD(i)];
+        mBufferSrcLocD[i] = fValye;
+
     }
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
     {
@@ -1626,7 +1654,8 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
     {
         mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
         mParameters.set(getParamForSourceY(i), mBufferSrcLocY[i]);
-        mParameters.set(getParamForSourceD(i), mBufferSrcLocD[i]);
+        float fValue = mBufferSrcLocD[i];
+        mParameters.set(getParamForSourceD(i), fValue);
     }
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
     {
