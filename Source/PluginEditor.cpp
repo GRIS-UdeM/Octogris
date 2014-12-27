@@ -1238,7 +1238,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     if (mHost.isReaper() && button == mApplyInputOutputModeButton)
     {
         mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
-        cout << "processor sent this option from mInputOutputModeCombo" << mInputOutputModeCombo->getSelectedItemIndex() << endl;
         
         updateSources(false);
         updateSpeakers();

@@ -201,7 +201,6 @@ void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValu
 
 const String OctogrisAudioProcessor::getParameterName (int index)
 {
-    //cout << index << "\t";
    
     if (index == kLinkMovement) return "Link Movement";
 	if (index == kSmooth)		return "Smooth Param";
@@ -226,7 +225,6 @@ const String OctogrisAudioProcessor::getParameterName (int index)
             default: return String::empty;
 
 		}
-        //cout << "getParameterNameJimBob1: " << s << endl;
 		return s;
 	}
 	index -= mNumberOfSources * kParamsPerSource;
@@ -244,11 +242,9 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 //			case kSpeakerUnused: s << " - Unused"; break;
             default: return String::empty;
 		}
-        //cout << "getParameterNameJimBob1: " << s << endl;
 		return s;
 	}
 	
-    //cout << "getParameterNameJimBob: empty1" << endl;
     return String::empty;
 }
 
@@ -362,9 +358,6 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
         mIsNumberSourcesChanged = true;
     }
     
-//    cout << "SET NUMBER OF SOURCES\n";
-//    cout <<  "new number: " << p_iNewNumberOfSources << "\n";
-    
     //prevents audio process thread from running
     suspendProcessing (true);
     
@@ -445,9 +438,6 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
     } else {
         mIsNumberSpeakersChanged = true;
     }
-    
-//    cout << "SET NUMBER OF SPEAKERS\n";
-//    cout <<  "new number: " << p_iNewNumberOfSpeakers << "\n";
     
     //prevents audio process thread from running
     suspendProcessing (true);
@@ -648,42 +638,9 @@ void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, Mi
 
 void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-	//fprintf(stderr, "pb\n");
-    
-//    jassert(mNumberOfSources == getNumInputChannels());
-////	jassert(mNumberOfSpeakers == getNumOutputChannels());
-//    int iSources = getNumInputChannels(); //mNumberOfSources;
-//    int iSpeakers = getNumOutputChannels();// mNumberOfSpeakers;
-//    int iBufferSize = buffer.getNumChannels();
-//    cout << "PROCESS BLOCK\n";
-//    cout << "iSources = " << iSources << endl;
-//    cout << "iSpeakers = " << iSpeakers << endl;
-//    cout << "iBufferSize = " << iBufferSize << endl;
-    
-//    if (mNumberOfSources != iSources){
-//        setNumberOfSources(iSources);
-//    }
-//    if (mNumberOfSpeakers != iSpeakers){
-//        setNumberOfSpeakers(iSpeakers);
-//    }
+
     int iActualNumberOfSources = mNumberOfSources;
     int iActualNumberOfSpeakers = mNumberOfSpeakers;
-    
-//    int iBufferInputs = buffer.getNumChannels();
-//    if (iBufferInputs != mNumberOfSources){
-//        iActualNumberOfSources = iBufferInputs;
-//       
-//    }
-//    int iOutputCount = getNumOutputChannels();
-//    if (iOutputCount != mNumberOfSpeakers){
-//         iActualNumberOfSpeakers = iOutputCount;
-//    }
-//    
-//    int iActualNumberOfSpeakers = mNumberOfSpeakers;
-//    int iBufferOutputs = buffer.getNum();
-//    if (iBufferOutputs != mNumberOfSpeakers){
-//        iActualNumberOfSources = iBufferOutputs;
-//    }
 	
 	double sampleRate = getSampleRate();
 	unsigned int oriFramesToProcess = buffer.getNumSamples();
@@ -1191,11 +1148,6 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     const int sourceParameters = mNumberOfSources * kParamsPerSource;
     const int speakerParameters = mNumberOfSpeakers * kParamsPerSpeakers;
     
-    std::cout << "sourceParameters " << sourceParameters << std::endl;
-    std::cout << "speakerParameters " << speakerParameters << std::endl;
-    std::cout << "kNumberOfParameters " << kNumberOfParameters << std::endl;
-    std::cout << "kConstantParameters " << kConstantParameters << std::endl;
-    
     for (int iCurParamId= 0; iCurParamId < (kNumberOfParameters - kConstantParameters); iCurParamId++)
     {
         bool isSpeakerXY = (iCurParamId >= sourceParameters && iCurParamId < (sourceParameters + speakerParameters) && ((iCurParamId - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
@@ -1204,12 +1156,6 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
         float currentParam = mSmoothedParameters[iCurParamId];
         float targetParam = params[iCurParamId];
         float *ramp = mSmoothedParametersRamps.getReference(iCurParamId).b;
-        
-        int iCurSource = 0;
-        int iCurDistanceParamId = getParamForSourceD(iCurSource);
-        if (iCurParamId == iCurDistanceParamId){
-            std::cout << "distance for source " << iCurSource << " is " << ramp[0] << std::endl;
-        }
         
         //float ori = currentParam;
         
@@ -1237,8 +1183,9 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     areas.resize(mNumberOfSpeakers * s_iMaxAreas);
 
     int areaCount = 0;
-    
-    if (mNumberOfSpeakers > 1)
+
+#warning this part crashes if less than 3 speakers, because it looks for the closest speakers on the left and on the right for each speaker
+    if (mNumberOfSpeakers > 2)//if (mNumberOfSpeakers > 1)
     {
         for (int o = 0; o < mNumberOfSpeakers; o++)
         {
@@ -1246,16 +1193,9 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             
             int left, right;
             float dLeft, dRight;
-#warning this crashes if less than 3 speakers. What is the skip parameter for?
             findSpeakers(t, params, left, right, dLeft, dRight, o);
             
-            if (o == 0){
-                std::cout << "left: " << left << "\n"
-                << "right: " << right << "\n"
-                << "dLeft: " << dLeft << "\n"
-                << "dRight: " << dRight << "\n";
-            }
-            
+            //std::cout << "speaker " << o << ": left= " << left << ", right: " << right << ", dLeft: " << dLeft << ", dRight: " << dRight << "\n";
             assert(left >= 0 && right >= 0);
             assert(dLeft > 0 && dRight > 0);
             
@@ -1268,11 +1208,6 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
         AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount, mNumberOfSpeakers);
     }
     assert(areaCount > 0);
-
-    for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; ++iCurSpeaker){
-        cout << "distance " << iCurSpeaker << ": " << getParamForSourceD(iCurSpeaker) << std::endl;
-        cout << "distance smoothed " << iCurSpeaker << ": " << *mSmoothedParametersRamps.getReference(getParamForSourceD(iCurSpeaker)).b << std::endl;
-    }
     
     
     // compute
@@ -1290,7 +1225,6 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             float x = input_x[f];
             float y = input_y[f];
             float d = input_d[f];
-            cout << "d:" << d << endl;
             
             float tv = dbToLinear(d * params[kMaxSpanVolume]);
             
@@ -1348,7 +1282,6 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             }
             
             assert(t >= 0 && t <= kThetaMax);
-#warning angle is bigger than kHalfCircle if more than 2 speakers...
             assert(angle > 0 && angle <= kHalfCircle);
             
             float outFactors[mNumberOfSpeakers];

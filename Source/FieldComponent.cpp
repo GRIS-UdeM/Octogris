@@ -172,9 +172,9 @@ void FieldComponent::paint (Graphics& g)
 			float h = fs*0.5;
 			float r1 = 0.5*M_PI-t[0];
 			float r2 = 0.5*M_PI-t[1];
-			float ir = (r >= 1) ? 2 : 0;
+			float ir = (r >= .999) ? 2 : 0;
 			
-			if (r >= 1)
+			if (r >= .999)
 			{
 				g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f));
 				Path p;
