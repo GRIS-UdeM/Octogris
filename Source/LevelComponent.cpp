@@ -47,7 +47,7 @@ void LevelComponent::paint (Graphics& g)
 		hue = (1 - p) / 3.f;
 	}
 	
-	//fprintf(stderr, "speaker %d linear: %.3f db: %.1f hue: %.3f\n", mIndex, mLastLevel, level, hue);
+	//fprintf(stderr, "speaker %d linear: %.3f dB: %.1f hue: %.3f\n", mIndex, mLastLevel, level, hue);
 	
 	g.fillAll (Colours::black);
 	g.setColour (Colour::fromHSV(hue, 1, 1, 1));

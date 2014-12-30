@@ -1132,7 +1132,7 @@ static void Integrate(float x1, float x2, const vector<Area> &areas, int areaCou
         assert(dc > 0);
         
         float v = dc * (y1+y2); // * 0.5f;
-        assert(v > 0);
+        if (v <= 0) v = 1e-6;
         
         outFactors[area.speaker] += v * factor;
     }
@@ -1177,25 +1177,21 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
         memset(output, 0, frames * sizeof(float));
     }
     
-    //int iMaxAreas  = mNumberOfSpeakers * s_iMaxAreas;
-    //Area* areas = new Area[iMaxAreas];
     vector<Area> areas;
     areas.resize(mNumberOfSpeakers * s_iMaxAreas);
 
     int areaCount = 0;
 
-#warning this part crashes if less than 3 speakers, because it looks for the closest speakers on the left and on the right for each speaker
-    if (mNumberOfSpeakers > 2)//if (mNumberOfSpeakers > 1)
+    
+    
+    if (mNumberOfSpeakers > 2)
     {
         for (int o = 0; o < mNumberOfSpeakers; o++)
         {
             float t = params[getParamForSpeakerX(o)];
-            
             int left, right;
             float dLeft, dRight;
             findSpeakers(t, params, left, right, dLeft, dRight, o);
-            
-            //std::cout << "speaker " << o << ": left= " << left << ", right: " << right << ", dLeft: " << dLeft << ", dRight: " << dRight << "\n";
             assert(left >= 0 && right >= 0);
             assert(dLeft > 0 && dRight > 0);
             
@@ -1203,10 +1199,48 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             AddArea(o, t, 1, t + dRight, 0, areas, areaCount, mNumberOfSpeakers);
         }
     }
+    else if (mNumberOfSpeakers == 2)
+    {
+        int s1 = (params[getParamForSpeakerX(0)] < params[getParamForSpeakerX(1)]) ? 0 : 1;
+        int s2 = 1 - s1;
+        float t1 = params[getParamForSpeakerX(s1)];
+        float t2 = params[getParamForSpeakerX(s2)];
+        
+        AddArea(s1, t2 - kThetaMax, 0, t1, 1, areas, areaCount, mNumberOfSpeakers);
+        AddArea(s1, t1, 1, t2, 0, areas, areaCount, mNumberOfSpeakers);
+        
+        AddArea(s2, t1, 0, t2, 1, areas, areaCount, mNumberOfSpeakers);
+        AddArea(s2, t2, 1, t1 + kThetaMax, 0, areas, areaCount, mNumberOfSpeakers);
+    }
     else
     {
         AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount, mNumberOfSpeakers);
     }
+//    if (mNumberOfSpeakers > 2)//if (mNumberOfSpeakers > 1)
+//    {
+//        for (int o = 0; o < mNumberOfSpeakers; o++)
+//        {
+//            float t = params[getParamForSpeakerX(o)];
+//            
+//            int left, right;
+//            float dLeft, dRight;
+//            findSpeakers(t, params, left, right, dLeft, dRight, o);
+//            
+//            //std::cout << "speaker " << o << ": left= " << left << ", right: " << right << ", dLeft: " << dLeft << ", dRight: " << dRight << "\n";
+//            assert(left >= 0 && right >= 0);
+//            assert(dLeft > 0 && dRight > 0);
+//            
+//            AddArea(o, t - dLeft, 0, t, 1, areas, areaCount, mNumberOfSpeakers);
+//            AddArea(o, t, 1, t + dRight, 0, areas, areaCount, mNumberOfSpeakers);
+//        }
+//    }
+//    else
+//    {
+//        AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount, mNumberOfSpeakers);
+//    }
+    
+    
+    
     assert(areaCount > 0);
     
     
@@ -1225,6 +1259,10 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             float x = input_x[f];
             float y = input_y[f];
             float d = input_d[f];
+            
+            if (d > 1){
+               d = normalize(kSourceMinDistance, kSourceMaxDistance, d);
+            }
             
             float tv = dbToLinear(d * params[kMaxSpanVolume]);
             

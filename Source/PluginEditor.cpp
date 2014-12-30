@@ -556,7 +556,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		}
         
         {
-            addLabel("Max span volume (db):", x, y, w, dh, box);
+            addLabel("Max span volume (dB):", x, y, w, dh, box);
             y += dh + 5;
             
             Slider *ds = addParamSlider(kParamMaxSpanVolume, kMaxSpanVolume, mFilter->getParameter(kMaxSpanVolume), x, y, w, dh, box);
@@ -1456,7 +1456,10 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
         if (iSelectedMode == kPanVolumeMode){
             for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(false);  }
         } else {
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(true);   }
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
+                mDistances.getUnchecked(i)->setEnabled(true);
+                mDistances.getUnchecked(i)->valueChanged();
+            }
         }
         
 		repaint();

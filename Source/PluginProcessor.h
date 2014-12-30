@@ -126,7 +126,7 @@ static const float kFilterFarDefault = kMaxDistance;
 
 static const float kMaxSpanVolumeMin = 0;
 static const float kMaxSpanVolumeMax = 20;
-static const float kMaxSpanVolumeDefault = 10;
+static const float kMaxSpanVolumeDefault = 0;
 
 static const float kRadiusMax = 2;
 static const float kHalfCircle = M_PI;
