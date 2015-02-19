@@ -39,10 +39,11 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL;C:\Users\Vincent\Documents\sdks\LeapSDK\lib\x86</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL</LibraryPath>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -56,7 +57,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\steinberg\vstsdk2.4;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1\Interfaces;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1\Interfaces\ACF;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;C:\Users\Vincent\Documents\sdks\LeapSDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\steinberg\vstsdk2.4;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1\Interfaces;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1\Interfaces\ACF;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>JucePlugin_AAXLibs_path="C:\\Users\\Vincent\\Documents\\sdks\\AAX_SDK_2p1p1\\Libs";WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.0.16;JUCE_APP_VERSION_HEX=0x20010;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -80,10 +81,10 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL;C:\Users\Vincent\Documents\sdks\LeapSDK\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalOptions>/FORCE:multiple %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>liblo.lib;Leap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liblo.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -100,7 +101,7 @@
     </Midl>
     <ClCompile>
       <Optimization>MinSpace</Optimization>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\steinberg\vstsdk2.4;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1\Interfaces;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1\Interfaces\ACF;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\steinberg\vstsdk2.4;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1\Interfaces;C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1\Interfaces\ACF;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>JucePlugin_AAXLibs_path="C:\\Users\\Vincent\\Documents\\sdks\\AAX_SDK_2p1p1\\Libs";WIN32;_WINDOWS;NDEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.0.16;JUCE_APP_VERSION_HEX=0x20010;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -125,8 +126,10 @@
       <TargetMachine>MachineX86</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalLibraryDirectories>C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalOptions>/FORCE:multiple %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>liblo.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
