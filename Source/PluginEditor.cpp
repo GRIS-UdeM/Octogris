@@ -248,7 +248,8 @@ public:
 			else
 			{
                 if (mFilter->getParameter(mParamIndex) != newVal){
-#warning had to comment this for panspan to work... does this break other things?link
+					JUCE_COMPILER_WARNING(new string("had to comment this for panspan to work... does this break other things?"))
+
                     //mFilter->beginParameterChangeGesture(mParamIndex);
                     mFilter->setParameterNotifyingHost(mParamIndex, newVal);
                     //mFilter->endParameterChangeGesture(mParamIndex);
@@ -973,7 +974,7 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
         mLabels.add(label);
         
         float distance = mFilter->getSourceD(i);
-#warning is this causing problems with the pan span?
+JUCE_COMPILER_WARNING(new string("is this causing problems with the pan span?"))
         Slider *slider = addParamSlider(kParamSource, i, distance, x + w/3, y, w*2/3, dh, ct);
         
         if (bIsFreeVolumeMode){
@@ -989,7 +990,7 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
     mMover.updateNumberOfSources();
 
     if (!p_bCalledFromConstructor){
-#warning are we sure we want to reset source location here? I think so
+		JUCE_COMPILER_WARNING (new string("warning are we sure we want to reset source location here ? I think so"))
         buttonClicked(mApplySrcPlacementButton);
         //comboBoxChanged(mSrcPlacement);
     }
@@ -1569,8 +1570,10 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
         
         updateOscComponent(mOsc);
+		
+#if JUCE_MAC
         updateLeapComponent(mleap);
-        
+#endif
         mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
 		mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
 		mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);

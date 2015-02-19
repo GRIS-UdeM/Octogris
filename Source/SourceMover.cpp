@@ -64,7 +64,8 @@ void SourceMover::begin(int s, MoverType mt)
 		{
 			// need to calculate angular order
 			
-			IndexedAngle ia[mFilter->getNumberOfSources()];
+			//IndexedAngle ia[mFilter->getNumberOfSources()];
+			IndexedAngle * ia = new IndexedAngle[mFilter->getNumberOfSources()];
 			
 			for (int j = 0; j < mFilter->getNumberOfSources(); j++)
 			{
@@ -99,6 +100,8 @@ void SourceMover::begin(int s, MoverType mt)
 			}
 			
 			//for (int j = 0; j < mNumberOfSources; j++)  printf("mSourceAngularOrder[%i] = %.3f\n", j+1, mSourceAngularOrder[j]);
+
+			delete[] ia;
 		}
 	}
 	

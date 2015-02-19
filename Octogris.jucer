@@ -8,38 +8,9 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
-              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.1">
   <MAINGROUP id="rRl79u" name="Octogris2">
     <FILE id="Rh67hJ" name="libLeap.dylib" compile="0" resource="1" file="Builds/MacOSX/libLeap.dylib"/>
-    <GROUP id="{DDD6EC5A-36B8-F104-E1BB-430270FB5F9C}" name="liblo">
-      <GROUP id="{FB530947-3781-87A5-DA16-CF82F7FC1F81}" name="lo">
-        <FILE id="SIKSiK" name="lo.h" compile="0" resource="0" file="liblo/lo/lo.h"/>
-        <FILE id="bMJ17j" name="lo_endian.h" compile="0" resource="0" file="liblo/lo/lo_endian.h"/>
-        <FILE id="RyFK4c" name="lo_errors.h" compile="0" resource="0" file="liblo/lo/lo_errors.h"/>
-        <FILE id="lbJQeM" name="lo_lowlevel.h" compile="0" resource="0" file="liblo/lo/lo_lowlevel.h"/>
-        <FILE id="lj3Nhp" name="lo_macros.h" compile="0" resource="0" file="liblo/lo/lo_macros.h"/>
-        <FILE id="TQHnJY" name="lo_osc_types.h" compile="0" resource="0" file="liblo/lo/lo_osc_types.h"/>
-        <FILE id="Ln9mU8" name="lo_throw.h" compile="0" resource="0" file="liblo/lo/lo_throw.h"/>
-        <FILE id="IehUBT" name="lo_types.h" compile="0" resource="0" file="liblo/lo/lo_types.h"/>
-      </GROUP>
-      <FILE id="KdEUgF" name="loconfig.h" compile="0" resource="0" file="liblo/loconfig.h"/>
-      <GROUP id="{FB1FE132-DE8F-5AFE-AE32-0510E659DA09}" name="src">
-        <FILE id="kMe28I" name="address.c" compile="1" resource="0" file="liblo/src/address.c"/>
-        <FILE id="Jbd4pP" name="blob.c" compile="1" resource="0" file="liblo/src/blob.c"/>
-        <FILE id="E6IZS1" name="bundle.c" compile="1" resource="0" file="liblo/src/bundle.c"/>
-        <FILE id="bKbDXs" name="lo_internal.h" compile="0" resource="0" file="liblo/src/lo_internal.h"/>
-        <FILE id="dqdMd0" name="lo_types_internal.h" compile="0" resource="0"
-              file="liblo/src/lo_types_internal.h"/>
-        <FILE id="fBdVC5" name="message.c" compile="1" resource="0" file="liblo/src/message.c"/>
-        <FILE id="qPiDIz" name="method.c" compile="1" resource="0" file="liblo/src/method.c"/>
-        <FILE id="Koznd7" name="pattern_match.c" compile="1" resource="0" file="liblo/src/pattern_match.c"/>
-        <FILE id="eKo7PW" name="send.c" compile="1" resource="0" file="liblo/src/send.c"/>
-        <FILE id="Pgkp65" name="server.c" compile="1" resource="0" file="liblo/src/server.c"/>
-        <FILE id="gmaMd4" name="server_thread.c" compile="1" resource="0" file="liblo/src/server_thread.c"/>
-        <FILE id="lDaHgS" name="subtest.c" compile="1" resource="0" file="liblo/src/subtest.c"/>
-        <FILE id="dJ9x6K" name="timetag.c" compile="1" resource="0" file="liblo/src/timetag.c"/>
-      </GROUP>
-    </GROUP>
     <GROUP id="{89B00B3D-3E60-2792-C7A4-D570AF057C40}" name="Source">
       <FILE id="iDZlup" name="_firs.h" compile="0" resource="0" file="Source/_firs.h"/>
       <FILE id="dqxZV5" name="FieldComponent.cpp" compile="1" resource="0"
@@ -96,6 +67,27 @@
         <MODULEPATH id="juce_audio_plugin_client" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
+    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="C:\Users\Vincent\Documents\sdks\steinberg\vstsdk2.4"
+            aaxFolder="C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1" externalLibraries="">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo&#10;C:\Users\Vincent\Documents\sdks\LeapSDK\include"
+                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL&#10;C:\Users\Vincent\Documents\sdks\LeapSDK\lib\x86"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="2" targetName="Octogris2"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+      </MODULEPATHS>
+    </VS2013>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="1"/>

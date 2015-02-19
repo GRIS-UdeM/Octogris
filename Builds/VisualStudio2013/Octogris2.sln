@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2013
+Project("{72B7FF5F-F767-4BA0-2D8F-F661058C5DBB}") = "Octogris2", "Octogris2.vcxproj", "{85B349BE-0514-8781-EF8C-E922FF5EEC35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{85B349BE-0514-8781-EF8C-E922FF5EEC35}.Debug|Win32.ActiveCfg = Debug|Win32
+		{85B349BE-0514-8781-EF8C-E922FF5EEC35}.Debug|Win32.Build.0 = Debug|Win32
+		{85B349BE-0514-8781-EF8C-E922FF5EEC35}.Release|Win32.ActiveCfg = Release|Win32
+		{85B349BE-0514-8781-EF8C-E922FF5EEC35}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
