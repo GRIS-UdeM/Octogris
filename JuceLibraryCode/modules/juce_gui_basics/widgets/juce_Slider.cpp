@@ -1497,8 +1497,11 @@ void Slider::setDoubleClickReturnValue (bool isDoubleClickEnabled,  double value
     pimpl->doubleClickReturnValue = valueToSetOnDoubleClick;
 }
 
-double Slider::getDoubleClickReturnValue() const noexcept       { return pimpl->doubleClickReturnValue; }
-bool Slider::isDoubleClickReturnEnabled() const noexcept        { return pimpl->doubleClickToValue; }
+double Slider::getDoubleClickReturnValue (bool& isEnabledResult) const
+{
+    isEnabledResult = pimpl->doubleClickToValue;
+    return pimpl->doubleClickReturnValue;
+}
 
 void Slider::updateText()
 {
@@ -1573,11 +1576,10 @@ void Slider::valueChanged() {}
 void Slider::setPopupMenuEnabled (const bool menuEnabled)   { pimpl->menuEnabled = menuEnabled; }
 void Slider::setScrollWheelEnabled (const bool enabled)     { pimpl->scrollWheelEnabled = enabled; }
 
-bool Slider::isHorizontal() const noexcept                  { return pimpl->isHorizontal(); }
-bool Slider::isVertical() const noexcept                    { return pimpl->isVertical(); }
-bool Slider::isRotary() const noexcept                      { return pimpl->isRotary(); }
+bool Slider::isHorizontal() const noexcept   { return pimpl->isHorizontal(); }
+bool Slider::isVertical() const noexcept     { return pimpl->isVertical(); }
 
-float Slider::getPositionOfValue (const double value)       { return pimpl->getPositionOfValue (value); }
+float Slider::getPositionOfValue (const double value)   { return pimpl->getPositionOfValue (value); }
 
 //==============================================================================
 void Slider::paint (Graphics& g)        { pimpl->paint (g, getLookAndFeel()); }

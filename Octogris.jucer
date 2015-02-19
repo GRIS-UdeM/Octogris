@@ -8,9 +8,38 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
-              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.1">
+              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.0">
   <MAINGROUP id="rRl79u" name="Octogris2">
     <FILE id="Rh67hJ" name="libLeap.dylib" compile="0" resource="1" file="Builds/MacOSX/libLeap.dylib"/>
+    <GROUP id="{17707EFA-D5BA-4533-678C-40B034B62098}" name="liblo">
+      <GROUP id="{5459C3B4-ABF5-9F1D-9C5A-DA0511119ED9}" name="lo">
+        <FILE id="hpyuoz" name="lo.h" compile="0" resource="0" file="liblo/lo/lo.h"/>
+        <FILE id="Y3JMl5" name="lo_endian.h" compile="0" resource="0" file="liblo/lo/lo_endian.h"/>
+        <FILE id="M4HxXF" name="lo_errors.h" compile="0" resource="0" file="liblo/lo/lo_errors.h"/>
+        <FILE id="I7KvwN" name="lo_lowlevel.h" compile="0" resource="0" file="liblo/lo/lo_lowlevel.h"/>
+        <FILE id="bZmzuU" name="lo_macros.h" compile="0" resource="0" file="liblo/lo/lo_macros.h"/>
+        <FILE id="U3TzZ3" name="lo_osc_types.h" compile="0" resource="0" file="liblo/lo/lo_osc_types.h"/>
+        <FILE id="ehYajU" name="lo_throw.h" compile="0" resource="0" file="liblo/lo/lo_throw.h"/>
+        <FILE id="PuN6g4" name="lo_types.h" compile="0" resource="0" file="liblo/lo/lo_types.h"/>
+      </GROUP>
+      <FILE id="n5flUc" name="loconfig.h" compile="0" resource="0" file="liblo/loconfig.h"/>
+      <GROUP id="{FB4C906C-B596-A218-BC64-95D84358A64C}" name="src">
+        <FILE id="NDqOxt" name="address.c" compile="1" resource="0" file="liblo/src/address.c"/>
+        <FILE id="hx5uXB" name="blob.c" compile="1" resource="0" file="liblo/src/blob.c"/>
+        <FILE id="BilMoE" name="bundle.c" compile="1" resource="0" file="liblo/src/bundle.c"/>
+        <FILE id="GK5sTe" name="lo_internal.h" compile="0" resource="0" file="liblo/src/lo_internal.h"/>
+        <FILE id="Nuf26d" name="lo_types_internal.h" compile="0" resource="0"
+              file="liblo/src/lo_types_internal.h"/>
+        <FILE id="rRAhfR" name="message.c" compile="1" resource="0" file="liblo/src/message.c"/>
+        <FILE id="CC5xit" name="method.c" compile="1" resource="0" file="liblo/src/method.c"/>
+        <FILE id="HlJelR" name="pattern_match.c" compile="1" resource="0" file="liblo/src/pattern_match.c"/>
+        <FILE id="c5NIvy" name="send.c" compile="1" resource="0" file="liblo/src/send.c"/>
+        <FILE id="PvNepZ" name="server.c" compile="1" resource="0" file="liblo/src/server.c"/>
+        <FILE id="DhSEXd" name="server_thread.c" compile="1" resource="0" file="liblo/src/server_thread.c"/>
+        <FILE id="eFQ1gR" name="subtest.c" compile="1" resource="0" file="liblo/src/subtest.c"/>
+        <FILE id="XJhZRE" name="timetag.c" compile="1" resource="0" file="liblo/src/timetag.c"/>
+      </GROUP>
+    </GROUP>
     <GROUP id="{89B00B3D-3E60-2792-C7A4-D570AF057C40}" name="Source">
       <FILE id="iDZlup" name="_firs.h" compile="0" resource="0" file="Source/_firs.h"/>
       <FILE id="dqxZV5" name="FieldComponent.cpp" compile="1" resource="0"
