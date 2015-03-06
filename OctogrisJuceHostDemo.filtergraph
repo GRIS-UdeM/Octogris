@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <FILTERGRAPH>
-  <FILTER uid="1" x="0.5" y="0.1" uiLastX="" uiLastY="">
+  <FILTER uid="1" x="0.5" y="0.1" uiLastX="0" uiLastY="0">
     <PLUGIN name="Audio Input" descriptiveName="" format="Internal" category="I/O devices"
             manufacturer="Raw Material Software" version="1.0" file="" uid="246006c0"
             isInstrument="0" fileTime="0" numInputs="0" numOutputs="2" isShell="0"/>
     <STATE>0.</STATE>
   </FILTER>
-  <FILTER uid="2" x="0.25" y="0.1" uiLastX="" uiLastY="">
+  <FILTER uid="2" x="0.25" y="0.1" uiLastX="0" uiLastY="0">
     <PLUGIN name="Midi Input" descriptiveName="" format="Internal" category="I/O devices"
             manufacturer="Raw Material Software" version="1.0" file="" uid="cb5fde0b"
             isInstrument="0" fileTime="0" numInputs="0" numOutputs="0" isShell="0"/>
     <STATE>0.</STATE>
   </FILTER>
-  <FILTER uid="3" x="0.5" y="0.9" uiLastX="" uiLastY="">
+  <FILTER uid="3" x="0.5" y="0.9" uiLastX="0" uiLastY="0">
     <PLUGIN name="Audio Output" descriptiveName="" format="Internal" category="I/O devices"
             manufacturer="Raw Material Software" version="1.0" file="" uid="724248cb"
             isInstrument="0" fileTime="0" numInputs="2" numOutputs="0" isShell="0"/>
@@ -22,8 +22,8 @@
   <FILTER uid="4" x="0.50875" y="0.45155" uiLastX="70" uiLastY="74">
     <PLUGIN name="Octogris2" format="VST" category="Effect" manufacturer="UdeM"
             version="V2.1.6" file="C:\Users\Vincent\Documents\git\Octogris\Builds\VisualStudio2013\Debug\Octogris2.dll"
-            uid="4f63746f" isInstrument="0" fileTime="14be5e21a8f" numInputs="8"
+            uid="4f63746f" isInstrument="0" fileTime="14be68d60cc" numInputs="8"
             numOutputs="16" isShell="0"/>
-    <STATE>708.CMlaKA....fQBMDZ....A7zXz8F....1....A.............................................................................................................................................................................f.jn....................P......................8A........Ji...wjiLtDiM33RLtDCLv.PyM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byMG....P.....H....D....P.....A....D..........+++++C...9i........f+zbyM2L..........jvO4zC.....ZlYF+rppp7C...3O...f+.....nND7rOXCxN+PRRR3y38gwOXCxN+PRRR3CT9lnOh2GF+PRRR3C1fryOi2GF+PRRR3ST9lnO6Pvy9PRRR3C1fryO6Pvy9PRRR3SOD7rOP4ah9PRRR3y38gwOR4ah9PRRR3ijSdtO6KsO+HGGG8C.....2XCC+ruz97ibbbzO.....PTR55ywrVyOxwwQ+.....fWaKxOHyZM+HGGG8C.....FXxk9nWsj7ibbbzO.....zOaz7id0RxOxwwQ+.....v0GMnOXVlC+HGGG8C.....TvkO+jYYN7ibbbzO.....31jA5y74utOxwwQ+.....PR17yO1m+59HGGG8C.....Xgjj9nyD95ibbbzO.....T8117iOS3qOxwwQ+......u2KqONYbl9HGGG8C.....jPnI+.kwY5ibbbzO.....Tv2d6ihbQnOxwwQ+.....fePBwOKxEg9HGGG8C.....</STATE>
+    <STATE>708.CMlaKA....fQBMDZ....A7zXz8F....1....A.............................................................................................................................................................................f.jn....................P......................8A........Ji...wjiLtDiM33RLtDCLv.PyM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2by.D....P.....H....D....P.....A....D..........+++++C...9C........f+zbyM2L..........jvO4zC.....ZlYF+rppp7C...3O...f+.....nND7rOXCxN+PRRR3y38gwOXCxN+PRRR3CT9lnOh2GF+PRRR3C1fryOi2GF+PRRR3ST9lnO6Pvy9PRRR3C1fryO6Pvy9PRRR3SOD7rOP4ah9PRRR3y38gwOR4ah9PRRR3ijSdtO6KsO+HGGG8C.....2XCC+ruz97ibbbzO.....PTR55ywrVyOxwwQ+.....fWaKxOHyZM+HGGG8C.....FXxk9nWsj7ibbbzO.....zOaz7id0RxOxwwQ+.....v0GMnOXVlC+HGGG8C.....TvkO+jYYN7ibbbzO.....31jA5y74utOxwwQ+.....PR17yO1m+59HGGG8C.....Xgjj9nyD95ibbbzO.....T8117iOS3qOxwwQ+......u2KqONYbl9HGGG8C.....jPnI+.kwY5ibbbzO.....Tv2d6ihbQnOxwwQ+.....fePBwOKxEg9HGGG8C.....</STATE>
   </FILTER>
 </FILTERGRAPH>

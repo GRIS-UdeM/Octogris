@@ -101,10 +101,10 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="1" optimisation="1" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL"/>
+                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib&#10;C:\Users\Vincent\Documents\sdks\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="0" optimisation="2" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseDLL"/>
+                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib&#10;C:\Users\Vincent\Documents\sdks\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
