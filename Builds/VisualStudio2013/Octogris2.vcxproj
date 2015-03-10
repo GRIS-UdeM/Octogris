@@ -39,12 +39,12 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib;C:\Users\Vincent\Documents\sdks\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib;C:\Users\Vincent\Documents\sdks\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86</LibraryPath>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -81,7 +81,7 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib;C:\Users\Vincent\Documents\sdks\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalOptions>/FORCE:multiple %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -128,15 +128,12 @@
       <AdditionalLibraryDirectories>C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalOptions>/FORCE:multiple %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>iphlpapi.lib;liblo.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>user32.lib;wsock32.lib;ws2_32.lib;iphlpapi.lib;pthreadVC2.lib;liblo.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\Octogris2.bsc</OutputFile>
     </Bscmake>
-    <ProjectReference>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
-    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\FieldComponent.cpp" />
@@ -473,6 +470,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTree.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\undomanager\juce_UndoManager.cpp">
@@ -1267,6 +1267,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\juce_core.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_Value.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTree.h" />
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\undomanager\juce_UndoableAction.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\undomanager\juce_UndoManager.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\app_properties\juce_ApplicationProperties.h" />

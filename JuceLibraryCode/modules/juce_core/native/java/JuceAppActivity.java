@@ -42,10 +42,8 @@ import android.opengl.*;
 import android.text.ClipboardManager;
 import android.text.InputType;
 import android.util.DisplayMetrics;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import android.util.Log;
+import java.io.*;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -55,7 +53,7 @@ import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 
 //==============================================================================
-public final class JuceAppActivity   extends Activity
+public class JuceAppActivity   extends Activity
 {
     //==============================================================================
     static
@@ -64,7 +62,7 @@ public final class JuceAppActivity   extends Activity
     }
 
     @Override
-    public final void onCreate (Bundle savedInstanceState)
+    public void onCreate (Bundle savedInstanceState)
     {
         super.onCreate (savedInstanceState);
 
@@ -75,14 +73,16 @@ public final class JuceAppActivity   extends Activity
     }
 
     @Override
-    protected final void onDestroy()
+    protected void onDestroy()
     {
         quitApp();
         super.onDestroy();
+
+        clearDataCache();
     }
 
     @Override
-    protected final void onPause()
+    protected void onPause()
     {
         if (viewHolder != null)
             viewHolder.onPause();
@@ -92,7 +92,7 @@ public final class JuceAppActivity   extends Activity
     }
 
     @Override
-    protected final void onResume()
+    protected void onResume()
     {
         super.onResume();
 
@@ -815,5 +815,86 @@ public final class JuceAppActivity   extends Activity
     public final void scanFile (String filename)
     {
         new SingleMediaScanner (this, filename);
+    }
+
+    public final Typeface getTypeFaceFromAsset (String assetName)
+    {
+        try
+        {
+            return Typeface.createFromAsset (this.getResources().getAssets(), assetName);
+        }
+        catch (Throwable e) {}
+
+        return null;
+    }
+
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+    public static String bytesToHex (byte[] bytes)
+    {
+        char[] hexChars = new char[bytes.length * 2];
+
+        for (int j = 0; j < bytes.length; ++j)
+        {
+            int v = bytes[j] & 0xff;
+            hexChars[j * 2]     = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0f];
+        }
+
+        return new String (hexChars);
+    }
+
+    final private java.util.Map dataCache = new java.util.HashMap();
+
+    synchronized private final File getDataCacheFile (byte[] data)
+    {
+        try
+        {
+            java.security.MessageDigest digest = java.security.MessageDigest.getInstance ("MD5");
+            digest.update (data);
+
+            String key = bytesToHex (digest.digest());
+
+            if (dataCache.containsKey (key))
+                return (File) dataCache.get (key);
+
+            File f = new File (this.getCacheDir(), "bindata_" + key);
+            f.delete();
+            FileOutputStream os = new FileOutputStream (f);
+            os.write (data, 0, data.length);
+            dataCache.put (key, f);
+            return f;
+        }
+        catch (Throwable e) {}
+
+        return null;
+    }
+
+    private final void clearDataCache()
+    {
+        java.util.Iterator it = dataCache.values().iterator();
+
+        while (it.hasNext())
+        {
+            File f = (File) it.next();
+            f.delete();
+        }
+    }
+
+    public final Typeface getTypeFaceFromByteArray (byte[] data)
+    {
+        try
+        {
+            File f = getDataCacheFile (data);
+
+            if (f != null)
+                return Typeface.createFromFile (f);
+        }
+        catch (Exception e)
+        {
+            Log.e ("JUCE", e.toString());
+        }
+
+        return null;
     }
 }
