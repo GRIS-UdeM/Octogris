@@ -115,7 +115,7 @@ bool JUCE_CALLTYPE Process::openEmailWithAttachments (const String& targetEmailA
 class URLConnectionState   : public Thread
 {
 public:
-    URLConnectionState (NSURLRequest* req, const int maxRedirects)
+    URLConnectionState (NSURLRequest* req)
         : Thread ("http connection"),
           contentLength (-1),
           delegate (nil),
@@ -126,9 +126,7 @@ public:
           statusCode (0),
           initialised (false),
           hasFailed (false),
-          hasFinished (false),
-          numRedirectsToFollow (maxRedirects),
-          numRedirects (0)
+          hasFinished (false)
     {
         static DelegateClass cls;
         delegate = [cls.createInstance() init];
@@ -217,19 +215,6 @@ public:
         }
     }
 
-    NSURLRequest* willSendRequest (NSURLRequest* newRequest, NSURLResponse* redirectResponse)
-    {
-        if (redirectResponse != nullptr)
-        {
-            if (numRedirects >= numRedirectsToFollow)
-                return nil;  // Cancel redirect and allow connection to continue
-
-            ++numRedirects;
-        }
-
-        return newRequest;
-    }
-
     void didFailWithError (NSError* error)
     {
         DBG (nsStringToJuce ([error description])); (void) error;
@@ -278,8 +263,6 @@ public:
     NSDictionary* headers;
     int statusCode;
     bool initialised, hasFailed, hasFinished;
-    const int numRedirectsToFollow;
-    int numRedirects;
 
 private:
     //==============================================================================
@@ -295,7 +278,7 @@ private:
             addMethod (@selector (connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:),
                                                                    connectionDidSendBodyData,     "v@:@iii");
             addMethod (@selector (connectionDidFinishLoading:),    connectionDidFinishLoading,    "v@:@");
-            addMethod (@selector (connection:willSendRequest:redirectResponse:), willSendRequest, "@@:@@@");
+            addMethod (@selector (connection:willSendRequest:redirectResponse:), willSendRequest, "@@:@@");
 
             registerClass();
         }
@@ -319,9 +302,9 @@ private:
             getState (self)->didReceiveData (newData);
         }
 
-        static NSURLRequest* willSendRequest (id self, SEL, NSURLConnection*, NSURLRequest* request, NSURLResponse* response)
+        static NSURLRequest* willSendRequest (id, SEL, NSURLConnection*, NSURLRequest* request, NSURLResponse*)
         {
-            return getState (self)->willSendRequest (request, response);
+            return request;
         }
 
         static void connectionDidSendBodyData (id self, SEL, NSURLConnection*, NSInteger, NSInteger totalBytesWritten, NSInteger totalBytesExpected)
@@ -345,27 +328,23 @@ class WebInputStream  : public InputStream
 public:
     WebInputStream (const String& address_, bool isPost_, const MemoryBlock& postData_,
                     URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
-                    const String& headers_, int timeOutMs_, StringPairArray* responseHeaders,
-                    const int numRedirectsToFollow_)
+                    const String& headers_, int timeOutMs_, StringPairArray* responseHeaders)
       : statusCode (0), address (address_), headers (headers_), postData (postData_), position (0),
-        finished (false), isPost (isPost_), timeOutMs (timeOutMs_), numRedirectsToFollow (numRedirectsToFollow_)
+        finished (false), isPost (isPost_), timeOutMs (timeOutMs_)
     {
         JUCE_AUTORELEASEPOOL
         {
             createConnection (progressCallback, progressCallbackContext);
 
-            if (connection != nullptr && connection->headers != nil)
+            if (responseHeaders != nullptr && connection != nullptr && connection->headers != nil)
             {
                 statusCode = connection->statusCode;
 
-                if (responseHeaders != nullptr)
-                {
-                    NSEnumerator* enumerator = [connection->headers keyEnumerator];
+                NSEnumerator* enumerator = [connection->headers keyEnumerator];
 
-                    while (NSString* key = [enumerator nextObject])
-                        responseHeaders->set (nsStringToJuce (key),
-                                              nsStringToJuce ((NSString*) [connection->headers objectForKey: key]));
-                }
+                while (NSString* key = [enumerator nextObject])
+                    responseHeaders->set (nsStringToJuce (key),
+                                          nsStringToJuce ((NSString*) [connection->headers objectForKey: key]));
             }
         }
     }
@@ -424,7 +403,6 @@ private:
     bool finished;
     const bool isPost;
     const int timeOutMs;
-    const int numRedirectsToFollow;
 
     void createConnection (URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext)
     {
@@ -456,7 +434,7 @@ private:
                 [req setHTTPBody: [NSData dataWithBytes: postData.getData()
                                                  length: postData.getSize()]];
 
-            connection = new URLConnectionState (req, numRedirectsToFollow);
+            connection = new URLConnectionState (req);
 
             if (! connection->start (progressCallback, progressCallbackContext))
                 connection = nullptr;

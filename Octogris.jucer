@@ -8,7 +8,7 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
-              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.1">
+              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.0">
   <MAINGROUP id="rRl79u" name="Octogris2">
     <FILE id="Rh67hJ" name="libLeap.dylib" compile="0" resource="1" file="Builds/MacOSX/libLeap.dylib"/>
     <GROUP id="{17707EFA-D5BA-4533-678C-40B034B62098}" name="liblo">
@@ -96,15 +96,37 @@
         <MODULEPATH id="juce_audio_plugin_client" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="C:\Users\Vincent\Documents\sdks\steinberg\vstsdk2.4"
-            aaxFolder="C:\Users\Vincent\Documents\sdks\AAX_SDK_2p1p1" externalLibraries="">
+    <VS2010 targetFolder="Builds/VisualStudio2010" vstFolder="C:\SDKs\vstsdk2.4"
+            aaxFolder="C:\SDKs\AAX_SDK_2p1p1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib&#10;"/>
+                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="&#9;&#9;&#9;C:\SDKs\liblo-0.28&#10;C:\SDKs\liblo-0.28\lo"
+                       libraryPath="C:\SDKs\liblo-0.28\lib\ReleaseLib"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="2" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib&#10;C:\Users\Vincent\Documents\sdks\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86"/>
+                       isDebug="0" optimisation="3" targetName="Octogris2" headerPath="C:\SDKs\liblo-0.28&#10;C:\SDKs\liblo-0.28\lo"
+                       libraryPath="C:\SDKs\liblo-0.28\lib\ReleaseLib"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+      </MODULEPATHS>
+    </VS2010>
+    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="C:\SDKs\vstsdk2.4"
+            aaxFolder="C:\SDKs\AAX_SDK_2p1p1" externalLibraries="">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="&#9;&#9;&#9;C:\SDKs\liblo-0.28&#10;C:\SDKs\liblo-0.28\lo"
+                       libraryPath="C:\SDKs\liblo-0.28\lib\ReleaseLib"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="3" targetName="Octogris2" headerPath="C:\SDKs\liblo-0.28&#10;C:\SDKs\liblo-0.28\lo"
+                       libraryPath="C:\SDKs\liblo-0.28\lib\ReleaseLib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>

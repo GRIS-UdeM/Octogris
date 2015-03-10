@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2013
+# Visual Studio 2010
 Project("{72B7FF5F-F767-4BA0-2D8F-F661058C5DBB}") = "Octogris2", "Octogris2.vcxproj", "{85B349BE-0514-8781-EF8C-E922FF5EEC35}"
 EndProject
 Global
