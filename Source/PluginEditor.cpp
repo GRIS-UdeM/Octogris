@@ -367,7 +367,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         addAndMakeVisible(mSourcesBox);
         mComponents.add(mSourcesBox);
         
-        mSourcesBoxLabel = addLabel("Sources distance:", 0, 0, kCenterColumnWidth, kDefaultLabelHeight, this);
+        mSourcesBoxLabel = addLabel("Source distance:", 0, 0, kCenterColumnWidth, kDefaultLabelHeight, this);
 
         Component *ct = mSourcesBox->getContent();
         
@@ -399,7 +399,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         
         int x = 0, y = 0, w = kRightColumnWidth;
         
-        mSpeakersBoxLabel = addLabel("Speakers attenuation:", 0, 0, kRightColumnWidth, kDefaultLabelHeight, this);
+        mSpeakersBoxLabel = addLabel("Speaker attenuation:", 0, 0, kRightColumnWidth, kDefaultLabelHeight, this);
 
         Component *ct = mSpeakersBox->getContent();
         const int muteWidth = 50;
