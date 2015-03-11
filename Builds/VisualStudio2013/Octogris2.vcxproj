@@ -59,8 +59,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\SDKs\vstsdk2.4;C:\SDKs\AAX_SDK_2p1p1;C:\SDKs\AAX_SDK_2p1p1\Interfaces;C:\SDKs\AAX_SDK_2p1p1\Interfaces\ACF;C:\SDKs\liblo-0.28;C:\SDKs\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>JucePlugin_AAXLibs_path=&quot;C:\\SDKs\\AAX_SDK_2p1p1\\Libs&quot;;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.0.16;JUCE_APP_VERSION_HEX=0x20010;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\SDKs\vstsdk2.4;C:\SDKs\liblo-0.28;C:\SDKs\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.0.17;JUCE_APP_VERSION_HEX=0x20011;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -75,7 +75,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\Octogris2.aaxplugin</OutputFile>
+      <OutputFile>$(OutDir)\Octogris2.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,8 +102,8 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\SDKs\vstsdk2.4;C:\SDKs\AAX_SDK_2p1p1;C:\SDKs\AAX_SDK_2p1p1\Interfaces;C:\SDKs\AAX_SDK_2p1p1\Interfaces\ACF;C:\SDKs\liblo-0.28;C:\SDKs\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>JucePlugin_AAXLibs_path=&quot;C:\\SDKs\\AAX_SDK_2p1p1\\Libs&quot;;WIN32;_WINDOWS;NDEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.0.16;JUCE_APP_VERSION_HEX=0x20010;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\SDKs\vstsdk2.4;C:\SDKs\liblo-0.28;C:\SDKs\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.0.17;JUCE_APP_VERSION_HEX=0x20011;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -118,7 +118,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\Octogris2.aaxplugin</OutputFile>
+      <OutputFile>$(OutDir)\Octogris2.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>

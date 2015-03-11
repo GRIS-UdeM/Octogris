@@ -128,7 +128,7 @@
  #define JucePlugin_Build_RTAS             0
 #endif
 #ifndef  JucePlugin_Build_AAX
- #define JucePlugin_Build_AAX              1
+ #define JucePlugin_Build_AAX              0
 #endif
 #ifndef  JucePlugin_Name
  #define JucePlugin_Name                   "Octogris2"
@@ -158,7 +158,7 @@
  #define JucePlugin_MaxNumOutputChannels   16
 #endif
 #ifndef  JucePlugin_PreferredChannelConfigurations
- #define JucePlugin_PreferredChannelConfigurations  {1,2}, {1,4}, {1,6}, {1,8}, {1,16}, {2,2}, {2,4}, {2,6}, {2,8}, {2,16}, {4,4}, {4,6}, {4,8}, {4,16}, {6,6}, {6,8}, {6,16}, {8,8}, {8,16}
+ #define JucePlugin_PreferredChannelConfigurations  {8,16}, {1,2}, {1,4}, {1,6}, {1,8}, {1,16}, {2,2}, {2,4}, {2,6}, {2,8}, {2,16}, {4,4}, {4,6}, {4,8}, {4,16}, {6,6}, {6,8}, {6,16}, {8,8}, {8,16}
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                0
@@ -176,13 +176,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                2.0.16
+ #define JucePlugin_Version                2.0.17
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x20010
+ #define JucePlugin_VersionCode            0x20011
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "2.0.16"
+ #define JucePlugin_VersionString          "2.0.17"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
