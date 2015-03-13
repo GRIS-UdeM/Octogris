@@ -79,14 +79,14 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
     
 	for (int i = 0; i < kNumberOfParameters; i++) mSmoothedParameters.add(0);
     
-    int mNumberOfSources  = JucePlugin_MaxNumInputChannels;
-    int mNumberOfSpeakers = JucePlugin_MaxNumOutputChannels;
+    mNumberOfSources = -1;
+    mNumberOfSpeakers = -1;
     
     //SET SOURCES
-    setNumberOfSources(mNumberOfSources, true);
+    setNumberOfSources(JucePlugin_MaxNumInputChannels, true);
     
     //SET SPEAKERS
-    setNumberOfSpeakers(mNumberOfSpeakers, true);
+    setNumberOfSpeakers(JucePlugin_MaxNumOutputChannels, true);
     
 	mCalculateLevels = 0;
 	mApplyFilter = true;
@@ -103,7 +103,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 	mLastTimeInSamples = -1;
 	mProcessMode = kPanVolumeMode;
     //version 9
-    mInputOutputMode = 8;
+    mInputOutputMode = 18;  //by default we have 8 inputs and 16 outputs
     mSrcPlacementMode = 1;
     mSrcSelected = 1;
     mSpPlacementMode = 1;
@@ -149,12 +149,6 @@ OctogrisAudioProcessor::~OctogrisAudioProcessor()
 //==============================================================================
 void OctogrisAudioProcessor::setCalculateLevels(bool c)
 {
-    //first check if number of speakers is valid
-//    int iCurSpeakers = getNumOutputChannels();
-//    if (mNumberOfSpeakers != iCurSpeakers){
-//        setNumberOfSpeakers(iCurSpeakers);
-//    }
-    
 	if (!mCalculateLevels && c)
 		for (int i = 0; i < mNumberOfSpeakers; i++)
 			mLevels.setUnchecked(i, 0);
@@ -163,7 +157,6 @@ void OctogrisAudioProcessor::setCalculateLevels(bool c)
 	if (c) mCalculateLevels++;
 	else mCalculateLevels--;
 	
-	//fprintf(stderr, "mCalculateLevels: %d\n", mCalculateLevels);
 }
 
 //==============================================================================
@@ -431,7 +424,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
     suspendProcessing (false);
 }
 
-void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultAttenuation){
+void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues){
     
     //if new number of speakers is same as before, return
     if (p_iNewNumberOfSpeakers == mNumberOfSpeakers){
@@ -446,66 +439,101 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
     mNumberOfSpeakers = p_iNewNumberOfSpeakers;
 
     mLevels.ensureStorageAllocated(mNumberOfSpeakers);
-	for (int i = 0; i < mNumberOfSpeakers; i++) mLevels.add(0);
     
-    
-    double anglePerSpeakers = 360 / mNumberOfSpeakers;
-    double offset, axisOffset;
-    
-    if(mNumberOfSpeakers%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
-    {
-        axisOffset = anglePerSpeakers / 2;
-        for (int i = 0; i < mNumberOfSpeakers; i++)
-        {
-
-//            if (bUseDefaultAttenuation){
-//                mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-//                mParameters.set(getParamForSpeakerM(i), 0);
-//            } else {
-                mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
-                mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
-//            }
-            if(i%2 == 0)
-            {
-                offset = 90 + axisOffset;
-            }
-            else
-            {
-                offset = 90 - axisOffset;
-                axisOffset += anglePerSpeakers;
-            }
-            
-            if (offset < 0) offset += 360;
-            else if (offset > 360) offset -= 360;
-            
-            setSpeakerRT(i, FPoint(1, offset/360*kThetaMax));
-        }
+    for (int i = 0; i < mNumberOfSpeakers; i++){
+        mLevels.add(0);
+        mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
+        mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
     }
-    else //odd number of speakers, assign in circular fashion
-    {
-        offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
-        for (int i = 0; i < mNumberOfSpeakers; i++)
-        {
-
-//            if (bUseDefaultAttenuation){
-//                mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
-//                mParameters.set(getParamForSpeakerM(i), 0);
-//            } else {
-                mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
-                mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
+    
+    
+    
+    updateSpeakerLocation(true, false, true);
+//    double anglePerSpeakers = 360 / mNumberOfSpeakers;
+//    double offset, axisOffset;
+//    
+//    if(mNumberOfSpeakers%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
+//    {
+//        axisOffset = anglePerSpeakers / 2;
+//        for (int i = 0; i < mNumberOfSpeakers; i++)
+//        {
+//            
+//            if(i%2 == 0)
+//            {
+//                offset = 90 + axisOffset;
 //            }
-        
-            if (offset < 0) offset += 360;
-            else if (offset > 360) offset -= 360;
-            
-            setSpeakerRT(i, FPoint(1, offset/360*kThetaMax));
-            offset += anglePerSpeakers;
-        }
-    }
+//            else
+//            {
+//                offset = 90 - axisOffset;
+//                axisOffset += anglePerSpeakers;
+//            }
+//            
+//            if (offset < 0) offset += 360;
+//            else if (offset > 360) offset -= 360;
+//            
+//          	JUCE_COMPILER_WARNING(new std::string("this is where we set up the initial positions for our speakers"))
+//            float angle = offset/360.*kThetaMax;
+//            setSpeakerRT(i, FPoint(1, offset/360.*kThetaMax));
+//        }
+//    }
+//    else //odd number of speakers, assign in circular fashion
+//    {
+//        offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
+//        for (int i = 0; i < mNumberOfSpeakers; i++)
+//        {
+//        
+//            if (offset < 0) offset += 360;
+//            else if (offset > 360) offset -= 360;
+//            
+//            setSpeakerRT(i, FPoint(1, offset/360.*kThetaMax));
+//            offset += anglePerSpeakers;
+//        }
+//    }
+    
+    
+    
+    
+    
 	mHostChangedParameter++;
     
     //starts audio processing again
     suspendProcessing (false);
+}
+
+void OctogrisAudioProcessor::updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise){
+
+    float anglePerSp = kThetaMax / getNumberOfSpeakers();
+    
+    if (p_bAlternate)
+    {
+        float offset = p_bStartAtTop
+        ? (p_bClockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
+        : (kQuarterCircle - anglePerSp/2);
+        float start = offset;
+        for (int i = p_bClockwise ? 0 : 1; i < getNumberOfSpeakers(); i += 2)
+        {
+            setSpeakerRT(i, FPoint(1, offset));
+            offset -= anglePerSp;
+        }
+        
+        offset = start + anglePerSp;
+        for (int i = p_bClockwise ? 1 : 0; i < getNumberOfSpeakers(); i += 2)
+        {
+            setSpeakerRT(i, FPoint(1, offset));
+            offset += anglePerSp;
+        }
+    }
+    else
+    {
+        float offset = p_bStartAtTop ? kQuarterCircle : kQuarterCircle + anglePerSp/2;
+        float delta = p_bClockwise ? -anglePerSp : anglePerSp;
+        for (int i = 0; i < getNumberOfSpeakers(); i++)
+        {
+            setSpeakerRT(i, FPoint(1, offset));
+            offset += delta;
+        }
+    }
+    
 }
 
 
@@ -1330,8 +1358,9 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             jassert(angle > 0 && angle <= kHalfCircle);
             
             //float outFactors[mNumberOfSpeakers];
-			float *outFactors = new float[mNumberOfSpeakers];
-            memset(outFactors, 0, sizeof(outFactors));
+            //memset(outFactors, 0, sizeof(outFactors));
+			float *outFactors = new float[mNumberOfSpeakers]();
+
             
             float factor = (r < 1) ? (r * 0.5f + 0.5f) : 1;
             
@@ -1551,66 +1580,6 @@ static inline void readStringData(const void* &data, int &dataLength, const char
 	}
 }
 
-static const int kDataVersion = 10;
-void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
-{
-	//printf("Octogris: getStateInformation\n");
-	appendIntData(destData, kDataVersion);
-	appendIntData(destData, mShowGridLines);
-	appendIntData(destData, mMovementMode);
-	appendIntData(destData, mLinkDistances);
-	appendIntData(destData, mGuiSize);
-	appendIntData(destData, mGuiTab);
-	appendIntData(destData, mOscLeapSource);
-	appendIntData(destData, mOscReceiveEnabled);
-	appendIntData(destData, mOscReceivePort);
-	appendIntData(destData, mOscSendEnabled);
-	appendIntData(destData, mOscSendPort);
-	appendStringData(destData, mOscSendIp, sizeof(mOscSendIp));
-	appendIntData(destData, mProcessMode);
-	appendIntData(destData, mApplyFilter);
-    
-    //version 9
- 	appendIntData(destData, mInputOutputMode);
-    appendIntData(destData, mSrcPlacementMode);
-    appendIntData(destData, mSpPlacementMode);
-    appendIntData(destData, mSrcSelected);
-    appendIntData(destData, mSpSelected);
-    appendIntData(destData, m_iTrType);
-    appendIntData(destData, m_iTrSrcSelect);
-    appendFloatData(destData, m_fTrDuration);
-    appendIntData(destData, m_iTrUnits);
-    appendFloatData(destData, m_fTrRepeats);
-    appendIntData(destData, mLeapEnabled);
-    
-    //version 10
-    appendFloatData(destData, mParameters[kMaxSpanVolume]);
-	
-	appendFloatData(destData, mParameters[kLinkMovement]);
-	appendFloatData(destData, mParameters[kSmooth]);
-	appendFloatData(destData, mParameters[kVolumeNear]);
-	appendFloatData(destData, mParameters[kVolumeMid]);
-	appendFloatData(destData, mParameters[kVolumeFar]);
-	appendFloatData(destData, mParameters[kFilterNear]);
-	appendFloatData(destData, mParameters[kFilterMid]);
-	appendFloatData(destData, mParameters[kFilterFar]);
-	
-    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
-	{
-		appendFloatData(destData, mParameters[getParamForSourceX(i)]);
-		appendFloatData(destData, mParameters[getParamForSourceY(i)]);
-		appendFloatData(destData, mParameters[getParamForSourceD(i)]);
-	}
-    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
-	{
-		appendFloatData(destData, mParameters[getParamForSpeakerX(i)]);
-		appendFloatData(destData, mParameters[getParamForSpeakerY(i)]);
-		appendFloatData(destData, mParameters[getParamForSpeakerA(i)]);
-        float mute = mParameters[getParamForSpeakerM(i)];
-		appendFloatData(destData, mute);
-	}
-}
-
 void OctogrisAudioProcessor::storeCurrentLocations(){
     for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
     {
@@ -1622,6 +1591,8 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
     }
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
     {
+        float x = mParameters[getParamForSpeakerX(i)];
+        float y = mParameters[getParamForSpeakerY(i)];
         mBufferSpLocX[i] =  mParameters[getParamForSpeakerX(i)];
         mBufferSpLocY[i] = mParameters[getParamForSpeakerY(i)];
         mBufferSpLocA[i] = mParameters[getParamForSpeakerA(i)];
@@ -1639,6 +1610,8 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
     }
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
     {
+        float x = mBufferSpLocX[i];
+        float y = mBufferSpLocY[i];
         mParameters.set(getParamForSpeakerX(i), mBufferSpLocX[i]);
         mParameters.set(getParamForSpeakerY(i), mBufferSpLocY[i]);
         mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);
@@ -1646,6 +1619,65 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
     }
 }
 
+static const int kDataVersion = 10;
+void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
+{
+    //printf("Octogris: getStateInformation\n");
+    appendIntData(destData, kDataVersion);
+    appendIntData(destData, mShowGridLines);
+    appendIntData(destData, mMovementMode);
+    appendIntData(destData, mLinkDistances);
+    appendIntData(destData, mGuiSize);
+    appendIntData(destData, mGuiTab);
+    appendIntData(destData, mOscLeapSource);
+    appendIntData(destData, mOscReceiveEnabled);
+    appendIntData(destData, mOscReceivePort);
+    appendIntData(destData, mOscSendEnabled);
+    appendIntData(destData, mOscSendPort);
+    appendStringData(destData, mOscSendIp, sizeof(mOscSendIp));
+    appendIntData(destData, mProcessMode);
+    appendIntData(destData, mApplyFilter);
+    
+    //version 9
+    appendIntData(destData, mInputOutputMode);
+    appendIntData(destData, mSrcPlacementMode);
+    appendIntData(destData, mSpPlacementMode);
+    appendIntData(destData, mSrcSelected);
+    appendIntData(destData, mSpSelected);
+    appendIntData(destData, m_iTrType);
+    appendIntData(destData, m_iTrSrcSelect);
+    appendFloatData(destData, m_fTrDuration);
+    appendIntData(destData, m_iTrUnits);
+    appendFloatData(destData, m_fTrRepeats);
+    appendIntData(destData, mLeapEnabled);
+    
+    //version 10
+    appendFloatData(destData, mParameters[kMaxSpanVolume]);
+    
+    appendFloatData(destData, mParameters[kLinkMovement]);
+    appendFloatData(destData, mParameters[kSmooth]);
+    appendFloatData(destData, mParameters[kVolumeNear]);
+    appendFloatData(destData, mParameters[kVolumeMid]);
+    appendFloatData(destData, mParameters[kVolumeFar]);
+    appendFloatData(destData, mParameters[kFilterNear]);
+    appendFloatData(destData, mParameters[kFilterMid]);
+    appendFloatData(destData, mParameters[kFilterFar]);
+    
+    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
+    {
+        appendFloatData(destData, mParameters[getParamForSourceX(i)]);
+        appendFloatData(destData, mParameters[getParamForSourceY(i)]);
+        appendFloatData(destData, mParameters[getParamForSourceD(i)]);
+    }
+    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
+    {
+        appendFloatData(destData, mParameters[getParamForSpeakerX(i)]);
+        appendFloatData(destData, mParameters[getParamForSpeakerY(i)]);
+        appendFloatData(destData, mParameters[getParamForSpeakerA(i)]);
+        float mute = mParameters[getParamForSpeakerM(i)];
+        appendFloatData(destData, mute);
+    }
+}
 
 void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {

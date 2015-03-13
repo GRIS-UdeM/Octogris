@@ -470,6 +470,8 @@ public:
     
     void storeCurrentLocations();
     void restoreCurrentLocations();
+    
+    void updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise);
 	
 private:
     PluginHostType mHost;
@@ -536,22 +538,11 @@ private:
     float mBufferSpLocM[JucePlugin_MaxNumOutputChannels];
     
     ///////////////////////////
-    int mNumberOfSources;   //JucePlugin_MaxNumInputChannels;
-    int mNumberOfSpeakers;  //JucePlugin_MaxNumOutputChannels;
+    int mNumberOfSources;
+    int mNumberOfSpeakers;
     
     void setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues);
     void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues);
-    
-    //int inline ParamForSourceX(int v) {return kSourceX + v * kParamsPerSource;}
-    //int inline ParamForSourceY(int v) {return kSourceY + v * kParamsPerSource;}
-    //int inline ParamForSourceD(int v) {return kSourceD + v * kParamsPerSource;}
-    
-//    int inline ParamForSpeakerX(int v) {return kSpeakerX + mNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers;}
-//    int inline ParamForSpeakerY(int v) {return kSpeakerY + mNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers;}
-//    int inline ParamForSpeakerA(int v) {return kSpeakerA + mNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers;}
-//    int inline ParamForSpeakerM(int v) {return kSpeakerM + mNumberOfSources * kParamsPerSource + v * kParamsPerSpeakers;}
-    
-
     
     
     ///////////////////////////

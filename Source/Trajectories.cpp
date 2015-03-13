@@ -241,7 +241,7 @@ private:
 };
 
 // ==============================================================================
-// Mersenne Twister random number generator
+// Mersenne Twister random number generator, this is now included in c++11, see here: http://en.cppreference.com/w/cpp/numeric/random
 class MTRand_int32
 {
 public:

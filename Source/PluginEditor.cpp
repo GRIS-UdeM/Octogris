@@ -1341,37 +1341,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 
         }
         
-        float anglePerSp = kThetaMax / mFilter->getNumberOfSpeakers();
-        
-        if (alternate)
-        {
-            float offset = startAtTop
-            ? (clockwise ? kQuarterCircle : (kQuarterCircle - anglePerSp))
-            : (kQuarterCircle - anglePerSp/2);
-            float start = offset;
-            for (int i = clockwise ? 0 : 1; i < mFilter->getNumberOfSpeakers(); i += 2)
-            {
-                mFilter->setSpeakerRT(i, FPoint(1, offset));
-                offset -= anglePerSp;
-            }
-            
-            offset = start + anglePerSp;
-            for (int i = clockwise ? 1 : 0; i < mFilter->getNumberOfSpeakers(); i += 2)
-            {
-                mFilter->setSpeakerRT(i, FPoint(1, offset));
-                offset += anglePerSp;
-            }
-        }
-        else
-        {
-            float offset = startAtTop ? kQuarterCircle : kQuarterCircle + anglePerSp/2;
-            float delta = clockwise ? -anglePerSp : anglePerSp;
-            for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-            {
-                mFilter->setSpeakerRT(i, FPoint(1, offset));
-                offset += delta;
-            }
-        }
+        mFilter->updateSpeakerLocation(alternate, startAtTop, clockwise);
+
         updateSpeakerLocationTextEditor();
         mFilter->setSpPlacementMode(mSpPlacement->getSelectedId());
     }
@@ -1508,6 +1479,7 @@ void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
 void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
     FPoint curPosition = mFilter->getSpeakerRT(mSpSelect->getSelectedId()-1);
     mSpR->setText(String(curPosition.x));
+    float angle = curPosition.y * 180. / M_PI;
     mSpT->setText(String(curPosition.y * 180. / M_PI));
     //mFilter->setSpSelected(mSpSelect->getSelectedId());
 }
