@@ -1473,15 +1473,12 @@ void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
     FPoint curPosition = mFilter->getSourceRT(i-1);
     mSrcR->setText(String(curPosition.x));
     mSrcT->setText(String(curPosition.y * 180. / M_PI));
-    //mFilter->setSrcSelected(mSrcSelect->getSelectedId());
 }
 
 void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
     FPoint curPosition = mFilter->getSpeakerRT(mSpSelect->getSelectedId()-1);
     mSpR->setText(String(curPosition.x));
-    float angle = curPosition.y * 180. / M_PI;
     mSpT->setText(String(curPosition.y * 180. / M_PI));
-    //mFilter->setSpSelected(mSpSelect->getSelectedId());
 }
 
 //==============================================================================

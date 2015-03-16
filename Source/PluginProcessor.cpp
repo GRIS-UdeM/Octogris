@@ -20,6 +20,8 @@ static const float kLevelReleaseDefault = 100;
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#include <algorithm>
+
 #if JUCE_MSVC
 // from https://github.com/objectx/strlcpy/blob/master/strlcpy/strlcpy.c
 size_t strlcpy(char * dst, const char * src, size_t dstsize)
@@ -365,8 +367,6 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
     }
     mInputsCopy.resize(mNumberOfSources);
     
-	JUCE_COMPILER_WARNING(new std::string("this is not always called with 1 source, but should be"))
-
     if (mNumberOfSources == 1)
 	{
 		setSourceRT(0, FPoint(0, 0));
@@ -445,54 +445,9 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
         mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
         mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
     }
-    
-    
-    
+
     updateSpeakerLocation(true, false, true);
-//    double anglePerSpeakers = 360 / mNumberOfSpeakers;
-//    double offset, axisOffset;
-//    
-//    if(mNumberOfSpeakers%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
-//    {
-//        axisOffset = anglePerSpeakers / 2;
-//        for (int i = 0; i < mNumberOfSpeakers; i++)
-//        {
-//            
-//            if(i%2 == 0)
-//            {
-//                offset = 90 + axisOffset;
-//            }
-//            else
-//            {
-//                offset = 90 - axisOffset;
-//                axisOffset += anglePerSpeakers;
-//            }
-//            
-//            if (offset < 0) offset += 360;
-//            else if (offset > 360) offset -= 360;
-//            
-//          	JUCE_COMPILER_WARNING(new std::string("this is where we set up the initial positions for our speakers"))
-//            float angle = offset/360.*kThetaMax;
-//            setSpeakerRT(i, FPoint(1, offset/360.*kThetaMax));
-//        }
-//    }
-//    else //odd number of speakers, assign in circular fashion
-//    {
-//        offset = (anglePerSpeakers + 180) / 2 - anglePerSpeakers;
-//        for (int i = 0; i < mNumberOfSpeakers; i++)
-//        {
-//        
-//            if (offset < 0) offset += 360;
-//            else if (offset > 360) offset -= 360;
-//            
-//            setSpeakerRT(i, FPoint(1, offset/360.*kThetaMax));
-//            offset += anglePerSpeakers;
-//        }
-//    }
-    
-    
-    
-    
+
     
 	mHostChangedParameter++;
     
@@ -829,51 +784,71 @@ void OctogrisAudioProcessor::ProcessData(float **inputs, float **outputs, float 
 	}
 }
 
-void OctogrisAudioProcessor::findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip)
+
+void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetSpeakerAngle, float *params, int &p_piLeftSpeaker, int &p_piRightSpeaker,
+                                                      float &p_pfDeltaAngleToLeftSpeaker, float &p_pfDeltaAngleToRightSpeaker, int p_iTargetSpeaker)
 {
-	left = -1;
-	right = -1;
-	dLeft = kThetaMax;
-	dRight = kThetaMax;
-	for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
-        if (iCurSpeaker == skip) continue;
+    p_piLeftSpeaker = -1;
+    p_piRightSpeaker = -1;
+    p_pfDeltaAngleToLeftSpeaker = kThetaMax;
+    p_pfDeltaAngleToRightSpeaker = kThetaMax;
+    
+    int iFirstSpeaker = -1, iLastSpeaker = -1;
+    float fMaxAngle = -1, fMinAngle = 9999999;
+    
+    for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
         
-		float speakerT = params[getParamForSpeakerX(iCurSpeaker)];
-		float d = speakerT - t;
-		if (d >= 0) {
-			if (d > kHalfCircle) {
-				// right
-				d = kThetaMax - d;
-				if (d < dRight) {
-					dRight = d;
-					right = iCurSpeaker;
-				}
-			} else {
-				// left
-				if (d < dLeft) {
-					dLeft = d;
-					left = iCurSpeaker;
-				}
-			}
-		} else {
-			d = -d;
-			if (d > kHalfCircle) {
-				// left
-				d = kThetaMax - d;
-				if (d < dLeft) {
-					dLeft = d;
-					left = iCurSpeaker;
-				}
-			} else {
-				// right
-				if (d < dRight) {
-					dRight = d;
-					right = iCurSpeaker;
-				}
-			}
-		}
-	}
+        float fCurSpeakerAngle = params[getParamForSpeakerX(iCurSpeaker)];
+        float fCurDeltaAngle = -1.;
+        
+        //find out which is the first and last speakers
+        if (fCurSpeakerAngle < fMinAngle){
+            fMinAngle = fCurSpeakerAngle;
+            iFirstSpeaker = iCurSpeaker;
+        }
+        if (fCurSpeakerAngle > fMaxAngle){
+            fMaxAngle = fCurSpeakerAngle;
+            iLastSpeaker = iCurSpeaker;
+        }
+        
+        //skip the rest for the target speaker
+        if (iCurSpeaker == p_iTargetSpeaker){
+            continue;
+        }
+        
+        //if curSpeaker is on left of target speaker
+        if (fCurSpeakerAngle < p_fTargetSpeakerAngle){
+            //check if curAngle is smaller than previous smallest left angle
+            fCurDeltaAngle = p_fTargetSpeakerAngle - fCurSpeakerAngle;
+            if (fCurDeltaAngle < p_pfDeltaAngleToLeftSpeaker){
+                p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
+                p_piLeftSpeaker = iCurSpeaker;
+            }
+            
+        }
+        //if curSpeaker is on right of target speaker
+        else {
+            fCurDeltaAngle = fCurSpeakerAngle - p_fTargetSpeakerAngle;
+            if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker){
+                p_pfDeltaAngleToRightSpeaker = fCurDeltaAngle;
+                p_piRightSpeaker = iCurSpeaker;
+            }
+        }
+    }
+    
+    //if we haven't found the right speaker and the target is the first speaker, the left speaker is the first one
+    if (p_iTargetSpeaker == iFirstSpeaker && p_piLeftSpeaker == -1){
+        p_piLeftSpeaker = iLastSpeaker;
+        p_pfDeltaAngleToLeftSpeaker = fMinAngle + (kThetaMax - fMaxAngle);
+    }
+    
+    //if we haven't found the left speaker and the target is the last speaker, the left speaker is the first one
+    else if (p_iTargetSpeaker == iLastSpeaker && p_piRightSpeaker == -1){
+        p_piRightSpeaker = iFirstSpeaker;
+        p_pfDeltaAngleToRightSpeaker = fMinAngle + (kThetaMax - fMaxAngle);
+    }
 }
+
 
 void OctogrisAudioProcessor::addToOutput(float s, float **outputs, int o, int f)
 {
@@ -993,7 +968,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find left and right speakers
 				int left, right;
 				float dLeft, dRight;
-				findSpeakers(t, params, left, right, dLeft, dRight);
+				findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
 				
 				// add to output
 				if (left >= 0 && right >= 0)
@@ -1019,7 +994,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find front left, right
 				int frontLeft, frontRight;
 				float dFrontLeft, dFrontRight;
-				findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
+				findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
 				
 				float bt = t + kHalfCircle;
 				if (bt > kThetaMax) bt -= kThetaMax;
@@ -1027,7 +1002,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find back left, right
 				int backLeft, backRight;
 				float dBackLeft, dBackRight;
-				findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
+				findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
 			
 				float front = r * 0.5f + 0.5f;
 				float back = 1 - front;
@@ -1221,17 +1196,30 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     
     if (mNumberOfSpeakers > 2)
     {
-        for (int o = 0; o < mNumberOfSpeakers; o++)
+        for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++)
         {
-            float t = params[getParamForSpeakerX(o)];
+            float fCurAngle = params[getParamForSpeakerX(iCurSpeaker)];
             int left, right;
             float dLeft, dRight;
-            findSpeakers(t, params, left, right, dLeft, dRight, o);
+            findLeftAndRightSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+
+////////////////////   ONLY FOR DEBUG
+            float fAllAngles[16];
+            for (int i = 0; i < mNumberOfSpeakers; ++i){
+                fAllAngles[i]  = params[getParamForSpeakerX(i)];
+            }
+            
+            if (left < 0 || right < 0 || dLeft <= 0 || dRight <= 0){
+                findLeftAndRightSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+            }
+                
+////////////////////   ENDOF ONLY FOR DEBUG
+            
             jassert(left >= 0 && right >= 0);
             jassert(dLeft > 0 && dRight > 0);
             
-            AddArea(o, t - dLeft, 0, t, 1, areas, areaCount, mNumberOfSpeakers);
-            AddArea(o, t, 1, t + dRight, 0, areas, areaCount, mNumberOfSpeakers);
+            AddArea(iCurSpeaker, fCurAngle - dLeft, 0, fCurAngle, 1, areas, areaCount, mNumberOfSpeakers);
+            AddArea(iCurSpeaker, fCurAngle, 1, fCurAngle + dRight, 0, areas, areaCount, mNumberOfSpeakers);
         }
     }
     else if (mNumberOfSpeakers == 2)
@@ -1591,8 +1579,6 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
     }
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
     {
-        float x = mParameters[getParamForSpeakerX(i)];
-        float y = mParameters[getParamForSpeakerY(i)];
         mBufferSpLocX[i] =  mParameters[getParamForSpeakerX(i)];
         mBufferSpLocY[i] = mParameters[getParamForSpeakerY(i)];
         mBufferSpLocA[i] = mParameters[getParamForSpeakerA(i)];
@@ -1610,8 +1596,6 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
     }
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
     {
-        float x = mBufferSpLocX[i];
-        float y = mBufferSpLocY[i];
         mParameters.set(getParamForSpeakerX(i), mBufferSpLocX[i]);
         mParameters.set(getParamForSpeakerY(i), mBufferSpLocY[i]);
         mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);
