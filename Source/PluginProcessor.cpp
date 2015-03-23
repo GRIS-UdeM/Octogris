@@ -203,9 +203,6 @@ void OctogrisAudioProcessor::setParameter (int index, float newValue)
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
 {
 	mParameters.set(index, newValue);
-    if (index == getParamForSourceX(0)){
-        cout << "bill";
-    }
     sendParamChangeMessageToListeners(index, newValue);
 }
 
@@ -382,55 +379,48 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
     }
     mInputsCopy.resize(mNumberOfSources);
     
-//    if (mNumberOfSources == 1)
-//	{
-//		setSourceRT(0, FPoint(0, 0));
-//	}
-//    else
-    if (!bUseDefaultValues){
-        for (int i = 0; i < mNumberOfSources; ++i){
-            setSourceRT(i, getSourceRT(i));
+    if (bUseDefaultValues){
+        
+        
+        double anglePerSource = 360 / mNumberOfSources;
+        double offset, axisOffset;
+        
+        if(mNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
+        {
+            axisOffset = anglePerSource / 2;
+            for (int i = 0; i < mNumberOfSources; i++)
+            {
+                if(i%2 == 0)
+                {
+                    offset = 90 + axisOffset;
+                }
+                else
+                {
+                    offset = 90 - axisOffset;
+                    axisOffset += anglePerSource;
+                }
+                if (offset < 0) offset += 360;
+                else if (offset > 360) offset -= 360;
+                
+                setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
+            }
+        }
+        else //odd number of speakers, assign in circular fashion
+        {
+            offset = (anglePerSource + 180) / 2 - anglePerSource;
+            for (int i = 0; i < mNumberOfSources; i++)
+            {
+                if (offset < 0) offset += 360;
+                else if (offset > 360) offset -= 360;
+                
+                setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
+                offset += anglePerSource;
+            }
         }
         
     }
-	else
-	{
-		double anglePerSource = 360 / mNumberOfSources;
-		double offset, axisOffset;
-        
-		if(mNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
-		{
-			axisOffset = anglePerSource / 2;
-			for (int i = 0; i < mNumberOfSources; i++)
-			{
-				if(i%2 == 0)
-				{
-					offset = 90 + axisOffset;
-				}
-				else
-				{
-					offset = 90 - axisOffset;
-					axisOffset += anglePerSource;
-				}
-				if (offset < 0) offset += 360;
-				else if (offset > 360) offset -= 360;
-				
-				setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
-			}
-		}
-		else //odd number of speakers, assign in circular fashion
-		{
-			offset = (anglePerSource + 180) / 2 - anglePerSource;
-			for (int i = 0; i < mNumberOfSources; i++)
-			{
-				if (offset < 0) offset += 360;
-				else if (offset > 360) offset -= 360;
-				
-				setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
-				offset += anglePerSource;
-			}
-		}
-	}
+    
+    
     for (int i = 0; i < mNumberOfSources; i++){
 		mLockedThetas.set(i, getSourceRT(i).y);
     }
@@ -462,7 +452,8 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
         mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
     }
 
-    if (!mHost.isReaper()){
+    //if (!mHost.isReaper()){
+    if (bUseDefaultValues){
         updateSpeakerLocation(true, false, true);
     }
 
