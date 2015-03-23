@@ -386,7 +386,6 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 
         Component *ct = mSourcesBox->getContent();
         
-        
         int dh = kDefaultLabelHeight, x = 0, y = 0, w = kCenterColumnWidth;
         
         mLinkDistances = addCheckbox("Link", mFilter->getLinkDistances(), x, y, w/3, dh, ct);
@@ -396,12 +395,10 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mTabs->getTabContentComponent(2)->addAndMakeVisible(mSrcSelect);
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
-
-        //mSrcApply = NULL;
-        //mTrSrcSelect = nullptr;
-
-        //if (!mHost.isReaper())
-            updateSources(true);
+        if (mHost.isReaper()){
+            mFilter->setInputOutputMode(mFilter->getInputOutputMode());
+        }
+        updateSources(true);
     }
     
 	// speakers
@@ -427,8 +424,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
         mComponents.add(mSpSelect);
         mSpSelect->addListener(this);
 
-        //mSpApply = NULL;
-        updateSpeakers();
+        updateSpeakers(true);
     }
     
 
@@ -884,7 +880,7 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 		y += dh + 5;
 		x = kMargin;
 		
-		mTrWrite = addButton("Ready", x, y, cbw, dh, box);
+		mTrWriteButton = addButton("Ready", x, y, cbw, dh, box);
 		y += dh + 5;
 		
 		mTrProgressBar = new MiniProgressBar();
@@ -967,20 +963,17 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
     }
     mDistances.clear();
     mLabels.clear();
-    
-    
-    
+
     if (!p_bCalledFromConstructor){
         mSrcSelect->clear(dontSendNotification);
         mTrSrcSelect->clear(dontSendNotification);
         mMovementMode->clear(dontSendNotification);
         updateMovementModeCombo();
     }
-    
-    
 
     //put new stuff
     int iCurSources = mFilter->getNumberOfSources();
+    
     bool bIsFreeVolumeMode = mFilter->getProcessMode() == kPanVolumeMode;
     y += dh + 5;
     for (int i = 0; i < iCurSources; i++){
@@ -1032,7 +1025,7 @@ JUCE_COMPILER_WARNING(new string("is this causing problems with the pan span?"))
     }
 }
 
-void OctogrisAudioProcessorEditor::updateSpeakers(){
+void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor){
 
     //remove old stuff
     Component *ct = mSpeakersBox->getContent();
@@ -1056,8 +1049,7 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
     const int muteWidth = 50;
     y += dh + 5;
 
-    for (int i = 0; i < iCurSpeakers; i++)
-    {
+    for (int i = 0; i < iCurSpeakers; i++){
         String s; s << i+1; s << ":";
         
         ToggleButton *mute = addCheckbox(s, mFilter->getSpeakerM(i), x, y, muteWidth, dh, ct);
@@ -1081,6 +1073,10 @@ void OctogrisAudioProcessorEditor::updateSpeakers(){
     }
     
     ct->setSize(w, y);
+    
+    if (!p_bCalledFromConstructor){
+        buttonClicked(mApplySpPlacementButton);
+    }
     
     
     //speaker position combo box in speakers tab
@@ -1256,7 +1252,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
         
         updateSources(false);
-        updateSpeakers();
+        updateSpeakers(false);
         if (m_bLoadingPreset){
             mFilter->restoreCurrentLocations();
             m_bLoadingPreset = false;
@@ -1294,7 +1290,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 break;
                 
         }
-        
         
         float anglePerSp = kThetaMax / mFilter->getNumberOfSources();
         
@@ -1380,13 +1375,13 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 		mFilter->setApplyFilter(button->getToggleState());
 	}
 
-	else if (button == mTrWrite)
+	else if (button == mTrWriteButton)
 	{ 
 		Trajectory::Ptr t = mFilter->getTrajectory();
 		if (t)
 		{
 			mFilter->setTrajectory(NULL);
-			mTrWrite->setButtonText("Ready");
+			mTrWriteButton->setButtonText("Ready");
 			mTrProgressBar->setVisible(false);
 			mTrState = kTrReady;
 			t->stop();
@@ -1406,7 +1401,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mFilter->setTrSrcSelect(source);
 			
 			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, repeats, source));
-			mTrWrite->setButtonText("Cancel");
+			mTrWriteButton->setButtonText("Cancel");
 			mTrState = kTrWriting;
 			
 			mTrProgressBar->setValue(0);
@@ -1451,6 +1446,17 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
         
 		repaint();
 	}
+    else if (comboBox == mInputOutputModeCombo){
+//        mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
+//        
+//        updateSources(false);
+//        updateSpeakers();
+//        if (m_bLoadingPreset){
+//            mFilter->restoreCurrentLocations();
+//            m_bLoadingPreset = false;
+//        }
+//        mField->repaint();
+    }
 	else if (comboBox == mOscLeapSourceCb)
 	{
 		mFilter->setOscLeapSource(comboBox->getSelectedId() - 1);
@@ -1510,7 +1516,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			}
 			else
 			{
-				mTrWrite->setButtonText("Ready");
+				mTrWriteButton->setButtonText("Ready");
 				mTrProgressBar->setVisible(false);
 				mTrState = kTrReady;
 			}

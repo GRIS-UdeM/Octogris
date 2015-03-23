@@ -203,6 +203,9 @@ void OctogrisAudioProcessor::setParameter (int index, float newValue)
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
 {
 	mParameters.set(index, newValue);
+    if (index == getParamForSourceX(0)){
+        cout << "bill";
+    }
     sendParamChangeMessageToListeners(index, newValue);
 }
 
@@ -379,11 +382,12 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
     }
     mInputsCopy.resize(mNumberOfSources);
     
-    if (mNumberOfSources == 1)
-	{
-		setSourceRT(0, FPoint(0, 0));
-	}
-    else if (!bUseDefaultValues){
+//    if (mNumberOfSources == 1)
+//	{
+//		setSourceRT(0, FPoint(0, 0));
+//	}
+//    else
+    if (!bUseDefaultValues){
         for (int i = 0; i < mNumberOfSources; ++i){
             setSourceRT(i, getSourceRT(i));
         }
@@ -458,7 +462,9 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
         mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
     }
 
-    updateSpeakerLocation(true, false, true);
+    if (!mHost.isReaper()){
+        updateSpeakerLocation(true, false, true);
+    }
 
     
 	mHostChangedParameter++;
@@ -634,9 +640,6 @@ void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, Mi
 
 void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-
-    //int iActualNumberOfSources = mNumberOfSources;
-    //int iActualNumberOfSpeakers = mNumberOfSpeakers;
 	
 	double sampleRate = getSampleRate();
 	unsigned int oriFramesToProcess = buffer.getNumSamples();

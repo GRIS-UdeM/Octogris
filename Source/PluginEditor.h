@@ -155,7 +155,7 @@ private:
 	TextEditor *mTrDuration;
 	ComboBox *mTrUnits;
 	TextEditor *mTrRepeats;
-	TextButton *mTrWrite;
+	TextButton *mTrWriteButton;
 	MiniProgressBar *mTrProgressBar;
 	ComboBox *mTrSrcSelect;
 	enum
@@ -177,7 +177,7 @@ private:
 	Component *mSpeakersBoxLabel;
 	Box *mSpeakersBox;
     void updateSources(bool p_bCalledFromConstructor);
-    void updateSpeakers();
+    void updateSpeakers(bool p_bCalledFromConstructor);
     void updateSourceLocationTextEditor();
     void updateSpeakerLocationTextEditor();
     void updateMovementModeCombo();
