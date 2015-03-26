@@ -791,16 +791,64 @@ void OctogrisAudioProcessor::ProcessData(float **inputs, float **outputs, float 
 }
 
 
-void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetSpeakerAngle, float *params, int &p_piLeftSpeaker, int &p_piRightSpeaker,
-                                                      float &p_pfDeltaAngleToLeftSpeaker, float &p_pfDeltaAngleToRightSpeaker, int p_iTargetSpeaker)
+void OctogrisAudioProcessor::findSpeakers(float p_fTargetSpeakerAngle, float *params, int &p_piLeftSpeaker, int &p_piRightSpeaker, float &p_pfDeltaAngleToLeftSpeaker, float &p_pfDeltaAngleToRightSpeaker, int skip)
 {
     p_piLeftSpeaker = -1;
     p_piRightSpeaker = -1;
     p_pfDeltaAngleToLeftSpeaker = kThetaMax;
     p_pfDeltaAngleToRightSpeaker = kThetaMax;
     
+    for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
+        if (iCurSpeaker == skip) continue;
+        
+        float fCurSpeakerAngle = params[getParamForSpeakerX(iCurSpeaker)];
+        float fCurDeltaAngle = fCurSpeakerAngle - p_fTargetSpeakerAngle;
+        if (fCurDeltaAngle >= 0) {
+            if (fCurDeltaAngle > kHalfCircle) {
+                // right
+                fCurDeltaAngle = kThetaMax - fCurDeltaAngle;
+                if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker) {
+                    p_pfDeltaAngleToRightSpeaker = fCurDeltaAngle;
+                    p_piRightSpeaker = iCurSpeaker;
+                }
+            } else {
+                // left
+                if (fCurDeltaAngle < p_pfDeltaAngleToLeftSpeaker) {
+                    p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
+                    p_piLeftSpeaker = iCurSpeaker;
+                }
+            }
+        } else {
+            fCurDeltaAngle = -fCurDeltaAngle;
+            if (fCurDeltaAngle > kHalfCircle) {
+                // left
+                fCurDeltaAngle = kThetaMax - fCurDeltaAngle;
+                if (fCurDeltaAngle < p_pfDeltaAngleToLeftSpeaker) {
+                    p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
+                    p_piLeftSpeaker = iCurSpeaker;
+                }
+            } else {
+                // right
+                if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker) {
+                    p_pfDeltaAngleToRightSpeaker = fCurDeltaAngle;
+                    p_piRightSpeaker = iCurSpeaker;
+                }
+            }
+        }
+    }
+}
+
+
+void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetSpeakerAngle, float *params, int &p_piLeftSpeaker, int &p_piRightSpeaker,
+                                                      float &p_pfDeltaAngleToLeftSpeaker, float &p_pfDeltaAngleToRightSpeaker, int p_iTargetSpeaker)
+{
     int iFirstSpeaker = -1, iLastSpeaker = -1;
     float fMaxAngle = -1, fMinAngle = 9999999;
+    
+    p_piLeftSpeaker = -1;
+    p_piRightSpeaker = -1;
+    p_pfDeltaAngleToLeftSpeaker = kThetaMax;
+    p_pfDeltaAngleToRightSpeaker = kThetaMax;
     
     for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
         
@@ -823,9 +871,11 @@ void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetSpeakerAngl
         }
         
         //if curSpeaker is on left of target speaker
-        if (fCurSpeakerAngle < p_fTargetSpeakerAngle){
+//        if (fCurSpeakerAngle < p_fTargetSpeakerAngle){
+        if (fCurSpeakerAngle > p_fTargetSpeakerAngle){
             //check if curAngle is smaller than previous smallest left angle
-            fCurDeltaAngle = p_fTargetSpeakerAngle - fCurSpeakerAngle;
+            //fCurDeltaAngle = p_fTargetSpeakerAngle - fCurSpeakerAngle;
+            fCurDeltaAngle = fCurSpeakerAngle - p_fTargetSpeakerAngle;
             if (fCurDeltaAngle < p_pfDeltaAngleToLeftSpeaker){
                 p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
                 p_piLeftSpeaker = iCurSpeaker;
@@ -834,7 +884,8 @@ void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetSpeakerAngl
         }
         //if curSpeaker is on right of target speaker
         else {
-            fCurDeltaAngle = fCurSpeakerAngle - p_fTargetSpeakerAngle;
+//            fCurDeltaAngle = fCurSpeakerAngle - p_fTargetSpeakerAngle;
+            fCurDeltaAngle = p_fTargetSpeakerAngle - fCurSpeakerAngle;
             if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker){
                 p_pfDeltaAngleToRightSpeaker = fCurDeltaAngle;
                 p_piRightSpeaker = iCurSpeaker;
@@ -843,16 +894,28 @@ void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetSpeakerAngl
     }
     
     //if we haven't found the right speaker and the target is the first speaker, the left speaker is the first one
-    if (p_iTargetSpeaker == iFirstSpeaker && p_piLeftSpeaker == -1){
-        p_piLeftSpeaker = iLastSpeaker;
-        p_pfDeltaAngleToLeftSpeaker = fMinAngle + (kThetaMax - fMaxAngle);
+    if (p_iTargetSpeaker == iFirstSpeaker && p_piRightSpeaker == -1){
+        p_piRightSpeaker = iLastSpeaker;
+        p_pfDeltaAngleToRightSpeaker = fMinAngle + (kThetaMax - fMaxAngle);
     }
     
     //if we haven't found the left speaker and the target is the last speaker, the left speaker is the first one
-    else if (p_iTargetSpeaker == iLastSpeaker && p_piRightSpeaker == -1){
-        p_piRightSpeaker = iFirstSpeaker;
-        p_pfDeltaAngleToRightSpeaker = fMinAngle + (kThetaMax - fMaxAngle);
+    else if (p_iTargetSpeaker == iLastSpeaker && p_piLeftSpeaker == -1){
+        p_piLeftSpeaker = iFirstSpeaker;
+        p_pfDeltaAngleToLeftSpeaker = fMinAngle + (kThetaMax - fMaxAngle);
     }
+    
+//    //if we haven't found the right speaker and the target is the first speaker, the left speaker is the first one
+//    if (p_iTargetSpeaker == iFirstSpeaker && p_piLeftSpeaker == -1){
+//        p_piLeftSpeaker = iLastSpeaker;
+//        p_pfDeltaAngleToLeftSpeaker = fMinAngle + (kThetaMax - fMaxAngle);
+//    }
+//    
+//    //if we haven't found the left speaker and the target is the last speaker, the left speaker is the first one
+//    else if (p_iTargetSpeaker == iLastSpeaker && p_piRightSpeaker == -1){
+//        p_piRightSpeaker = iFirstSpeaker;
+//        p_pfDeltaAngleToRightSpeaker = fMinAngle + (kThetaMax - fMaxAngle);
+//    }
 }
 
 
@@ -975,7 +1038,16 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				int left, right;
 				float dLeft, dRight;
 				findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
-				
+
+                ///////////////
+                int leftCopy = left, rightCopy = right;
+                float dLeftCopy = dLeft, dRightCopy = dRight;
+				findSpeakers(t, params, left, right, dLeft, dRight);
+                if (leftCopy != left || rightCopy != right || !areSame(dLeftCopy, dLeft || !areSame(dRightCopy, dRight))){
+                    findSpeakers(t, params, left, right, dLeft, dRight);
+                }
+                //////////////////
+                
 				// add to output
 				if (left >= 0 && right >= 0)
 				{
@@ -1002,6 +1074,15 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				float dFrontLeft, dFrontRight;
 				findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
 				
+                ///////////////
+                int frontLeftCopy = frontLeft, frontRightCopy = frontRight;
+                float dFrontLeftCopy = dFrontLeft, dFrontRightCopy = dFrontRight;
+                findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
+                if (frontLeftCopy != frontLeft || frontRightCopy != frontRight || !areSame(dFrontLeftCopy, dFrontLeft) || !areSame(dFrontRightCopy, dFrontRight)){
+                    findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
+                }
+                //////////////////
+                
 				float bt = t + kHalfCircle;
 				if (bt > kThetaMax) bt -= kThetaMax;
 				
@@ -1009,6 +1090,19 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				int backLeft, backRight;
 				float dBackLeft, dBackRight;
 				findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
+                
+                ///////////////
+                int backLeftCopy = backLeft, backRightCopy = backRight;
+                float dbackLeftCopy = dBackLeft, dbackRightCopy = dBackRight;
+                findSpeakers(t, params, backLeft, backRight, dBackLeft, dBackRight);
+                if (backLeftCopy != backLeft || backRightCopy != backRight || !areSame(dbackLeftCopy, dBackLeft) || !areSame(dbackRightCopy, dBackRight)){
+                    findSpeakers(t, params, backLeft, backRight, dBackLeft, dBackRight);
+                    findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
+
+                }
+                //////////////////
+
+                
 			
 				float front = r * 0.5f + 0.5f;
 				float back = 1 - front;
@@ -1208,6 +1302,23 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             int left, right;
             float dLeft, dRight;
             findLeftAndRightSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+            
+            
+            ///////////////
+            int leftCopy = left, rightCopy = right;
+            float dLeftCopy = dLeft, dRightCopy = dRight;
+            findSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+            if (leftCopy != left || rightCopy != right || !areSame(dLeftCopy, dLeft) || !areSame(dRightCopy, dRight)){
+                float angles [16]{};
+                for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
+                    angles[iCurSpeaker] = params[getParamForSpeakerX(iCurSpeaker)];
+                }
+                findSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+                findLeftAndRightSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+
+            }
+            //////////////////
+            
             
             jassert(left >= 0 && right >= 0);
             jassert(dLeft > 0 && dRight > 0);

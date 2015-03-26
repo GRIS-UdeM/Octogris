@@ -169,6 +169,13 @@ static inline float linearToDb(float linear)
 	return log10f(linear) * 20.f;
 }
 
+static bool areSame(double a, double b)
+{
+    cout << fabs(a - b) << endl;
+    
+    return fabs(a - b) < .001;
+}
+
 typedef Point<float> FPoint;
 
 typedef struct
@@ -568,6 +575,13 @@ private:
 
 	
 	void findLeftAndRightSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
+
+    void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
+    
+    
+    
+    
+    
 	void addToOutput(float s, float **outputs, int o, int f);
 	void ProcessData(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
