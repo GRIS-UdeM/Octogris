@@ -1040,12 +1040,12 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
 
                 ///////////////
-                int leftCopy = left, rightCopy = right;
-                float dLeftCopy = dLeft, dRightCopy = dRight;
-				findSpeakers(t, params, left, right, dLeft, dRight);
-                if (leftCopy != left || rightCopy != right || !areSame(dLeftCopy, dLeft || !areSame(dRightCopy, dRight))){
-                    findSpeakers(t, params, left, right, dLeft, dRight);
-                }
+//                int leftCopy = left, rightCopy = right;
+//                float dLeftCopy = dLeft, dRightCopy = dRight;
+//				findSpeakers(t, params, left, right, dLeft, dRight);
+//                if (leftCopy != left || rightCopy != right || !areSame(dLeftCopy, dLeft || !areSame(dRightCopy, dRight))){
+//                    findSpeakers(t, params, left, right, dLeft, dRight);
+//                }
                 //////////////////
                 
 				// add to output
@@ -1075,12 +1075,12 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
 				
                 ///////////////
-                int frontLeftCopy = frontLeft, frontRightCopy = frontRight;
-                float dFrontLeftCopy = dFrontLeft, dFrontRightCopy = dFrontRight;
-                findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
-                if (frontLeftCopy != frontLeft || frontRightCopy != frontRight || !areSame(dFrontLeftCopy, dFrontLeft) || !areSame(dFrontRightCopy, dFrontRight)){
-                    findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
-                }
+//                int frontLeftCopy = frontLeft, frontRightCopy = frontRight;
+//                float dFrontLeftCopy = dFrontLeft, dFrontRightCopy = dFrontRight;
+//                findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
+//                if (frontLeftCopy != frontLeft || frontRightCopy != frontRight || !areSame(dFrontLeftCopy, dFrontLeft) || !areSame(dFrontRightCopy, dFrontRight)){
+//                    findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
+//                }
                 //////////////////
                 
 				float bt = t + kHalfCircle;
@@ -1092,14 +1092,14 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
                 
                 ///////////////
-                int backLeftCopy = backLeft, backRightCopy = backRight;
-                float dbackLeftCopy = dBackLeft, dbackRightCopy = dBackRight;
-                findSpeakers(t, params, backLeft, backRight, dBackLeft, dBackRight);
-                if (backLeftCopy != backLeft || backRightCopy != backRight || !areSame(dbackLeftCopy, dBackLeft) || !areSame(dbackRightCopy, dBackRight)){
-                    findSpeakers(t, params, backLeft, backRight, dBackLeft, dBackRight);
-                    findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-
-                }
+//                int backLeftCopy = backLeft, backRightCopy = backRight;
+//                float dbackLeftCopy = dBackLeft, dbackRightCopy = dBackRight;
+//                findSpeakers(t, params, backLeft, backRight, dBackLeft, dBackRight);
+//                if (backLeftCopy != backLeft || backRightCopy != backRight || !areSame(dbackLeftCopy, dBackLeft) || !areSame(dbackRightCopy, dBackRight)){
+//                    findSpeakers(t, params, backLeft, backRight, dBackLeft, dBackRight);
+//                    findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
+//
+//                }
                 //////////////////
 
                 
@@ -1305,18 +1305,18 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             
             
             ///////////////
-            int leftCopy = left, rightCopy = right;
-            float dLeftCopy = dLeft, dRightCopy = dRight;
-            findSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
-            if (leftCopy != left || rightCopy != right || !areSame(dLeftCopy, dLeft) || !areSame(dRightCopy, dRight)){
-                float angles [16]{};
-                for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
-                    angles[iCurSpeaker] = params[getParamForSpeakerX(iCurSpeaker)];
-                }
-                findSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
-                findLeftAndRightSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
-
-            }
+//            int leftCopy = left, rightCopy = right;
+//            float dLeftCopy = dLeft, dRightCopy = dRight;
+//            findSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+//            if (leftCopy != left || rightCopy != right || !areSame(dLeftCopy, dLeft) || !areSame(dRightCopy, dRight)){
+//                float angles [16]{};
+//                for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
+//                    angles[iCurSpeaker] = params[getParamForSpeakerX(iCurSpeaker)];
+//                }
+//                findSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+//                findLeftAndRightSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
+//
+//            }
             //////////////////
             
             
