@@ -171,9 +171,7 @@ static inline float linearToDb(float linear)
 
 static bool areSame(double a, double b)
 {
-    cout << fabs(a - b) << endl;
-    
-    return fabs(a - b) < .001;
+    return fabs(a - b) < .0001;
 }
 
 typedef Point<float> FPoint;
