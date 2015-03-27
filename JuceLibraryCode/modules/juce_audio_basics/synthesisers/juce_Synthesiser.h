@@ -236,7 +236,7 @@ private:
     friend class Synthesiser;
 
     double currentSampleRate;
-    int currentlyPlayingNote;
+    int currentlyPlayingNote, currentPlayingMidiChannel;
     uint32 noteOnTime;
     SynthesiserSound::Ptr currentlyPlayingSound;
     bool keyIsDown, sostenutoPedalDown;
@@ -449,6 +449,13 @@ public:
     /** Can be overridden to handle soft pedal events. */
     virtual void handleSoftPedal (int midiChannel, bool isDown);
 
+    /** Can be overridden to handle an incoming program change message.
+        The base class implementation of this has no effect, but you may want to make your
+        own synth react to program changes.
+    */
+    virtual void handleProgramChange (int midiChannel,
+                                      int programNumber);
+
     //==============================================================================
     /** Tells the synthesiser what the sample rate is for the audio it's being used to render.
 
@@ -478,6 +485,22 @@ public:
         Subclasses may need to know this so that they can pitch things correctly.
     */
     double getSampleRate() const noexcept                       { return sampleRate; }
+
+    /** Sets a minimum limit on the size to which audio sub-blocks will be divided when rendering.
+
+        When rendering, the audio blocks that are passed into renderNextBlock() will be split up
+        into smaller blocks that lie between all the incoming midi messages, and it is these smaller
+        sub-blocks that are rendered with multiple calls to renderVoices().
+
+        Obviously in a pathological case where there are midi messages on every sample, then
+        renderVoices() could be called once per sample and lead to poor performance, so this
+        setting allows you to set a lower limit on the block size.
+
+        The default setting is 32, which means that midi messages are accurate to about < 1ms
+        accuracy, which is probably fine for most purposes, but you may want to increase or
+        decrease this value for your synth.
+    */
+    void setMinimumRenderingSubdivisionSize (int numSamples) noexcept;
 
 protected:
     //==============================================================================
@@ -537,6 +560,7 @@ private:
     //==============================================================================
     double sampleRate;
     uint32 lastNoteOnCounter;
+    int minimumSubBlockSize;
     bool shouldStealNotes;
     BigInteger sustainPedalsDown;
 
