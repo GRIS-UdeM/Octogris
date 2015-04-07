@@ -5,6 +5,9 @@
     <Filter Include="Octogris2">
       <UniqueIdentifier>{4E14FA64-C97A-ACCC-D80E-A99B864AECA5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Octogris2\HIDManager">
+      <UniqueIdentifier>{1E4C5281-3881-F2A1-81AD-759F3F34A270}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Octogris2\liblo">
       <UniqueIdentifier>{9273767F-79E3-14A3-C7B1-5AF29C59948B}</UniqueIdentifier>
     </Filter>
@@ -265,6 +268,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\HIDManager\HID_Config_Utilities.cpp">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\HIDManager\HID_Error_Handler.cpp">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\HIDManager\HID_Name_Lookup.cpp">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\HIDManager\HID_Queue_Utilities.cpp">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\HIDManager\HID_Utilities.cpp">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\HIDManager\ImmHIDUtilAddOn.cpp">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\HIDManager\IOHIDDevice_.cpp">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\HIDManager\IOHIDElement_.cpp">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\liblo\src\address.c">
       <Filter>Octogris2\liblo\src</Filter>
     </ClCompile>
@@ -348,9 +375,6 @@
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\midi\juce_MidiMessageSequence.cpp">
       <Filter>Juce Modules\juce_audio_basics\midi</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_FFT.cpp">
-      <Filter>Juce Modules\juce_audio_basics\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_IIRFilter.cpp">
       <Filter>Juce Modules\juce_audio_basics\effects</Filter>
@@ -1368,6 +1392,36 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\HIDManager\HID_Config_Utilities.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\HID_Error_Handler.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\HID_Name_Lookup.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\HID_Queue_Utilities.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\HID_Utilities.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\HID_Utilities_External.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\ImmHIDUtilAddOn.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\IOHIDDevice_.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\IOHIDElement_.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\HIDManager\IOHIDLib_.h">
+      <Filter>Octogris2\HIDManager</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\liblo\lo\lo.h">
       <Filter>Octogris2\liblo\lo</Filter>
     </ClInclude>
@@ -1456,9 +1510,6 @@
       <Filter>Juce Modules\juce_audio_basics\midi</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_Decibels.h">
-      <Filter>Juce Modules\juce_audio_basics\effects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_FFT.h">
       <Filter>Juce Modules\juce_audio_basics\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_IIRFilter.h">
