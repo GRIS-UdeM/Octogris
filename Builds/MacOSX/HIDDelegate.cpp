@@ -34,7 +34,7 @@ HIDDelegate::HIDDelegate(OctogrisAudioProcessor *filter, OctogrisAudioProcessorE
     printf("HIDDelegate created");
     mFilter = filter;
     mEditor = editor;
-    float vx, vy, equRes  ;
+    float vx, vy ;
 }
 
 void HIDDelegate::Handle_DeviceMatchingCallback(void *inContext, IOReturn inResult, void *inSender, IOHIDDeviceRef inIOHIDDeviceRef) {
@@ -295,14 +295,15 @@ void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValu
                 case 48:
                     
                     //printf("Axe X !!!! \n");
-                    this->vx = (scaledValue  / maxValue);
+                    vx = (scaledValue  / maxValue);
                     //Converting the scaled value of the X axis send by te joystick to the type of coordinates used by setSourceXY
                     newPoint = mFilter->getSourceXY01(i);
-                    vy = newPoint.getY();
-                    if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5))<=0.26)
+                    //vy = newPoint.getY();
+                    if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5))<=1.26)
                     {
                         
                         newPoint.setX(vx);   //modifying the old point into the new one
+                        newPoint.setY(vy);
                         mEditor->getMover()->move(newPoint, kOsc);
                         equRes = ((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5));
                         printf("I : %f \n",equRes);
@@ -322,9 +323,11 @@ void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValu
                     //Converting the scaled value of the Y axis send by te joystick to the type of coordinates used by setSourceXY
                     newPoint = mFilter->getSourceXY01(i);
                     //vx = newPoint.getX();
-                    if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5))<=0.26)
+                    if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5))<=1.26)
                     {
+                        newPoint.setX(vx);
                         newPoint.setY(vy);
+                        
                         mEditor->getMover()->move(newPoint, kOsc);
                         equRes = ((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5));
                         printf("I : %f \n",equRes);

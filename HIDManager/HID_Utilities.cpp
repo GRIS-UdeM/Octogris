@@ -74,6 +74,7 @@ static CFMutableDictionaryRef hu_CreateMatchingDictionary(uint32_t inUsagePage, 
 // -----------------------------------------------------
 
 IOHIDManagerRef gIOHIDManagerRef = NULL;
+int gIsLeapConnected = NULL;
 CFMutableArrayRef gDeviceCFArrayRef = NULL;
 CFIndex gDeviceIndex;
 CFArrayRef gElementCFArrayRef = NULL;

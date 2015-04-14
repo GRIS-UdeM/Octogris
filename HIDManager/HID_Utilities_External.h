@@ -101,6 +101,7 @@ typedef enum HIDElementTypeMask HIDElementTypeMask;
 // -----------------------------------------------------
 
 extern IOHIDManagerRef gIOHIDManagerRef;
+extern int gIsLeapConnected;
 extern CFMutableArrayRef gDeviceCFArrayRef;
 extern CFArrayRef gElementCFArrayRef;
 

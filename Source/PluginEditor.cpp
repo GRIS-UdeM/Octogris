@@ -1538,7 +1538,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     if(button == mEnableJoystick)
     {
         bool state = mEnableJoystick->getToggleState();
-        
         mButtonBeingPressed = -1;
         mFilter->setIsJoystickEnabled(state);
         if (state)
@@ -1555,8 +1554,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 else
                 {
                     setHIDDelegate(HIDDelegate::CreateHIDDelegate(mFilter, this));
-                    OSStatus test =mHIDDel->Initialize_HID(this);
-                    if(mHIDDel->getDeviceSetRef()!=0x0)
+                    mHIDDel->Initialize_HID(this);
+                    if(mHIDDel->getDeviceSetRef())
                     {
                         mStateJoystick->setText("Joystick connected", dontSendNotification);
                     }
@@ -1573,12 +1572,13 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             else
             {
                 mFilter->setIsJoystickEnabled(false);
-                mEnableJoystick->setToggleState(false, dontSendNotification);                mStateJoystick->setText("Joystick cannot connect (in use)", dontSendNotification);
+                mEnableJoystick->setToggleState(false, dontSendNotification);
+                mStateJoystick->setText("Joystick cannot connect (in use)", dontSendNotification);
             }
         }
         else
         {
-            if(gIOHIDManagerRef!=0x0)
+            if(!gIOHIDManagerRef)
             {
                 IOHIDManagerUnscheduleFromRunLoop(gIOHIDManagerRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
                 IOHIDManagerRegisterInputValueCallback(gIOHIDManagerRef, NULL,this);
@@ -1597,31 +1597,54 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     if(button == mEnableLeap)
     {
         bool state = mEnableLeap->getToggleState();
-        mleap = CreateLeapComponent(mFilter, this);
         mFilter->setIsLeapEnabled(state);
         
         if (state)
         {
-            mController = new Leap::Controller();
-            if (!mController)//->isServiceConnected())
+            
+            
+            if (!gIsLeapConnected)
             {
-                
-                mFilter->setIsLeapEnabled(false);
-                mEnableLeap->setToggleState(false, dontSendNotification);
+                mStateLeap->setText("Leap not connected", dontSendNotification);
+                mController = new Leap::Controller();
+                if(!mController)
+                {
+                    printf("Could not create leap controler");
+                }
+                else
+                {
+                    mleap = CreateLeapComponent(mFilter, this);
+                    if(mleap)
+                    {
+                        mStateLeap->setText("Leap connected", dontSendNotification);
+                        gIsLeapConnected = 1;
+                        mController->addListener(*mleap);
+                    }
+                    else
+                    {
+                        mStateLeap->setText("Leap not connected", dontSendNotification);
+                    }
+                }
                 
             }
             else
             {
-                mStateLeap->setText("Leap not connected", dontSendNotification);
-                
-                mController->addListener(*mleap);
+                mFilter->setIsLeapEnabled(false);
+                mStateLeap->setText("Leap not connected (in use)", dontSendNotification);
+                mEnableLeap->setToggleState(false, dontSendNotification);
+               
             }
         }
         else
         {
-            mController->removeListener(*mleap);
-            mController = NULL;
-            mStateLeap->setText("", dontSendNotification);
+            if(gIsLeapConnected)
+            {
+                mController->enableGesture(Leap::Gesture::TYPE_INVALID);
+                mController->removeListener(*mleap);
+                mController = NULL;
+                gIsLeapConnected = 0;
+                mStateLeap->setText("", dontSendNotification);
+            }
         }
     }
     //fin de changements lié a l'ajout de joystick à l'onglet leap
