@@ -10,7 +10,7 @@
 namespace BinaryData
 {
     extern const char*   HID_Config_Utilities_cpp;
-    const int            HID_Config_Utilities_cppSize = 186;
+    const int            HID_Config_Utilities_cppSize = 57537;
 
     extern const char*   HID_Config_Utilities_h;
     const int            HID_Config_Utilities_hSize = 324;
@@ -34,16 +34,16 @@ namespace BinaryData
     const int            HID_Queue_Utilities_hSize = 320;
 
     extern const char*   HID_Utilities_cpp;
-    const int            HID_Utilities_cppSize = 37261;
+    const int            HID_Utilities_cppSize = 37281;
 
     extern const char*   HID_Utilities_h;
     const int            HID_Utilities_hSize = 296;
 
     extern const char*   HID_Utilities_External_h;
-    const int            HID_Utilities_External_hSize = 20727;
+    const int            HID_Utilities_External_hSize = 20815;
 
     extern const char*   ImmHIDUtilAddOn_cpp;
-    const int            ImmHIDUtilAddOn_cppSize = 20127;
+    const int            ImmHIDUtilAddOn_cppSize = 20192;
 
     extern const char*   ImmHIDUtilAddOn_h;
     const int            ImmHIDUtilAddOn_hSize = 2831;
@@ -64,7 +64,7 @@ namespace BinaryData
     const int            IOHIDLib__hSize = 2973;
 
     extern const char*   libLeap_dylib;
-    const int            libLeap_dylibSize = 2545152;
+    const int            libLeap_dylibSize = 2277328;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
