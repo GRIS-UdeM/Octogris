@@ -75,6 +75,8 @@
       </GROUP>
     </GROUP>
     <GROUP id="{89B00B3D-3E60-2792-C7A4-D570AF057C40}" name="Source">
+      <FILE id="bDIKcy" name="HIDDelegate.cpp" compile="1" resource="0" file="Source/HIDDelegate.cpp"/>
+      <FILE id="QwSZHu" name="HIDDelegate.h" compile="0" resource="0" file="Source/HIDDelegate.h"/>
       <FILE id="iDZlup" name="_firs.h" compile="0" resource="0" file="Source/_firs.h"/>
       <FILE id="dqxZV5" name="FieldComponent.cpp" compile="1" resource="0"
             file="Source/FieldComponent.cpp"/>

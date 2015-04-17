@@ -156,6 +156,7 @@
     <ClCompile Include="..\..\liblo\src\server_thread.c"/>
     <ClCompile Include="..\..\liblo\src\subtest.c"/>
     <ClCompile Include="..\..\liblo\src\timetag.c"/>
+    <ClCompile Include="..\..\Source\HIDDelegate.cpp"/>
     <ClCompile Include="..\..\Source\FieldComponent.cpp"/>
     <ClCompile Include="..\..\Source\FirFilter.cpp"/>
     <ClCompile Include="..\..\Source\LevelComponent.cpp"/>
@@ -1122,6 +1123,7 @@
     <ClInclude Include="..\..\liblo\loconfig.h"/>
     <ClInclude Include="..\..\liblo\src\lo_internal.h"/>
     <ClInclude Include="..\..\liblo\src\lo_types_internal.h"/>
+    <ClInclude Include="..\..\Source\HIDDelegate.h"/>
     <ClInclude Include="..\..\Source\_firs.h"/>
     <ClInclude Include="..\..\Source\FieldComponent.h"/>
     <ClInclude Include="..\..\Source\FirFilter.h"/>

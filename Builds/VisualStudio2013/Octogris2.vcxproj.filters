@@ -325,6 +325,9 @@
     <ClCompile Include="..\..\liblo\src\timetag.c">
       <Filter>Octogris2\liblo\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\HIDDelegate.cpp">
+      <Filter>Octogris2\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\FieldComponent.cpp">
       <Filter>Octogris2\Source</Filter>
     </ClCompile>
@@ -1454,6 +1457,9 @@
     </ClInclude>
     <ClInclude Include="..\..\liblo\src\lo_types_internal.h">
       <Filter>Octogris2\liblo\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\HIDDelegate.h">
+      <Filter>Octogris2\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\_firs.h">
       <Filter>Octogris2\Source</Filter>

@@ -34,13 +34,13 @@ namespace BinaryData
     const int            HID_Queue_Utilities_hSize = 320;
 
     extern const char*   HID_Utilities_cpp;
-    const int            HID_Utilities_cppSize = 37281;
+    const int            HID_Utilities_cppSize = 37310;
 
     extern const char*   HID_Utilities_h;
     const int            HID_Utilities_hSize = 296;
 
     extern const char*   HID_Utilities_External_h;
-    const int            HID_Utilities_External_hSize = 20815;
+    const int            HID_Utilities_External_hSize = 20844;
 
     extern const char*   ImmHIDUtilAddOn_cpp;
     const int            ImmHIDUtilAddOn_cppSize = 20192;

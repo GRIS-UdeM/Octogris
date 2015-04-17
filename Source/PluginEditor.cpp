@@ -975,7 +975,7 @@ mMover(ownerFilter)
                 else
                 {
                     setHIDDelegate(HIDDelegate::CreateHIDDelegate(mFilter, this));
-                    OSStatus test =mHIDDel->Initialize_HID(this);
+                    mHIDDel->Initialize_HID(this);
                     if(mHIDDel->getDeviceSetRef()!=0x0)
                     {
                         mStateJoystick->setText("Joystick connected", dontSendNotification);
