@@ -15,6 +15,7 @@
 		0C843E85D76C092EC095F19D /* CAVectorUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9740AD58597A0078332FF21A /* CAVectorUnit.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		0CC32A0140D035C26DFA9FCE /* juce_RTAS_DigiCode1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98883D0EAB9BF4C98C6D1110 /* juce_RTAS_DigiCode1.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		0CE18C02EF36FF852E1724C0 /* HID_Config_Utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D8FBCC528A9C877E79354C /* HID_Config_Utilities.cpp */; };
+		0D3C09CF1AE16F4900B24EB1 /* libLeap.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96508569D95E3978172EFA00 /* libLeap.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		1BA8A67B813AAADDB64BC776 /* HID_Utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3FA92C19781B7D830147440 /* HID_Utilities.cpp */; };
 		1BC1B74520DFC433F5C0561F /* CAAUParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90D2C578E1804377FF4B7E53 /* CAAUParameter.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		1D5DB0C471235F0DC99EDB1D /* SourceMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 351ED414B7D7027BC011357F /* SourceMover.cpp */; };
@@ -93,6 +94,19 @@
 		FE107631D525C7763A56B76D /* AUScopeElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BFB86021ABF0415B9DBE2E2 /* AUScopeElement.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		FEF0F65B83B7339F634625F8 /* HID_Queue_Utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09234369E2E1DB4909D92EAC /* HID_Queue_Utilities.cpp */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0D3C09CE1AE16F4100B24EB1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				0D3C09CF1AE16F4900B24EB1 /* libLeap.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0002F2A143E7973693EADE79 /* juce_FileOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_FileOutputStream.h; path = ../../JuceLibraryCode/modules/juce_core/files/juce_FileOutputStream.h; sourceTree = SOURCE_ROOT; };
@@ -2616,6 +2630,7 @@
 				AFBAB6135653C9B7B9F10AA5 /* Sources */,
 				AE1FAB299C5E8BE3F6E82000 /* Frameworks */,
 				ACB59ACAAF55A1838119385D /* Post-build script */,
+				0D3C09CE1AE16F4100B24EB1 /* CopyFiles */,
 			);
 			buildRules = (
 			);
