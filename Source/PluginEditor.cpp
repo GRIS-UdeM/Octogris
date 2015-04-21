@@ -945,24 +945,7 @@ mMover(ownerFilter)
         box->addAndMakeVisible(mStateLeap);
         mComponents.add(mStateLeap);
         
-        if(mFilter->getIsLeapEnabled())
-        {
-            mleap = CreateLeapComponent(mFilter, this);
-            if (!mController)
-            {
-                mStateLeap->setText("Leap not connected", dontSendNotification);
-                mController = new Leap::Controller();
-                mController->addListener(*mleap);
-                
-            }
-            else
-            {
-                mFilter->setIsLeapEnabled(false);
-                mEnableLeap->setToggleState(false, dontSendNotification);
-            }
 
-            
-        }
         if(mFilter->getIsJoystickEnabled())
         {
             if (!gIOHIDManagerRef)
@@ -1597,7 +1580,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     if(button == mEnableLeap)
     {
         bool state = mEnableLeap->getToggleState();
-        mFilter->setIsLeapEnabled(state);
+        //mFilter->setIsLeapEnabled(state);
         
         if (state)
         {
@@ -1616,7 +1599,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                     mleap = CreateLeapComponent(mFilter, this);
                     if(mleap)
                     {
-                        mStateLeap->setText("Leap connected", dontSendNotification);
+                        //mStateLeap->setText("Leap connected", dontSendNotification);
                         gIsLeapConnected = 1;
                         mController->addListener(*mleap);
                     }
@@ -1629,7 +1612,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             }
             else
             {
-                mFilter->setIsLeapEnabled(false);
+                //mFilter->setIsLeapEnabled(false);
                 mStateLeap->setText("Leap not connected (in use)", dontSendNotification);
                 mEnableLeap->setToggleState(false, dontSendNotification);
                
