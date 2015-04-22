@@ -976,7 +976,8 @@ mMover(ownerFilter)
             else
             {
                 mFilter->setIsJoystickEnabled(false);
-                mEnableJoystick->setToggleState(false, dontSendNotification);                mStateJoystick->setText("Joystick cannot connect (in use)", dontSendNotification);
+                mEnableJoystick->setToggleState(false, dontSendNotification);
+                mStateJoystick->setText("Joystick cannot connect (in use)", dontSendNotification);
             }
             
             

@@ -268,28 +268,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\HIDManager\HID_Config_Utilities.cpp">
+    <ClCompile Include="..\..\HIDManager\HID_Config_Utilities.cpp">
       <Filter>Octogris2\HIDManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\HIDManager\HID_Error_Handler.cpp">
+    <ClCompile Include="..\..\HIDManager\HID_Error_Handler.cpp">
       <Filter>Octogris2\HIDManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\HIDManager\HID_Name_Lookup.cpp">
+    <ClCompile Include="..\..\HIDManager\HID_Name_Lookup.cpp">
       <Filter>Octogris2\HIDManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\HIDManager\HID_Queue_Utilities.cpp">
+    <ClCompile Include="..\..\HIDManager\HID_Queue_Utilities.cpp">
       <Filter>Octogris2\HIDManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\HIDManager\HID_Utilities.cpp">
+    <ClCompile Include="..\..\HIDManager\HID_Utilities.cpp">
       <Filter>Octogris2\HIDManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\HIDManager\ImmHIDUtilAddOn.cpp">
+    <ClCompile Include="..\..\HIDManager\ImmHIDUtilAddOn.cpp">
       <Filter>Octogris2\HIDManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\HIDManager\IOHIDDevice_.cpp">
+    <ClCompile Include="..\..\HIDManager\IOHIDDevice_.cpp">
       <Filter>Octogris2\HIDManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\HIDManager\IOHIDElement_.cpp">
+    <ClCompile Include="..\..\HIDManager\IOHIDElement_.cpp">
       <Filter>Octogris2\HIDManager</Filter>
     </ClCompile>
     <ClCompile Include="..\..\liblo\src\address.c">
@@ -1395,34 +1395,34 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\HIDManager\HID_Config_Utilities.h">
+    <ClInclude Include="..\..\HIDManager\HID_Config_Utilities.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\HID_Error_Handler.h">
+    <ClInclude Include="..\..\HIDManager\HID_Error_Handler.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\HID_Name_Lookup.h">
+    <ClInclude Include="..\..\HIDManager\HID_Name_Lookup.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\HID_Queue_Utilities.h">
+    <ClInclude Include="..\..\HIDManager\HID_Queue_Utilities.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\HID_Utilities.h">
+    <ClInclude Include="..\..\HIDManager\HID_Utilities_External.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\HID_Utilities_External.h">
+    <ClInclude Include="..\..\HIDManager\HID_Utilities.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\ImmHIDUtilAddOn.h">
+    <ClInclude Include="..\..\HIDManager\ImmHIDUtilAddOn.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\IOHIDDevice_.h">
+    <ClInclude Include="..\..\HIDManager\IOHIDDevice_.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\IOHIDElement_.h">
+    <ClInclude Include="..\..\HIDManager\IOHIDElement_.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\HIDManager\IOHIDLib_.h">
+    <ClInclude Include="..\..\HIDManager\IOHIDLib_.h">
       <Filter>Octogris2\HIDManager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\liblo\lo\lo.h">
