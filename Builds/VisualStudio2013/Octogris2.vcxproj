@@ -143,6 +143,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\HIDManager\HID_Config_Utilities.cpp"/>
+    <ClCompile Include="..\..\HIDManager\HID_Error_Handler.cpp"/>
+    <ClCompile Include="..\..\HIDManager\HID_Name_Lookup.cpp"/>
+    <ClCompile Include="..\..\HIDManager\HID_Queue_Utilities.cpp"/>
+    <ClCompile Include="..\..\HIDManager\HID_Utilities.cpp"/>
+    <ClCompile Include="..\..\HIDManager\ImmHIDUtilAddOn.cpp"/>
+    <ClCompile Include="..\..\HIDManager\IOHIDDevice_.cpp"/>
+    <ClCompile Include="..\..\HIDManager\IOHIDElement_.cpp"/>
     <ClCompile Include="..\..\liblo\src\address.c"/>
     <ClCompile Include="..\..\liblo\src\blob.c"/>
     <ClCompile Include="..\..\liblo\src\bundle.c"/>
@@ -154,6 +162,7 @@
     <ClCompile Include="..\..\liblo\src\server_thread.c"/>
     <ClCompile Include="..\..\liblo\src\subtest.c"/>
     <ClCompile Include="..\..\liblo\src\timetag.c"/>
+    <ClCompile Include="..\..\Source\HIDDelegate.cpp"/>
     <ClCompile Include="..\..\Source\FieldComponent.cpp"/>
     <ClCompile Include="..\..\Source\FirFilter.cpp"/>
     <ClCompile Include="..\..\Source\LevelComponent.cpp"/>
@@ -1099,6 +1108,16 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\VST3\juce_VST3_Wrapper.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\HIDManager\HID_Config_Utilities.h"/>
+    <ClInclude Include="..\..\HIDManager\HID_Error_Handler.h"/>
+    <ClInclude Include="..\..\HIDManager\HID_Name_Lookup.h"/>
+    <ClInclude Include="..\..\HIDManager\HID_Queue_Utilities.h"/>
+    <ClInclude Include="..\..\HIDManager\HID_Utilities.h"/>
+    <ClInclude Include="..\..\HIDManager\HID_Utilities_External.h"/>
+    <ClInclude Include="..\..\HIDManager\ImmHIDUtilAddOn.h"/>
+    <ClInclude Include="..\..\HIDManager\IOHIDDevice_.h"/>
+    <ClInclude Include="..\..\HIDManager\IOHIDElement_.h"/>
+    <ClInclude Include="..\..\HIDManager\IOHIDLib_.h"/>
     <ClInclude Include="..\..\liblo\lo\lo.h"/>
     <ClInclude Include="..\..\liblo\lo\lo_endian.h"/>
     <ClInclude Include="..\..\liblo\lo\lo_errors.h"/>
@@ -1110,6 +1129,7 @@
     <ClInclude Include="..\..\liblo\loconfig.h"/>
     <ClInclude Include="..\..\liblo\src\lo_internal.h"/>
     <ClInclude Include="..\..\liblo\src\lo_types_internal.h"/>
+    <ClInclude Include="..\..\Source\HIDDelegate.h"/>
     <ClInclude Include="..\..\Source\_firs.h"/>
     <ClInclude Include="..\..\Source\FieldComponent.h"/>
     <ClInclude Include="..\..\Source\FirFilter.h"/>

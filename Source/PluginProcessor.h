@@ -324,6 +324,12 @@ public:
 	int getGuiTab() const { return mGuiTab; }
 	void setGuiTab(int s) { mGuiTab = s; }
     
+    int getIsJoystickEnabled() const { return mJoystickEnabled; }
+    void setIsJoystickEnabled(int s) { mJoystickEnabled = s; }
+    
+    int getOscJoystickSource() const { return mOscJoystickSource; }
+    void setOscJoystickSource(int s) { mOscJoystickSource = s; }
+    
     int getIsLeapEnabled() const { return mLeapEnabled; }
     void setIsLeapEnabled(int s) { mLeapEnabled = s; }
 	
@@ -521,6 +527,8 @@ private:
     float m_fTrRepeats;
 
     int mGuiTab;
+    int mJoystickEnabled;
+    int mOscJoystickSource;
     int mLeapEnabled;
 	int mOscLeapSource;
 	int mOscReceiveEnabled;

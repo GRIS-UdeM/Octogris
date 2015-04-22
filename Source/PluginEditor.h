@@ -30,6 +30,7 @@
 #include "PluginProcessor.h"
 #include "LevelComponent.h"
 #include "SourceMover.h"
+#include "Leap.h"
 
 class FieldComponent;
 
@@ -60,6 +61,8 @@ enum placement{
 class MiniProgressBar;
 class ParamSlider;
 class OctTabbedComponent;
+class HIDDelegate;
+class OctoLeap;
 
 class HeartbeatComponent : public Component
 {
@@ -100,6 +103,15 @@ public:
 	int getOscLeapSource() { return mFilter->getOscLeapSource(); }
 	void setOscLeapSource(int s);
 	SourceMover * getMover() { return &mMover; }
+    Label * getmStateLeap() {return mStateLeap;}
+    
+    HIDDelegate * getHIDDel() {return mHIDDel;};
+    int getButtonBeingPressed() {return mButtonBeingPressed;};
+    void setButtonBeingPressed(int bbp) { mButtonBeingPressed = bbp;};
+    
+    void setHIDDelegate(HIDDelegate * hidDel){mHIDDel = hidDel;};
+    
+
 	
 private:
     PluginHostType mHost;
@@ -121,6 +133,8 @@ private:
 	Array<Slider*> mAttenuations;
 	Array<ToggleButton*> mMutes;
 	Array<LevelComponent*> mLevels;
+    ToggleButton *mEnableJoystick;
+    ToggleButton *mEnableLeap;
 	ToggleButton *mShowGridLines;
 	ToggleButton *mLinkDistances;
 	ToggleButton *mLinkMovement;
@@ -139,7 +153,11 @@ private:
 	Slider *mFilterMid;
 	Slider *mFilterNear;
 	Slider *mMaxSpanVolume;
-	
+    //Label *mShowChange;
+    Label *mStateLeap;
+    Label *mStateJoystick;
+    ScopedPointer<Leap::Controller> mController;
+    Leap::Listener leapList;
     // sources
     TextButton *mApplySrcPlacementButton;
     TextEditor *mSrcR, *mSrcT;
@@ -167,8 +185,12 @@ private:
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
-    Component *mleap;
+    OctoLeap *mleap;
 	HeartbeatComponent *mOsc;
+    
+    //joystick
+    int mButtonBeingPressed;
+    HIDDelegate *mHIDDel;
 	
 	// for resizing/repaint:
 	Component *mField;

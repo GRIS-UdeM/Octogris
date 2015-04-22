@@ -350,6 +350,7 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 {
 	Point<int> ml(event.x, event.y);
 	
+     printf("x : %d  y : %d \n",ml.x,ml.y );
 	int fieldWidth = getWidth();
 	const float padSize = fieldWidth;
 	
@@ -392,7 +393,7 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 				vx = p.x; vy = p.y;
 			}
 			mLastKeys = event.mods;
-
+           
 			mMover->move(FPoint(vx, vy), kField);
 			break;
 		}

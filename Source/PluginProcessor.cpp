@@ -135,7 +135,12 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 	mOscSendPort = 9000;
 	setOscSendIp("192.168.1.100");
 	
+     //changements lié a l'ajout de joystick à l'onglet leap
+    mLeapEnabled = 0;
+    mJoystickEnabled = 0;
 
+     //fin changements lié a l'ajout de joystick à l'onglet leap
+    
 	mSmoothedParametersRamps.resize(kNumberOfParameters);
 	
 	// default values for parameters
@@ -1787,6 +1792,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_iTrUnits = readIntData(data, sizeInBytes, 0);
             m_fTrRepeats = readFloatData(data, sizeInBytes, 1);
             mLeapEnabled = readIntData(data, sizeInBytes, 0);
+            mJoystickEnabled = readIntData(data, sizeInBytes, 0);
         }
         
         if (version >= 10){
