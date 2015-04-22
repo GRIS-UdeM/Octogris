@@ -1321,24 +1321,7 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             int left, right;
             float dLeft, dRight;
             findLeftAndRightSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
-            
-            
-            ///////////////
-//            int leftCopy = left, rightCopy = right;
-//            float dLeftCopy = dLeft, dRightCopy = dRight;
-//            findSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
-//            if (leftCopy != left || rightCopy != right || !areSame(dLeftCopy, dLeft) || !areSame(dRightCopy, dRight)){
-//                float angles [16]{};
-//                for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
-//                    angles[iCurSpeaker] = params[getParamForSpeakerX(iCurSpeaker)];
-//                }
-//                findSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
-//                findLeftAndRightSpeakers(fCurAngle, params, left, right, dLeft, dRight, iCurSpeaker);
-//
-//            }
-            //////////////////
-            
-            
+ 
             jassert(left >= 0 && right >= 0);
             jassert(dLeft > 0 && dRight > 0);
             
@@ -1363,29 +1346,7 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     {
         AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount, mNumberOfSpeakers);
     }
-//    if (mNumberOfSpeakers > 2)//if (mNumberOfSpeakers > 1)
-//    {
-//        for (int o = 0; o < mNumberOfSpeakers; o++)
-//        {
-//            float t = params[getParamForSpeakerX(o)];
-//            
-//            int left, right;
-//            float dLeft, dRight;
-//            findSpeakers(t, params, left, right, dLeft, dRight, o);
-//            
-//            //std::cout << "speaker " << o << ": left= " << left << ", right: " << right << ", dLeft: " << dLeft << ", dRight: " << dRight << "\n";
-//            jassert(left >= 0 && right >= 0);
-//            jassert(dLeft > 0 && dRight > 0);
-//            
-//            AddArea(o, t - dLeft, 0, t, 1, areas, areaCount, mNumberOfSpeakers);
-//            AddArea(o, t, 1, t + dRight, 0, areas, areaCount, mNumberOfSpeakers);
-//        }
-//    }
-//    else
-//    {
-//        AddArea(0, 0, 1, kThetaMax, 1, areas, areaCount, mNumberOfSpeakers);
-//    }
-    
+   
     
     
     jassert(areaCount > 0);

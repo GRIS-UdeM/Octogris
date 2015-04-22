@@ -1453,12 +1453,12 @@ struct JavascriptEngine::RootObject   : public DynamicObject
         ObjectClass()
         {
             setMethod ("dump",  dump);
-            setMethod ("clone", cloneFn);
+            setMethod ("clone", clone);
         }
 
         static Identifier getClassName()   { static const Identifier i ("Object"); return i; }
         static var dump  (Args a)          { DBG (JSON::toString (a.thisObject)); (void) a; return var::undefined(); }
-        static var cloneFn (Args a)        { return a.thisObject.clone(); }
+        static var clone (Args a)          { return a.thisObject.clone(); }
     };
 
     //==============================================================================

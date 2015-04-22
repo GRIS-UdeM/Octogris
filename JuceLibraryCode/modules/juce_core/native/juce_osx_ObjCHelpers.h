@@ -65,13 +65,6 @@ namespace
                            static_cast <CGFloat> (r.getWidth()),
                            static_cast <CGFloat> (r.getHeight()));
     }
-
-    // These hacks are a workaround for newer Xcode builds which by default prevent calls to these objc functions..
-    typedef id (*MsgSendSuperFn) (struct objc_super*, SEL, ...);
-    static inline MsgSendSuperFn getMsgSendSuperFn() noexcept   { return (MsgSendSuperFn) (void*) objc_msgSendSuper; }
-
-    typedef double (*MsgSendFPRetFn) (id, SEL op, ...);
-    static inline MsgSendFPRetFn getMsgSendFPRetFn() noexcept   { return (MsgSendFPRetFn) (void*) objc_msgSend_fpret; }
    #endif
 }
 
@@ -147,13 +140,11 @@ struct ObjCClass
         jassert (b); (void) b;
     }
 
-   #if JUCE_MAC
     static id sendSuperclassMessage (id self, SEL selector)
     {
         objc_super s = { self, [SuperclassType class] };
-        return getMsgSendSuperFn() (&s, selector);
+        return objc_msgSendSuper (&s, selector);
     }
-   #endif
 
     template <typename Type>
     static Type getIvar (id self, const char* name)

@@ -281,6 +281,7 @@ public:
         canProcessReplacing (true);
 
         isSynth ((JucePlugin_IsSynth) != 0);
+        noTail (filter->getTailLengthSeconds() <= 0);
         setInitialDelay (filter->getLatencySamples());
         programsAreChunks (true);
 
@@ -845,23 +846,6 @@ public:
         }
     }
 
-    bool string2parameter (VstInt32 index, char* text) override
-    {
-        if (filter != nullptr)
-        {
-            jassert (isPositiveAndBelow (index, filter->getNumParameters()));
-
-            float value;
-            if (filter->valueFromString (index, text, value))
-            {
-                filter->setParameter (index, value);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     void getParameterName (VstInt32 index, char* text) override
     {
         if (filter != nullptr)
@@ -923,7 +907,7 @@ public:
     {
         short channelConfigs[][2] = { JucePlugin_PreferredChannelConfigurations };
 
-        Array<short*> channelConfigsSorted;
+        Array <short*> channelConfigsSorted;
         ChannelConfigComparator comp;
 
         for (int i = 0; i < numElementsInArray (channelConfigs); ++i)
@@ -1201,8 +1185,6 @@ public:
               #elif JUCE_LINUX
                 editorComp->addToDesktop (0, ptr);
                 hostWindow = (Window) ptr;
-                Window editorWnd = (Window) editorComp->getWindowHandle();
-                XReparentWindow (display, editorWnd, hostWindow, 0, 0);
               #else
                 hostWindow = attachComponentToWindowRef (editorComp, ptr, useNSView);
               #endif
@@ -1246,7 +1228,7 @@ public:
     {
         if (editorComp != nullptr)
         {
-            if (! (canHostDo (const_cast<char*> ("sizeWindow")) && sizeWindow (newWidth, newHeight)))
+            if (! (canHostDo (const_cast <char*> ("sizeWindow")) && sizeWindow (newWidth, newHeight)))
             {
                 // some hosts don't support the sizeWindow call, so do it manually..
                #if JUCE_MAC
@@ -1302,10 +1284,7 @@ public:
             }
 
             if (ComponentPeer* peer = editorComp->getPeer())
-            {
                 peer->handleMovedOrResized();
-                peer->getComponent().repaint();
-            }
         }
     }
 

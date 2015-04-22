@@ -2309,15 +2309,16 @@ void Component::internalModalInputAttempt()
 //==============================================================================
 void Component::postCommandMessage (const int commandId)
 {
-    struct CustomCommandMessage   : public CallbackMessage
+    class CustomCommandMessage   : public CallbackMessage
     {
+    public:
         CustomCommandMessage (Component* const c, const int command)
             : target (c), commandId (command) {}
 
         void messageCallback() override
         {
-            if (Component* c = target.get())
-                c->handleCommandMessage (commandId);
+            if (target.get() != nullptr)  // (get() required for VS2003 bug)
+                target->handleCommandMessage (commandId);
         }
 
     private:

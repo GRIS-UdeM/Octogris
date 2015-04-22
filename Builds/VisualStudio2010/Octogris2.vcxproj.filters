@@ -349,9 +349,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\midi\juce_MidiMessageSequence.cpp">
       <Filter>Juce Modules\juce_audio_basics\midi</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_FFT.cpp">
-      <Filter>Juce Modules\juce_audio_basics\effects</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_IIRFilter.cpp">
       <Filter>Juce Modules\juce_audio_basics\effects</Filter>
     </ClCompile>
@@ -683,9 +680,6 @@
       <Filter>Juce Modules\juce_data_structures\values</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTree.cpp">
-      <Filter>Juce Modules\juce_data_structures\values</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.cpp">
       <Filter>Juce Modules\juce_data_structures\values</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_data_structures\undomanager\juce_UndoManager.cpp">
@@ -1461,9 +1455,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_Decibels.h">
       <Filter>Juce Modules\juce_audio_basics\effects</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_FFT.h">
-      <Filter>Juce Modules\juce_audio_basics\effects</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\effects\juce_IIRFilter.h">
       <Filter>Juce Modules\juce_audio_basics\effects</Filter>
     </ClInclude>
@@ -1942,9 +1933,6 @@
       <Filter>Juce Modules\juce_data_structures\values</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTree.h">
-      <Filter>Juce Modules\juce_data_structures\values</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h">
       <Filter>Juce Modules\juce_data_structures\values</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_data_structures\undomanager\juce_UndoableAction.h">

@@ -8,7 +8,7 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
-              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.1">
+              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.0">
   <MAINGROUP id="rRl79u" name="Octogris2">
     <FILE id="Rh67hJ" name="libLeap.dylib" compile="0" resource="1" file="Builds/MacOSX/libLeap.dylib"/>
     <GROUP id="{17707EFA-D5BA-4533-678C-40B034B62098}" name="liblo">

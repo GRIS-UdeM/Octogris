@@ -195,32 +195,9 @@ public:
             return false;
         }
 
-        void toString (Vst::ParamValue value, Vst::String128 result) const override
+        void toString (Vst::ParamValue, Vst::String128 result) const override
         {
-            String text;
-
-            if (owner.stringFromValue (paramIndex, value, 128, text))
-                toString128 (result, text);
-            else
-                // remain backward-compatible with old JUCE code
-                toString128 (result, owner.getParameterText (paramIndex, 128));
-        }
-
-        bool fromString (const Vst::TChar* text, Vst::ParamValue& valueNormalized) const override
-        {
-            float value;
-            if (owner.valueFromString (paramIndex, getStringFromVstTChars (text), value))
-            {
-                valueNormalized = value;
-                return true;
-            }
-
-            return false;
-        }
-
-        static String getStringFromVstTChars (const Vst::TChar* text)
-        {
-            return juce::String (juce::CharPointer_UTF16 (reinterpret_cast<const juce::CharPointer_UTF16::CharType*> (text)));
+            toString128 (result, owner.getParameterText (paramIndex, 128));
         }
 
         Vst::ParamValue toPlain (Vst::ParamValue v) const override       { return v; }
@@ -288,14 +265,7 @@ public:
 
     //==============================================================================
     void audioProcessorParameterChangeGestureBegin (AudioProcessor*, int index) override        { beginEdit ((Vst::ParamID) index); }
-
-    void audioProcessorParameterChanged (AudioProcessor*, int index, float newValue) override
-    {
-        // NB: Cubase has problems if performEdit is called without setParamNormalized
-        EditController::setParamNormalized ((Vst::ParamID) index, (double) newValue);
-        performEdit ((Vst::ParamID) index, (double) newValue);
-    }
-
+    void audioProcessorParameterChanged (AudioProcessor*, int index, float newValue) override   { performEdit ((Vst::ParamID) index, (double) newValue); }
     void audioProcessorParameterChangeGestureEnd (AudioProcessor*, int index) override          { endEdit ((Vst::ParamID) index); }
 
     void audioProcessorChanged (AudioProcessor*) override

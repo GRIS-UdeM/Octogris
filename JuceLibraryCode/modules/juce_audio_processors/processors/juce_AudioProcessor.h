@@ -140,17 +140,11 @@ public:
     /** Returns the current AudioPlayHead object that should be used to find
         out the state and position of the playhead.
 
-        You can ONLY call this from your processBlock() method! Calling it at other
-        times will produce undefined behaviour, as the host may not have any context
-        in which a time would make sense, and some hosts will almost certainly have
-        multithreading issues if it's not called on the audio thread.
+        You can call this from your processBlock() method, and use the AudioPlayHead
+        object to get the details about the time of the start of the block currently
+        being processed.
 
-        The AudioPlayHead object that is returned can be used to get the details about
-        the time of the start of the block currently being processed. But do not
-        store this pointer or use it outside of the current audio callback, because
-        the host may delete or re-use it.
-
-        If the host can't or won't provide any time info, this will return nullptr.
+        If the host hasn't supplied a playhead object, this will return nullptr.
     */
     AudioPlayHead* getPlayHead() const noexcept                 { return playHead; }
 
@@ -663,12 +657,6 @@ public:
     /** @internal */
     static void JUCE_CALLTYPE setTypeOfNextNewPlugin (WrapperType);
 
-    /** @internal */
-    bool valueFromString (int parameterIndex, const String& text, float& value) const;
-
-    /** @internal */
-    bool stringFromValue (int index, float value, int maxLen, String& result) const;
-
 protected:
     /** @internal */
     AudioPlayHead* playHead;
@@ -688,7 +676,7 @@ private:
     OwnedArray<AudioProcessorParameter> managedParameters;
     AudioProcessorParameter* getParamChecked (int) const noexcept;
 
-   #if JUCE_DEBUG && ! JUCE_DISABLE_AUDIOPROCESSOR_BEGIN_END_GESTURE_CHECKING
+   #if JUCE_DEBUG
     BigInteger changingParams;
    #endif
 
