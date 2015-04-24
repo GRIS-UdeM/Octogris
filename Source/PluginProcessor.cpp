@@ -1693,7 +1693,7 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
     }
 }
 
-static const int kDataVersion = 10;
+static const int kDataVersion = 11;
 void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     //printf("Octogris: getStateInformation\n");
@@ -1751,6 +1751,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
         float mute = mParameters[getParamForSpeakerM(i)];
         appendFloatData(destData, mute);
     }
+    appendIntData(destData, mJoystickEnabled);
 }
 
 void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -1792,7 +1793,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_iTrUnits = readIntData(data, sizeInBytes, 0);
             m_fTrRepeats = readFloatData(data, sizeInBytes, 1);
             mLeapEnabled = readIntData(data, sizeInBytes, 0);
-            mJoystickEnabled = readIntData(data, sizeInBytes, 0);
         }
         
         if (version >= 10){
@@ -1826,6 +1826,11 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 				mParameters.set(getParamForSpeakerM(i), mute );
 			}
 		}
+        
+        if (version >= 11){
+            mJoystickEnabled = readIntData(data, sizeInBytes, 0);
+        }
+        
 	}
 	mHostChangedParameter++;
 	mHostChangedProperty++;
