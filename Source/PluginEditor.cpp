@@ -901,15 +901,17 @@ mMover(ownerFilter)
     //changements lié a l'ajout de joystick à l'onglet leap
     box = mTabs->getTabContentComponent(6);
     {
-        int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
-        const int m = 10, dh = 18, cw = 200;
+        int x = kMargin, y = kMargin;
+        const int m = 10, dh = 18, cw = 250;
         
         mEnableLeap = new ToggleButton();
         mEnableLeap->setButtonText("Enable Leap");
         mEnableLeap->setSize(cw, dh);
         mEnableLeap->setTopLeftPosition(x, y);
         mEnableLeap->addListener(this);
-        mEnableLeap->setToggleState(mFilter->getIsLeapEnabled(), dontSendNotification);
+        JUCE_COMPILER_WARNING("Why aren't we using the state saved in the processor?")
+        //mEnableLeap->setToggleState(mFilter->getIsLeapEnabled(), dontSendNotification);
+        mEnableLeap->setToggleState(false, dontSendNotification);
         box->addAndMakeVisible(mEnableLeap);
         mComponents.add(mEnableLeap);
         
@@ -960,7 +962,7 @@ mMover(ownerFilter)
 
         if(mFilter->getIsJoystickEnabled())
         {
-            if (!gIOHIDManagerRef)
+            if (gIOHIDManagerRef)
             {
                 gIOHIDManagerRef = IOHIDManagerCreate(CFAllocatorGetDefault(),kIOHIDOptionsTypeNone);
                 if(!gIOHIDManagerRef)
@@ -979,44 +981,17 @@ mMover(ownerFilter)
                     {
                         mStateJoystick->setText("Joystick not connected", dontSendNotification);
                     }
-                    
-                    
-                    
-                    
                 }
             }
             else
             {
                 mFilter->setIsJoystickEnabled(false);
                 mEnableJoystick->setToggleState(false, dontSendNotification);
-                mStateJoystick->setText("Joystick cannot connect (in use)", dontSendNotification);
+                mStateJoystick->setText("Joystick connected to another Octogris window", dontSendNotification);
             }
-            
-            
         }
-        
-        
         //fin de changements lié a l'ajout de joystick à l'onglet leap
-        
-        
     }
-    /*mleap = CreateLeapComponent(mFilter, this);
-     if (mleap)
-     {
-     
-     box->addChildComponent(mleap);
-     leapSupported = true;
-     }
-     }
-     {
-     mJoystick = CreateHIDComponent(mFilter, this); //new HIDDelegate(mFilter, this);
-     if(mJoystick)
-     {
-     box->addChildComponent(mJoystick);
-     joystickSupported = true;
-     }
-     }
-     mComponents.add(mJoystick);*/
     
     int selectedTab = mFilter->getGuiTab();
     if (selectedTab >= 0 && selectedTab < mTabs->getNumTabs())
@@ -1036,6 +1011,8 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 {
     mFilter->setCalculateLevels(false);
     mFilter->removeListener(this);
+    gIsLeapConnected = 0;
+    mFilter->setIsLeapEnabled(0);
 }
 
 //==============================================================================
@@ -1530,22 +1507,18 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                     {
                         mStateJoystick->setText("Joystick not connected", dontSendNotification);
                     }
-                    
-                    
-                    
                 }
-                
             }
             else
             {
                 mFilter->setIsJoystickEnabled(false);
                 mEnableJoystick->setToggleState(false, dontSendNotification);
-                mStateJoystick->setText("Joystick cannot connect (in use)", dontSendNotification);
+                mStateJoystick->setText("Joystick connected to another Octogris window", dontSendNotification);
             }
         }
         else
         {
-            if(!gIOHIDManagerRef)
+            if(gIOHIDManagerRef)
             {
                 IOHIDManagerUnscheduleFromRunLoop(gIOHIDManagerRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
                 IOHIDManagerRegisterInputValueCallback(gIOHIDManagerRef, NULL,this);
