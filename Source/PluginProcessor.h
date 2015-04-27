@@ -312,15 +312,12 @@ public:
     float getTrDuration() const {return m_fTrDuration;}
     void setTrDuration(float i){m_fTrDuration = i;}
     
-    int getTrUnits() const {return m_iTrUnits;}
-    void setTrUnits(int i){m_iTrUnits = i;}
+    int getTrUnits() const {return m_iTrUnits + 1;}
+    void setTrUnits(int i){m_iTrUnits = i - 1;}
 
     float getTrRepeats() const {return m_fTrRepeats;}
     void setTrRepeats(float i){m_fTrRepeats = i;}
-    
-
-    
-    
+        
 	int getGuiTab() const { return mGuiTab; }
 	void setGuiTab(int s) { mGuiTab = s; }
     

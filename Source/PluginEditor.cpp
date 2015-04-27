@@ -858,7 +858,7 @@ mMover(ownerFilter)
             cb->addItem("Beat(s)", index++);
             cb->addItem("Second(s)", index++);
             
-            cb->setSelectedId(mFilter->getTrUnits()+1);
+            cb->setSelectedId(mFilter->getTrUnits());
             cb->setSize(tew, dh);
             cb->setTopLeftPosition(x, y);
             box->addAndMakeVisible(cb);
@@ -1609,7 +1609,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             int source = mTrSrcSelect->getSelectedId()-2;
             
             mFilter->setTrDuration(duration);
-            beats ? mFilter->setTrUnits(0) : mFilter->setTrUnits(1);
+            JUCE_COMPILER_WARNING("this operation was already done by event funct, clean this up")
+            mFilter->setTrUnits(mTrUnits->getSelectedId());
             mFilter->setTrRepeats(repeats);
             mFilter->setTrType(type);
             mFilter->setTrSrcSelect(source);
@@ -1771,7 +1772,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrType->setSelectedId(mFilter->getTrType()+1);
         mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);
         mTrDuration->setText(String(mFilter->getTrDuration()));
-        mTrUnits->setSelectedId(mFilter->getTrUnits()+1);
+        mTrUnits->setSelectedId(mFilter->getTrUnits());
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
         
         updateOscComponent(mOsc);
