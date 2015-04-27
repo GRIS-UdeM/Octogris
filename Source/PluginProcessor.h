@@ -300,8 +300,6 @@ public:
     
     int getSpSelected() const {return mSpSelected;}
     void setSpSelected(int i);
-    
-    
 
     int getTrType() const {return m_iTrType;}
     void setTrType(int i){m_iTrType = i;}
@@ -317,7 +315,7 @@ public:
 
     float getTrRepeats() const {return m_fTrRepeats;}
     void setTrRepeats(float i){m_fTrRepeats = i;}
-        
+    
 	int getGuiTab() const { return mGuiTab; }
 	void setGuiTab(int s) { mGuiTab = s; }
     

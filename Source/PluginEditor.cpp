@@ -1595,6 +1595,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         if (t)
         {
             mFilter->setTrajectory(NULL);
+            mFilter->restoreCurrentLocations();
             mTrWriteButton->setButtonText("Ready");
             mTrProgressBar->setVisible(false);
             mTrState = kTrReady;
@@ -1614,7 +1615,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mFilter->setTrRepeats(repeats);
             mFilter->setTrType(type);
             mFilter->setTrSrcSelect(source);
-			
+            
+			mFilter->storeCurrentLocations();
 			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, repeats, source));
 			mTrWriteButton->setButtonText("Cancel");
 			mTrState = kTrWriting;
@@ -1733,6 +1735,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			else
 			{
 				mTrWriteButton->setButtonText("Ready");
+                mFilter->restoreCurrentLocations();
 				mTrProgressBar->setVisible(false);
 				mTrState = kTrReady;
 			}

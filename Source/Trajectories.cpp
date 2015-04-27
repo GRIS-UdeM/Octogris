@@ -168,7 +168,7 @@ protected:
 			FPoint p = mSourcesInitRT.getUnchecked(i);
 			float l = (cos(da)+1)*0.5;
 			float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-			float t = p.y + da;
+			float t = p.y + 2*da;
 			mFilter->setSourceRT(i, FPoint(r, t));
 		}
 	}
