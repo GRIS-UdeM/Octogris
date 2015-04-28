@@ -176,12 +176,13 @@ private:
 	TextButton *mTrWriteButton;
 	MiniProgressBar *mTrProgressBar;
 	ComboBox *mTrSrcSelect;
+    
 	enum
 	{
 		kTrReady,
 		kTrWriting
 	};
-	int mTrState;
+    int mTrStateEditor;
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
@@ -207,7 +208,7 @@ private:
 	Component* addLabel(const String &s, int x, int y, int w, int h, Component *into);
 	ToggleButton* addCheckbox(const String &s, bool v, int x, int y, int w, int h, Component *into);
 	TextButton* addButton(const String &s, int x, int y, int w, int h, Component *into);
-	TextEditor* addTextEditor(const String &s, int x, int y, int w, int h, Component *into);
+    TextEditor* addTextEditor(const String &s, int x, int y, int w, int h, Component *into);
 	Slider* addParamSlider(int paramType, int si, float v, int x, int y, int w, int h, Component *into);
 };
 

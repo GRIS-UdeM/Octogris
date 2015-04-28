@@ -316,6 +316,9 @@ public:
     float getTrRepeats() const {return m_fTrRepeats;}
     void setTrRepeats(float i){m_fTrRepeats = i;}
     
+    int getTrState() const {return mTrState;}
+    void setTrState(int tr) {mTrState = tr;}
+    
 	int getGuiTab() const { return mGuiTab; }
 	void setGuiTab(int s) { mGuiTab = s; }
     
@@ -520,6 +523,7 @@ private:
     float m_fTrDuration;
     int m_iTrUnits; //0 = beats, 1 = seconds
     float m_fTrRepeats;
+    int mTrState;
 
     int mGuiTab;
     int mJoystickEnabled;

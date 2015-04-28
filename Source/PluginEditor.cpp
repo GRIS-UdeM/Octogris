@@ -884,16 +884,29 @@ mMover(ownerFilter)
         x = kMargin;
         
         mTrWriteButton = addButton("Ready", x, y, cbw, dh, box);
+        mTrWriteButton->setClickingTogglesState(true);
         y += dh + 5;
         
         mTrProgressBar = new MiniProgressBar();
         mTrProgressBar->setSize(tew, dh);
         mTrProgressBar->setTopLeftPosition(x, y);
-        mTrProgressBar->setVisible(false);
+        
+        Trajectory::Ptr t = mFilter->getTrajectory();
+        if (t){
+            mTrProgressBar->setVisible(true);
+        } else {
+            mTrProgressBar->setVisible(false);
+        }
+
         box->addChildComponent(mTrProgressBar);
         mComponents.add(mTrProgressBar);
         
-        mTrState = kTrReady;
+        mTrStateEditor = mFilter->getTrState();
+        if (mTrStateEditor == kTrWriting){
+            mTrWriteButton->setToggleState(true, dontSendNotification);
+            mTrWriteButton->setButtonText("Cancel");
+        }
+    
     }
     //--------------- OSC TAB ---------------- //
     
@@ -1264,6 +1277,7 @@ TextButton* OctogrisAudioProcessorEditor::addButton(const String &s, int x, int 
     return tb;
 }
 
+
 TextEditor* OctogrisAudioProcessorEditor::addTextEditor(const String &s, int x, int y, int w, int h, Component *into)
 {
     TextEditor *te = new TextEditor();
@@ -1598,7 +1612,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mFilter->restoreCurrentLocations();
             mTrWriteButton->setButtonText("Ready");
             mTrProgressBar->setVisible(false);
-            mTrState = kTrReady;
+            mTrStateEditor = kTrReady;
+            mFilter->setTrState(mTrStateEditor);
             t->stop();
         }
         else
@@ -1619,7 +1634,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 			mFilter->storeCurrentLocations();
 			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, repeats, source));
 			mTrWriteButton->setButtonText("Cancel");
-			mTrState = kTrWriting;
+            mTrStateEditor = kTrWriting;
+            mFilter->setTrState(mTrStateEditor);
 			
 			mTrProgressBar->setValue(0);
 			mTrProgressBar->setVisible(true);
@@ -1723,7 +1739,7 @@ void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
 //==============================================================================
 void OctogrisAudioProcessorEditor::timerCallback()
 {
-	switch(mTrState)
+	switch(mTrStateEditor)
 	{
 		case kTrWriting:
 		{
@@ -1735,9 +1751,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			else
 			{
 				mTrWriteButton->setButtonText("Ready");
+                mTrWriteButton->setToggleState(false, dontSendNotification);
                 mFilter->restoreCurrentLocations();
 				mTrProgressBar->setVisible(false);
-				mTrState = kTrReady;
+                mTrStateEditor = kTrReady;
+				mFilter->setTrState(mTrStateEditor);
 			}
 		}
 		break;
