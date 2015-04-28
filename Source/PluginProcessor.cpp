@@ -1048,22 +1048,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find left and right speakers
 				int left, right;
 				float dLeft, dRight;
-                findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
-//                findSpeakers(t, params, left, right, dLeft, dRight);
-
-                ///////////////
-//                int leftCopy = left, rightCopy = right;
-//                float dLeftCopy = dLeft, dRightCopy = dRight;
-//				findSpeakers(t, params, left, right, dLeft, dRight);
-//                if (leftCopy != left || rightCopy != right || !areSame(dLeftCopy, dLeft) || !areSame(dRightCopy, dRight)){
-//                    float angles [16]{};
-//                    for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
-//                        angles[iCurSpeaker] = params[getParamForSpeakerX(iCurSpeaker)];
-//                    }
-//                    findSpeakers(t, params, left, right, dLeft, dRight);
-//                    findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
-//                }
-                //////////////////
+                findSpeakers(t, params, left, right, dLeft, dRight);
                 
 				// add to output
 				if (left >= 0 && right >= 0)
@@ -1089,22 +1074,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find front left, right
 				int frontLeft, frontRight;
 				float dFrontLeft, dFrontRight;
-				findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
-//                findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
-
-                ///////////////
-//                int frontLeftCopy = frontLeft, frontRightCopy = frontRight;
-//                float dFrontLeftCopy = dFrontLeft, dFrontRightCopy = dFrontRight;
-//                findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
-//                if (frontLeftCopy != frontLeft || frontRightCopy != frontRight || !areSame(dFrontLeftCopy, dFrontLeft) || !areSame(dFrontRightCopy, dFrontRight)){
-//                    float angles [16]{};
-//                    for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
-//                        angles[iCurSpeaker] = params[getParamForSpeakerX(iCurSpeaker)];
-//                    }
-//                    findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
-//                    findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
-//                }
-                //////////////////
+                findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
                 
 				float bt = t + kHalfCircle;
 				if (bt > kThetaMax) bt -= kThetaMax;
@@ -1112,23 +1082,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find back left, right
 				int backLeft, backRight;
 				float dBackLeft, dBackRight;
-				findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-//                findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-                
-                
-                ///////////////
-//                int backLeftCopy = backLeft, backRightCopy = backRight;
-//                float dbackLeftCopy = dBackLeft, dbackRightCopy = dBackRight;
-//                findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-//                if (backLeftCopy != backLeft || backRightCopy != backRight || !areSame(dbackLeftCopy, dBackLeft) || !areSame(dbackRightCopy, dBackRight)){
-//                    float angles [16]{};
-//                    for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
-//                        angles[iCurSpeaker] = params[getParamForSpeakerX(iCurSpeaker)];
-//                    }
-//                    findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-//                    findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-//                }
-                //////////////////
+                findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
 
                 
 			
