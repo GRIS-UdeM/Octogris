@@ -169,7 +169,10 @@ private:
 	ComboBox *mSpSelect, *mSpPlacement;
 
 	// trajectories
-	ComboBox *mTrType;
+	ComboBox *mTrTypeComboBox;
+    ComboBox* mTrDirectionComboBox;
+    ComboBox* mTrReturnComboBox;
+    
 	TextEditor *mTrDuration;
 	ComboBox *mTrUnits;
 	TextEditor *mTrRepeats;
@@ -204,6 +207,7 @@ private:
     void updateSourceLocationTextEditor();
     void updateSpeakerLocationTextEditor();
     void updateMovementModeCombo();
+    void updateTrajectoryComboboxes();
 	
 	Component* addLabel(const String &s, int x, int y, int w, int h, Component *into);
 	ToggleButton* addCheckbox(const String &s, bool v, int x, int y, int w, int h, Component *into);

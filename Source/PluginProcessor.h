@@ -303,6 +303,13 @@ public:
 
     int getTrType() const {return m_iTrType;}
     void setTrType(int i){m_iTrType = i;}
+    
+    int getTrDirection() const {return m_iTrDirection;}
+    void setTrDirection(int i){m_iTrDirection = i;}
+    
+    int getTrReturn() const {return m_iTrReturn;}
+    void setTrReturn(int i){m_iTrReturn = i;}
+
 
     int getTrSrcSelect() const {return m_iTrSrcSelect;}
     void setTrSrcSelect(int i){m_iTrSrcSelect = i;}
@@ -519,6 +526,10 @@ private:
     int mSpPlacementMode;
     int mSpSelected;
     int m_iTrType;
+    
+    int m_iTrDirection;
+    int m_iTrReturn;
+    
     int m_iTrSrcSelect;
     float m_fTrDuration;
     int m_iTrUnits; //0 = beats, 1 = seconds

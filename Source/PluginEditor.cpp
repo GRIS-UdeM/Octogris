@@ -540,7 +540,6 @@ mMover(ownerFilter)
             mInputOutputModeCombo->setTopLeftPosition(x, y);
             box->addAndMakeVisible(mInputOutputModeCombo);
             mComponents.add(mInputOutputModeCombo);
-            //mInputOutputModeCombo->addListener(this);
             
             mApplyInputOutputModeButton = addButton("Apply", x + w - iButtonW, y, iButtonW, dh, box);
             
@@ -814,7 +813,7 @@ mMover(ownerFilter)
         {
             ComboBox *cb = new ComboBox();
             int index = 1;
-            for (int i = 0; i < Trajectory::NumberOfTrajectories(); i++)
+            for (int i = 1; i < Trajectory::NumberOfTrajectories(); i++)
                 cb->addItem(Trajectory::GetTrajectoryName(i), index++);
             
             cb->setSelectedId(mFilter->getTrType()+1);
@@ -823,8 +822,32 @@ mMover(ownerFilter)
             box->addAndMakeVisible(cb);
             mComponents.add(cb);
             
-            mTrType = cb;
-            mTrType->addListener(this);
+            mTrTypeComboBox = cb;
+            mTrTypeComboBox->addListener(this);
+        }
+        
+        {
+            ComboBox *cb = new ComboBox();
+
+            cb->setSize(cbw, dh);
+            cb->setTopLeftPosition(x+cbw+5, y);
+            box->addAndMakeVisible(cb);
+            mComponents.add(cb);
+            
+            mTrDirectionComboBox = cb;
+            mTrDirectionComboBox->addListener(this);
+        }
+        
+        {
+            ComboBox *cb = new ComboBox();
+            
+            cb->setSize(cbw, dh);
+            cb->setTopLeftPosition(x+cbw+cbw+5, y);
+            box->addAndMakeVisible(cb);
+            mComponents.add(cb);
+            
+            mTrReturnComboBox = cb;
+            mTrReturnComboBox->addListener(this);
         }
         
         {
@@ -838,7 +861,7 @@ mMover(ownerFilter)
             }
             cb->setSelectedId(mFilter->getTrSrcSelect()+2);
             cb->setSize(100, dh);
-            cb->setTopLeftPosition(x + cbw + 5, y);
+            cb->setTopLeftPosition(x + cbw + cbw + cbw + 5, y);
             box->addAndMakeVisible(cb);
             mComponents.add(cb);
             
@@ -1018,6 +1041,42 @@ mMover(ownerFilter)
     mFilter->setCalculateLevels(true);
     
     refreshSize();
+}
+
+void OctogrisAudioProcessorEditor::updateTrajectoryComboboxes(){
+    int iSelectedTrajectory = mFilter->getTrType()+1;
+    
+    unique_ptr<vector<String>> allDirections = Trajectory::getTrajectoryPossibleDirections(iSelectedTrajectory);
+    if (allDirections != nullptr){
+        mTrDirectionComboBox->clear();
+        for(auto it = allDirections->begin(); it != allDirections->end(); ++it){
+            mTrDirectionComboBox->addItem(*it, it - allDirections->begin()+1);
+        }
+        mTrDirectionComboBox->setVisible(true);
+        
+        int iSelectedDirection = mFilter->getTrDirection()+1;
+        
+        if (iSelectedDirection > allDirections->size()){
+            iSelectedDirection = 1;
+            mFilter->setTrDirection(iSelectedDirection);
+        }
+        mTrDirectionComboBox->setSelectedId(iSelectedDirection);
+        
+    } else {
+        mTrDirectionComboBox->setVisible(false);
+    }
+    
+    unique_ptr<vector<String>> allReturns = Trajectory::getTrajectoryPossibleReturns(iSelectedTrajectory);
+    if (allReturns != nullptr){
+        mTrReturnComboBox->clear();
+        for(auto it = allReturns->begin(); it != allReturns->end(); ++it){
+            mTrReturnComboBox->addItem(*it, it - allReturns->begin()+1);
+        }
+        mTrReturnComboBox->setVisible(true);
+        mTrReturnComboBox->setSelectedId(mFilter->getTrReturn()+1);
+    } else {
+        mTrReturnComboBox->setVisible(false);
+    }
 }
 
 OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
@@ -1621,7 +1680,13 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             float duration = mTrDuration->getText().getFloatValue();
             bool beats = mTrUnits->getSelectedId() == 1;
             float repeats = mTrRepeats->getText().getFloatValue();
-            int type = mTrType->getSelectedId()-1;
+            int type = mTrTypeComboBox->getSelectedId();
+            
+          
+            unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
+            
+            bool bReturn = mTrReturnComboBox->getSelectedId() == 2;
+            
             int source = mTrSrcSelect->getSelectedId()-2;
             
             mFilter->setTrDuration(duration);
@@ -1632,7 +1697,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mFilter->setTrSrcSelect(source);
             
 			mFilter->storeCurrentLocations();
-			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, repeats, source));
+			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, *direction, bReturn, repeats, source));
 			mTrWriteButton->setButtonText("Cancel");
             mTrStateEditor = kTrWriting;
             mFilter->setTrState(mTrStateEditor);
@@ -1676,20 +1741,8 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
                 mDistances.getUnchecked(i)->valueChanged();
             }
         }
-        
 		repaint();
 	}
-    else if (comboBox == mInputOutputModeCombo){
-//        mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
-//        
-//        updateSources(false);
-//        updateSpeakers();
-//        if (m_bLoadingPreset){
-//            mFilter->restoreCurrentLocations();
-//            m_bLoadingPreset = false;
-//        }
-//        mField->repaint();
-    }
 	else if (comboBox == mOscLeapSourceCb)
 	{
 		mFilter->setOscLeapSource(comboBox->getSelectedId() - 1);
@@ -1705,10 +1758,21 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     {
         mFilter->setTrUnits(mTrUnits->getSelectedId());
     }
-    else if (comboBox == mTrType)
+    else if (comboBox == mTrTypeComboBox)
     {
-        int type = mTrType->getSelectedId()-1;
+        int type = mTrTypeComboBox->getSelectedId()-1;
         mFilter->setTrType(type);
+        updateTrajectoryComboboxes();
+    }
+    else if (comboBox ==  mTrDirectionComboBox)
+    {
+        int direction = mTrDirectionComboBox->getSelectedId()-1;
+        mFilter->setTrDirection(direction);
+    }
+    else if (comboBox == mTrReturnComboBox)
+    {
+        int iReturn = mTrReturnComboBox->getSelectedId()-1;
+        mFilter->setTrReturn(iReturn);
     }
     else if (comboBox == mTrSrcSelect)
     {
@@ -1790,7 +1854,8 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mSpPlacement->setSelectedId(mFilter->getSpPlacementMode(), dontSendNotification);
         updateSpeakerLocationTextEditor();
         
-        mTrType->setSelectedId(mFilter->getTrType()+1);
+        mTrTypeComboBox->setSelectedId(mFilter->getTrType()+1);
+        
         mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);
         mTrDuration->setText(String(mFilter->getTrDuration()));
         mTrUnits->setSelectedId(mFilter->getTrUnits());

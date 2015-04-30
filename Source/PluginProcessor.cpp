@@ -123,6 +123,8 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
     mSpPlacementMode = 1;
     mSpSelected = 1;
     m_iTrType = 0;
+    m_iTrDirection = 0,
+    m_iTrReturn = 0,
     m_iTrSrcSelect = -1;//0;
     m_fTrDuration = 1.f;
     m_iTrUnits = 1;     //0 = beats, 1 = seconds
@@ -1717,8 +1719,14 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
         float mute = mParameters[getParamForSpeakerM(i)];
         appendFloatData(destData, mute);
     }
+    
+    //version 11 and 12
     //appendIntData(destData, mJoystickEnabled);
     appendIntData(destData, mTrState);
+    
+    //version 13
+    appendIntData(destData, m_iTrDirection);
+    appendIntData(destData, m_iTrReturn);
     
 }
 
@@ -1801,6 +1809,11 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mJoystickEnabled = readIntData(data, sizeInBytes, 0);
         } else if (version >= 12){
             mTrState = readIntData(data, sizeInBytes, 0);
+        }
+        
+        if (version >= 13){
+            m_iTrDirection = readIntData(data, sizeInBytes, 0);
+            m_iTrReturn = readIntData(data, sizeInBytes, 0);
         }
 	}
 	mHostChangedParameter++;
