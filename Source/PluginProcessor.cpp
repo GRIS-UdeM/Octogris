@@ -463,7 +463,8 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
 
     //if (!mHost.isReaper()){
     if (bUseDefaultValues){
-        updateSpeakerLocation(true, false, true);
+        //updateSpeakerLocation(true, false, true);
+        updateSpeakerLocation(true, false, false);
     }
 
     
@@ -799,7 +800,6 @@ void OctogrisAudioProcessor::ProcessData(float **inputs, float **outputs, float 
 	}
 }
 
-
 void OctogrisAudioProcessor::findSpeakers(float p_fTargetAngle, float *params, int &p_piLeftSpeaker, int &p_piRightSpeaker, float &p_pfDeltaAngleToLeftSpeaker, float &p_pfDeltaAngleToRightSpeaker, int p_iTargetSpeaker)
 {
     p_piLeftSpeaker = -1;
@@ -818,13 +818,15 @@ void OctogrisAudioProcessor::findSpeakers(float p_fTargetAngle, float *params, i
                 fCurDeltaAngle = kThetaMax - fCurDeltaAngle;
                 if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker) {
                     p_pfDeltaAngleToRightSpeaker = fCurDeltaAngle;
-                    p_piRightSpeaker = iCurSpeaker;
+                    //p_piRightSpeaker = iCurSpeaker;
+                    p_piLeftSpeaker = iCurSpeaker;
                 }
             } else {
                 // left
                 if (fCurDeltaAngle < p_pfDeltaAngleToLeftSpeaker) {
                     p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
-                    p_piLeftSpeaker = iCurSpeaker;
+                    //p_piLeftSpeaker = iCurSpeaker;
+                    p_piRightSpeaker = iCurSpeaker;
                 }
             }
         } else {
@@ -834,13 +836,15 @@ void OctogrisAudioProcessor::findSpeakers(float p_fTargetAngle, float *params, i
                 fCurDeltaAngle = kThetaMax - fCurDeltaAngle;
                 if (fCurDeltaAngle < p_pfDeltaAngleToLeftSpeaker) {
                     p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
-                    p_piLeftSpeaker = iCurSpeaker;
+                    //p_piLeftSpeaker = iCurSpeaker;
+                    p_piRightSpeaker = iCurSpeaker;
                 }
             } else {
                 // right
                 if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker) {
                     p_pfDeltaAngleToRightSpeaker = fCurDeltaAngle;
-                    p_piRightSpeaker = iCurSpeaker;
+                    //p_piRightSpeaker = iCurSpeaker;
+                    p_piLeftSpeaker = iCurSpeaker;
                 }
             }
         }
@@ -1049,6 +1053,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				int left, right;
 				float dLeft, dRight;
                 findSpeakers(t, params, left, right, dLeft, dRight);
+                //findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
                 
 				// add to output
 				if (left >= 0 && right >= 0)
@@ -1075,6 +1080,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				int frontLeft, frontRight;
 				float dFrontLeft, dFrontRight;
                 findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
+                //findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
                 
 				float bt = t + kHalfCircle;
 				if (bt > kThetaMax) bt -= kThetaMax;
@@ -1083,7 +1089,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				int backLeft, backRight;
 				float dBackLeft, dBackRight;
                 findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-
+                //findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
                 
 			
 				float front = r * 0.5f + 0.5f;
