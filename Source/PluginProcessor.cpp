@@ -388,13 +388,15 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
     }
     mInputsCopy.resize(mNumberOfSources);
     
+
     if (bUseDefaultValues){
-        
-        
         double anglePerSource = 360 / mNumberOfSources;
         double offset, axisOffset;
         
-        if(mNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
+        if (mNumberOfSources == 1){
+            setSourceRT(0, FPoint(0, 0));
+        }
+        else if(mNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
         {
             axisOffset = anglePerSource / 2;
             for (int i = 0; i < mNumberOfSources; i++)
@@ -1715,7 +1717,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
         float mute = mParameters[getParamForSpeakerM(i)];
         appendFloatData(destData, mute);
     }
-    appendIntData(destData, mJoystickEnabled);
+    //appendIntData(destData, mJoystickEnabled);
     appendIntData(destData, mTrState);
     
 }
@@ -1793,10 +1795,11 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
 			}
 		}
         
-        if (version >= 11){
+        //in version 11, we had the joystick state saved here, but in >= 12 we removed that, hence it's been replaced by the next
+        //parameter, ie mTrState
+        if (version == 11){
             mJoystickEnabled = readIntData(data, sizeInBytes, 0);
-        }
-        if (version >= 12){
+        } else if (version >= 12){
             mTrState = readIntData(data, sizeInBytes, 0);
         }
 	}

@@ -1410,7 +1410,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         }
         
         float anglePerSp = kThetaMax / mFilter->getNumberOfSources();
-        
+        JUCE_COMPILER_WARNING("this stuff is kind of a replication of processor::setNumberOfSources, although setNumberOfSources is only for default placement")
         if (alternate)
         {
             float offset = startAtTop
