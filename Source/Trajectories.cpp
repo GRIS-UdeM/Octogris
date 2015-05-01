@@ -468,13 +468,22 @@ protected:
 			mCycle = cycle;
 			mSourcesOrigins.clearQuick();
 			mSourcesDestinations.clearQuick();
-			
+
+            
+//            FPoint o = mFilter->getSourceXY(1);
+//            mSourcesOrigins.add(o);
+//            FPoint uniqueDestination = destinationForSource(1, o);
+            
+            
+             
+            
 			for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 			if (mSource < 0 || mSource == i)
 			{
-				FPoint o = mFilter->getSourceXY(i);
+                FPoint o = mFilter->getSourceXY(i);
 				mSourcesOrigins.add(o);
-				mSourcesDestinations.add(destinationForSource(i, o));
+                mSourcesDestinations.add(destinationForSource(i, o));
+                //mSourcesDestinations.add(uniqueDestination);
 			}
 		}
 

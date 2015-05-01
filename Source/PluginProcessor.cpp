@@ -1642,6 +1642,8 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
         mBufferSpLocA[i] = mParameters[getParamForSpeakerA(i)];
         mBufferSpLocM[i] = mParameters[getParamForSpeakerM(i)];
     }
+    int i =0;
+    ++i;
 }
 
 void OctogrisAudioProcessor::restoreCurrentLocations(){
@@ -1659,6 +1661,9 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
         mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);
         mParameters.set(getParamForSpeakerM(i), mBufferSpLocM[i]);
     }
+    
+    int i =0;
+    ++i;
 }
 
 static const int kDataVersion = 12;

@@ -1677,6 +1677,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mTrStateEditor = kTrReady;
             mFilter->setTrState(mTrStateEditor);
             t->stop();
+            
+            mNeedRepaint = true;
         }
         else
         {
