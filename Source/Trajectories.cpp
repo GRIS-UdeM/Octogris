@@ -291,23 +291,43 @@ protected:
 	}
 	void spProcess(float duration, float seconds)
 	{
-        JUCE_COMPILER_WARNING("need to implement cross")
-		float da;
-		if (mRT)
-			da = mDone / mDuration * (2 * M_PI);
-		else
-		{
-			if (mDone < mTotalDuration) da = fmodf(mDone / mDuration * M_PI, M_PI);
-			else da = M_PI;
-		}
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-		if (mSource < 0 || mSource == i)
-		{
-			FPoint p = mSourcesInitRT.getUnchecked(i);
-			float l = (mRT && mIn) ? cos(da) : (cos(da)+1)*0.5;
-			float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-			mFilter->setSourceRT(i, FPoint(r, p.y));
-		}
+
+//		float da;
+//		if (mRT)
+//			da = mDone / mDuration * (2 * M_PI);
+//		else
+//		{
+//			if (mDone < mTotalDuration) da = fmodf(mDone / mDuration * M_PI, M_PI);
+//			else da = M_PI;
+//		}
+//		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+//		if (mSource < 0 || mSource == i)
+//		{
+//			FPoint p = mSourcesInitRT.getUnchecked(i);
+//			float l = (mRT && mIn) ? cos(da) : (cos(da)+1)*0.5;
+//			float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+//			mFilter->setSourceRT(i, FPoint(r, p.y));
+//		}
+        
+        float da;
+        
+        if (mRT)
+            da = mDone / mDuration * (2 * M_PI);
+        else
+        {
+            if (mDone < mTotalDuration) da = fmodf(mDone / mDuration * M_PI, M_PI);
+            else da = M_PI;
+        }
+        
+        for (int i = 0; i < mFilter->getNumberOfSources(); i++){
+            if (mSource < 0 || mSource == i)
+            {
+                FPoint p = mSourcesInitRT.getUnchecked(i);
+                float l = mCross ? cos(da) : (cos(da)+1)*0.5;
+                float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+                mFilter->setSourceRT(i, FPoint(r, p.y));
+            }
+        }
 	}
 	
 private:
