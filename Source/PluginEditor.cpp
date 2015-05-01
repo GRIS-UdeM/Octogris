@@ -1699,8 +1699,14 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mFilter->setTrType(type);
             mFilter->setTrSrcSelect(source);
             
+            bool bUniqueTarget = true;
+            if  (!mFilter->getLinkMovement() || mFilter->getMovementMode() == 0){
+                bUniqueTarget = false;
+            }
+
+            
 			mFilter->storeCurrentLocations();
-			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, *direction, bReturn, repeats, source));
+			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget));
 			mTrWriteButton->setButtonText("Cancel");
             mTrStateEditor = kTrWriting;
             mFilter->setTrState(mTrStateEditor);
