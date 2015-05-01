@@ -169,7 +169,8 @@ unique_ptr<AllTrajectoryDirections> Trajectory::getTrajectoryDirection(int p_iSe
         case SymXTarget:
         case SymYTarget:
         case ClosestSpeakerTarget:
-            return nullptr;
+            *pDirection = None;
+            break;
         default:
             jassert(0);
     }
@@ -657,12 +658,13 @@ String Trajectory::GetTrajectoryName(int i)
 //	return NULL;
 //}
 
-Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *filter, float duration, bool beats, AllTrajectoryDirections &direction, bool bReturn, float times, int source)
+Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *filter, float duration, bool beats, AllTrajectoryDirections direction, bool bReturn, float times, int source)
 {
     
     bool ccw, in, cross;
     float speed;
     
+    if (direction != None)
     switch (direction) {
         case CW:
             ccw = false;
@@ -719,11 +721,10 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
         case Spiral:                     return new SpiralTrajectory(filter, duration, beats, times, source, ccw, in, bReturn);
         case Pendulum:                   return new PendulumTrajectory(filter, duration, beats, times, source, in, bReturn, cross);
         case AllTrajectoryTypes::Random: return new RandomTrajectory(filter, duration, beats, times, source, speed);
-            
-            //        case 19: return new RandomTargetTrajectory(filter, duration, beats, times, source);
-            //		case 20: return new SymXTargetTrajectory(filter, duration, beats, times, source);
-            //		case 21: return new SymYTargetTrajectory(filter, duration, beats, times, source);
-            //		case 22: return new ClosestSpeakerTargetTrajectory(filter, duration, beats, times, source);
+        case RandomTarget: return new RandomTargetTrajectory(filter, duration, beats, times, source);
+        case SymXTarget: return new SymXTargetTrajectory(filter, duration, beats, times, source);
+        case SymYTarget: return new SymYTargetTrajectory(filter, duration, beats, times, source);
+        case ClosestSpeakerTarget: return new ClosestSpeakerTargetTrajectory(filter, duration, beats, times, source);
     }
     jassert(0);
     return NULL;

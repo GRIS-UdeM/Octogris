@@ -842,7 +842,7 @@ mMover(ownerFilter)
             ComboBox *cb = new ComboBox();
             
             cb->setSize(cbw, dh);
-            cb->setTopLeftPosition(x+cbw+cbw+5, y);
+            cb->setTopLeftPosition(x+cbw+cbw+10, y);
             box->addAndMakeVisible(cb);
             mComponents.add(cb);
             
@@ -850,24 +850,6 @@ mMover(ownerFilter)
             mTrReturnComboBox->addListener(this);
         }
         
-        {
-            ComboBox *cb = new ComboBox();
-            int index = 1;
-            cb->addItem("All sources", index++);
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-            {
-                String s("Source "); s << i+1;
-                cb->addItem(s, index++);
-            }
-            cb->setSelectedId(mFilter->getTrSrcSelect()+2);
-            cb->setSize(100, dh);
-            cb->setTopLeftPosition(x + cbw + cbw + cbw + 5, y);
-            box->addAndMakeVisible(cb);
-            mComponents.add(cb);
-            
-            mTrSrcSelect = cb;
-            mTrSrcSelect->addListener(this);
-        }
         y += dh + 5;
         
         int tew = 80;
@@ -893,6 +875,27 @@ mMover(ownerFilter)
         x += tew + kMargin;
         
         addLabel("per cycle", x, y, w, dh, box);
+        
+        x += tew + kMargin;
+        
+        {
+            ComboBox *cb = new ComboBox();
+            int index = 1;
+            cb->addItem("All sources", index++);
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+            {
+                String s("Source "); s << i+1;
+                cb->addItem(s, index++);
+            }
+            cb->setSelectedId(mFilter->getTrSrcSelect()+2);
+            cb->setSize(100, dh);
+            cb->setTopLeftPosition(x, y);
+            box->addAndMakeVisible(cb);
+            mComponents.add(cb);
+            
+            mTrSrcSelect = cb;
+            mTrSrcSelect->addListener(this);
+        }
         
         y += dh + 5;
         x = kMargin;

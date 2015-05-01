@@ -56,7 +56,8 @@ enum AllTrajectoryDirections {
     OutCCW,
     Slow,
     Mid,
-    Fast
+    Fast,
+    None
 };
 
 class Trajectory : public ReferenceCountedObject
@@ -66,7 +67,7 @@ public:
 
 	static int NumberOfTrajectories();
 	static String GetTrajectoryName(int i);
-	static Trajectory::Ptr CreateTrajectory(int i, OctogrisAudioProcessor *filter, float duration, bool beats, AllTrajectoryDirections &direction, bool bReturn, float times, int source);
+	static Trajectory::Ptr CreateTrajectory(int i, OctogrisAudioProcessor *filter, float duration, bool beats, AllTrajectoryDirections direction, bool bReturn, float times, int source);
     static std::unique_ptr<std::vector<String>> getTrajectoryPossibleDirections(int p_iTrajectory);
     static std::unique_ptr<AllTrajectoryDirections> getTrajectoryDirection(int p_iSelectedTrajectory, int p_iSelectedDirection);
     static std::unique_ptr<std::vector<String>> getTrajectoryPossibleReturns(int p_iTrajectory);
