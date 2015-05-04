@@ -25,19 +25,11 @@
  */
 
 #include <iostream>
+
+#ifdef JUCE_MAC
+
+
 #include "OctoLeap.h"
-
-
-
-
-#if JUCE_WINDOWS
-Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
-{
-	// not implemented yet on windows
-	return NULL;
-}
-#else
-
 #include "Leap.h"
 
 	OctoLeap::OctoLeap(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor):
@@ -155,5 +147,12 @@ OctoLeap * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProc
 	return new OctoLeap(filter, editor);
 }
 
+#elseif
+Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
+{
+	// not implemented yet on windows
+	return NULL;
+}
 
 #endif
+

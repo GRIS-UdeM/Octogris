@@ -43,6 +43,9 @@
 // Copyright (C) 2014 Apple Inc. All Rights Reserved.
 //
 // *****************************************************
+
+#if JUCE_MAC
+
 #include "HID_Utilities_External.h"
 
 // ==================================
@@ -351,3 +354,5 @@ unsigned char HIDGetEvent(IOHIDDeviceRef inIOHIDDeviceRef, IOHIDValueRef *pIOHID
     
 	return (false);     // did not get event
 } /* HIDGetEvent */
+
+#endif

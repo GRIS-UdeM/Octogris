@@ -43,8 +43,12 @@
 // Copyright (C) 2014 Apple Inc. All Rights Reserved.
 //
 // *****************************************************
+#if JUCE_MAC
+
 #include <IOKit/IOKitLib.h>
 #include <IOKit/hid/IOHIDLib.h>
 
 extern io_service_t AllocateHIDObjectFromIOHIDDeviceRef(IOHIDDeviceRef inIOHIDDeviceRef);
 extern bool FreeHIDObject(io_object_t inHIDObject);
+
+#endif

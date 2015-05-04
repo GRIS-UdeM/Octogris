@@ -46,6 +46,10 @@
 #ifndef _HID_Utilities_External_h_
 #define _HID_Utilities_External_h_
 
+extern int gIsLeapConnected;
+
+#if JUCE_MAC
+
 //*****************************************************
 #pragma mark - includes & imports
 //-----------------------------------------------------
@@ -101,7 +105,7 @@ typedef enum HIDElementTypeMask HIDElementTypeMask;
 // -----------------------------------------------------
 
 extern IOHIDManagerRef gIOHIDManagerRef;
-extern int gIsLeapConnected;
+
 extern CFMutableArrayRef gDeviceCFArrayRef;
 extern CFArrayRef gElementCFArrayRef;
 
@@ -463,4 +467,5 @@ extern void HIDReportErrorNum(const char *strError, OSStatus numError);
 
 #endif  // ifdef __cplusplus
 
+#endif
 #endif  // _HID_Utilities_External_h_

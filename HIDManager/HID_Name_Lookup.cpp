@@ -43,6 +43,9 @@
 // Copyright (C) 2014 Apple Inc. All Rights Reserved.
 //
 // *****************************************************
+
+#if JUCE_MAC
+
 #pragma mark - includes & imports
 // *****************************************************
 #include "HID_Utilities_External.h"
@@ -1139,4 +1142,7 @@ static Boolean hu_AddDeviceElementToUsageXML(IOHIDDeviceRef inIOHIDDeviceRef, IO
     
 	return (result);
 }   // hu_AddDeviceElementToUsageXML
+
 #endif // if 0
+
+#endif

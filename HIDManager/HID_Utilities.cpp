@@ -45,6 +45,10 @@
 // *****************************************************
 #pragma mark - includes & imports
 // -----------------------------------------------------
+#include <stddef.h>
+int gIsLeapConnected = NULL;
+
+#if JUCE_MAC
 
 #include <AssertMacros.h>
 
@@ -74,7 +78,7 @@ static CFMutableDictionaryRef hu_CreateMatchingDictionary(uint32_t inUsagePage, 
 // -----------------------------------------------------
 
 IOHIDManagerRef gIOHIDManagerRef = NULL;
-int gIsLeapConnected = NULL;
+
 CFMutableArrayRef gDeviceCFArrayRef = NULL;
 CFIndex gDeviceIndex;
 CFArrayRef gElementCFArrayRef = NULL;
@@ -1097,3 +1101,5 @@ static CFMutableDictionaryRef hu_CreateMatchingDictionary(uint32_t inUsagePage, 
     
 	return (refHIDMatchDictionary);
 }   // hu_CreateMatchingDictionary
+
+#endif

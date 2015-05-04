@@ -49,6 +49,9 @@
 //*****************************************************
 #pragma mark - includes & imports
 //-----------------------------------------------------
+
+#if JUCE_MAC
+
 #include <AvailabilityMacros.h>
 
 #include "IOHIDLib_.h"
@@ -447,4 +450,7 @@ extern void HIDReportErrorNum(const char *strError, OSStatus numError);
 
 #endif  // ifdef __cplusplus
 
+#endif
+
 #endif  // _HID_Utilities_External_h_
+

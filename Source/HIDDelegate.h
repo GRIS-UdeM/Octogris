@@ -9,6 +9,8 @@
 #ifndef __Octogris2__HIDDelegate__
 #define __Octogris2__HIDDelegate__
 
+#if JUCE_MAC
+
 #include <stdio.h>
 #include "HID_Utilities_External.h"
 #include "PluginEditor.h"
@@ -52,6 +54,6 @@ private:
     //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HIDDelegate)
 };
 
-
+#endif
 
 #endif  // OCTOLEAP_H_INCLUDED

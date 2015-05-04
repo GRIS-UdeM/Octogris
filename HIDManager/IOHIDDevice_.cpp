@@ -46,6 +46,8 @@
 #pragma mark - includes & imports
 // -----------------------------------------------------
 
+#if JUCE_MAC
+
 #include "IOHIDDevice_.h"
 
 // *****************************************************
@@ -618,3 +620,5 @@ static void IOHIDDevice_SetPtrProperty(IOHIDDeviceRef inIOHIDDeviceRef, CFString
 }   // IOHIDDevice_SetPtrProperty
 
 // *****************************************************
+
+#endif

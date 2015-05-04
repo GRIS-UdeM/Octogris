@@ -28,12 +28,13 @@
 #define TRAJECTORIES_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include <memory>
 
 class OctogrisAudioProcessor;
 
 enum AllTrajectoryTypes {
     Circle = 1,
-    Ellipse,
+    EllipseTr, //Ellipse was clashing with some random windows class...
     Spiral,
     Pendulum,
     Random,

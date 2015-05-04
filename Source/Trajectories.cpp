@@ -113,7 +113,7 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleDirections(int 
     
     switch(p_iTrajectory) {
         case Circle:
-        case Ellipse:
+        case EllipseTr:
             vDirections->push_back("Clockwise");
             vDirections->push_back("Counter Clockwise");
             break;
@@ -153,7 +153,7 @@ unique_ptr<AllTrajectoryDirections> Trajectory::getTrajectoryDirection(int p_iSe
     switch (p_iSelectedTrajectory) {
             
         case Circle:
-        case Ellipse:
+        case EllipseTr:
             *pDirection = static_cast<AllTrajectoryDirections>(p_iSelectedDirection);
             break;
         case Spiral:
@@ -184,7 +184,7 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleReturns(int p_i
     
     switch(p_iTrajectory) {
         case Circle:
-        case Ellipse:
+        case EllipseTr:
         case AllTrajectoryTypes::Random:
             return nullptr;
         case Spiral:
@@ -630,7 +630,7 @@ String Trajectory::GetTrajectoryName(int i)
     switch(i)
     {
         case Circle: return "Circle";
-        case Ellipse: return "Ellipse";
+        case EllipseTr: return "Ellipse";
         case Spiral: return "Spiral";
         case Pendulum: return "Pendulum";
         case AllTrajectoryTypes::Random: return "Random";
@@ -735,7 +735,7 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
     switch(type)
     {
         case Circle:                     return new CircleTrajectory(filter, duration, beats, times, source, ccw);
-        case Ellipse:                    return new EllipseTrajectory(filter, duration, beats, times, source, ccw);
+        case EllipseTr:                    return new EllipseTrajectory(filter, duration, beats, times, source, ccw);
         case Spiral:                     return new SpiralTrajectory(filter, duration, beats, times, source, ccw, in, bReturn);
         case Pendulum:                   return new PendulumTrajectory(filter, duration, beats, times, source, in, bReturn, cross);
         case AllTrajectoryTypes::Random: return new RandomTrajectory(filter, duration, beats, times, source, speed, bUniqueTarget);

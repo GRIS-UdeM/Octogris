@@ -9,16 +9,23 @@
  */
 
 #include <iostream>
-#include "HIDDelegate.h"
+
 #include "FieldComponent.h"
 
-/*#if JUCE_WINDOWS
+class OctogrisAudioProcessorEditor;
+
+#if JUCE_WINDOWS
+
  Component * CreateHIDComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
  {
  // not implemented yet on windows
  return NULL;
  }
- #else*/
+ 
+
+ #else
+
+#include "HIDDelegate.h"
 
 //==============================================================================
 static const float kSourceRadius = 10;
@@ -388,3 +395,5 @@ HIDDelegate * HIDDelegate::CreateHIDDelegate(OctogrisAudioProcessor *filter, Oct
 {
     return new HIDDelegate(filter, editor);
 }
+
+#endif

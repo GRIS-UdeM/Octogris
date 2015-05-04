@@ -45,6 +45,8 @@
 // *****************************************************
 #define LOG_SCORING    0
 
+#if JUCE_MAC 
+
 #include <stdlib.h>                                                             // malloc
 #include <time.h>                                                               // clock
 
@@ -1162,3 +1164,4 @@ IOHIDElementCookie HIDGetElementConfig(HID_info_ptr		inHIDInfoPtr,
         return (inHIDInfoPtr->actionCookie);
     }
 }                                                                               // HIDGetElementConfig
+#endif

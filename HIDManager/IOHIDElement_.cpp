@@ -46,6 +46,8 @@
 #pragma mark - includes & imports
 // -----------------------------------------------------
 
+#if JUCE_MAC
+
 #include "IOHIDElement_.h"
 
 
@@ -559,3 +561,5 @@ void IOHIDElement_SetDoubleProperty(IOHIDElementRef inIOHIDElementRef, CFStringR
 	}
 } // IOHIDElement_SetDoubleProperty
 // *****************************************************
+
+#endif

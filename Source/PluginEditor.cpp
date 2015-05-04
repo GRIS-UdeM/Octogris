@@ -29,8 +29,10 @@
 #include "Trajectories.h"
 #include "OctoLeap.h"
 #include "OscComponent.h"
+#if JUCE_MAC
 #include "HIDDelegate.h"
 #include "HID_Utilities_External.h"
+#endif
 //==============================================================================
 static const int kMargin = 10;
 static const int kDefaultLabelHeight = 18;
@@ -937,6 +939,7 @@ mMover(ownerFilter)
     //--------------- OSC TAB ---------------- //
     
     //--------------- INTERFACE TAB ---------------- //
+#if JUCE_MAC
     //changements lié a l'ajout de joystick à l'onglet leap
     box = mTabs->getTabContentComponent(6);
     {
@@ -1031,6 +1034,7 @@ mMover(ownerFilter)
         }
         //fin de changements lié a l'ajout de joystick à l'onglet leap
     }
+#endif
     
     int selectedTab = mFilter->getGuiTab();
     if (selectedTab >= 0 && selectedTab < mTabs->getNumTabs())
@@ -1086,8 +1090,11 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 {
     mFilter->setCalculateLevels(false);
     mFilter->removeListener(this);
-    gIsLeapConnected = 0;
+#if JUCE_MAC
+	gIsLeapConnected = 0;
+#endif
     mFilter->setIsLeapEnabled(0);
+
 }
 
 //==============================================================================
@@ -1554,9 +1561,11 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     {
         mFilter->setApplyFilter(button->getToggleState());
     }
+#if JUCE_MAC
     //Changements lié a l'ajout de joystick à l'onglet leap qui est devenu interface
     if(button == mEnableJoystick)
     {
+
         bool state = mEnableJoystick->getToggleState();
         mButtonBeingPressed = -1;
         mFilter->setIsJoystickEnabled(state);
@@ -1663,7 +1672,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             }
         }
     }
-    //fin de changements lié a l'ajout de joystick à l'onglet leap
+	//fin de changements lié a l'ajout de joystick à l'onglet leap
+#endif
     
     else if (button == mTrWriteButton)
     {

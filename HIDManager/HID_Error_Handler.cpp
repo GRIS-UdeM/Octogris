@@ -43,6 +43,9 @@
 // Copyright (C) 2014 Apple Inc. All Rights Reserved.
 //
 // *****************************************************
+
+#if JUCE_MAC
+
 #ifdef DEBUG // not used in release
 #if !defined(kBuildingLibrary)
 #define kVerboseErrors
@@ -102,3 +105,5 @@ void HIDReportError(const char *strError) {
 	}
 #endif // kVerboseErrors
 } // HIDReportError
+
+#endif

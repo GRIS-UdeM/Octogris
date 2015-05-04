@@ -30,8 +30,9 @@
 #include "PluginProcessor.h"
 #include "LevelComponent.h"
 #include "SourceMover.h"
+#if JUCE_MAC
 #include "Leap.h"
-
+#endif
 class FieldComponent;
 
 class Box;
@@ -156,8 +157,10 @@ private:
     //Label *mShowChange;
     Label *mStateLeap;
     Label *mStateJoystick;
+#if JUCE_MAC
     ScopedPointer<Leap::Controller> mController;
     Leap::Listener leapList;
+#endif
     // sources
     TextButton *mApplySrcPlacementButton;
     TextEditor *mSrcR, *mSrcT;

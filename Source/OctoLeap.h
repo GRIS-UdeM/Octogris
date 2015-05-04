@@ -26,7 +26,7 @@
 
 #ifndef OCTOLEAP_H_INCLUDED
 #define OCTOLEAP_H_INCLUDED
-
+#if JUCE_MAC
 
 #include "PluginEditor.h"
 class OctoLeap : public ReferenceCountedObject , public Leap::Listener
@@ -58,5 +58,7 @@ private:
 
 OctoLeap * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor);
 void updateLeapComponent(Component * leapComponent);
+
+#endif
 
 #endif  // OCTOLEAP_H_INCLUDED
