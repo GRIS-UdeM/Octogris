@@ -43,7 +43,9 @@
 // Copyright (C) 2014 Apple Inc. All Rights Reserved.
 //
 // *****************************************************
-#if JUCE_MAC
+#if JUCE_WINDOWS
+
+#else
 
 #include <IOKit/IOKitLib.h>
 #include <IOKit/hid/IOHIDLib.h>

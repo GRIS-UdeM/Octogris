@@ -44,7 +44,9 @@
 //
 // *****************************************************
 
-#if JUCE_MAC
+#if JUCE_WINDOWS
+
+#else
 
 #include "HID_Utilities_External.h"
 

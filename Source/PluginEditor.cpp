@@ -29,7 +29,11 @@
 #include "Trajectories.h"
 #include "OctoLeap.h"
 #include "OscComponent.h"
-#if JUCE_MAC
+
+#if JUCE_WINDOWS
+
+#else
+
 #include "HIDDelegate.h"
 #include "HID_Utilities_External.h"
 #endif
@@ -939,7 +943,9 @@ mMover(ownerFilter)
     //--------------- OSC TAB ---------------- //
     
     //--------------- INTERFACE TAB ---------------- //
-#if JUCE_MAC
+#if JUCE_WINDOWS
+    
+#else
     //changements lié a l'ajout de joystick à l'onglet leap
     box = mTabs->getTabContentComponent(6);
     {
@@ -1090,7 +1096,9 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 {
     mFilter->setCalculateLevels(false);
     mFilter->removeListener(this);
-#if JUCE_MAC
+#if JUCE_WINDOWS
+    
+#else
 	gIsLeapConnected = 0;
 #endif
     mFilter->setIsLeapEnabled(0);
@@ -1561,7 +1569,9 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     {
         mFilter->setApplyFilter(button->getToggleState());
     }
-#if JUCE_MAC
+#if JUCE_WINDOWS
+    
+#else
     //Changements lié a l'ajout de joystick à l'onglet leap qui est devenu interface
     if(button == mEnableJoystick)
     {

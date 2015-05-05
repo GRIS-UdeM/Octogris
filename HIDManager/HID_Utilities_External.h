@@ -48,7 +48,9 @@
 
 extern int gIsLeapConnected;
 
-#if JUCE_MAC
+#if JUCE_WINDOWS
+
+#else
 
 //*****************************************************
 #pragma mark - includes & imports

@@ -48,7 +48,9 @@
 #include <stddef.h>
 int gIsLeapConnected = NULL;
 
-#if JUCE_MAC
+#if JUCE_WINDOWS
+
+#else
 
 #include <AssertMacros.h>
 

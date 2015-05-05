@@ -44,7 +44,9 @@
 //
 // *****************************************************
 
-#if JUCE_MAC
+#if JUCE_WINDOWS
+
+#else
 
 #ifdef DEBUG // not used in release
 #if !defined(kBuildingLibrary)

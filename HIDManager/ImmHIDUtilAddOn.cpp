@@ -50,7 +50,9 @@
 #pragma mark - includes & imports
 //-----------------------------------------------------
 
-#if JUCE_MAC
+#if JUCE_WINDOWS
+
+#else
 
 #include <AvailabilityMacros.h>
 

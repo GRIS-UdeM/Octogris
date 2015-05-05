@@ -21,11 +21,10 @@ class OctogrisAudioProcessorEditor;
  // not implemented yet on windows
  return NULL;
  }
- 
 
- #else
-
+#else
 #include "HIDDelegate.h"
+
 
 //==============================================================================
 static const float kSourceRadius = 10;

@@ -9,7 +9,9 @@
 #ifndef __Octogris2__HIDDelegate__
 #define __Octogris2__HIDDelegate__
 
-#if JUCE_MAC
+#if JUCE_WINDOWS
+
+#else
 
 #include <stdio.h>
 #include "HID_Utilities_External.h"

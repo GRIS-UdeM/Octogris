@@ -45,7 +45,9 @@
 // *****************************************************
 #define LOG_SCORING    0
 
-#if JUCE_MAC 
+#if JUCE_WINDOWS
+
+#else
 
 #include <stdlib.h>                                                             // malloc
 #include <time.h>                                                               // clock

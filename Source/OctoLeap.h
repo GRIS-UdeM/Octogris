@@ -26,7 +26,10 @@
 
 #ifndef OCTOLEAP_H_INCLUDED
 #define OCTOLEAP_H_INCLUDED
-#if JUCE_MAC
+
+#if JUCE_WINDOWS
+
+#else
 
 #include "PluginEditor.h"
 class OctoLeap : public ReferenceCountedObject , public Leap::Listener

@@ -30,7 +30,9 @@
 #include "PluginProcessor.h"
 #include "LevelComponent.h"
 #include "SourceMover.h"
-#if JUCE_MAC
+#if JUCE_WINDOWS
+
+#else
 #include "Leap.h"
 #endif
 class FieldComponent;
@@ -157,7 +159,9 @@ private:
     //Label *mShowChange;
     Label *mStateLeap;
     Label *mStateJoystick;
-#if JUCE_MAC
+#if JUCE_WINDOWS
+    
+#else
     ScopedPointer<Leap::Controller> mController;
     Leap::Listener leapList;
 #endif
