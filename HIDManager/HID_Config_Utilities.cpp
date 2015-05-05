@@ -45,7 +45,7 @@
 // *****************************************************
 #define LOG_SCORING    0
 
-#if JUCE_WINDOWS
+#if WIN32
 
 #else
 

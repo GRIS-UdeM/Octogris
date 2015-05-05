@@ -9,7 +9,7 @@
 #ifndef __Octogris2__HIDDelegate__
 #define __Octogris2__HIDDelegate__
 
-#if JUCE_WINDOWS
+#if WIN32
 
 #else
 

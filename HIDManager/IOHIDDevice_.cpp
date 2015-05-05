@@ -46,7 +46,7 @@
 #pragma mark - includes & imports
 // -----------------------------------------------------
 
-#if JUCE_WINDOWS
+#if WIN32
 
 #else
 

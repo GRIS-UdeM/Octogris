@@ -14,7 +14,7 @@
 
 class OctogrisAudioProcessorEditor;
 
-#if JUCE_WINDOWS
+#if WIN32
 
  Component * CreateHIDComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
  {

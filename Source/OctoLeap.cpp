@@ -26,8 +26,10 @@
 
 #include <iostream>
 
-#if JUCE_WINDOWS
-
+#if WIN32
+class Component;
+class OctogrisAudioProcessor;
+class OctogrisAudioProcessorEditor;
 Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
 {
     // not implemented yet on windows

@@ -30,7 +30,7 @@
 #include "PluginProcessor.h"
 #include "LevelComponent.h"
 #include "SourceMover.h"
-#if JUCE_WINDOWS
+#if WIN32
 
 #else
 #include "Leap.h"
@@ -159,7 +159,7 @@ private:
     //Label *mShowChange;
     Label *mStateLeap;
     Label *mStateJoystick;
-#if JUCE_WINDOWS
+#if WIN32
     
 #else
     ScopedPointer<Leap::Controller> mController;

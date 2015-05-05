@@ -48,7 +48,7 @@
 #include <stddef.h>
 int gIsLeapConnected = NULL;
 
-#if JUCE_WINDOWS
+#if WIN32
 
 #else
 

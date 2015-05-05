@@ -48,7 +48,8 @@
 
 extern int gIsLeapConnected;
 
-#if JUCE_WINDOWS
+#ifdef WIN32
+
 
 #else
 

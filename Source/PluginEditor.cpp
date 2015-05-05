@@ -30,7 +30,7 @@
 #include "OctoLeap.h"
 #include "OscComponent.h"
 
-#if JUCE_WINDOWS
+#if WIN32
 
 #else
 
@@ -943,7 +943,7 @@ mMover(ownerFilter)
     //--------------- OSC TAB ---------------- //
     
     //--------------- INTERFACE TAB ---------------- //
-#if JUCE_WINDOWS
+#if WIN32
     
 #else
     //changements lié a l'ajout de joystick à l'onglet leap
@@ -1096,7 +1096,7 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 {
     mFilter->setCalculateLevels(false);
     mFilter->removeListener(this);
-#if JUCE_WINDOWS
+#if WIN32
     
 #else
 	gIsLeapConnected = 0;
@@ -1569,7 +1569,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     {
         mFilter->setApplyFilter(button->getToggleState());
     }
-#if JUCE_WINDOWS
+#if WIN32
     
 #else
     //Changements lié a l'ajout de joystick à l'onglet leap qui est devenu interface

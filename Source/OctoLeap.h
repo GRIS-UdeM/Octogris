@@ -27,7 +27,7 @@
 #ifndef OCTOLEAP_H_INCLUDED
 #define OCTOLEAP_H_INCLUDED
 
-#if JUCE_WINDOWS
+#if WIN32
 
 #else
 

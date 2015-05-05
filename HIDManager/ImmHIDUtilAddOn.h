@@ -43,7 +43,7 @@
 // Copyright (C) 2014 Apple Inc. All Rights Reserved.
 //
 // *****************************************************
-#if JUCE_WINDOWS
+#if WIN32
 
 #else
 
