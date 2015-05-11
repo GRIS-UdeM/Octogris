@@ -74,7 +74,7 @@ int IndexedAngleCompare(const void *a, const void *b)
 OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 {
 
-	OutputDebugString("--------------------------------------------------------------------------");
+	OutputDebugString("----------------------------------OCTOGRIS PROCESSOR DEBUG----------------------------------------\n");
     
     //SET PARAMETERS
 	mParameters.ensureStorageAllocated(kNumberOfParameters);

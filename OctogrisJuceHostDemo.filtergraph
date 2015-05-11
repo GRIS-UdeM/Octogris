@@ -19,11 +19,11 @@
             isInstrument="0" fileTime="0" numInputs="2" numOutputs="0" isShell="0"/>
     <STATE>0.</STATE>
   </FILTER>
-  <FILTER uid="4" x="0.50875" y="0.45155" uiLastX="70" uiLastY="74">
+  <FILTER uid="4" x="0.565163" y="0.464789" uiLastX="" uiLastY="">
     <PLUGIN name="Octogris2" format="VST" category="Effect" manufacturer="UdeM"
-            version="V2.1.6" file="C:\Users\Vincent\Documents\git\Octogris\Builds\VisualStudio2013\Debug\Octogris2.dll"
-            uid="4f63746f" isInstrument="0" fileTime="14be68d60cc" numInputs="8"
+            version="V2.1.3" file="C:\Users\Vincent\Documents\git\Octogris\Builds\VisualStudio2013\Release\Octogris2.dll"
+            uid="4f63746f" isInstrument="0" fileTime="14d43a7b41e" numInputs="8"
             numOutputs="16" isShell="0"/>
-    <STATE>708.CMlaKA....fQBMDZ....A7zXz8F....1....A.............................................................................................................................................................................f.jn....................P......................8A........Ji...wjiLtDiM33RLtDCLv.PyM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2byM2by.D....P.....H....D....P.....A....D..........+++++C...9C........f+zbyM2L..........jvO4zC.....ZlYF+rppp7C...3O...f+.....nND7rOXCxN+PRRR3y38gwOXCxN+PRRR3CT9lnOh2GF+PRRR3C1fryOi2GF+PRRR3ST9lnO6Pvy9PRRR3C1fryO6Pvy9PRRR3SOD7rOP4ah9PRRR3y38gwOR4ah9PRRR3ijSdtO6KsO+HGGG8C.....2XCC+ruz97ibbbzO.....PTR55ywrVyOxwwQ+.....fWaKxOHyZM+HGGG8C.....FXxk9nWsj7ibbbzO.....zOaz7id0RxOxwwQ+.....v0GMnOXVlC+HGGG8C.....TvkO+jYYN7ibbbzO.....31jA5y74utOxwwQ+.....PR17yO1m+59HGGG8C.....Xgjj9nyD95ibbbzO.....T8117iOS3qOxwwQ+......u2KqONYbl9HGGG8C.....jPnI+.kwY5ibbbzO.....Tv2d6ihbQnOxwwQ+.....fePBwOKxEg9HGGG8C.....</STATE>
+    <STATE>720.CMlaKA....fQBMDZ....A7zXz8F...P0....A.............................................................................................................................................................................f.vv....................P......................8A........Ji...wjiLtDiM33RLtDCLv.PfXx6fAhMuCFHF7NXfX06fAhYuCFH18NXfXz6fAhkuCFHl9NXfX66fAhguCFHV+NXfXF....P.....R....D....P.....A....D..........+++++C...9S........f+................jvO4zC.....ZlYF+rppp7C...3O...f+.....nND7rOXCxN+TRRR3y38gwOXCxN+TRRR3CT9lnOh2GF+TRRR3C1fryOi2GF+TRRR3ST9lnO6Pvy9TRRR3C1fryO6Pvy9TRRR3SOD7rOP4ah9TRRR3y38gwOR4ah9TRRR3yQGbtOvTrO+HGGG8C.....bwGC+.Sw97ibbbzO.....Hw335Cy1TyOxwwQ+.....fcNNxOLaSM+HGGG8C.....mIYk9Xmii7ibbbzO.....vrM07icNNxOxwwQ+......n0InObwGC+HGGG8C.....vTrO+vEeL7ibbbzO......ZcB5CRGbtOxwwQ+......LE6yOHcv49HGGG8C.....lIYk9Pw335ibbbzO.....vrM07yDiiqOxwwQ+.....fDiiqOnIYk9HGGG8C.....143H+bljU5ibbbzO.....bzAm6Sn0InOxwwQ+......W7wvOfVmf9HGGG8C.....vNXfXA..........</STATE>
   </FILTER>
 </FILTERGRAPH>

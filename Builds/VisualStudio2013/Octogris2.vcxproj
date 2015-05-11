@@ -84,6 +84,7 @@
       <AdditionalLibraryDirectories>C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalOptions>/FORCE:multiple %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>user32.lib;wsock32.lib;ws2_32.lib;iphlpapi.lib;pthreadVC2.lib;liblo.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
