@@ -857,6 +857,8 @@ void OctogrisAudioProcessor::findSpeakers(float p_fTargetAngle, float *params, i
             }
         }
     }
+    
+    cout << "find speakers " <<  p_piLeftSpeaker << ", " << p_piRightSpeaker << "\n";
 }
 
 
@@ -1060,8 +1062,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find left and right speakers
 				int left, right;
 				float dLeft, dRight;
-                findSpeakers(t, params, left, right, dLeft, dRight);
-                //findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
+                //findSpeakers(t, params, left, right, dLeft, dRight);
+                findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
                 
 				// add to output
 				if (left >= 0 && right >= 0)
@@ -1087,8 +1089,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find front left, right
 				int frontLeft, frontRight;
 				float dFrontLeft, dFrontRight;
-                findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
-                //findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
+                //findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
+                findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
                 
 				float bt = t + kHalfCircle;
 				if (bt > kThetaMax) bt -= kThetaMax;
@@ -1096,8 +1098,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find back left, right
 				int backLeft, backRight;
 				float dBackLeft, dBackRight;
-                findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-                //findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
+                //findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
+                findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
                 
 			
 				float front = r * 0.5f + 0.5f;
