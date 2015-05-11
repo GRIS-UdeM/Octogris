@@ -33,6 +33,8 @@ static const float kLevelReleaseDefault = 100;
 #include "PluginEditor.h"
 
 #include <algorithm>
+#include <windows.h>
+
 
 #if JUCE_MSVC
 // from https://github.com/objectx/strlcpy/blob/master/strlcpy/strlcpy.c
@@ -71,6 +73,8 @@ int IndexedAngleCompare(const void *a, const void *b)
 //==============================================================================
 OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 {
+
+	OutputDebugString("--------------------------------------------------------------------------");
     
     //SET PARAMETERS
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
@@ -842,7 +846,7 @@ void OctogrisAudioProcessor::findSpeakers(float p_fTargetAngle, float *params, i
                     p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
                     //p_piLeftSpeaker = iCurSpeaker;
                     p_piRightSpeaker = iCurSpeaker;
-                }
+                } 
             } else {
                 // right
                 if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker) {
