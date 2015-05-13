@@ -39,6 +39,7 @@ size_t strlcpy(char * dst, const char * src, size_t dstsize);
 
 #include "FirFilter.h"
 #include "Trajectories.h"
+#include "Routing.h"
 
 #include <memory>
 using namespace std;
@@ -78,7 +79,8 @@ enum
 	kFilterMid =			6 + kConstantOffset,
 	kFilterFar =			7 + kConstantOffset,
 	kMaxSpanVolume =		8 + kConstantOffset,
-	kConstantParameters =	9
+	kRoutingVolume =		9 + kConstantOffset,
+	kConstantParameters =	10
 };
 
 #define kNumberOfParameters (kConstantParameters + kConstantOffset)
@@ -142,6 +144,10 @@ static const float kFilterFarDefault = kMaxDistance;
 static const float kMaxSpanVolumeMin = 0;
 static const float kMaxSpanVolumeMax = 20;
 static const float kMaxSpanVolumeDefault = 0;
+
+static const float kRoutingVolumeMin = -120;
+static const float kRoutingVolumeMax = 6;
+static const float kRoutingVolumeDefault = 0;
 
 static const float kRadiusMax = 2;
 static const float kHalfCircle = M_PI;
@@ -281,6 +287,9 @@ public:
 		
 	int getProcessMode() const { return mProcessMode; }
 	void setProcessMode(int s) { mProcessMode = s; jassert(mProcessMode >= 0 && mProcessMode < kNumberOfModes); }
+	
+	int getRoutingMode() const { return mRoutingMode; }
+	void setRoutingMode(int s) { mRoutingMode = s; }
 	
 	int getGuiSize() const { return mGuiSize; }
 	void setGuiSize(int s) { mGuiSize = s; }
@@ -506,6 +515,7 @@ public:
     
     void storeCurrentLocations();
     void restoreCurrentLocations();
+	void reset();
     
     void updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise);
 	
@@ -557,6 +567,7 @@ private:
 	int64 mLastTimeInSamples;
 	
 	int mProcessMode;
+	int mRoutingMode;
     
     bool mIsNumberSourcesChanged;
     bool mIsNumberSpeakersChanged;

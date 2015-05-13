@@ -87,6 +87,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 	mParameters.set(kFilterMid, normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault));
 	mParameters.set(kFilterFar, normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault));
 	mParameters.set(kMaxSpanVolume, normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault));
+	mParameters.set(kRoutingVolume, normalize(kRoutingVolumeMin, kRoutingVolumeMax, kRoutingVolumeDefault));
 
 	mSmoothedParametersInited = false;
 	mSmoothedParameters.ensureStorageAllocated(kNumberOfParameters);
@@ -132,6 +133,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 	mProcessCounter = 0;
 	mLastTimeInSamples = -1;
 	mProcessMode = kPanVolumeMode;
+	mRoutingMode = 0;
     //version 9
     mInputOutputMode = 18;  //by default we have 8 inputs and 16 outputs
     mSrcPlacementMode = 1;
@@ -238,13 +240,14 @@ const String OctogrisAudioProcessor::getParameterName (int index)
    
     if (index == kLinkMovement) return "Link Movement";
 	if (index == kSmooth)		return "Smooth Param";
-    if (index ==  kVolumeNear)	return "Volume Near";
-	if (index ==  kVolumeMid)	return "Volume Mid";
-    if (index ==  kVolumeFar)	return "Volume Far";
-	if (index ==  kFilterNear)	return "Filter Near";
-	if (index ==  kFilterMid)	return "Filter Mid";
-	if (index ==  kFilterFar)	return "Filter Far";
+    if (index == kVolumeNear)	return "Volume Near";
+	if (index == kVolumeMid)	return "Volume Mid";
+    if (index == kVolumeFar)	return "Volume Far";
+	if (index == kFilterNear)	return "Filter Near";
+	if (index == kFilterMid)	return "Filter Mid";
+	if (index == kFilterFar)	return "Filter Far";
 	if (index == kMaxSpanVolume)return "Max span volume";
+	if (index == kRoutingVolume)return "Routing volume";
 	
     if (index < mNumberOfSources * kParamsPerSource)
 	{
@@ -633,21 +636,29 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
         setNumberOfSources(sources, true);
         setNumberOfSpeakers(speakers, true);
     }
-    
-	if (mCalculateLevels)
-		for (int i = 0; i < mNumberOfSpeakers; i++)
-			mLevels.setUnchecked(i, 0);
-		
-	mSmoothedParametersInited = false;
 	
 	int sr = sampleRate;
 
     for (int i = 0; i < mNumberOfSources; i++)
     {
         mFilters[i].setSampleRate(sr);
+    }
+}
+
+void OctogrisAudioProcessor::reset()
+{
+	if (mCalculateLevels)
+		for (int i = 0; i < mNumberOfSpeakers; i++)
+			mLevels.setUnchecked(i, 0);
+		
+	mSmoothedParametersInited = false;
+
+	for (int i = 0; i < mNumberOfSources; i++)
+    {
         mFilters[i].reset();
     }
-
+	
+	Router::instance().reset();
 }
 
 void OctogrisAudioProcessor::releaseResources()
@@ -664,9 +675,27 @@ void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, Mi
 
 void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
+	// sanity check for auval
+	if (buffer.getNumChannels() < jmax(mNumberOfSources, mNumberOfSpeakers))
+		return;
+
+	unsigned int oriFramesToProcess = buffer.getNumSamples();
+	
+	if (mRoutingMode > 1)
+	{
+		buffer.clear();
+		
+		int outChannels = (mNumberOfSpeakers > 2) ? 2 : mNumberOfSpeakers;
+		int offset = (mRoutingMode - 2) * 2;
+		for (int c = 0; c < outChannels; c++)
+		{
+			buffer.copyFrom(c, 0, Router::instance().outputBuffers(oriFramesToProcess)[offset + c], oriFramesToProcess);
+			Router::instance().clear(offset + c);
+		}
+		return;
+	}
 	
 	double sampleRate = getSampleRate();
-	unsigned int oriFramesToProcess = buffer.getNumSamples();
 	unsigned int inFramesToProcess = oriFramesToProcess;
 	
 	Trajectory::Ptr trajectory = mTrajectory;
@@ -706,6 +735,10 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	if (mProcessMode == kPanSpanMode)
 	{
 		params[kMaxSpanVolume] = denormalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, params[kMaxSpanVolume]);
+	}
+	if (mRoutingMode == 1)
+	{
+		params[kRoutingVolume] = denormalize(kRoutingVolumeMin, kRoutingVolumeMax, params[kRoutingVolume]);
 	}
 	
 	//float *inputs[iActualNumberOfSources];
@@ -786,6 +819,30 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			outputs[o] += todo; 
 	}
 	
+	if (mRoutingMode == 1)
+	{
+		// apply routing volume
+		int i = kRoutingVolume;
+		float currentParam = mSmoothedParameters[i];
+		float targetParam = params[i];
+		float *ramp = mSmoothedParametersRamps.getReference(i).b;
+		const float smooth = denormalize(kSmoothMin, kSmoothMax, params[kSmooth]); // milliseconds
+		const float sm_o = powf(0.01f, 1000.f / (smooth * sampleRate));
+		const float sm_n = 1 - sm_o;
+		for (unsigned int f = 0; f < oriFramesToProcess; f++)
+		{
+			currentParam = currentParam * sm_o + targetParam * sm_n;
+			ramp[f] = dbToLinear(currentParam);
+		}
+		mSmoothedParameters.setUnchecked(i, currentParam);
+		for (int o = 0; o < mNumberOfSpeakers; o++)
+		{
+			float *output = buffer.getWritePointer(o);
+			for (unsigned int f = 0; f < oriFramesToProcess; f++)
+				output[f] *= ramp[f];
+		}
+	}
+	
 	if (mCalculateLevels)
 	{
 		const float attack = kLevelAttackDefault; //params[kLevelAttackParam]; // milliseconds
@@ -809,7 +866,15 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		}
 	}
 	
-	delete[] inputs, outputs;
+	if (mRoutingMode == 1)
+	{
+		// accumulate in internal buffer
+		Router::instance().accumulate(mNumberOfSpeakers, buffer);
+		buffer.clear();
+	}
+	
+	delete[] inputs;
+	delete[] outputs;
 	mProcessCounter++;
 }
 
@@ -1007,7 +1072,6 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 		float *output = outputs[o];
 		memset(output, 0, frames * sizeof(float));
 	}
-	
 
 	// compute
 	// in this context: source T, R are actually source X, Y
@@ -1685,7 +1749,7 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
     ++i;
 }
 
-static const int kDataVersion = 12;
+static const int kDataVersion = 13;
 void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     //printf("Octogris: getStateInformation\n");
@@ -1719,6 +1783,10 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     
     //version 10
     appendFloatData(destData, mParameters[kMaxSpanVolume]);
+	
+	//version 13
+	appendFloatData(destData, mParameters[kRoutingVolume]);
+	appendIntData(destData, mRoutingMode);
     
     appendFloatData(destData, mParameters[kLinkMovement]);
     appendFloatData(destData, mParameters[kSmooth]);
@@ -1797,6 +1865,11 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
         
         if (version >= 10){
             mParameters.set(kMaxSpanVolume, readFloatData(data, sizeInBytes, normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault)));
+        }
+		
+		if (version >= 13){
+            mParameters.set(kRoutingVolume, readFloatData(data, sizeInBytes, normalize(kRoutingVolumeMin, kRoutingVolumeMax, kRoutingVolumeDefault)));
+			mRoutingMode = readIntData(data, sizeInBytes, 0);
         }
 		
 		if (version >= 4)
