@@ -33,8 +33,6 @@ static const float kLevelReleaseDefault = 100;
 #include "PluginEditor.h"
 
 #include <algorithm>
-#include <windows.h>
-
 
 #if JUCE_MSVC
 // from https://github.com/objectx/strlcpy/blob/master/strlcpy/strlcpy.c
