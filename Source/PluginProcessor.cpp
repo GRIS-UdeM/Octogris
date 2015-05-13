@@ -484,9 +484,7 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
 
 		JUCE_COMPILER_WARNING("what is the point of setting something to itself?")
         mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
-		float fMute = mParameters[getParamForSpeakerM(i)];
-		DBG("setting fMute to " << fMute);
-		mParameters.set(getParamForSpeakerM(i), fMute);
+		mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
     }
 
     if (bUseDefaultValues){
@@ -621,11 +619,11 @@ void OctogrisAudioProcessor::changeProgramName (int index, const String& newName
 void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     
-    int iSources = getNumInputChannels();//mNumberOfSources;
-    int iSpeakers = getNumOutputChannels();//mNumberOfSpeakers;
-	OutputDebugString("PREPARE TO PLAY\n");
-	DBG("iSources = " << iSources << "\n");
-	DBG("iSpeakers = " << iSpeakers << "\n");
+	//int iSources = getNumInputChannels();//mNumberOfSources;
+	//int iSpeakers = getNumOutputChannels();//mNumberOfSpeakers;
+	//OutputDebugString("PREPARE TO PLAY");
+	//DBG("iSources = " << iSources);
+	//DBG("iSpeakers = " << iSpeakers);
 
     //set sources and speakers
     if (m_bAllowInputOutputModeSelection) {
@@ -877,7 +875,7 @@ void OctogrisAudioProcessor::findSpeakers(float p_fTargetAngle, float *params, i
         }
     }
     
-    cout << "find speakers " <<  p_piLeftSpeaker << ", " << p_piRightSpeaker << "\n";
+    //cout << "find speakers " <<  p_piLeftSpeaker << ", " << p_piRightSpeaker << "\n";
 }
 
 
@@ -1682,9 +1680,7 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
         mParameters.set(getParamForSpeakerX(i), mBufferSpLocX[i]);
         mParameters.set(getParamForSpeakerY(i), mBufferSpLocY[i]);
         mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);
-		float fMute = mBufferSpLocM[i];
-		DBG("restore setting fMute to " << fMute);
-        mParameters.set(getParamForSpeakerM(i), fMute);
+		mParameters.set(getParamForSpeakerM(i), mBufferSpLocM[i]);
     }
     
     int i =0;
@@ -1829,7 +1825,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
                 float att = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
 				mParameters.set(getParamForSpeakerA(i), att);
                 float mute = readFloatData(data, sizeInBytes, 0);
-				DBG("setState setting fMute to " << mute);
 				mParameters.set(getParamForSpeakerM(i), mute );
 			}
 		}

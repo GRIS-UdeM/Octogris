@@ -1929,19 +1929,12 @@ void OctogrisAudioProcessorEditor::timerCallback()
         updateSpeakerLocationTextEditor();
         
         for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
-			float fDist = 1.f - mFilter->getSourceD(i);
-			DBG("fDist = " << fDist);
-			mDistances.getUnchecked(i)->setValue(fDist, dontSendNotification);
+			mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);
         }
         
         for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++){
-			float fAtt = mFilter->getSpeakerA(i);
-			DBG("fAtt = " << fAtt);
-			mAttenuations.getUnchecked(i)->setValue(fAtt, dontSendNotification);
-			
-			float fMute = mFilter->getSpeakerM(i);
-			DBG("fMute = " << fMute);
-			mMutes.getUnchecked(i)->setToggleState(fMute, dontSendNotification);
+			mAttenuations.getUnchecked(i)->setValue(mFilter->getSpeakerA(i), dontSendNotification);
+			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
         }
     }
     

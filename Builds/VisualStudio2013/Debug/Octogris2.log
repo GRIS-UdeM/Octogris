@@ -1,15 +1,59 @@
-﻿Build started 2015-05-13 10:51:27 AM.
+﻿Build started 2015-05-13 11:03:25 AM.
      1>Project "C:\Users\Vincent\Documents\git\Octogris\Builds\VisualStudio2013\Octogris2.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\JuceLibraryCode /I..\..\JuceLibraryCode\modules /I"C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK" /I"C:\Users\Vincent\Documents\sdks\liblo-0.28" /I"C:\Users\Vincent\Documents\sdks\liblo-0.28\lo" /ZI /nologo /W4 /WX- /MP /Od /Oy- /D WIN32 /D _WINDOWS /D DEBUG /D _DEBUG /D JUCER_VS2013_78A5020=1 /D JUCE_APP_VERSION=2.1.3 /D JUCE_APP_VERSION_HEX=0x20103 /D _WINDLL /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"Debug\\" /Fd"Debug\\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\Source\PluginEditor.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\JuceLibraryCode /I..\..\JuceLibraryCode\modules /I"C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK" /I"C:\Users\Vincent\Documents\sdks\liblo-0.28" /I"C:\Users\Vincent\Documents\sdks\liblo-0.28\lo" /ZI /nologo /W4 /WX- /MP /Od /Oy- /D WIN32 /D _WINDOWS /D DEBUG /D _DEBUG /D JUCER_VS2013_78A5020=1 /D JUCE_APP_VERSION=2.1.3 /D JUCE_APP_VERSION_HEX=0x20103 /D _WINDLL /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"Debug\\" /Fd"Debug\\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\Source\FieldComponent.cpp ..\..\Source\PluginEditor.cpp ..\..\Source\PluginProcessor.cpp
+         FieldComponent.cpp
          PluginEditor.cpp
-     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(147): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(148): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(149): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(150): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(151): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(274): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\vincent\documents\git\octogris\source\levelcomponent.h(56): warning C4305: '*=' : truncation from 'double' to 'float'
+         PluginProcessor.cpp
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(147): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginEditor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(148): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginEditor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(149): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginEditor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(150): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginEditor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(147): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\FieldComponent.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(151): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginEditor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(148): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\FieldComponent.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(149): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\FieldComponent.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(150): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\FieldComponent.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(151): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\FieldComponent.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(147): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginProcessor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(148): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginProcessor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(149): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginProcessor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(150): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginProcessor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(151): warning C4305: 'initializing' : truncation from 'double' to 'const float' (..\..\Source\PluginProcessor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(274): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data (..\..\Source\PluginEditor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(274): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data (..\..\Source\FieldComponent.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\levelcomponent.h(56): warning C4305: '*=' : truncation from 'double' to 'float' (..\..\Source\PluginEditor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(274): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data (..\..\Source\PluginProcessor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(130): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(130): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(131): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(131): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(151): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(154): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(163): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(171): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(183): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(184): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(187): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(188): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(189): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(190): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(191): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(213): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(242): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\levelcomponent.h(56): warning C4305: '*=' : truncation from 'double' to 'float' (..\..\Source\PluginProcessor.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(242): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(246): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(246): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(258): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(268): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(283): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(283): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(287): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(287): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(295): warning C4244: 'initializing' : conversion from 'int' to 'const float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(357): warning C4244: 'initializing' : conversion from 'int' to 'const float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\fieldcomponent.cpp(415): warning C4100: 'event' : unreferenced formal parameter
      1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(63): warning C4244: 'argument' : conversion from 'float' to 'const int', possible loss of data
      1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(82): warning C4100: 'newCurrentTabName' : unreferenced formal parameter
      1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(194): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
@@ -43,13 +87,46 @@
      1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1409): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1491): warning : "this stuff is kind of a replication of processor::setNumberOfSources, although setNumberOfSources is only for default placement"
      1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1719): warning : "this operation was already done by event funct, clean this up"
-     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1944): warning C4800: 'float' : forcing value to bool 'true' or 'false' (performance warning)
-     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1956): warning C4100: 'processor' : unreferenced formal parameter
-     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1963): warning C4100: 'newValue' : unreferenced formal parameter
-     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1962): warning C4100: 'parameterIndex' : unreferenced formal parameter
-     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1961): warning C4100: 'processor' : unreferenced formal parameter
-     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(172): warning C4505: 'areSame' : unreferenced local function has been removed
+     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1937): warning C4800: 'float' : forcing value to bool 'true' or 'false' (performance warning)
+     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1949): warning C4100: 'processor' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1956): warning C4100: 'newValue' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1955): warning C4100: 'parameterIndex' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(1954): warning C4100: 'processor' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(280): warning C4065: switch statement contains 'default' but no 'case' labels
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(438): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(449): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(485): warning : "what is the point of setting something to itself?"
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(539): warning C4100: 'index' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(605): warning C4100: 'index' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(609): warning C4100: 'index' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(614): warning C4100: 'newName' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(614): warning C4100: 'index' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(645): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(619): warning C4100: 'samplesPerBlock' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(660): warning C4100: 'midiMessages' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(660): warning C4100: 'buffer' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(686): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(687): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(760): warning C4127: conditional expression is constant
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(775): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(779): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(795): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(796): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(667): warning C4100: 'midiMessages' : unreferenced formal parameter
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1040): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1260): warning C4305: '=' : truncation from 'double' to 'float'
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1381): warning C4305: '=' : truncation from 'double' to 'float'
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1382): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1389): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1545): warning C4305: '=' : truncation from 'double' to 'float'
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1564): warning C4305: '=' : truncation from 'double' to 'float'
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1765): warning C4800: 'int32_t' : forcing value to bool 'true' or 'false' (performance warning)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1770): warning C4800: 'int32_t' : forcing value to bool 'true' or 'false' (performance warning)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(1783): warning C4800: 'int32_t' : forcing value to bool 'true' or 'false' (performance warning)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(172): warning C4505: 'areSame' : unreferenced local function has been removed (..\..\Source\FieldComponent.cpp)
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.h(172): warning C4505: 'areSame' : unreferenced local function has been removed (..\..\Source\PluginEditor.cpp)
      1>c:\users\vincent\documents\git\octogris\source\plugineditor.cpp(193): warning C4701: potentially uninitialized local variable 'newVal' used
+     1>c:\users\vincent\documents\git\octogris\source\pluginprocessor.cpp(281): warning C4702: unreachable code
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug\\Octogris2.dll" /NOLOGO /LIBPATH:"C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib" user32.lib wsock32.lib ws2_32.lib iphlpapi.lib pthreadVC2.lib liblo.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:msvcrt.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"Debug\\Octogris2.pdb" /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\Octogris2.lib" /MACHINE:X86 /SAFESEH:NO /FORCE:multiple /DLL Debug\resources.res
          Debug\\HID_Config_Utilities.obj
@@ -99,4 +176,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.53
+Time Elapsed 00:00:07.83
