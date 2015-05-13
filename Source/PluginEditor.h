@@ -117,7 +117,6 @@ public:
 
 	
 private:
-    PluginHostType mHost;
 	OctogrisAudioProcessor *mFilter;
 	SourceMover mMover;
 	

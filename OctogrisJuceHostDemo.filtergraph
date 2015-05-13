@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <FILTERGRAPH>
-  <FILTER uid="1" x="0.5" y="0.1" uiLastX="0" uiLastY="0">
+  <FILTER uid="1" x="0.5" y="0.1" uiLastX="" uiLastY="">
     <PLUGIN name="Audio Input" descriptiveName="" format="Internal" category="I/O devices"
             manufacturer="Raw Material Software" version="1.0" file="" uid="246006c0"
             isInstrument="0" fileTime="0" numInputs="0" numOutputs="2" isShell="0"/>
     <STATE>0.</STATE>
   </FILTER>
-  <FILTER uid="2" x="0.25" y="0.1" uiLastX="0" uiLastY="0">
+  <FILTER uid="2" x="0.25" y="0.1" uiLastX="" uiLastY="">
     <PLUGIN name="Midi Input" descriptiveName="" format="Internal" category="I/O devices"
             manufacturer="Raw Material Software" version="1.0" file="" uid="cb5fde0b"
             isInstrument="0" fileTime="0" numInputs="0" numOutputs="0" isShell="0"/>
     <STATE>0.</STATE>
   </FILTER>
-  <FILTER uid="3" x="0.5" y="0.9" uiLastX="0" uiLastY="0">
+  <FILTER uid="3" x="0.5" y="0.9" uiLastX="" uiLastY="">
     <PLUGIN name="Audio Output" descriptiveName="" format="Internal" category="I/O devices"
             manufacturer="Raw Material Software" version="1.0" file="" uid="724248cb"
             isInstrument="0" fileTime="0" numInputs="2" numOutputs="0" isShell="0"/>
     <STATE>0.</STATE>
   </FILTER>
-  <FILTER uid="4" x="0.565163" y="0.464789" uiLastX="" uiLastY="">
+  <FILTER uid="4" x="0.741855" y="0.459507" uiLastX="73" uiLastY="106">
     <PLUGIN name="Octogris2" format="VST" category="Effect" manufacturer="UdeM"
             version="V2.1.3" file="C:\Users\Vincent\Documents\git\Octogris\Builds\VisualStudio2013\Release\Octogris2.dll"
-            uid="4f63746f" isInstrument="0" fileTime="14d43a7b41e" numInputs="8"
+            uid="4f63746f" isInstrument="0" fileTime="14d43f49a55" numInputs="8"
             numOutputs="16" isShell="0"/>
-    <STATE>720.CMlaKA....fQBMDZ....A7zXz8F...P0....A.............................................................................................................................................................................f.vv....................P......................8A........Ji...wjiLtDiM33RLtDCLv.PfXx6fAhMuCFHF7NXfX06fAhYuCFH18NXfXz6fAhkuCFHl9NXfX66fAhguCFHV+NXfXF....P.....R....D....P.....A....D..........+++++C...9S........f+................jvO4zC.....ZlYF+rppp7C...3O...f+.....nND7rOXCxN+TRRR3y38gwOXCxN+TRRR3CT9lnOh2GF+TRRR3C1fryOi2GF+TRRR3ST9lnO6Pvy9TRRR3C1fryO6Pvy9TRRR3SOD7rOP4ah9TRRR3y38gwOR4ah9TRRR3yQGbtOvTrO+HGGG8C.....bwGC+.Sw97ibbbzO.....Hw335Cy1TyOxwwQ+.....fcNNxOLaSM+HGGG8C.....mIYk9Xmii7ibbbzO.....vrM07icNNxOxwwQ+......n0InObwGC+HGGG8C.....vTrO+vEeL7ibbbzO......ZcB5CRGbtOxwwQ+......LE6yOHcv49HGGG8C.....lIYk9Pw335ibbbzO.....vrM07yDiiqOxwwQ+.....fDiiqOnIYk9HGGG8C.....143H+bljU5ibbbzO.....bzAm6Sn0InOxwwQ+......W7wvOfVmf9HGGG8C.....vNXfXA..........</STATE>
+    <STATE>720.CMlaKA....fQBMDZ....A7zXz8F...P0....A.............................................................................................................................................................................f.vv....................P......................8A........Ji...wjiLtDiM33RLtDCLv.Pq51.7spaCv2ptM.eq51.7spaCv2ptM.eq51.7spaCv2ptM.eq51.7spaCv2ptM.eq5F....P.....R....D....P.....A....D..........+++++C...9S........f+................jvO4zC.....ZlYF+rppp7C...3O...f+.....nND7rOXCxN+PRRR3y38gwOXCxN+PRRR3CT9lnOh2GF+PRRR3C1fryOi2GF+PRRR3ST9lnO6Pvy9PRRR3C1fryO6Pvy9PRRR3SOD7rOP4ah9PRRR3y38gwOR4ah9PRRR3yQGbtOvTrO+HGGG8C.....bwGC+.Sw97ibbbzO.....Hw335Cy1TyOxwwQ+.....fcNNxOLaSM+HGGG8C.....mIYk9Xmii7ibbbzO.....vrM07icNNxOxwwQ+......n0InObwGC+HGGG8C.....vTrO+vEeL7ibbbzO......ZcB5CRGbtOxwwQ+......LE6yOHcv49HGGG8C.....lIYk9Pw335ibbbzO.....vrM07yDiiqOxwwQ+.....fDiiqOnIYk9HGGG8C.....143H+bljU5ibbbzO.....bzAm6Sn0InOxwwQ+......W7wvOfVmf9HGGG8C.....M.eq5B..........</STATE>
   </FILTER>
+  <CONNECTION srcFilter="1" srcChannel="0" dstFilter="4" dstChannel="0"/>
+  <CONNECTION srcFilter="1" srcChannel="1" dstFilter="4" dstChannel="1"/>
+  <CONNECTION srcFilter="4" srcChannel="0" dstFilter="3" dstChannel="0"/>
+  <CONNECTION srcFilter="4" srcChannel="1" dstFilter="3" dstChannel="1"/>
 </FILTERGRAPH>

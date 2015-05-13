@@ -350,6 +350,7 @@ mMover(ownerFilter)
     
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
+	m_bLoadingPreset = false;
     bool leapSupported = true;
     bool joystickSupported = false;
     
@@ -403,7 +404,7 @@ mMover(ownerFilter)
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
         
-        if (mHost.isReaper()){
+        if (mFilter->getIsAllowInputOutputModeSelection()){
             mFilter->setInputOutputMode(mFilter->getInputOutputMode());
         }
         updateSources(true);
@@ -509,7 +510,7 @@ mMover(ownerFilter)
         y += dh + 5;
         
         //only using the combo box in reaper, because other hosts set the inputs and outputs automatically
-        if (mHost.isReaper()) {
+		if (mFilter->getIsAllowInputOutputModeSelection()) {
             
             addLabel("Input/Output mode:", x, y, w, dh, box);
             y += dh + 5;
@@ -1174,7 +1175,6 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
         mLabels.add(label);
         
         float distance = mFilter->getSourceD(i);
-        JUCE_COMPILER_WARNING(new string("is this causing problems with the pan span?"))
         Slider *slider = addParamSlider(kParamSource, i, distance, x + w/3, y, w*2/3, dh, ct);
         
         if (bIsFreeVolumeMode){
@@ -1245,7 +1245,8 @@ void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor)
     for (int i = 0; i < iCurSpeakers; i++){
         String s; s << i+1; s << ":";
         
-        ToggleButton *mute = addCheckbox(s, mFilter->getSpeakerM(i), x, y, muteWidth, dh, ct);
+		float fMute = mFilter->getSpeakerM(i);
+		ToggleButton *mute = addCheckbox(s, fMute, x, y, muteWidth, dh, ct);
         mMutes.add(mute);
         
         float att = mFilter->getSpeakerA(i);
@@ -1268,7 +1269,7 @@ void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor)
     ct->setSize(w, y);
     
     if (!p_bCalledFromConstructor){
-        buttonClicked(mApplySpPlacementButton);
+        buttonClicked(mApplySpPlacementButton); 
     }
     
     
@@ -1442,12 +1443,12 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         }
     }
     
-    if (mHost.isReaper() && button == mApplyInputOutputModeButton)
+	if (mFilter->getIsAllowInputOutputModeSelection() && button == mApplyInputOutputModeButton)
     {
         mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
         
-        updateSources(false);
-        updateSpeakers(false);
+		updateSources(false);
+		updateSpeakers(false);
         if (m_bLoadingPreset){
             mFilter->restoreCurrentLocations();
             m_bLoadingPreset = false;
@@ -1834,17 +1835,12 @@ void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
 //==============================================================================
 void OctogrisAudioProcessorEditor::timerCallback()
 {
-	switch(mTrStateEditor)
-	{
-		case kTrWriting:
-		{
+	switch(mTrStateEditor)	{
+		case kTrWriting: {
 			Trajectory::Ptr t = mFilter->getTrajectory();
-			if (t)
-			{
+			if (t) {
 				mTrProgressBar->setValue(t->progress());
-			}
-			else
-			{
+			} else {
 				mTrWriteButton->setButtonText("Ready");
                 mTrWriteButton->setToggleState(false, dontSendNotification);
                 mFilter->restoreCurrentLocations();
@@ -1865,7 +1861,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
         mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
         
-        if (mHost.isReaper()){
+		if (mFilter->getIsAllowInputOutputModeSelection()){
             int iCurMode = mInputOutputModeCombo->getSelectedId();
             int iNewMode = mFilter->getInputOutputMode()+1;
             if (iNewMode != iCurMode){
@@ -1902,7 +1898,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);
         
-        
         refreshSize();
     }
     
@@ -1934,12 +1929,19 @@ void OctogrisAudioProcessorEditor::timerCallback()
         updateSpeakerLocationTextEditor();
         
         for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
-            mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);
+			float fDist = 1.f - mFilter->getSourceD(i);
+			DBG("fDist = " << fDist);
+			mDistances.getUnchecked(i)->setValue(fDist, dontSendNotification);
         }
         
         for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++){
-            mAttenuations.getUnchecked(i)->setValue(mFilter->getSpeakerA(i), dontSendNotification);
-            mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
+			float fAtt = mFilter->getSpeakerA(i);
+			DBG("fAtt = " << fAtt);
+			mAttenuations.getUnchecked(i)->setValue(fAtt, dontSendNotification);
+			
+			float fMute = mFilter->getSpeakerM(i);
+			DBG("fMute = " << fMute);
+			mMutes.getUnchecked(i)->setToggleState(fMute, dontSendNotification);
         }
     }
     

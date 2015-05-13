@@ -226,6 +226,8 @@ void FieldComponent::paint (Graphics& g)
 	{
 		const float radius = kSpeakerRadius, diameter = kSpeakerDiameter;
 		FPoint p = getSpeakerPoint(i);
+
+		DBG("x = " << p.x << ", y = " << p.y);
 		
 		g.setColour(Colour::fromHSV(2.f/3.f, 0, 0.5, 1));
 		g.fillEllipse(p.x - radius, p.y - radius, diameter, diameter);

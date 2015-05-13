@@ -73,8 +73,6 @@ int IndexedAngleCompare(const void *a, const void *b)
 //==============================================================================
 OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 {
-
-	OutputDebugString("----------------------------------OCTOGRIS PROCESSOR DEBUG----------------------------------------\n");
     
     //SET PARAMETERS
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
@@ -95,10 +93,26 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 	mSmoothedParametersInited = false;
 	mSmoothedParameters.ensureStorageAllocated(kNumberOfParameters);
     
-	for (int i = 0; i < kNumberOfParameters; i++) mSmoothedParameters.add(0);
+	for (int i = 0; i < kNumberOfParameters; i++) 
+		mSmoothedParameters.add(0);
     
     mNumberOfSources = -1;
     mNumberOfSpeakers = -1;
+
+	PluginHostType host;
+	bool bIsWindows;
+
+#if WIN32
+	bIsWindows = true;
+#else
+	bIsWindows = false;
+#endif
+
+	if (host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer()) || !strcmp(host.getHostDescription(),"Unknown")){
+		m_bAllowInputOutputModeSelection = true;
+	} else {
+		m_bAllowInputOutputModeSelection = false;
+	}
     
     //SET SOURCES
     setNumberOfSources(JucePlugin_MaxNumInputChannels, true);
@@ -352,6 +366,8 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
             setNumberOfSources(8, false);
             setNumberOfSpeakers(16, false);
             break;
+		default:
+			jassert(0);
     }
 }
 
@@ -465,11 +481,14 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
     
     for (int i = 0; i < mNumberOfSpeakers; i++){
         mLevels.add(0);
+
+		JUCE_COMPILER_WARNING("what is the point of setting something to itself?")
         mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
-        mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
+		float fMute = mParameters[getParamForSpeakerM(i)];
+		DBG("setting fMute to " << fMute);
+		mParameters.set(getParamForSpeakerM(i), fMute);
     }
 
-    //if (!mHost.isReaper()){
     if (bUseDefaultValues){
         //updateSpeakerLocation(true, false, true);
         updateSpeakerLocation(true, false, false);
@@ -602,14 +621,14 @@ void OctogrisAudioProcessor::changeProgramName (int index, const String& newName
 void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     
-//    int iSources = getNumInputChannels();//mNumberOfSources;
-//    int iSpeakers = getNumOutputChannels();//mNumberOfSpeakers;
-//    cout << "PREPARE TO PLAY\n";
-//    cout << "iSources = " << iSources << endl;
-//    cout << "iSpeakers = " << iSpeakers << endl;
+    int iSources = getNumInputChannels();//mNumberOfSources;
+    int iSpeakers = getNumOutputChannels();//mNumberOfSpeakers;
+	OutputDebugString("PREPARE TO PLAY\n");
+	DBG("iSources = " << iSources << "\n");
+	DBG("iSpeakers = " << iSpeakers << "\n");
 
     //set sources and speakers
-    if (mHost.isReaper()) {
+    if (m_bAllowInputOutputModeSelection) {
         setNumberOfSources(mNumberOfSources, true);
         setNumberOfSpeakers(mNumberOfSpeakers, true);
     } else {
@@ -1648,8 +1667,6 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
         mBufferSpLocA[i] = mParameters[getParamForSpeakerA(i)];
         mBufferSpLocM[i] = mParameters[getParamForSpeakerM(i)];
     }
-    int i =0;
-    ++i;
 }
 
 void OctogrisAudioProcessor::restoreCurrentLocations(){
@@ -1665,7 +1682,9 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
         mParameters.set(getParamForSpeakerX(i), mBufferSpLocX[i]);
         mParameters.set(getParamForSpeakerY(i), mBufferSpLocY[i]);
         mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);
-        mParameters.set(getParamForSpeakerM(i), mBufferSpLocM[i]);
+		float fMute = mBufferSpLocM[i];
+		DBG("restore setting fMute to " << fMute);
+        mParameters.set(getParamForSpeakerM(i), fMute);
     }
     
     int i =0;
@@ -1810,6 +1829,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
                 float att = readFloatData(data, sizeInBytes, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
 				mParameters.set(getParamForSpeakerA(i), att);
                 float mute = readFloatData(data, sizeInBytes, 0);
+				DBG("setState setting fMute to " << mute);
 				mParameters.set(getParamForSpeakerM(i), mute );
 			}
 		}

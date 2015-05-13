@@ -310,7 +310,6 @@ public:
     int getTrReturn() const {return m_iTrReturn;}
     void setTrReturn(int i){m_iTrReturn = i;}
 
-
     int getTrSrcSelect() const {return m_iTrSrcSelect;}
     void setTrSrcSelect(int i){m_iTrSrcSelect = i;}
 
@@ -359,6 +358,12 @@ public:
 	float getLevel(int index) const { return mLevels.getUnchecked(index); }
 	void setCalculateLevels(bool c);
 	
+	bool getIsAllowInputOutputModeSelection(){
+		return m_bAllowInputOutputModeSelection;
+	}
+		
+
+
 	uint64_t getHostChangedParameter() { return mHostChangedParameter; }
 	uint64_t getHostChangedProperty() { return mHostChangedProperty; }
 	uint64_t getProcessCounter() { return mProcessCounter; }
@@ -505,7 +510,7 @@ public:
     void updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise);
 	
 private:
-    PluginHostType mHost;
+	bool m_bAllowInputOutputModeSelection;
 	Trajectory::Ptr mTrajectory;
 
 	Array<float> mParameters;
@@ -575,28 +580,18 @@ private:
     float mBufferSpLocA[JucePlugin_MaxNumOutputChannels];
     float mBufferSpLocM[JucePlugin_MaxNumOutputChannels];
     
-    ///////////////////////////
     int mNumberOfSources;
     int mNumberOfSpeakers;
     
     void setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues);
     void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues);
     
-    
-    ///////////////////////////
-    
-//	FirFilter* mFilters;
-    //std::unique_ptr<FirFilter[]> mFilters;
     std::vector<FirFilter> mFilters;
 
 	
 	void findLeftAndRightSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
 
     void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
-    
-    
-    
-    
     
 	void addToOutput(float s, float **outputs, int o, int f);
 	void ProcessData(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
