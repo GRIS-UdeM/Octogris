@@ -1473,7 +1473,7 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
 
 void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
 {
-	const float smooth = denormalize(kSmoothMin, kSmoothMax, params[kSmooth]); // milliseconds
+	const float smooth = denormalize(kSmoothMin, kSmoothMax, params[kSmooth]); // milliseconds	
 	const float sm_o = powf(0.01f, 1000.f / (smooth * sampleRate));
 	const float sm_n = 1 - sm_o;
 	
@@ -1525,6 +1525,7 @@ void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **o
 			float *input_x = mSmoothedParametersRamps.getReference(getParamForSourceX(i)).b;
 			float *input_y = mSmoothedParametersRamps.getReference(getParamForSourceY(i)).b;
 			float *input_d = mSmoothedParametersRamps.getReference(getParamForSourceD(i)).b;
+			//DBG("input_d = " << *input_d);
 			
 			if (i == 0)
 				for (unsigned int f = 0; f < frames; f++)

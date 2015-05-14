@@ -158,9 +158,13 @@
     <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="c:\SDKs\vstsdk2.4"
             aaxFolder="C:\SDKs\AAX_SDK_2p1p1" externalLibraries="" vst3Folder="C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
                        libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib"/>
+        <CONFIGURATION name="Debug64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="1" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
+                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib64"
+                       optimisation="1" targetName="Octogris2"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
                        libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib"/>
