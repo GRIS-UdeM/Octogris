@@ -59,7 +59,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">.\Release64\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib64</LibraryPath>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -9,7 +9,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
-    <LocalDebuggerCommand>C:\Program Files\MOTU\Digital Performer 8.0\DP.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>C:\Program Files\REAPER (x64)\reaper.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

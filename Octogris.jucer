@@ -166,7 +166,7 @@
                        libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib"/>
         <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib"
+                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib64"
                        optimisation="3" targetName="Octogris2"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
