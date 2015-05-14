@@ -13,31 +13,31 @@ namespace BinaryData
     const int            libLeap_dylibSize = 2545152;
 
     extern const char*   HID_Config_Utilities_h;
-    const int            HID_Config_Utilities_hSize = 324;
+    const int            HID_Config_Utilities_hSize = 338;
 
     extern const char*   HID_Error_Handler_h;
-    const int            HID_Error_Handler_hSize = 312;
+    const int            HID_Error_Handler_hSize = 326;
 
     extern const char*   HID_Name_Lookup_h;
-    const int            HID_Name_Lookup_hSize = 304;
+    const int            HID_Name_Lookup_hSize = 318;
 
     extern const char*   HID_Queue_Utilities_h;
-    const int            HID_Queue_Utilities_hSize = 320;
+    const int            HID_Queue_Utilities_hSize = 334;
 
     extern const char*   HID_Utilities_h;
-    const int            HID_Utilities_hSize = 296;
+    const int            HID_Utilities_hSize = 310;
 
     extern const char*   HID_Utilities_External_h;
-    const int            HID_Utilities_External_hSize = 20867;
+    const int            HID_Utilities_External_hSize = 21349;
 
     extern const char*   ImmHIDUtilAddOn_h;
-    const int            ImmHIDUtilAddOn_hSize = 2852;
+    const int            ImmHIDUtilAddOn_hSize = 2911;
 
     extern const char*   IOHIDDevice__h;
-    const int            IOHIDDevice__hSize = 15074;
+    const int            IOHIDDevice__hSize = 15496;
 
     extern const char*   IOHIDElement__h;
-    const int            IOHIDElement__hSize = 13699;
+    const int            IOHIDElement__hSize = 14041;
 
     extern const char*   IOHIDLib__h;
     const int            IOHIDLib__hSize = 3029;
