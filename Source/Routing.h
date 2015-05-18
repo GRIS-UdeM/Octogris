@@ -13,6 +13,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+#define kChannels (16)
+#define kMaxSize (1024)
+
 class Router
 {
 private:
@@ -25,7 +28,7 @@ private:
 public:
 	static Router & instance();
 	
-	void accumulate(int channels, const AudioSampleBuffer &buffer);
+	void accumulate(int channels, int frames, const AudioSampleBuffer &buffer);
 	void reset() { mOutputs.clear(); }
 	void clear(int channel) { mOutputs.clear(channel, 0, mOutputs.getNumSamples()); }
 	

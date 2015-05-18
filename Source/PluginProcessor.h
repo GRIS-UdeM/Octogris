@@ -289,7 +289,8 @@ public:
 	void setProcessMode(int s) { mProcessMode = s; jassert(mProcessMode >= 0 && mProcessMode < kNumberOfModes); }
 	
 	int getRoutingMode() const { return mRoutingMode; }
-	void setRoutingMode(int s) { mRoutingMode = s; }
+	void setRoutingMode(int s) { mRoutingMode = s; if (mRoutingMode == 1) updateRoutingTemp(); }
+	void updateRoutingTemp();
 	
 	int getGuiSize() const { return mGuiSize; }
 	void setGuiSize(int s) { mGuiSize = s; }
@@ -568,6 +569,7 @@ private:
 	
 	int mProcessMode;
 	int mRoutingMode;
+	AudioSampleBuffer mRoutingTemp;
     
     bool mIsNumberSourcesChanged;
     bool mIsNumberSpeakersChanged;
