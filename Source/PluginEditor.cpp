@@ -958,8 +958,6 @@ mMover(ownerFilter)
         mEnableLeap->setSize(cw, dh);
         mEnableLeap->setTopLeftPosition(x, y);
         mEnableLeap->addListener(this);
-        JUCE_COMPILER_WARNING("Why aren't we using the state saved in the processor?")
-        //mEnableLeap->setToggleState(mFilter->getIsLeapEnabled(), dontSendNotification);
         mEnableLeap->setToggleState(false, dontSendNotification);
         box->addAndMakeVisible(mEnableLeap);
         mComponents.add(mEnableLeap);
@@ -1190,7 +1188,6 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
     mMover.updateNumberOfSources();
     
     if (!p_bCalledFromConstructor){
-        JUCE_COMPILER_WARNING (new string("warning are we sure we want to reset source location here ? I think so"))
         buttonClicked(mApplySrcPlacementButton);
         //comboBoxChanged(mSrcPlacement);
     }

@@ -418,6 +418,10 @@ public:
 protected:
 	void spProcess(float duration, float seconds)
 	{
+        if (fmodf(mDone, mDuration) < 0.01){
+            mFilter->restoreCurrentLocations();
+        }
+        
 		mClock += seconds;
 		while(mClock > 0.01)
 		{
@@ -457,6 +461,7 @@ public:
 	
 protected:
 	virtual FPoint destinationForSource(int s, FPoint o) = 0;
+    virtual void resetIfRandomTarget(){};
 
 	void spProcess(float duration, float seconds)
 	{
@@ -465,6 +470,8 @@ protected:
 		int cycle = (int)p;
 		if (mCycle != cycle)
 		{
+            
+            resetIfRandomTarget();
 			mCycle = cycle;
 			mSourcesOrigins.clearQuick();
 			mSourcesDestinations.clearQuick();
@@ -528,6 +535,10 @@ protected:
 		}
 		return FPoint(x,y);
 	}
+    
+    void resetIfRandomTarget(){
+        mFilter->restoreCurrentLocations();
+    }
 	
 private:
 	MTRand_int32 mRNG;
