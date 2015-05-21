@@ -106,7 +106,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 	bIsWindows = false;
 #endif
 
-	if (host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer()) || !strcmp(host.getHostDescription(),"Unknown")){
+	if (host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer()) /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
 		m_bAllowInputOutputModeSelection = true;
 	} else {
 		m_bAllowInputOutputModeSelection = false;
