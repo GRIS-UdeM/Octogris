@@ -29,6 +29,7 @@
 #ifndef M_PI // for visual studio 2010
 #define M_PI 3.14159265358979323846264338327950288
 #endif
+
 #include <stdint.h>
 
 #include "../JuceLibraryCode/JuceHeader.h"
@@ -88,8 +89,6 @@ static const int s_iMaxAreas = 3; //this number is used as a multiplicator of mN
 enum InputOutputModes {
     i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16
 };
-
-
 
 enum
 {
@@ -237,12 +236,11 @@ public:
 
     //==============================================================================
 	// For editor
-    
-    
 	int getNumberOfSources() const { return mNumberOfSources; }
 	int getParamForSourceX(int index) const { return kSourceX + index * kParamsPerSource; }
 	int getParamForSourceY(int index) const { return kSourceY + index * kParamsPerSource; }
 	int getParamForSourceD(int index) const { return kSourceD + index * kParamsPerSource; }
+	
 	float getSourceX(int index) const { return mParameters.getUnchecked(kSourceX + index * kParamsPerSource); }
 	float getSourceY(int index) const { return mParameters.getUnchecked(kSourceY + index * kParamsPerSource); }
 	float getSourceD(int index) const { return mParameters.getUnchecked(kSourceD + index * kParamsPerSource); }
@@ -250,14 +248,12 @@ public:
 	
 	int getNumberOfSpeakers() const { return mNumberOfSpeakers; }
     
-    
-    inline int getParamForSpeakerX(int index) const { return kSpeakerX + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
+	inline int getParamForSpeakerX(int index) const { return kSpeakerX + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
     inline int getParamForSpeakerY(int index) const { return kSpeakerY + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
     inline int getParamForSpeakerA(int index) const { return kSpeakerA + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
     inline int getParamForSpeakerM(int index) const { return kSpeakerM + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
-
     
-    
+	JUCE_COMPILER_WARNING("rename?")
     float getSpeakerX(int index) const { return mParameters.getUnchecked(getParamForSpeakerX(index)); }
 	float getSpeakerY(int index) const { return mParameters.getUnchecked(getParamForSpeakerY(index)); }
 	float getSpeakerA(int index) const { return mParameters.getUnchecked(getParamForSpeakerA(index)); }
@@ -361,40 +357,38 @@ public:
 	bool getIsAllowInputOutputModeSelection(){
 		return m_bAllowInputOutputModeSelection;
 	}
-		
-
 
 	uint64_t getHostChangedParameter() { return mHostChangedParameter; }
 	uint64_t getHostChangedProperty() { return mHostChangedProperty; }
 	uint64_t getProcessCounter() { return mProcessCounter; }
 	
 	// convenience functions for gui:
-	FPoint convertXY01(float r, float t)
-	{
+	//01 here means that the output is normalized to [0,1]
+	FPoint convertRt2Xy01(float r, float t) {
 		float x = r * cosf(t);
 		float y = r * sinf(t);
 		return FPoint((x + kRadiusMax)/(kRadiusMax*2), (y + kRadiusMax)/(kRadiusMax*2));
 	}
-	
-	// these return in the interval [-kRadiusMax .. kRadiusMax]
-	FPoint getSourceXY(int i)
-	{
-		float x = getSourceX(i) * (2*kRadiusMax) - kRadiusMax;
-		float y = getSourceY(i) * (2*kRadiusMax) - kRadiusMax;
-		return FPoint(x, y);
-	}
-	FPoint getSourceXY01(int i)
-	{
+
+	//01 here means that the output is normalized to [0,1]
+	FPoint getSourceXY01(int i)	{
 		float x = getSourceX(i);
 		float y = getSourceY(i);
 		return FPoint(x, y);
 	}
-	FPoint getSpeakerXY(int i)
-	{
+
+	// these return in the interval [-kRadiusMax .. kRadiusMax]
+	JUCE_COMPILER_WARNING("rename?")
+	FPoint getSourceXY(int i) {
+		float x = getSourceX(i) * (2*kRadiusMax) - kRadiusMax;
+		float y = getSourceY(i) * (2*kRadiusMax) - kRadiusMax;
+		return FPoint(x, y);
+	}
+
+	FPoint getSpeakerXY(int i) {
 		float x = getSpeakerX(i) * (2*kRadiusMax) - kRadiusMax;
 		float y = getSpeakerY(i) * (2*kRadiusMax) - kRadiusMax;
-		if (mProcessMode != kFreeVolumeMode)
-		{
+		if (mProcessMode != kFreeVolumeMode) {
 			// force radius to 1
 			float r = hypotf(x, y);
 			if (r == 0) return FPoint(1, 0);
@@ -403,16 +397,16 @@ public:
 		}
 		return FPoint(x, y);
 	}
-	FPoint getSpeakerRT(int i)
-	{
+
+	FPoint getSpeakerRT(int i) {
 		FPoint p = getSpeakerXY(i);
 		float r = hypotf(p.x, p.y);
 		float t = atan2f(p.y, p.x);
 		if (t < 0) t += kThetaMax;
 		return FPoint(r, t);
 	}
-	FPoint getSourceRT(int i)
-	{
+
+	FPoint getSourceRT(int i) {
 		FPoint p = getSourceXY(i);
 		float r = hypotf(p.x, p.y);
 		float t = atan2f(p.y, p.x);
@@ -420,8 +414,7 @@ public:
 		return FPoint(r, t);
 	}
 	
-	FPoint convertRT(FPoint p)
-	{
+	FPoint convertRT(FPoint p) {
 		float vx = p.x;
 		float vy = p.y;
 		float r = sqrtf(vx*vx + vy*vy) / kRadiusMax;
@@ -431,12 +424,12 @@ public:
 		t /= kThetaMax;
 		return FPoint(r, t);
 	}
-	FPoint convertRT01(FPoint p)
-	{
+
+	FPoint convertRT01(FPoint p) {
 		return convertRT(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
 	}
-	FPoint clampRadius01(FPoint p)
-	{
+
+	FPoint clampRadius01(FPoint p) {
 		float dx = p.x - 0.5f;
 		float dy = p.y - 0.5f;
 		float r = hypotf(dx, dy);
@@ -450,14 +443,14 @@ public:
 		}
 		return p;
 	}
-	void setSourceXY01(int i, FPoint p)
-	{
+
+	void setSourceXY01(int i, FPoint p) {
 		p = clampRadius01(p);
 		setParameterNotifyingHost(getParamForSourceX(i), p.x);
 		setParameterNotifyingHost(getParamForSourceY(i), p.y);
 	}
-	void setSourceXY(int i, FPoint p)
-	{
+
+	void setSourceXY(int i, FPoint p) {
 		float r = hypotf(p.x, p.y);
 		if (r > kRadiusMax)
 		{
@@ -470,31 +463,26 @@ public:
 		setParameterNotifyingHost(getParamForSourceX(i), p.x);
 		setParameterNotifyingHost(getParamForSourceY(i), p.y);
 	}
-	void setSourceRT(int i, FPoint p)
-	{
+
+	void setSourceRT(int i, FPoint p) {
 		float x = p.x * cosf(p.y);
 		float y = p.x * sinf(p.y);
 		setSourceXY(i, FPoint(x, y));
 	}
-	void setSpeakerXY01(int i, FPoint p)
-	{
+ 
+	void setSpeakerXY01(int i, FPoint p) {
 		p = clampRadius01(p);
-//		setParameterNotifyingHost(getParamForSpeakerX(i), p.x);
-//		setParameterNotifyingHost(getParamForSpeakerY(i), p.y);
         setParameter(getParamForSpeakerX(i), p.x);
         setParameter(getParamForSpeakerY(i), p.y);
 	}
-	void setSpeakerRT(int i, FPoint p)
-	{
+
+	void setSpeakerRT(int i, FPoint p) {
 		float x = p.x * cosf(p.y);
 		float y = p.x * sinf(p.y);
-//		setParameterNotifyingHost(getParamForSpeakerX(i), (x + kRadiusMax) / (kRadiusMax*2));
-//		setParameterNotifyingHost(getParamForSpeakerY(i), (y + kRadiusMax) / (kRadiusMax*2));
         setParameter(getParamForSpeakerX(i), (x + kRadiusMax) / (kRadiusMax*2));
         setParameter(getParamForSpeakerY(i), (y + kRadiusMax) / (kRadiusMax*2));
     }
 	
-	// trajectories
 	Trajectory::Ptr getTrajectory() { return mTrajectory; }
 	void setTrajectory(Trajectory::Ptr t) { mTrajectory = t; }
     
@@ -587,11 +575,8 @@ private:
     void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues);
     
     std::vector<FirFilter> mFilters;
-
 	
 	void findLeftAndRightSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
-
-    void findSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
     
 	void addToOutput(float s, float **outputs, int o, int f);
 	void ProcessData(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);

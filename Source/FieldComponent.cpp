@@ -391,7 +391,7 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 			
 				// force fixed radius
 				FPoint p = mFilter->convertRT01(FPoint(vx, vy));
-				p = mFilter->convertXY01(mSavedValue, p.y * kThetaMax);
+				p = mFilter->convertRt2Xy01(mSavedValue, p.y * kThetaMax);
 				vx = p.x; vy = p.y;
 			}
 			mLastKeys = event.mods;

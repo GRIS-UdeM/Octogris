@@ -823,60 +823,6 @@ void OctogrisAudioProcessor::ProcessData(float **inputs, float **outputs, float 
 	}
 }
 
-void OctogrisAudioProcessor::findSpeakers(float p_fTargetAngle, float *params, int &p_piLeftSpeaker, int &p_piRightSpeaker, float &p_pfDeltaAngleToLeftSpeaker, float &p_pfDeltaAngleToRightSpeaker, int p_iTargetSpeaker)
-{
-    p_piLeftSpeaker = -1;
-    p_piRightSpeaker = -1;
-    p_pfDeltaAngleToLeftSpeaker = kThetaMax;
-    p_pfDeltaAngleToRightSpeaker = kThetaMax;
-    
-    for (int iCurSpeaker = 0; iCurSpeaker < mNumberOfSpeakers; iCurSpeaker++){
-        if (p_iTargetSpeaker!= -1 && iCurSpeaker == p_iTargetSpeaker) continue;
-        
-        float fCurSpeakerAngle = params[getParamForSpeakerX(iCurSpeaker)];
-        float fCurDeltaAngle = fCurSpeakerAngle - p_fTargetAngle;
-        if (fCurDeltaAngle >= 0) {
-            if (fCurDeltaAngle > kHalfCircle) {
-                // right
-                fCurDeltaAngle = kThetaMax - fCurDeltaAngle;
-                if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker) {
-                    p_pfDeltaAngleToRightSpeaker = fCurDeltaAngle;
-                    //p_piRightSpeaker = iCurSpeaker;
-                    p_piLeftSpeaker = iCurSpeaker;
-                }
-            } else {
-                // left
-                if (fCurDeltaAngle < p_pfDeltaAngleToLeftSpeaker) {
-                    p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
-                    //p_piLeftSpeaker = iCurSpeaker;
-                    p_piRightSpeaker = iCurSpeaker;
-                }
-            }
-        } else {
-            fCurDeltaAngle = -fCurDeltaAngle;
-            if (fCurDeltaAngle > kHalfCircle) {
-                // left
-                fCurDeltaAngle = kThetaMax - fCurDeltaAngle;
-                if (fCurDeltaAngle < p_pfDeltaAngleToLeftSpeaker) {
-                    p_pfDeltaAngleToLeftSpeaker = fCurDeltaAngle;
-                    //p_piLeftSpeaker = iCurSpeaker;
-                    p_piRightSpeaker = iCurSpeaker;
-                } 
-            } else {
-                // right
-                if (fCurDeltaAngle < p_pfDeltaAngleToRightSpeaker) {
-                    p_pfDeltaAngleToRightSpeaker = fCurDeltaAngle;
-                    //p_piRightSpeaker = iCurSpeaker;
-                    p_piLeftSpeaker = iCurSpeaker;
-                }
-            }
-        }
-    }
-    
-    //cout << "find speakers " <<  p_piLeftSpeaker << ", " << p_piRightSpeaker << "\n";
-}
-
-
 void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetAngle, float *params, int &p_piLeftSpeaker, int &p_piRightSpeaker,
                                                       float &p_pfDeltaAngleToLeftSpeaker, float &p_pfDeltaAngleToRightSpeaker, int p_iTargetSpeaker)
 {
@@ -1077,7 +1023,6 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find left and right speakers
 				int left, right;
 				float dLeft, dRight;
-                //findSpeakers(t, params, left, right, dLeft, dRight);
                 findLeftAndRightSpeakers(t, params, left, right, dLeft, dRight);
                 
 				// add to output
@@ -1104,7 +1049,6 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find front left, right
 				int frontLeft, frontRight;
 				float dFrontLeft, dFrontRight;
-                //findSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
                 findLeftAndRightSpeakers(t, params, frontLeft, frontRight, dFrontLeft, dFrontRight);
                 
 				float bt = t + kHalfCircle;
@@ -1113,9 +1057,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				// find back left, right
 				int backLeft, backRight;
 				float dBackLeft, dBackRight;
-                //findSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-                findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);
-                
+                findLeftAndRightSpeakers(bt, params, backLeft, backRight, dBackLeft, dBackRight);                
 			
 				float front = r * 0.5f + 0.5f;
 				float back = 1 - front;
