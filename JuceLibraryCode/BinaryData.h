@@ -28,10 +28,10 @@ namespace BinaryData
     const int            HID_Utilities_hSize = 296;
 
     extern const char*   HID_Utilities_External_h;
-    const int            HID_Utilities_External_hSize = 20867;
+    const int            HID_Utilities_External_hSize = 20875;
 
     extern const char*   ImmHIDUtilAddOn_h;
-    const int            ImmHIDUtilAddOn_hSize = 2852;
+    const int            ImmHIDUtilAddOn_hSize = 2856;
 
     extern const char*   IOHIDDevice__h;
     const int            IOHIDDevice__hSize = 15074;

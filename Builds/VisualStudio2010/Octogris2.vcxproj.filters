@@ -349,6 +349,9 @@
     <ClCompile Include="..\..\Source\PluginEditor.cpp">
       <Filter>Octogris2\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Routing.cpp">
+      <Filter>Octogris2\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\SourceMover.cpp">
       <Filter>Octogris2\Source</Filter>
     </ClCompile>
@@ -1483,6 +1486,9 @@
       <Filter>Octogris2\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\PluginEditor.h">
+      <Filter>Octogris2\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Routing.h">
       <Filter>Octogris2\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\SourceMover.h">

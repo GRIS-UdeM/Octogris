@@ -164,6 +164,7 @@
     <ClCompile Include="..\..\Source\OscComponent.cpp"/>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp"/>
     <ClCompile Include="..\..\Source\PluginEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Routing.cpp"/>
     <ClCompile Include="..\..\Source\SourceMover.cpp"/>
     <ClCompile Include="..\..\Source\Trajectories.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
@@ -1132,6 +1133,7 @@
     <ClInclude Include="..\..\Source\OscComponent.h"/>
     <ClInclude Include="..\..\Source\PluginProcessor.h"/>
     <ClInclude Include="..\..\Source\PluginEditor.h"/>
+    <ClInclude Include="..\..\Source\Routing.h"/>
     <ClInclude Include="..\..\Source\SourceMover.h"/>
     <ClInclude Include="..\..\Source\Trajectories.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h"/>

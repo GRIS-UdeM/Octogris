@@ -100,6 +100,8 @@
       <FILE id="pRoxoW" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="HICz75" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="X5IVQ5" name="Routing.cpp" compile="1" resource="0" file="Source/Routing.cpp"/>
+      <FILE id="kcqw8e" name="Routing.h" compile="0" resource="0" file="Source/Routing.h"/>
       <FILE id="rZP6xp" name="SourceMover.cpp" compile="1" resource="0" file="Source/SourceMover.cpp"/>
       <FILE id="ppYknM" name="SourceMover.h" compile="0" resource="0" file="Source/SourceMover.h"/>
       <FILE id="y4THbS" name="Trajectories.cpp" compile="1" resource="0"
