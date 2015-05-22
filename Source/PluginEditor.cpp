@@ -183,6 +183,7 @@ public:
                 case kParamFilterMid: newVal = normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault); break;
                 case kParamFilterNear: newVal = normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault); break;
                 case kParamMaxSpanVolume: newVal = normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault); break;
+				case kParamRoutingVolume: newVal = normalize(kRoutingVolumeMin, kRoutingVolumeMax, kRoutingVolumeDefault); break;
             }
             
             if (mParamType == kParamSource && mLink->getToggleState())
@@ -303,10 +304,10 @@ public:
             case kParamFilterMid: value = denormalize(-100, 0, value); break;
             case kParamFilterNear: value = denormalize(-100, 0, value); break;
             case kParamMaxSpanVolume: value = denormalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, value); break;
+			case kParamRoutingVolume: value = denormalize(kRoutingVolumeMin, kRoutingVolumeMax, value); break;
         }
         
-        if (mParamType >= kParamSmooth || mParamType <= kParamMaxSpanVolume) return String(roundToInt(value));
-        if (mParamType >= kParamSmooth || mParamType <= kParamFilterNear) return String(roundToInt(value));
+        if (mParamType >= kParamSmooth || mParamType <= kParamRoutingVolume) return String(roundToInt(value));
         return String(value, 1);
     }
     
@@ -325,6 +326,7 @@ public:
             case kParamFilterMid: value = normalize(-100, 0, value); break;
             case kParamFilterNear: value = normalize(-100, 0, value); break;
             case kParamMaxSpanVolume: value = normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, value); break;
+			case kParamRoutingVolume: value = normalize(kRoutingVolumeMin, kRoutingVolumeMax, value); break;
         }
         return value;
     }
@@ -376,8 +378,7 @@ mMover(ownerFilter)
         if (mOsc) mTabs->addTab("OSC", tabBg, mOsc, true);
     }
     mTabs->addTab("Interfaces", tabBg, new Component(), true);
-    
-    
+	
     mTabs->setSize(kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
     addAndMakeVisible(mTabs);
     mComponents.add(mTabs);
@@ -807,8 +808,46 @@ mMover(ownerFilter)
         mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
         mSpT->setExplicitFocusOrder(7);
         mSpT->addListener(this);
-        
-    }
+		
+		//-------- column 3 --------
+        y = kMargin;
+        x += w + kMargin;
+		
+		addLabel("Routing mode:", x, y, w, dh, box);
+        y += dh + 5;
+		{
+			ComboBox *cb = new ComboBox();
+			int index = 1;
+			cb->addItem("Normal", index++);
+			cb->addItem("Internal write", index++);
+			cb->addItem("Internal read 1-2", index++);
+			cb->addItem("Internal read 3-4", index++);
+			cb->addItem("Internal read 5-6", index++);
+			cb->addItem("Internal read 7-8", index++);
+			cb->addItem("Internal read 9-10", index++);
+			cb->addItem("Internal read 11-12", index++);
+			cb->addItem("Internal read 13-14", index++);
+			cb->addItem("Internal read 15-16", index++);
+			cb->setSelectedId(mFilter->getRoutingMode() + 1);
+			cb->setSize(w, dh);
+			cb->setTopLeftPosition(x, y);
+			box->addAndMakeVisible(cb);
+			mComponents.add(cb);
+			y += dh + 5;
+			
+			cb->addListener(this);
+			mRoutingMode = cb;
+		}
+		
+		addLabel("Routing volume (dB):", x, y, w, dh, box);
+        y += dh + 5;
+		{
+			Slider *ds = addParamSlider(kParamRoutingVolume, kRoutingVolume, mFilter->getParameter(kRoutingVolume), x, y, w, dh, box);
+			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+			mRoutingVolume = ds;
+			y += dh + 5;
+		}
+	}
     
     
     //--------------- TRAJECTORIES TAB ---------------- //
@@ -1753,6 +1792,10 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     {
         mFilter->setMovementMode(comboBox->getSelectedId() - 1);
     }
+	else if (comboBox == mRoutingMode)
+	{
+		mFilter->setRoutingMode(comboBox->getSelectedId() - 1);
+	}
     else if (comboBox == mGuiSize)
     {
         mFilter->setGuiSize(comboBox->getSelectedId() - 1);

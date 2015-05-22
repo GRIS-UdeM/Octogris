@@ -49,7 +49,8 @@ enum
 	kParamFilterFar,
 	kParamFilterMid,
 	kParamFilterNear,
-	kParamMaxSpanVolume
+	kParamMaxSpanVolume,
+	kParamRoutingVolume
 };
 
 enum placement{
@@ -158,6 +159,10 @@ private:
     //Label *mShowChange;
     Label *mStateLeap;
     Label *mStateJoystick;
+	
+	ComboBox *mRoutingMode;
+	Slider *mRoutingVolume;
+	
 #if WIN32
     
 #else

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="ZtKxiG" name="Octogris2" projectType="audioplug" version="2.1.3"
+<JUCERPROJECT id="ZtKxiG" name="Octogris2" projectType="audioplug" version="2.2.0"
               bundleIdentifier="com.UdeM.Octogris2" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildRTAS="0" buildAAX="0"
               pluginName="Octogris2" pluginDesc="Octogris2" pluginManufacturer="UdeM"
@@ -8,7 +8,7 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
-              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.1">
+              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.0">
   <MAINGROUP id="rRl79u" name="Octogris2">
     <FILE id="Rh67hJ" name="libLeap.dylib" compile="0" resource="1" file="Builds/MacOSX/libLeap.dylib"/>
     <GROUP id="{86F10CED-1EF2-11AE-6DFA-1E8A090A7A24}" name="HIDManager">
@@ -100,6 +100,8 @@
       <FILE id="pRoxoW" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="HICz75" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="X5IVQ5" name="Routing.cpp" compile="1" resource="0" file="Source/Routing.cpp"/>
+      <FILE id="kcqw8e" name="Routing.h" compile="0" resource="0" file="Source/Routing.h"/>
       <FILE id="rZP6xp" name="SourceMover.cpp" compile="1" resource="0" file="Source/SourceMover.cpp"/>
       <FILE id="ppYknM" name="SourceMover.h" compile="0" resource="0" file="Source/SourceMover.h"/>
       <FILE id="y4THbS" name="Trajectories.cpp" compile="1" resource="0"
