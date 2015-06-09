@@ -36,14 +36,17 @@ class OctoLeap : public ReferenceCountedObject , public Leap::Listener
 {
 public:
     typedef ReferenceCountedObjectPtr<OctoLeap> Ptr;
-    
+    static OctoLeap::Ptr CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor);
+
     OctoLeap(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor);
     virtual void onConnect(const Leap::Controller& controller);
     void onDisconnect(const Leap::Controller& controller);
     void onFrame(const Leap::Controller& controller);
     
     void onServiceDisconnect(const Leap::Controller& controller);
-
+    
+    virtual ~OctoLeap(){
+    }
     
 private:
     OctogrisAudioProcessor *mFilter;
@@ -59,7 +62,6 @@ private:
     
 };
 
-OctoLeap * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor);
 void updateLeapComponent(Component * leapComponent);
 
 #endif

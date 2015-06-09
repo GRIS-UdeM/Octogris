@@ -6,7 +6,7 @@
  
  PluginEditor.h
  
- Developers: Antoine Missout, Vincent Berthiaume
+ Developers: Antoine Missout, Vincent Berthiaume, Antoine Landrieu
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -113,7 +113,8 @@ public:
     int getButtonBeingPressed() {return mButtonBeingPressed;};
     void setButtonBeingPressed(int bbp) { mButtonBeingPressed = bbp;};
     
-    void setHIDDelegate(HIDDelegate * hidDel){mHIDDel = hidDel;};
+    void uncheckJoystickButton();
+    int getNbSources();
     
 
 	
@@ -200,12 +201,12 @@ private:
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
-    OctoLeap *mleap;
+    ReferenceCountedObjectPtr<OctoLeap> mleap;
 	HeartbeatComponent *mOsc;
     
     //joystick
     int mButtonBeingPressed;
-    HIDDelegate *mHIDDel;
+    ReferenceCountedObjectPtr<HIDDelegate>  mHIDDel;
 	
 	// for resizing/repaint:
 	Component *mField;

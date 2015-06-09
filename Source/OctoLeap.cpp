@@ -7,7 +7,7 @@
  OctoLeap.cpp
  Created: 4 Aug 2014 1:23:01pm
  
- Developers: Antoine Missout, Vincent Berthiaume
+ Developers: Antoine Missout, Vincent Berthiaume, Antoine Landrieu
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -152,9 +152,9 @@ Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioPro
 
 
 
-OctoLeap * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
+OctoLeap::Ptr OctoLeap::CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
 {
-	return new OctoLeap(filter, editor);
+    return new OctoLeap(filter, editor);
 }
 
 

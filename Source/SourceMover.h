@@ -35,7 +35,8 @@ typedef enum
 	kVacant,
 	kField,
 	kOsc,
-	kLeap
+	kLeap,
+    kHID
 } MoverType;
 
 class SourceMover

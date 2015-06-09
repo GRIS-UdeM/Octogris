@@ -354,7 +354,7 @@ mMover(ownerFilter)
     mFieldNeedRepaint = false;
 	m_bLoadingPreset = false;
     bool leapSupported = true;
-    bool joystickSupported = false;
+    bool joystickSupported = true;
     
     startTimer(kTimerDelay);
     mFilter->addListener(this);
@@ -990,11 +990,11 @@ mMover(ownerFilter)
     box = mTabs->getTabContentComponent(6);
     {
         int x = kMargin, y = kMargin;
-        const int m = 10, dh = 18, cw = 250;
+        const int m = 10, dh = 18, cw = 300;
         
         mEnableLeap = new ToggleButton();
         mEnableLeap->setButtonText("Enable Leap");
-        mEnableLeap->setSize(cw, dh);
+        mEnableLeap->setSize(cw-100, dh);
         mEnableLeap->setTopLeftPosition(x, y);
         mEnableLeap->addListener(this);
         mEnableLeap->setToggleState(false, dontSendNotification);
@@ -1005,14 +1005,14 @@ mMover(ownerFilter)
         
         mEnableJoystick = new ToggleButton();
         mEnableJoystick->setButtonText("Enable Joystick");
-        mEnableJoystick->setSize(cw, dh);
+        mEnableJoystick->setSize(cw-150, dh);
         mEnableJoystick->setTopLeftPosition(x, y);
         mEnableJoystick->addListener(this);
-        mEnableJoystick->setToggleState(mFilter->getIsJoystickEnabled(), dontSendNotification);
+        mEnableJoystick->setToggleState(false, dontSendNotification);
         box->addAndMakeVisible(mEnableJoystick);
         mComponents.add(mEnableJoystick);
         
-        x += cw + m;
+        x += cw-150 + m;
         
         mStateJoystick = new Label();
         mStateJoystick->setText("", dontSendNotification);
@@ -1022,17 +1022,6 @@ mMover(ownerFilter)
         mStateJoystick->setTopLeftPosition(x, y);
         box->addAndMakeVisible(mStateJoystick);
         mComponents.add(mStateJoystick);
-        
-        /*y += dh + 5;
-         
-         mShowChange = new Label();
-         mShowChange->setText("", dontSendNotification);
-         mShowChange->setSize(cw, dh);
-         mShowChange->setJustificationType(Justification::left);
-         mShowChange->setMinimumHorizontalScale(1);
-         mShowChange->setTopLeftPosition(x, y);
-         box->addAndMakeVisible(mShowChange);
-         mComponents.add(mShowChange);*/
         
         y -= dh + 5;
         
@@ -1044,38 +1033,6 @@ mMover(ownerFilter)
         mStateLeap->setTopLeftPosition(x, y);
         box->addAndMakeVisible(mStateLeap);
         mComponents.add(mStateLeap);
-        
-
-        if(mFilter->getIsJoystickEnabled())
-        {
-            if (gIOHIDManagerRef)
-            {
-                gIOHIDManagerRef = IOHIDManagerCreate(CFAllocatorGetDefault(),kIOHIDOptionsTypeNone);
-                if(!gIOHIDManagerRef)
-                {
-                    printf("Could not create IOHIDManager");
-                }
-                else
-                {
-                    setHIDDelegate(HIDDelegate::CreateHIDDelegate(mFilter, this));
-                    mHIDDel->Initialize_HID(this);
-                    if(mHIDDel->getDeviceSetRef()!=0x0)
-                    {
-                        mStateJoystick->setText("Joystick connected", dontSendNotification);
-                    }
-                    else
-                    {
-                        mStateJoystick->setText("Joystick not connected", dontSendNotification);
-                    }
-                }
-            }
-            else
-            {
-                mFilter->setIsJoystickEnabled(false);
-                mEnableJoystick->setToggleState(false, dontSendNotification);
-                mStateJoystick->setText("Joystick connected to another Octogris window", dontSendNotification);
-            }
-        }
         //fin de changements lié a l'ajout de joystick à l'onglet leap
     }
 #endif
@@ -1137,10 +1094,25 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 #if WIN32
     
 #else
-	gIsLeapConnected = 0;
+    if(mEnableJoystick->getToggleState())
+    {
+        IOHIDManagerUnscheduleFromRunLoop(gIOHIDManagerRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+        IOHIDManagerRegisterInputValueCallback(gIOHIDManagerRef, NULL,this);
+        IOHIDManagerClose(gIOHIDManagerRef, kIOHIDOptionsTypeNone);
+        gIOHIDManagerRef = NULL;
+        gDeviceCFArrayRef = NULL;
+        gElementCFArrayRef = NULL;
+    }
+    mHIDDel = NULL;
+    if(mController)
+    {
+        mController->enableGesture(Leap::Gesture::TYPE_INVALID);
+        mController=NULL;
+        gIsLeapConnected = 0;
+    }
+    getMover()->end(kLeap);
+    getMover()->end(kHID);
 #endif
-    mFilter->setIsLeapEnabled(0);
-
 }
 
 //==============================================================================
@@ -1629,7 +1601,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 }
                 else
                 {
-                    setHIDDelegate(HIDDelegate::CreateHIDDelegate(mFilter, this));
+                    mHIDDel = HIDDelegate::CreateHIDDelegate(mFilter, this);
                     mHIDDel->Initialize_HID(this);
                     if(mHIDDel->getDeviceSetRef())
                     {
@@ -1638,14 +1610,15 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                     else
                     {
                         mStateJoystick->setText("Joystick not connected", dontSendNotification);
+                        mEnableJoystick->setToggleState(false, dontSendNotification);
+                        gIOHIDManagerRef = NULL;
                     }
                 }
             }
             else
             {
-                mFilter->setIsJoystickEnabled(false);
                 mEnableJoystick->setToggleState(false, dontSendNotification);
-                mStateJoystick->setText("Joystick connected to another Octogris window", dontSendNotification);
+                mStateJoystick->setText("Joystick connected to another Octogris", dontSendNotification);
             }
         }
         else
@@ -1669,7 +1642,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     if(button == mEnableLeap)
     {
         bool state = mEnableLeap->getToggleState();
-        //mFilter->setIsLeapEnabled(state);
         
         if (state)
         {
@@ -1685,10 +1657,9 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 }
                 else
                 {
-                    mleap = CreateLeapComponent(mFilter, this);
+                    mleap = OctoLeap::CreateLeapComponent(mFilter, this);
                     if(mleap)
                     {
-                        //mStateLeap->setText("Leap connected", dontSendNotification);
                         gIsLeapConnected = 1;
                         mController->addListener(*mleap);
                     }
@@ -1701,8 +1672,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             }
             else
             {
-                //mFilter->setIsLeapEnabled(false);
-                mStateLeap->setText("Leap not connected (in use)", dontSendNotification);
+                mStateLeap->setText("Leap used in another Octogris", dontSendNotification);
                 mEnableLeap->setToggleState(false, dontSendNotification);
                
             }
@@ -1720,6 +1690,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         }
     }
 	//fin de changements lié a l'ajout de joystick à l'onglet leap
+    
 #endif
     
     else if (button == mTrWriteButton)
@@ -2003,6 +1974,17 @@ void OctogrisAudioProcessorEditor::paint (Graphics& g)
 {
     g.fillAll (Colours::white);
 }
+#if WIN32
 
-
+#else
+void OctogrisAudioProcessorEditor::uncheckJoystickButton()
+{
+    mEnableJoystick->setToggleState(false, dontSendNotification);
+    buttonClicked(mEnableJoystick);
+}
+int OctogrisAudioProcessorEditor::getNbSources()
+{
+    return mFilter->getNumberOfSources();
+}
+#endif
 

@@ -10,7 +10,7 @@
 namespace BinaryData
 {
     extern const char*   libLeap_dylib;
-    const int            libLeap_dylibSize = 2545152;
+    const int            libLeap_dylibSize = 2277328;
 
     extern const char*   HID_Config_Utilities_h;
     const int            HID_Config_Utilities_hSize = 324;
