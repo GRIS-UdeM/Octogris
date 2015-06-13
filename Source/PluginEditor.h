@@ -90,11 +90,14 @@ public:
     void paint(Graphics& g);
 	void resized();
 	
+    //! Method called by button listener when a button is clicked
 	void buttonClicked (Button *button);
+    //! Method called by button listener when a combobox is changed
 	void comboBoxChanged (ComboBox* comboBox);
     void textEditorFocusLost (TextEditor &textEditor);
     void textEditorReturnKeyPressed(TextEditor &textEditor);
 	
+    //! Called every 50ms;
 	void timerCallback();
 	void audioProcessorChanged (AudioProcessor* processor);
 	void audioProcessorParameterChanged (AudioProcessor* processor,
@@ -104,16 +107,19 @@ public:
 	void refreshSize();
 	void fieldChanged() { mFieldNeedRepaint = true; }
 	
+    //! Return the number of the source selected for the Leap Motion
 	int getOscLeapSource() { return mFilter->getOscLeapSource(); }
+    //! Set the number of the source selected for the Leap Motion
 	void setOscLeapSource(int s);
 	SourceMover * getMover() { return &mMover; }
     Label * getmStateLeap() {return mStateLeap;}
     
+    //! Return the HIDDelegate which managed the HID devices
     HIDDelegate * getHIDDel() {return mHIDDel;};
-    int getButtonBeingPressed() {return mButtonBeingPressed;};
-    void setButtonBeingPressed(int bbp) { mButtonBeingPressed = bbp;};
     
+    //! Method unchecking the joystick check box
     void uncheckJoystickButton();
+    //! Return the number of sources form the processor
     int getNbSources();
     
 
@@ -205,7 +211,6 @@ private:
 	HeartbeatComponent *mOsc;
     
     //joystick
-    int mButtonBeingPressed;
     ReferenceCountedObjectPtr<HIDDelegate>  mHIDDel;
 	
 	// for resizing/repaint:

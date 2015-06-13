@@ -94,9 +94,10 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
         OctogrisAudioProcessorEditor* tempEditor = (OctogrisAudioProcessorEditor*) inContext;  //we get the editor from the context
         if(tempEditor->getHIDDel()!=NULL)
         {
-            
-            tempEditor->getHIDDel()->JoystickUsed(usage, value,min,max);  //calling Joystick used the function that will modify the source position
-            
+            if(usagePage==1)   //axis
+            {
+                tempEditor->getHIDDel()->JoystickUsed(usage, value,min,max);  //calling Joystick used the function that will modify the source position
+            }
             if(usagePage==9)   //buttons
             {
                 double state = IOHIDValueGetScaledValue(inIOHIDValueRef, kIOHIDValueScaleTypePhysical);
@@ -356,17 +357,6 @@ void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValu
     
     
     
-}
-FPoint HIDDelegate::getSourcePoint(int i)  //function to get the source coordinate with it's number (Copy/Paste from FieldComponent)
-{
-    if(i!=-1)
-    {
-        const int fieldWidth = mEditor->getWidth();
-        FPoint p = mFilter->getSourceXY01(i);
-        float x = p.x * (fieldWidth - kSourceDiameter) + kSourceRadius;
-        float y = p.y * (fieldWidth - kSourceDiameter) + kSourceRadius;
-        return FPoint(x, fieldWidth - y);
-    }
 }
 
 void HIDDelegate::setButtonPressedTab(u_int32_t usage, bool state)  //Get and Set to use the button pressed array

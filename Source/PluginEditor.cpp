@@ -1586,7 +1586,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     {
 
         bool state = mEnableJoystick->getToggleState();
-        mButtonBeingPressed = -1;
         mFilter->setIsJoystickEnabled(state);
         if (state)
         {

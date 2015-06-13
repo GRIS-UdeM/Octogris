@@ -14,6 +14,7 @@
 		0958441E085C3CB8F20C0EC1 /* AUBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9F22604F590DC7AF6E6D96CE /* AUBase.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		0C843E85D76C092EC095F19D /* CAVectorUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9740AD58597A0078332FF21A /* CAVectorUnit.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		0CC32A0140D035C26DFA9FCE /* juce_RTAS_DigiCode1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98883D0EAB9BF4C98C6D1110 /* juce_RTAS_DigiCode1.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
+		0DA01E251B28882C00CC2E28 /* libLeap.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96508569D95E3978172EFA00 /* libLeap.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		1A7D392E905CA39DD3F64B49 /* HID_Queue_Utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD3992A710C26FFEC6A67E86 /* HID_Queue_Utilities.cpp */; };
 		1BC1B74520DFC433F5C0561F /* CAAUParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90D2C578E1804377FF4B7E53 /* CAAUParameter.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		1D5DB0C471235F0DC99EDB1D /* SourceMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 351ED414B7D7027BC011357F /* SourceMover.cpp */; };
@@ -100,8 +101,9 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 7;
+			dstSubfolderSpec = 6;
 			files = (
+				0DA01E251B28882C00CC2E28 /* libLeap.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
