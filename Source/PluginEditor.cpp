@@ -1947,7 +1947,10 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
         }
     }
-    
+    if(mEnableJoystick->getToggleState())
+    {
+        mHIDDel->readJoystickValuesAndUsingThem();
+    }
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
     

@@ -55,6 +55,9 @@ public:
     IOHIDDeviceRef getDeviceRef(){return deviceRef;}
     //! Return the address of the set of devices
     CFSetRef getDeviceSetRef(){return deviceSetRef;}
+    
+    void readJoystickValuesAndUsingThem();
+    
     //! Destroyer
     virtual ~HIDDelegate() {};
     

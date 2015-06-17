@@ -239,7 +239,7 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
                             
                             CFArrayRef elementRefTab = IOHIDDeviceCopyMatchingElements(deviceRef, NULL, kIOHIDOptionsTypeNone);
                             //Scheduling each detected device with the running loop to get the Handle_IOHIDDeviceInputValueCallback to be called
-                            IOHIDDeviceScheduleWithRunLoop(deviceRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+                            //IOHIDDeviceScheduleWithRunLoop(deviceRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
                             CFIndex nbElement = CFArrayGetCount(elementRefTab);
                             //There was usually 13 elements which weren't buttons on the devices I tried
                             nbButton = nbElement-13;
@@ -296,6 +296,73 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
     
 Oops:;
     return (result);
+}
+
+void HIDDelegate::readJoystickValuesAndUsingThem()
+{
+    CFIndex ind = CFSetGetCount(deviceSetRef);
+    int nbJoysticks = (int)ind;
+    
+    
+    std::string nbJoyStr = std::to_string(nbJoysticks);
+    CFTypeRef array[nbJoysticks];
+    CFSetGetValues(deviceSetRef, array);
+    for(int i=0; i< nbJoysticks;i++)
+    {
+        if(CFGetTypeID(array[i])== IOHIDDeviceGetTypeID())
+        {
+            CFIndex nbElement = CFArrayGetCount(gElementCFArrayRef);
+            if (gElementCFArrayRef) {
+                
+                
+                for (CFIndex i = 0; i<nbElement; i++) {
+                    IOHIDElementRef tIOHIDElementRef  = (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef,i);
+                    uint32_t usagePage = IOHIDElementGetUsagePage(tIOHIDElementRef);
+                    uint32_t usage = IOHIDElementGetUsage(tIOHIDElementRef);
+                    double min = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
+                    double max = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
+                    double value =IOHIDElement_GetValue(tIOHIDElementRef,  kIOHIDValueScaleTypePhysical);
+                    if(mEditor->getHIDDel()!=NULL)
+                    {
+                        if(usagePage==1)   //axis
+                        {
+                            if(!std::isnan(value))
+                            {
+                                mEditor->getHIDDel()->JoystickUsed(usage, value,min,max);  //calling Joystick used the function that will modify the source position
+                            }
+                        }
+                        if(usagePage==9)   //buttons
+                        {
+                            if(value==1)  //being pressed
+                            {
+                                if(usage<= mEditor->getNbSources() )
+                                {
+                                    mEditor->getHIDDel()->setButtonPressedTab(usage,1);
+                                    
+                                    mEditor->getMover()->begin(usage-1, kHID);
+                                }
+                            }
+                            if(value==0)  //released
+                            {
+                                if(usage<= mEditor ->getNbSources() )
+                                {
+                                    mEditor->getHIDDel()->setButtonPressedTab(usage,0);
+                                    
+                                }
+                            }
+                            
+                            
+                        }
+                    }
+
+                }
+            }
+
+            
+        }
+    }
+    mEditor->getMover()->end(kHID);
+    
 }
 
 /** JoystickUsed is called, to handle the effect of the use of the axis while pressing a button on the joystick, by Handle_IOHIDDeviceInputValueCallback because as a static method it is quite limited.
