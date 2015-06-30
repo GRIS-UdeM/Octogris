@@ -1708,85 +1708,83 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
     ++i;
 }
 
-static const int kDataVersion = 13;
+static const int kDataVersion = 14;
 void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    //printf("Octogris: getStateInformation\n");
-    appendIntData(destData, kDataVersion);
-    appendIntData(destData, mShowGridLines);
-    appendIntData(destData, mMovementMode);
-    appendIntData(destData, mLinkDistances);
-    appendIntData(destData, mGuiSize);
-    appendIntData(destData, mGuiTab);
-    appendIntData(destData, mOscLeapSource);
-    appendIntData(destData, mOscReceiveEnabled);
-    appendIntData(destData, mOscReceivePort);
-    appendIntData(destData, mOscSendEnabled);
-    appendIntData(destData, mOscSendPort);
-    appendStringData(destData, mOscSendIp, sizeof(mOscSendIp));
-    appendIntData(destData, mProcessMode);
-    appendIntData(destData, mApplyFilter);
+    XmlElement xml ("OCTOGRIS2SETTINGS");
     
-    //version 9
-    appendIntData(destData, mInputOutputMode);
-    appendIntData(destData, mSrcPlacementMode);
-    appendIntData(destData, mSpPlacementMode);
-    appendIntData(destData, mSrcSelected);
-    appendIntData(destData, mSpSelected);
-    appendIntData(destData, m_iTrType);
-    appendIntData(destData, m_iTrSrcSelect);
-    appendFloatData(destData, m_fTrDuration);
-    appendIntData(destData, m_iTrUnits);
-    appendFloatData(destData, m_fTrRepeats);
-    appendIntData(destData, mLeapEnabled);
+    xml.setAttribute ("mShowGridLines", mShowGridLines);
+    xml.setAttribute ("mMovementMode", mMovementMode);
+    xml.setAttribute ("mLinkDistances", mLinkDistances);
+    xml.setAttribute ("mGuiSize", mGuiSize);
+    xml.setAttribute ("mGuiTab", mGuiTab);
+    xml.setAttribute ("mOscLeapSource", mOscLeapSource);
+    xml.setAttribute ("mOscReceiveEnabled", mOscReceiveEnabled);
+    xml.setAttribute ("mOscReceivePort", mOscReceivePort);
+    xml.setAttribute ("mOscSendEnabled", mOscSendEnabled);
+    xml.setAttribute ("mOscSendPort", mOscSendPort);
+    xml.setAttribute ("mOscSendIp", mOscSendIp);
+    xml.setAttribute ("mProcessMode", mProcessMode);
+    xml.setAttribute ("mApplyFilter", mApplyFilter);
     
-    //version 10
-    appendFloatData(destData, mParameters[kMaxSpanVolume]);
-	
-	//version 13
-	appendFloatData(destData, mParameters[kRoutingVolume]);
-	appendIntData(destData, mRoutingMode);
+    xml.setAttribute ("mInputOutputMode", mInputOutputMode);
+    xml.setAttribute ("mSrcPlacementMode", mSrcPlacementMode);
+    xml.setAttribute ("mSpPlacementMode", mSpPlacementMode);
+    xml.setAttribute ("mSrcSelected", mSrcSelected);
+    xml.setAttribute ("mSpSelected", mSpSelected);
     
-    appendFloatData(destData, mParameters[kLinkMovement]);
-    appendFloatData(destData, mParameters[kSmooth]);
-    appendFloatData(destData, mParameters[kVolumeNear]);
-    appendFloatData(destData, mParameters[kVolumeMid]);
-    appendFloatData(destData, mParameters[kVolumeFar]);
-    appendFloatData(destData, mParameters[kFilterNear]);
-    appendFloatData(destData, mParameters[kFilterMid]);
-    appendFloatData(destData, mParameters[kFilterFar]);
+    xml.setAttribute ("mTrState", mTrState);
+    xml.setAttribute ("m_iTrDirection", m_iTrDirection);
+    xml.setAttribute ("m_iTrReturn", m_iTrReturn);
+    xml.setAttribute ("m_iTrType", m_iTrType);
+    xml.setAttribute ("m_iTrSrcSelect", m_iTrSrcSelect);
+    xml.setAttribute ("m_fTrDuration", m_fTrDuration);
+    xml.setAttribute ("m_iTrUnits", m_iTrUnits);
+    xml.setAttribute ("m_fTrRepeats", m_fTrRepeats);
+    xml.setAttribute ("mLeapEnabled", mLeapEnabled);
     
-    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
-    {
-        appendFloatData(destData, mParameters[getParamForSourceX(i)]);
-        appendFloatData(destData, mParameters[getParamForSourceY(i)]);
-        appendFloatData(destData, mParameters[getParamForSourceD(i)]);
+    xml.setAttribute ("kMaxSpanVolume", mParameters[kMaxSpanVolume]);
+    
+    xml.setAttribute ("kRoutingVolume", mParameters[kRoutingVolume]);
+    xml.setAttribute ("mRoutingMode", mRoutingMode);
+    xml.setAttribute ("kLinkMovement", mParameters[kLinkMovement]);
+    xml.setAttribute ("kSmooth", mParameters[kSmooth]);
+    xml.setAttribute ("kVolumeNear", mParameters[kVolumeNear]);
+    xml.setAttribute ("kVolumeMid", mParameters[kVolumeMid]);
+    xml.setAttribute ("kVolumeFar", mParameters[kVolumeFar]);
+    xml.setAttribute ("kFilterNear", mParameters[kFilterNear]);
+    xml.setAttribute ("kFilterMid", mParameters[kFilterMid]);
+    xml.setAttribute ("kFilterFar", mParameters[kFilterFar]);
+    
+    for (int i = 0; i < JucePlugin_MaxNumInputChannels; ++i) {
+        String srcX = "src" + to_string(i) + "x";
+        xml.setAttribute (srcX, mParameters[getParamForSourceX(i)]);
+        String srcY = "src" + to_string(i) + "y";
+        xml.setAttribute (srcY, mParameters[getParamForSourceY(i)]);
+        String srcD = "src" + to_string(i) + "d";
+        xml.setAttribute (srcD, mParameters[getParamForSourceD(i)]);
     }
-    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
-    {
-        appendFloatData(destData, mParameters[getParamForSpeakerX(i)]);
-        appendFloatData(destData, mParameters[getParamForSpeakerY(i)]);
-        appendFloatData(destData, mParameters[getParamForSpeakerA(i)]);
-        float mute = mParameters[getParamForSpeakerM(i)];
-        appendFloatData(destData, mute);
+    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; ++i) {
+        String spkX = "spk" + to_string(i) + "x";
+        xml.setAttribute (spkX, mParameters[getParamForSpeakerX(i)]);
+        String spkY = "spk" + to_string(i) + "y";
+        xml.setAttribute (spkY, mParameters[getParamForSpeakerY(i)]);
+        String spkA = "spk" + to_string(i) + "a";
+        xml.setAttribute (spkA, mParameters[getParamForSpeakerA(i)]);
+        String spkM = "spk" + to_string(i) + "m";
+        xml.setAttribute (spkM, mParameters[getParamForSpeakerM(i)]);
     }
-    
-    //version 11 and 12
-    //appendIntData(destData, mJoystickEnabled);
-    appendIntData(destData, mTrState);
-    
-    //version 13
-    appendIntData(destData, m_iTrDirection);
-    appendIntData(destData, m_iTrReturn);
     
 }
 
 void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-	//the weird order here is because the order has to match what is in getStateInformation
+	
     int version = readIntData(data, sizeInBytes, 0);
-	if (version >= 1)
+	if (version <= 13 && version > 0)
 	{
+        //the weird order here is because the order had to match what is in getStateInformation for version <= 13
+        
 		mShowGridLines = readIntData(data, sizeInBytes, 0);
 		if (version < 7) readIntData(data, sizeInBytes, 0); // old show levels
 		if (version < 7) readIntData(data, sizeInBytes, 0); // old account for attenuation
@@ -1871,7 +1869,83 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_iTrDirection = readIntData(data, sizeInBytes, 0);
             m_iTrReturn = readIntData(data, sizeInBytes, 0);
         }
-	}
+    } else {
+        // This getXmlFromBinary() helper function retrieves our XML from the binary blob..
+        ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+        if (xmlState != nullptr)
+        {
+            // make sure that it's actually our type of XML object..
+            if (xmlState->hasTagName ("OCTOGRIS2SETTINGS"))
+            {
+                mShowGridLines      = xmlState->getIntAttribute ("mShowGridLines", 0);
+                mMovementMode       = xmlState->getIntAttribute ("mMovementMode", 0);
+                mLinkDistances      = xmlState->getIntAttribute ("mLinkDistances", 0);
+                mGuiSize            = xmlState->getIntAttribute ("mGuiSize", 1);
+                mGuiTab             = xmlState->getIntAttribute ("mGuiTab", 0);
+                mOscLeapSource      = xmlState->getIntAttribute ("mOscLeapSource", 0);
+                mOscReceiveEnabled  = xmlState->getIntAttribute ("mOscReceiveEnabled", 0);
+                mOscReceivePort     = xmlState->getIntAttribute ("mOscReceivePort", 8000);
+                mOscSendEnabled     = xmlState->getIntAttribute ("mOscSendEnabled", 0);
+                mOscSendPort        = xmlState->getIntAttribute ("mOscSendPort", 9000);
+                
+                JUCE_COMPILER_WARNING("check this... this will not run on windows")
+                strlcpy(mOscSendIp, xmlState->getStringAttribute(mOscSendIp, "192.168.1.100").toStdString().c_str(), 64);
+                
+                mProcessMode        = xmlState->getIntAttribute ("mProcessMode", kPanVolumeMode);
+                mApplyFilter        = xmlState->getIntAttribute ("mApplyFilter", 1);
+                
+                setInputOutputMode(   xmlState->getIntAttribute ("mInputOutputMode", 1));
+                mSrcPlacementMode   = xmlState->getIntAttribute ("mSrcPlacementMode", 1);
+                mSpPlacementMode    = xmlState->getIntAttribute ("mSpPlacementMode", 1);
+                mSrcSelected        = xmlState->getIntAttribute ("mSrcSelected", 1);
+                mSpSelected         = xmlState->getIntAttribute ("mSpSelected", 1);
+                
+                mTrState            = xmlState->getIntAttribute ("mTrState", 0);
+                m_iTrDirection      = xmlState->getIntAttribute ("m_iTrDirection", 0);
+                m_iTrReturn         = xmlState->getIntAttribute ("m_iTrReturn", 0);
+                m_iTrType           = xmlState->getIntAttribute ("m_iTrType", 0);
+                m_iTrSrcSelect      = xmlState->getIntAttribute ("m_iTrSrcSelect", 1);
+                m_fTrDuration       = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDuration", 1));
+                m_iTrUnits          = xmlState->getIntAttribute ("m_iTrUnits", 0);
+                m_fTrRepeats        = static_cast<float>(xmlState->getDoubleAttribute("m_fTrRepeats", 1));
+                mLeapEnabled        = xmlState->getIntAttribute ("mLeapEnabled", 0);
+                
+            
+                mParameters.set(kMaxSpanVolume, static_cast<float>(xmlState->getDoubleAttribute("kMaxSpanVolume", normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault))));
+
+                mParameters.set(kRoutingVolume, static_cast<float>(xmlState->getDoubleAttribute("kRoutingVolume", normalize(kRoutingVolumeMin, kRoutingVolumeMax, kRoutingVolumeDefault))));
+                setRoutingMode(xmlState->getIntAttribute ("mRoutingMode", 0));
+
+                mParameters.set(kLinkMovement,  static_cast<float>(xmlState->getDoubleAttribute("kLinkMovement", 0)));
+                mParameters.set(kSmooth,        static_cast<float>(xmlState->getDoubleAttribute("kSmooth", normalize(kSmoothMin, kSmoothMax, kSmoothDefault))));
+                mParameters.set(kVolumeNear,    static_cast<float>(xmlState->getDoubleAttribute("kVolumeNear", normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault))));
+                mParameters.set(kVolumeMid,     static_cast<float>(xmlState->getDoubleAttribute("kVolumeMid", normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault))));
+                mParameters.set(kVolumeFar,     static_cast<float>(xmlState->getDoubleAttribute("kVolumeFar", normalize(kVolumeFarMin, kVolumeFarMax, kVolumeFarDefault))));
+                mParameters.set(kFilterNear,    static_cast<float>(xmlState->getDoubleAttribute("kFilterNear", normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault))));
+                mParameters.set(kFilterMid,     static_cast<float>(xmlState->getDoubleAttribute("kFilterMid", normalize(kFilterMidMin, kFilterMidMax, kFilterMidDefault))));
+                mParameters.set(kFilterFar,     static_cast<float>(xmlState->getDoubleAttribute("kFilterFar", normalize(kFilterFarMin, kFilterFarMax, kFilterFarDefault))));
+                
+                for (int i = 0; i < JucePlugin_MaxNumInputChannels; ++i){
+                    String srcX = "src" + to_string(i) + "x";
+                    mParameters.set(getParamForSourceX(i), static_cast<float>(xmlState->getDoubleAttribute(srcX, 0)));
+                    String srcY = "src" + to_string(i) + "y";
+                    mParameters.set(getParamForSourceY(i), static_cast<float>(xmlState->getDoubleAttribute(srcY, 0)));
+                    String srcD = "src" + to_string(i) + "d";
+                    mParameters.set(getParamForSourceD(i), static_cast<float>(xmlState->getDoubleAttribute(srcD, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance))));
+                }
+                for (int i = 0; i < JucePlugin_MaxNumOutputChannels; ++i){
+                    String spkX = "spk" + to_string(i) + "x";
+                    mParameters.set(getParamForSpeakerX(i), static_cast<float>(xmlState->getDoubleAttribute(spkX, 0)));
+                    String spkY = "spk" + to_string(i) + "y";
+                    mParameters.set(getParamForSpeakerY(i), static_cast<float>(xmlState->getDoubleAttribute(spkY, 0)));
+                    String spkA = "spk" + to_string(i) + "a";
+                    mParameters.set(getParamForSpeakerA(i), static_cast<float>(xmlState->getDoubleAttribute(spkA, normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation))));
+                    String spkM = "spk" + to_string(i) + "m";
+                    mParameters.set(getParamForSpeakerM(i), static_cast<float>(xmlState->getDoubleAttribute(spkM, 0)));
+                }
+            }
+        }
+    }
 	mHostChangedParameter++;
 	mHostChangedProperty++;
 }
