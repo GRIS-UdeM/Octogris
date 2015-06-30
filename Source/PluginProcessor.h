@@ -259,7 +259,6 @@ public:
     inline int getParamForSpeakerA(int index) const { return kSpeakerA + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
     inline int getParamForSpeakerM(int index) const { return kSpeakerM + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }
     
-	JUCE_COMPILER_WARNING("rename?")
     float getSpeakerX(int index) const { return mParameters.getUnchecked(getParamForSpeakerX(index)); }
 	float getSpeakerY(int index) const { return mParameters.getUnchecked(getParamForSpeakerY(index)); }
 	float getSpeakerA(int index) const { return mParameters.getUnchecked(getParamForSpeakerA(index)); }
@@ -388,7 +387,6 @@ public:
 	}
 
 	// these return in the interval [-kRadiusMax .. kRadiusMax]
-	JUCE_COMPILER_WARNING("rename?")
 	FPoint getSourceXY(int i) {
 		float x = getSourceX(i) * (2*kRadiusMax) - kRadiusMax;
 		float y = getSourceY(i) * (2*kRadiusMax) - kRadiusMax;
