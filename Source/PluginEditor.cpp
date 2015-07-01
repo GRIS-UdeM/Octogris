@@ -340,12 +340,15 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParamSlider)
 };
 
+#define STRING2(x) #x
+#define STRING(x) STRING2(x)
+
 //==================================== EDITOR ===================================================================
 
 OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcessor* ownerFilter):
-AudioProcessorEditor (ownerFilter),
-mFilter(ownerFilter),
-mMover(ownerFilter)
+AudioProcessorEditor (ownerFilter)
+,mFilter(ownerFilter)
+,mMover(ownerFilter)
 {
     mHostChangedParameter = mFilter->getHostChangedParameter();
     mHostChangedProperty = mFilter->getHostChangedProperty();
@@ -354,7 +357,6 @@ mMover(ownerFilter)
     mFieldNeedRepaint = false;
 	m_bLoadingPreset = false;
     bool leapSupported = true;
-    bool joystickSupported = true;
     
     startTimer(kTimerDelay);
     mFilter->addListener(this);
@@ -363,6 +365,21 @@ mMover(ownerFilter)
     mField = new FieldComponent(mFilter, &mMover);
     addAndMakeVisible(mField);
     mComponents.add(mField);
+    
+    //version label
+    m_VersionLabel = new Label();
+#ifdef JUCE_DEBUG
+    String version = STRING(JUCE_APP_VERSION);
+    version += " ";
+    version += STRING(__TIME__);
+
+    
+    m_VersionLabel->setText("Octogris" + version,  dontSendNotification);
+    m_VersionLabel->setColour(Label::textColourId, Colours::whitesmoke);
+    addAndMakeVisible(m_VersionLabel);
+#endif
+    mComponents.add(m_VersionLabel);
+
     
     // param box
     Colour tabBg = Colour::fromRGB(200,200,200);
@@ -405,6 +422,7 @@ mMover(ownerFilter)
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
         
+        JUCE_COMPILER_WARNING("WTF is this????")
         if (mFilter->getIsAllowInputOutputModeSelection()){
             mFilter->setInputOutputMode(mFilter->getInputOutputMode());
         }
@@ -980,8 +998,7 @@ mMover(ownerFilter)
         }
     
     }
-    //--------------- OSC TAB ---------------- //
-    
+
     //--------------- INTERFACE TAB ---------------- //
 #if WIN32
     
@@ -1126,8 +1143,12 @@ void OctogrisAudioProcessorEditor::refreshSize()
     setSize(kMargin + fieldSize + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin,
             kMargin + fieldSize + kMargin);
 }
+
 void OctogrisAudioProcessorEditor::resized()
 {
+    
+    m_VersionLabel->setBounds(5,5,180,25);
+    
     int w = getWidth();
     int h = getHeight();
     

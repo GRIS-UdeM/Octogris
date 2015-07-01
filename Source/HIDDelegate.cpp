@@ -235,7 +235,7 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
                         uint32_t usagePage = kHIDPage_GenericDesktop;
                         uint32_t usage = kHIDUsage_GD_Joystick;
                         if (IOHIDDeviceConformsTo(deviceRef, usagePage, usage)) {
-                            std::cout << "Joystick number 1 " +  nbJoyStr + " joysticks connected \n ";
+                            //std::cout << "Joystick number 1 " +  nbJoyStr + " joysticks connected \n ";
                             
                             CFArrayRef elementRefTab = IOHIDDeviceCopyMatchingElements(deviceRef, NULL, kIOHIDOptionsTypeNone);
                             //Scheduling each detected device with the running loop to get the Handle_IOHIDDeviceInputValueCallback to be called

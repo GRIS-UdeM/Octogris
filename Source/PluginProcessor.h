@@ -507,6 +507,7 @@ public:
     void updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise);
 	
 private:
+
 	bool m_bAllowInputOutputModeSelection;
 	Trajectory::Ptr mTrajectory;
 
