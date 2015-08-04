@@ -61,19 +61,15 @@
   </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Debug\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib</LibraryPath>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">.\Debug64\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib64</LibraryPath>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Release\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib</LibraryPath>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">.\Release64\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">$(LibraryPath);C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib64</LibraryPath>
@@ -1654,6 +1650,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\logoGrisDarkGray.jpg"/>
     <None Include="..\MacOSX\libLeap.dylib"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_module_info"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\juce_module_info"/>

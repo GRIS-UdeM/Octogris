@@ -8,8 +8,12 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
-              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.2.0">
   <MAINGROUP id="rRl79u" name="Octogris2">
+    <GROUP id="{B76B0FE8-BBC6-AA42-5E09-44DABB7BB441}" name="Resources">
+      <FILE id="G2Ok5U" name="logoGrisDarkGray.jpg" compile="0" resource="1"
+            file="logoGrisDarkGray.jpg"/>
+    </GROUP>
     <FILE id="Rh67hJ" name="libLeap.dylib" compile="0" resource="1" file="Builds/MacOSX/libLeap.dylib"/>
     <GROUP id="{86F10CED-1EF2-11AE-6DFA-1E8A090A7A24}" name="HIDManager">
       <FILE id="RebHZI" name="HID_Config_Utilities.cpp" compile="1" resource="0"

@@ -5,6 +5,9 @@
     <Filter Include="Octogris2">
       <UniqueIdentifier>{4E14FA64-C97A-ACCC-D80E-A99B864AECA5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Octogris2\Resources">
+      <UniqueIdentifier>{EE55291D-C211-A6FC-6689-EE1F5A54FD3F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Octogris2\HIDManager">
       <UniqueIdentifier>{1E4C5281-3881-F2A1-81AD-759F3F34A270}</UniqueIdentifier>
     </Filter>
@@ -2672,6 +2675,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\logoGrisDarkGray.jpg">
+      <Filter>Octogris2\Resources</Filter>
+    </None>
     <None Include="..\MacOSX\libLeap.dylib">
       <Filter>Octogris2</Filter>
     </None>
