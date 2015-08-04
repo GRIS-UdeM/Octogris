@@ -377,8 +377,8 @@ AudioProcessorEditor (ownerFilter)
     m_VersionLabel = new Label();
     String version = STRING(JUCE_APP_VERSION);
 #ifdef JUCE_DEBUG
-//    version += " ";
-//    version += STRING(__TIME__);
+    version += " ";
+    version += STRING(__TIME__);
 #endif
     
     m_VersionLabel->setText("Octogris" + version,  dontSendNotification);
