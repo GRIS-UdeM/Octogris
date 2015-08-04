@@ -2675,7 +2675,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\logoGrisDarkGray.jpg">
+    <None Include="..\..\logoGris.png">
       <Filter>Octogris2\Resources</Filter>
     </None>
     <None Include="..\MacOSX\libLeap.dylib">

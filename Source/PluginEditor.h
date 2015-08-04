@@ -170,6 +170,8 @@ private:
 	
 	ComboBox *mRoutingMode;
 	Slider *mRoutingVolume;
+    
+    ImageComponent m_logoImage;
 	
 #if WIN32
     

@@ -9,8 +9,8 @@
 
 namespace BinaryData
 {
-    extern const char*   logoGrisDarkGray_jpg;
-    const int            logoGrisDarkGray_jpgSize = 284414;
+    extern const char*   logoGris_png;
+    const int            logoGris_pngSize = 400483;
 
     extern const char*   libLeap_dylib;
     const int            libLeap_dylibSize = 2280096;

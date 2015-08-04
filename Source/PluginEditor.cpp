@@ -349,7 +349,10 @@ OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcess
 AudioProcessorEditor (ownerFilter)
 ,mFilter(ownerFilter)
 ,mMover(ownerFilter)
+,m_logoImage()
 {
+
+    
     mHostChangedParameter = mFilter->getHostChangedParameter();
     mHostChangedProperty = mFilter->getHostChangedProperty();
     
@@ -365,19 +368,24 @@ AudioProcessorEditor (ownerFilter)
     mField = new FieldComponent(mFilter, &mMover);
     addAndMakeVisible(mField);
     mComponents.add(mField);
+
+    //GRIS logo
+    m_logoImage.setImage(ImageFileFormat::loadFrom (BinaryData::logoGris_png, (size_t) BinaryData::logoGris_pngSize));
+    addAndMakeVisible(&m_logoImage);
     
     //version label
     m_VersionLabel = new Label();
-#ifdef JUCE_DEBUG
     String version = STRING(JUCE_APP_VERSION);
-    version += " ";
-    version += STRING(__TIME__);
-
+#ifdef JUCE_DEBUG
+//    version += " ";
+//    version += STRING(__TIME__);
+#endif
     
     m_VersionLabel->setText("Octogris" + version,  dontSendNotification);
+    m_VersionLabel->setJustificationType(Justification(Justification::right));
     m_VersionLabel->setColour(Label::textColourId, Colours::whitesmoke);
     addAndMakeVisible(m_VersionLabel);
-#endif
+
     mComponents.add(m_VersionLabel);
 
     
@@ -1146,9 +1154,6 @@ void OctogrisAudioProcessorEditor::refreshSize()
 
 void OctogrisAudioProcessorEditor::resized()
 {
-    
-    m_VersionLabel->setBounds(5,5,180,25);
-    
     int w = getWidth();
     int h = getHeight();
     
@@ -1157,6 +1162,12 @@ void OctogrisAudioProcessorEditor::resized()
     int fieldSize = jmin(fieldWidth, fieldHeight);
     
     mField->setBounds(kMargin, kMargin, fieldSize, fieldSize);
+
+    //m_logoImage.setBounds(15, 15, 80, 80);
+    m_logoImage.setBounds(15, 15, (float)fieldSize/7, (float)fieldSize/7);
+    
+    int iLabelX = 2*(float)fieldSize/3;
+    m_VersionLabel->setBounds(iLabelX,5,fieldSize-iLabelX,25);
     
     int x = kMargin + fieldSize  + kMargin;
     int y = kMargin;

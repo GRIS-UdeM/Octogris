@@ -1650,7 +1650,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\logoGrisDarkGray.jpg"/>
+    <None Include="..\..\logoGris.png"/>
     <None Include="..\MacOSX\libLeap.dylib"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_module_info"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\juce_module_info"/>
