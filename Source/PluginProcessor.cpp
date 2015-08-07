@@ -1779,7 +1779,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
     ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
     if (xmlState != nullptr)
     {
-        // make sure that it's actually our type of XML object..
+        // make sure that it's actually our type of XML object..˝
         if (xmlState->hasTagName ("OCTOGRIS_SETTINGS") || xmlState->hasTagName ("OCTOGRIS2SETTINGS"))
         {
             mShowGridLines      = xmlState->getIntAttribute ("mShowGridLines", 0);
