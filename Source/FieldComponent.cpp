@@ -350,7 +350,7 @@ void FieldComponent::mouseDown(const MouseEvent &event)
 
 void FieldComponent::mouseDrag(const MouseEvent &event)
 {
-	Point<int> ml(event.x, event.y);
+	Point<int> mouseLocation(event.x, event.y);
 	
      //printf("x : %d  y : %d \n",ml.x,ml.y );
 	int fieldWidth = getWidth();
@@ -363,8 +363,8 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 			
 		case kSelectedSource:
 		{
-			float vx = (ml.x - kSourceRadius) / (padSize - kSourceDiameter);
-			float vy = 1 - (ml.y - kSourceRadius) / (padSize - kSourceDiameter);
+			float vx = (mouseLocation.x - kSourceRadius) / (padSize - kSourceDiameter);
+			float vy = 1 - (mouseLocation.y - kSourceRadius) / (padSize - kSourceDiameter);
 			if (vx < 0) vx = 0; else if (vx > 1) vx = 1;
 			if (vy < 0) vy = 0; else if (vy > 1) vy = 1;
 
@@ -402,8 +402,8 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 			
 		case kSelectedSpeaker:
 		{
-			float vx = (ml.x - kSpeakerRadius) / (padSize - kSpeakerDiameter);
-			float vy = 1 - (ml.y - kSpeakerRadius) / (padSize - kSpeakerDiameter);
+			float vx = (mouseLocation.x - kSpeakerRadius) / (padSize - kSpeakerDiameter);
+			float vy = 1 - (mouseLocation.y - kSpeakerRadius) / (padSize - kSpeakerDiameter);
 			mFilter->setSpeakerXY01(mSelectedItem, FPoint(vx, vy));
 			break;
 		}
