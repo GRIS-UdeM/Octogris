@@ -78,11 +78,7 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
                                                        IOHIDValueRef   inIOHIDValueRef // the new element value
 //static function called when the joystick is used
 ) {
-    
-    
     do {
-        
-        
         IOHIDElementRef tIOHIDElementRef = IOHIDValueGetElement(inIOHIDValueRef);
         //We get the informations we need from inIOHIDValueRef
         uint32_t usagePage = IOHIDElementGetUsagePage(tIOHIDElementRef);
@@ -92,54 +88,38 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
         
         double value = IOHIDValueGetScaledValue(inIOHIDValueRef, kIOHIDValueScaleTypePhysical);
         OctogrisAudioProcessorEditor* tempEditor = (OctogrisAudioProcessorEditor*) inContext;  //we get the editor from the context
-        if(tempEditor->getHIDDel()!=NULL)
-        {
-            if(usagePage==1)   //axis
-            {
+        if(tempEditor->getHIDDel() != NULL) {
+            if(usagePage==1){   //axis
                 tempEditor->getHIDDel()->JoystickUsed(usage, value,min,max);  //calling Joystick used the function that will modify the source position
             }
-            if(usagePage==9)   //buttons
-            {
+            if(usagePage==9){   //buttons
+                
                 double state = IOHIDValueGetScaledValue(inIOHIDValueRef, kIOHIDValueScaleTypePhysical);
-                
-                
-                if(state==1)  //being pressed
-                {
-                    if(usage<= tempEditor->getNbSources() )
-                    {
+                if(state==1){  //being pressed
+                    if(usage<= tempEditor->getNbSources() ) {
                         tempEditor->getHIDDel()->setButtonPressedTab(usage,1);
                         
                         tempEditor->getMover()->begin(usage-1, kHID);
                     }
-                }
-                if(state==0)  //released
-                {
-                    if(usage<= tempEditor ->getNbSources() )
-                    {
+                } else if (state==0){  //released
+                    if(usage<= tempEditor ->getNbSources() ) {
                         tempEditor->getHIDDel()->setButtonPressedTab(usage,0);
                         tempEditor->getMover()->end(kHID);
                     }
                 }
-                
-                
             }
-            
             if (!tIOHIDElementRef) {
                 printf("tIOHIDElementRef == NULL\n");
                 break;                                                              // (no)
             }
-            
             // length ok?
             CFIndex length = IOHIDValueGetLength(inIOHIDValueRef);
             if (length > sizeof(double_t)) {
                 break;                                                              // (no)
             }
-            
         }
-        
     }
     while (false);
-    
 }
 
 /**hu_CreateMatchingDictionary method creates a matching dictionnary that allow you to only look for one type of HID devices, in our case the joysticks. As this method is also used as a static method in the HID_Utilities there probably is a better way to use it but this is the way it was explained to me on the website I used to create my hid communications. */
@@ -212,8 +192,6 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
                     fprintf(stderr, "%s: hu_CreateDeviceMatchingDictionary failed.", __PRETTY_FUNCTION__);
                     break;
                 }
-                
-                
                 
                 deviceSetRef = IOHIDManagerCopyDevices(gIOHIDManagerRef);
                 if(deviceSetRef!=0x0)
@@ -294,7 +272,6 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
         printf("IOHIDManager (%p) creaded and opened!", (void *) gIOHIDManagerRef);
     } while (false);
     
-Oops:;
     return (result);
 }
 

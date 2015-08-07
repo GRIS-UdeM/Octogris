@@ -320,11 +320,11 @@ void FieldComponent::mouseDown(const MouseEvent &event)
 			
 			mMover->begin(i, kField);
 			
-			float vx = (ml.x - kSourceRadius) / (padSize - kSourceDiameter);
-			float vy = 1 - (ml.y - kSourceRadius) / (padSize - kSourceDiameter);
-			if (vx < 0) vx = 0; else if (vx > 1) vx = 1;
-			if (vy < 0) vy = 0; else if (vy > 1) vy = 1;
-			mMover->move(FPoint(vx, vy), kField);
+//			float vx = (ml.x - kSourceRadius) / (padSize - kSourceDiameter);
+//			float vy = 1 - (ml.y - kSourceRadius) / (padSize - kSourceDiameter);
+//			if (vx < 0) vx = 0; else if (vx > 1) vx = 1;
+//			if (vy < 0) vy = 0; else if (vy > 1) vy = 1;
+//			mMover->move(FPoint(vx, vy), kField);
 			return;
 		}
 	}
