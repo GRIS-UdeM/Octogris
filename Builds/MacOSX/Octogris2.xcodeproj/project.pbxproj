@@ -14,7 +14,6 @@
 		0958441E085C3CB8F20C0EC1 /* AUBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9F22604F590DC7AF6E6D96CE /* AUBase.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		0C843E85D76C092EC095F19D /* CAVectorUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9740AD58597A0078332FF21A /* CAVectorUnit.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		0CC32A0140D035C26DFA9FCE /* juce_RTAS_DigiCode1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98883D0EAB9BF4C98C6D1110 /* juce_RTAS_DigiCode1.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
-		0DA01E251B28882C00CC2E28 /* libLeap.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96508569D95E3978172EFA00 /* libLeap.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		1A7D392E905CA39DD3F64B49 /* HID_Queue_Utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD3992A710C26FFEC6A67E86 /* HID_Queue_Utilities.cpp */; };
 		1BC1B74520DFC433F5C0561F /* CAAUParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90D2C578E1804377FF4B7E53 /* CAAUParameter.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		1D5DB0C471235F0DC99EDB1D /* SourceMover.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 351ED414B7D7027BC011357F /* SourceMover.cpp */; };
@@ -65,6 +64,7 @@
 		A1E1DA1CCBFDA66CF302EDAB /* juce_AAX_Wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8672BB27C60B00A1B59A0825 /* juce_AAX_Wrapper.cpp */; };
 		AAAC67D4263DA75F7C541EE3 /* juce_gui_basics.mm in Sources */ = {isa = PBXBuildFile; fileRef = AE7E5DF6F838ED6446019124 /* juce_gui_basics.mm */; };
 		ADE606E9654B3EF899191559 /* PluginEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50E3B03A738441659AEC9376 /* PluginEditor.cpp */; };
+		B19ED3A81B75051D003A520D /* libLeap.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96508569D95E3978172EFA00 /* libLeap.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B2A0982BCA12DC40770EDE4D /* AUBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C36B7384C0516544E44FFF0 /* AUBuffer.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		B6D7952F46E362B1A5B4BE2F /* juce_core.mm in Sources */ = {isa = PBXBuildFile; fileRef = F8B94EB70412EFA7441864D8 /* juce_core.mm */; };
 		B828E9BEE9F48C378BCA38A5 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5CB7F23EA32F2990DCF91B5 /* AudioUnit.framework */; };
@@ -97,13 +97,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0DA3C5FA1B27AC8C00D37868 /* CopyFiles */ = {
+		B19ED3A71B750516003A520D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				0DA01E251B28882C00CC2E28 /* libLeap.dylib in CopyFiles */,
+				B19ED3A81B75051D003A520D /* libLeap.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +308,7 @@
 		35936CCA2ECAA78CF2CE397F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		35E4D6928FA0759E501B1DCC /* juce_String.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_String.cpp; path = ../../JuceLibraryCode/modules/juce_core/text/juce_String.cpp; sourceTree = SOURCE_ROOT; };
 		3604F785F25691487D14DD66 /* juce_TabbedButtonBar.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TabbedButtonBar.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/layout/juce_TabbedButtonBar.cpp; sourceTree = SOURCE_ROOT; };
+		3625105865DA0EE93BA66D93 /* logoGris.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoGris.png; path = ../../logoGris.png; sourceTree = SOURCE_ROOT; };
 		36A5BDE4DFF8082BE813C1EA /* juce_ColourSelector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_ColourSelector.cpp; path = ../../JuceLibraryCode/modules/juce_gui_extra/misc/juce_ColourSelector.cpp; sourceTree = SOURCE_ROOT; };
 		370614A4F3BD2D15ED4F361E /* juce_PlatformDefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_PlatformDefs.h; path = ../../JuceLibraryCode/modules/juce_core/system/juce_PlatformDefs.h; sourceTree = SOURCE_ROOT; };
 		3730B7C866AEE3C818164218 /* juce_TextPropertyComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TextPropertyComponent.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/properties/juce_TextPropertyComponent.cpp; sourceTree = SOURCE_ROOT; };
@@ -1295,6 +1296,14 @@
 			name = containers;
 			sourceTree = "<group>";
 		};
+		3000603C97D18C8CE418F3AC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3625105865DA0EE93BA66D93 /* logoGris.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		32D7E579E6E7E5DF54D9580D /* xml */ = {
 			isa = PBXGroup;
 			children = (
@@ -1596,6 +1605,7 @@
 		5BD0C6BDC5067957B9ABAD06 /* Octogris2 */ = {
 			isa = PBXGroup;
 			children = (
+				3000603C97D18C8CE418F3AC /* Resources */,
 				96508569D95E3978172EFA00 /* libLeap.dylib */,
 				1627D177B8F6D84CB0EEA908 /* HIDManager */,
 				0F7849431E0F642D64867D76 /* liblo */,
@@ -2635,7 +2645,7 @@
 				AFBAB6135653C9B7B9F10AA5 /* Sources */,
 				AE1FAB299C5E8BE3F6E82000 /* Frameworks */,
 				ACB59ACAAF55A1838119385D /* Post-build script */,
-				0DA3C5FA1B27AC8C00D37868 /* CopyFiles */,
+				B19ED3A71B750516003A520D /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -2807,8 +2817,8 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=2.2.1",
-					"JUCE_APP_VERSION_HEX=0x20201",
+					"JUCE_APP_VERSION=2.2.3",
+					"JUCE_APP_VERSION_HEX=0x20203",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
@@ -2859,8 +2869,8 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=2.2.1",
-					"JUCE_APP_VERSION_HEX=0x20201",
+					"JUCE_APP_VERSION=2.2.3",
+					"JUCE_APP_VERSION_HEX=0x20203",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;

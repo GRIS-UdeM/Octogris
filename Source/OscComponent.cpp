@@ -212,6 +212,7 @@ public:
 		}
 		else
 		{
+            JUCE_COMPILER_WARNING("debug on this")
 			printf("unknown button clicked...\n");
 		}
 	}

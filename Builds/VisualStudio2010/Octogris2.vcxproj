@@ -33,11 +33,9 @@
   <PropertyGroup Label="UserMacros"/>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(LibraryPath);C:\SDKs\liblo-0.28\lib\ReleaseLib</LibraryPath>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</OutDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(LibraryPath);C:\SDKs\liblo-0.28\lib\ReleaseLib</LibraryPath>
@@ -54,7 +52,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\SDKs\vstsdk2.4;c:\SDKs\VST3 SDK;C:\SDKs\liblo-0.28;C:\SDKs\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=2.2.1;JUCE_APP_VERSION_HEX=0x20201;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=2.2.3;JUCE_APP_VERSION_HEX=0x20203;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -100,7 +98,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\SDKs\vstsdk2.4;c:\SDKs\VST3 SDK;C:\SDKs\liblo-0.28;C:\SDKs\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=2.2.1;JUCE_APP_VERSION_HEX=0x20201;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=2.2.3;JUCE_APP_VERSION_HEX=0x20203;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -1529,6 +1527,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\logoGris.png"/>
     <None Include="..\MacOSX\libLeap.dylib"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_basics\juce_module_info"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\juce_module_info"/>

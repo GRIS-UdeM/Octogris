@@ -166,9 +166,12 @@ private:
     //Label *mShowChange;
     Label *mStateLeap;
     Label *mStateJoystick;
+    Label *m_VersionLabel;
 	
 	ComboBox *mRoutingMode;
 	Slider *mRoutingVolume;
+    
+    ImageComponent m_logoImage;
 	
 #if WIN32
     

@@ -9,8 +9,11 @@
 
 namespace BinaryData
 {
+    extern const char*   logoGris_png;
+    const int            logoGris_pngSize = 400483;
+
     extern const char*   libLeap_dylib;
-    const int            libLeap_dylibSize = 2277328;
+    const int            libLeap_dylibSize = 2280096;
 
     extern const char*   HID_Config_Utilities_h;
     const int            HID_Config_Utilities_hSize = 324;
@@ -46,7 +49,7 @@ namespace BinaryData
     extern const char* namedResourceList[];
 
     // Number of elements in the namedResourceList array.
-    const int namedResourceListSize = 11;
+    const int namedResourceListSize = 12;
 
     // If you provide the name of one of the binary resource variables above, this function will
     // return the corresponding data and its size (or a null pointer if the name isn't found).

@@ -340,13 +340,19 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParamSlider)
 };
 
+#define STRING2(x) #x
+#define STRING(x) STRING2(x)
+
 //==================================== EDITOR ===================================================================
 
 OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcessor* ownerFilter):
-AudioProcessorEditor (ownerFilter),
-mFilter(ownerFilter),
-mMover(ownerFilter)
+AudioProcessorEditor (ownerFilter)
+,mFilter(ownerFilter)
+,mMover(ownerFilter)
+,m_logoImage()
 {
+
+    
     mHostChangedParameter = mFilter->getHostChangedParameter();
     mHostChangedProperty = mFilter->getHostChangedProperty();
     
@@ -354,7 +360,6 @@ mMover(ownerFilter)
     mFieldNeedRepaint = false;
 	m_bLoadingPreset = false;
     bool leapSupported = true;
-    bool joystickSupported = true;
     
     startTimer(kTimerDelay);
     mFilter->addListener(this);
@@ -363,6 +368,26 @@ mMover(ownerFilter)
     mField = new FieldComponent(mFilter, &mMover);
     addAndMakeVisible(mField);
     mComponents.add(mField);
+
+    //GRIS logo
+    m_logoImage.setImage(ImageFileFormat::loadFrom (BinaryData::logoGris_png, (size_t) BinaryData::logoGris_pngSize));
+    addAndMakeVisible(&m_logoImage);
+    
+    //version label
+    m_VersionLabel = new Label();
+    String version = STRING(JUCE_APP_VERSION);
+#ifdef JUCE_DEBUG
+    version += " ";
+    version += STRING(__TIME__);
+#endif
+    
+    m_VersionLabel->setText("Octogris" + version,  dontSendNotification);
+    m_VersionLabel->setJustificationType(Justification(Justification::right));
+    m_VersionLabel->setColour(Label::textColourId, Colours::whitesmoke);
+    addAndMakeVisible(m_VersionLabel);
+
+    mComponents.add(m_VersionLabel);
+
     
     // param box
     Colour tabBg = Colour::fromRGB(200,200,200);
@@ -405,6 +430,7 @@ mMover(ownerFilter)
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
         
+        JUCE_COMPILER_WARNING("WTF is this????")
         if (mFilter->getIsAllowInputOutputModeSelection()){
             mFilter->setInputOutputMode(mFilter->getInputOutputMode());
         }
@@ -980,8 +1006,7 @@ mMover(ownerFilter)
         }
     
     }
-    //--------------- OSC TAB ---------------- //
-    
+
     //--------------- INTERFACE TAB ---------------- //
 #if WIN32
     
@@ -1126,6 +1151,7 @@ void OctogrisAudioProcessorEditor::refreshSize()
     setSize(kMargin + fieldSize + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin,
             kMargin + fieldSize + kMargin);
 }
+
 void OctogrisAudioProcessorEditor::resized()
 {
     int w = getWidth();
@@ -1136,6 +1162,12 @@ void OctogrisAudioProcessorEditor::resized()
     int fieldSize = jmin(fieldWidth, fieldHeight);
     
     mField->setBounds(kMargin, kMargin, fieldSize, fieldSize);
+
+    //m_logoImage.setBounds(15, 15, 80, 80);
+    m_logoImage.setBounds(15, 15, (float)fieldSize/7, (float)fieldSize/7);
+    
+    int iLabelX = 2*(float)fieldSize/3;
+    m_VersionLabel->setBounds(iLabelX,5,fieldSize-iLabelX,25);
     
     int x = kMargin + fieldSize  + kMargin;
     int y = kMargin;
