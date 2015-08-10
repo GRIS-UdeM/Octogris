@@ -64,7 +64,7 @@
 		A1E1DA1CCBFDA66CF302EDAB /* juce_AAX_Wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8672BB27C60B00A1B59A0825 /* juce_AAX_Wrapper.cpp */; };
 		AAAC67D4263DA75F7C541EE3 /* juce_gui_basics.mm in Sources */ = {isa = PBXBuildFile; fileRef = AE7E5DF6F838ED6446019124 /* juce_gui_basics.mm */; };
 		ADE606E9654B3EF899191559 /* PluginEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50E3B03A738441659AEC9376 /* PluginEditor.cpp */; };
-		B19ED3A81B75051D003A520D /* libLeap.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96508569D95E3978172EFA00 /* libLeap.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B19B2C491B790C94002BBB8D /* libLeap.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96508569D95E3978172EFA00 /* libLeap.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B2A0982BCA12DC40770EDE4D /* AUBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1C36B7384C0516544E44FFF0 /* AUBuffer.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		B6D7952F46E362B1A5B4BE2F /* juce_core.mm in Sources */ = {isa = PBXBuildFile; fileRef = F8B94EB70412EFA7441864D8 /* juce_core.mm */; };
 		B828E9BEE9F48C378BCA38A5 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5CB7F23EA32F2990DCF91B5 /* AudioUnit.framework */; };
@@ -97,13 +97,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		B19ED3A71B750516003A520D /* CopyFiles */ = {
+		B19B2C481B790C8B002BBB8D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				B19ED3A81B75051D003A520D /* libLeap.dylib in CopyFiles */,
+				B19B2C491B790C94002BBB8D /* libLeap.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1329,7 +1329,7 @@
 		3911563B807D9CFB0D98CEFA /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				5BD0C6BDC5067957B9ABAD06 /* Octogris2 */,
+				5BD0C6BDC5067957B9ABAD06 /* Octogris */,
 				762942F79E8B6FE1EBB7D65E /* Juce Modules */,
 				0BFEA7EF3B5EC47B8E4B8996 /* Juce Library Code */,
 				70D2098E96ACE6996F6C5B04 /* Resources */,
@@ -1602,7 +1602,7 @@
 			name = placement;
 			sourceTree = "<group>";
 		};
-		5BD0C6BDC5067957B9ABAD06 /* Octogris2 */ = {
+		5BD0C6BDC5067957B9ABAD06 /* Octogris */ = {
 			isa = PBXGroup;
 			children = (
 				3000603C97D18C8CE418F3AC /* Resources */,
@@ -1611,7 +1611,7 @@
 				0F7849431E0F642D64867D76 /* liblo */,
 				AC289CC86FF4B31656CB718A /* Source */,
 			);
-			name = Octogris2;
+			name = Octogris;
 			sourceTree = "<group>";
 		};
 		5D19011338A11648E9DB3862 /* timers */ = {
@@ -2636,24 +2636,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DD282B42F4192E0F53777C29 /* Octogris2 */ = {
+		DD282B42F4192E0F53777C29 /* Octogris */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 95F98BC3C3066B00BD133BA3 /* Build configuration list for PBXNativeTarget "Octogris2" */;
+			buildConfigurationList = 95F98BC3C3066B00BD133BA3 /* Build configuration list for PBXNativeTarget "Octogris" */;
 			buildPhases = (
 				BC419E016234D4963DAB10EB /* Resources */,
 				9B535A1C434303D4AA33E340 /* Rez */,
 				AFBAB6135653C9B7B9F10AA5 /* Sources */,
 				AE1FAB299C5E8BE3F6E82000 /* Frameworks */,
 				ACB59ACAAF55A1838119385D /* Post-build script */,
-				B19ED3A71B750516003A520D /* CopyFiles */,
+				B19B2C481B790C8B002BBB8D /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Octogris2;
+			name = Octogris;
 			productInstallPath = "$(HOME)/Library/Audio/Plug-Ins/Components/";
-			productName = Octogris2;
+			productName = Octogris;
 			productReference = 40C2BC6072129AFCE484F588 /* Octogris2.component */;
 			productType = "com.apple.product-type.bundle";
 		};
@@ -2663,9 +2663,9 @@
 		46CB48D29713829397AFADF0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0640;
 			};
-			buildConfigurationList = 465764387A5B1C8F5EA3A7C6 /* Build configuration list for PBXProject "Octogris2" */;
+			buildConfigurationList = 465764387A5B1C8F5EA3A7C6 /* Build configuration list for PBXProject "Octogris" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -2676,7 +2676,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DD282B42F4192E0F53777C29 /* Octogris2 */,
+				DD282B42F4192E0F53777C29 /* Octogris */,
 			);
 		};
 /* End PBXProject section */
@@ -2846,7 +2846,7 @@
 					"-lLeap",
 				);
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = component;
 			};
@@ -2899,7 +2899,7 @@
 					"-lLeap",
 				);
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = component;
 			};
@@ -2919,6 +2919,8 @@
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = Octogris2;
 				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
@@ -2939,6 +2941,7 @@
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				PRODUCT_NAME = Octogris2;
 				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
@@ -2948,7 +2951,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		465764387A5B1C8F5EA3A7C6 /* Build configuration list for PBXProject "Octogris2" */ = {
+		465764387A5B1C8F5EA3A7C6 /* Build configuration list for PBXProject "Octogris" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				45FD2B73FDDE6CDCB6F64914 /* Debug */,
@@ -2957,7 +2960,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		95F98BC3C3066B00BD133BA3 /* Build configuration list for PBXNativeTarget "Octogris2" */ = {
+		95F98BC3C3066B00BD133BA3 /* Build configuration list for PBXNativeTarget "Octogris" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				261FA8AA033C4D19C9F482DA /* Debug */,

@@ -5,16 +5,16 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>86559E5B-CB47-4D3A-A2F1-C9A4B142EB5C</string>
+	<string>5C8D34B6-81B5-41E9-B0D6-EC7ACB1BA75B</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>Octogris</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>4C5334256ADE7BE6B8B0CF3B0BDFC04203B98A7F</key>
 		<string>https://github.com/GRIS-UdeM/Octogris.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Builds/MacOSX/Octogris2.xcodeproj/project.xcworkspace</string>
+	<string>Builds/MacOSX/Octogris.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>4C5334256ADE7BE6B8B0CF3B0BDFC04203B98A7F</key>
