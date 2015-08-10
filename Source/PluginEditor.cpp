@@ -346,7 +346,7 @@ class SourceUpdateThread : public Thread, public Component
 public:
     SourceUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)
     : Thread ("SourceUpdateThread")
-    ,m_iInterval(1000)
+    ,m_iInterval(25)
     ,m_pEditor(p_pProcessor) {
         
         startThread ();
@@ -372,8 +372,7 @@ public:
 //                return;                 // will fail, in which case we'd better return..
             
             // now we've got the UI thread locked, we can mess about with the components
-            m_pEditor->getMover();
-            cout << "threadddd" << newLine;
+            //m_pEditor->getMover()->move(<#FPoint p#>, <#MoverType mt#>);
         }
     }
     
