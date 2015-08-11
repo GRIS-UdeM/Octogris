@@ -1124,7 +1124,7 @@ AudioProcessorEditor (ownerFilter)
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
     if (/*m_bCurrentlyPlaying && !m_bIsRecordingAutomation && m_iMovementConstraint != independent && */ m_iSourceLocationChanged != -1) {
         
-        mMover.move(_AllSources[m_iSourceLocationChanged].getX(), _AllSources[m_iSourceLocationChanged].getY(), m_bIsEqualElev);
+        //mMover.move(_AllSources[m_iSourceLocationChanged].getX(), _AllSources[m_iSourceLocationChanged].getY(), m_bIsEqualElev);
         m_iSourceLocationChanged = -1.f;
     }
 }

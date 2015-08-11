@@ -292,7 +292,6 @@ void FieldComponent::paint (Graphics& g)
 void FieldComponent::mouseDown(const MouseEvent &event)
 {
 	int fieldWidth = getWidth();
-	const float padSize = fieldWidth;
 	
 	int fieldHeight = getHeight();
 

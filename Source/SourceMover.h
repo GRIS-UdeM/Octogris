@@ -53,7 +53,7 @@ public:
 private:
 	OctogrisAudioProcessor *mFilter;
 	MoverType mMoverType;
-	int mSelectedItem;
+	int mSelectedSrc;
 	
 	Array<FPoint> mSourcesDownXY;
 	Array<FPoint> mSourcesDownRT;
