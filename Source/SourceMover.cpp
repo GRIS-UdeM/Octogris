@@ -141,6 +141,7 @@ void SourceMover::move(FPoint p, MoverType mt)
     // in non-thread case, just update selectedSrc
     if (mMoverType != kSourceThread){
         mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
+        mFilter->mOldSrcLocRT[mSelectedSrc] = FPoint(fCurX01, fCurY01);
         return;
     }
     
@@ -151,7 +152,10 @@ void SourceMover::move(FPoint p, MoverType mt)
     
     if (mFilter->getNumberOfSources() > 2) {
         for (int iCurItem = 0; iCurItem < mFilter->getNumberOfSources(); iCurItem++) {
+            
             if (iCurItem == mSelectedSrc) {
+                NOW HERE, PROBABLY NOT WITH FCURX01 AND Y01
+                mFilter->mOldSrcLocRT[iCurItem] = FPoint(fCurX01, fCurY01);
                 continue;
             }
             

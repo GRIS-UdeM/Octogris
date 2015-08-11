@@ -505,6 +505,9 @@ public:
 	void reset();
     
     void updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise);
+    
+    JUCE_COMPILER_WARNING("have getters and setters for this instead of making it public")
+    FPoint mOldSrcLocRT[JucePlugin_MaxNumInputChannels];
 	
 private:
 
@@ -579,6 +582,9 @@ private:
     float mBufferSpLocY[JucePlugin_MaxNumOutputChannels];
     float mBufferSpLocA[JucePlugin_MaxNumOutputChannels];
     float mBufferSpLocM[JucePlugin_MaxNumOutputChannels];
+    
+    
+
     
     int mNumberOfSources;
     int mNumberOfSpeakers;
