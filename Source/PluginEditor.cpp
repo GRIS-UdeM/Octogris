@@ -372,7 +372,7 @@ public:
 //                return;                 // will fail, in which case we'd better return..
             
             // now we've got the UI thread locked, we can mess about with the components
-            m_pEditor->updateNonSelectedSourcePositions();
+            //m_pEditor->updateNonSelectedSourcePositions();
         }
     }
     
@@ -1122,11 +1122,14 @@ AudioProcessorEditor (ownerFilter)
 }
 
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
-    if (/*m_bCurrentlyPlaying && !m_bIsRecordingAutomation && m_iMovementConstraint != independent && */ m_iSourceLocationChanged != -1) {
-        
-        //mMover.move(_AllSources[m_iSourceLocationChanged].getX(), _AllSources[m_iSourceLocationChanged].getY(), m_bIsEqualElev);
-        m_iSourceLocationChanged = -1.f;
-    }
+//    if (/*m_bCurrentlyPlaying && !m_bIsRecordingAutomation && m_iMovementConstraint != independent && */) {
+    
+        //we don't have the concept of selected sources here, so we just use automation from source 0
+
+    mMover.begin(0, kSourceThread);
+    mMover.move(mFilter->getSourceXY01(0), kSourceThread);
+    mMover.end(kSourceThread);
+//    }
 }
 
 void OctogrisAudioProcessorEditor::updateTrajectoryComboboxes(){

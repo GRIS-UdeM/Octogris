@@ -63,6 +63,10 @@ void SourceMover::begin(int s, MoverType mt)
 	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
 	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
     
+    if (mMoverType != kSourceThread){
+        return;
+    }
+    
     int iNbrSrc = mFilter->getNumberOfSources();
 
 	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1 && mFilter->getLinkMovement())
@@ -132,19 +136,12 @@ void SourceMover::move(FPoint p, MoverType mt)
     }
     
     //move selected item
-    float fCurX01, fCurY01;
+    float fCurX01 = p.x, fCurY01 = p.y;;
     
-    // in non-thread, direct case, fCurX and Y are the current point
+    // in non-thread case, just update selectedSrc
     if (mMoverType != kSourceThread){
-        fCurX01 = p.x;
-        fCurY01 = p.y;
         mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
-    }
-    
-    //in thread case, fCurX and fCurY are the last position for the selected source
-    else {
-        fCurX01 = mFilter->getSourceXY01(mSelectedSrc).x;
-        fCurY01 = mFilter->getSourceXY01(mSelectedSrc).y;
+        return;
     }
     
     int iMovementMode = mFilter->getMovementMode();
@@ -158,10 +155,16 @@ void SourceMover::move(FPoint p, MoverType mt)
                 continue;
             }
             
-            FPoint oldSelSrcPosRT = mSourcesDownRT[mSelectedSrc];
             FPoint oldCurSrcPosRT = mSourcesDownRT[iCurItem];
+            FPoint oldSelSrcPosRT = mSourcesDownRT[mSelectedSrc];
             FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc);
-            FPoint newCurSrcPosRT = oldCurSrcPosRT + newSelSrcPosRT - oldSelSrcPosRT;
+            FPoint delSelSrcPosRT = newSelSrcPosRT - oldSelSrcPosRT;
+            
+            if (delSelSrcPosRT.isOrigin()){
+                return;     //return if delta is null
+            }
+            
+            FPoint newCurSrcPosRT = oldCurSrcPosRT + delSelSrcPosRT;
             
             //all x's and y's here are actually r's and t's
             switch(mFilter->getMovementMode()) {
@@ -453,6 +456,12 @@ void SourceMover::end(MoverType mt)
 	
 	mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
 	mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
+    
+    if (mMoverType != kSourceThread){
+        return;
+    }
+
+    
 	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1 && mFilter->getLinkMovement())
 	{
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
