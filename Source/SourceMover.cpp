@@ -130,7 +130,7 @@ void SourceMover::move(FPoint p, MoverType mt)
     if (mMoverType != mt){
         return;
     }
-
+    
     //move selected item
     float fCurX01, fCurY01;
     
@@ -158,139 +158,116 @@ void SourceMover::move(FPoint p, MoverType mt)
                 continue;
             }
             
-            FPoint oldSelSrcPos = mSourcesDownRT[mSelectedSrc];
-            FPoint oldCurSrcPos = mSourcesDownRT[iCurItem];
-            FPoint newSelSrcPos = mFilter->getSourceRT(mSelectedSrc);
-            FPoint newCurSrcPos = oldCurSrcPos + newSelSrcPos - oldSelSrcPos;
+            FPoint oldSelSrcPosRT = mSourcesDownRT[mSelectedSrc];
+            FPoint oldCurSrcPosRT = mSourcesDownRT[iCurItem];
+            FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc);
+            FPoint newCurSrcPosRT = oldCurSrcPosRT + newSelSrcPosRT - oldSelSrcPosRT;
             
+            //all x's and y's here are actually r's and t's
             switch(mFilter->getMovementMode()) {
-                case 1: { // circular
-                    if (newCurSrcPos.x < 0) newCurSrcPos.x = 0;
-                    if (newCurSrcPos.x > kRadiusMax) newCurSrcPos.x = kRadiusMax;
-                    if (newCurSrcPos.y < 0) newCurSrcPos.y += kThetaMax;
-                    if (newCurSrcPos.y > kThetaMax) newCurSrcPos.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurItem, newCurSrcPos);
+                case 1:     // circular
+                    if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
+                    if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
+                    if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
+                    if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                    mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
                     break;
-                }
-                case 2: { // circular, fixed radius
-                    newCurSrcPos.x = newSelSrcPos.x;
-                    if (newCurSrcPos.y < 0) newCurSrcPos.y += kThetaMax;
-                    if (newCurSrcPos.y > kThetaMax) newCurSrcPos.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurItem, newCurSrcPos);
+                case 2:     // circular, fixed radius
+                    newCurSrcPosRT.x = newSelSrcPosRT.x;
+                    if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
+                    if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                    mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
                     break;
-                }
-                case 3: { // circular, fixed angle
-                    newCurSrcPos.y = newSelSrcPos.y + mSourcesAngularOrder[iCurItem];
-                    if (newCurSrcPos.x < 0) newCurSrcPos.x = 0;
-                    if (newCurSrcPos.x > kRadiusMax) newCurSrcPos.x = kRadiusMax;
-                    if (newCurSrcPos.y < 0) newCurSrcPos.y += kThetaMax;
-                    if (newCurSrcPos.y > kThetaMax) newCurSrcPos.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurItem, newCurSrcPos);
+                case 3:     // circular, fixed angle
+                    newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurItem];
+                    if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
+                    if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
+                    if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
+                    if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                    mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
                     break;
-                }
-                case 4: { // circular, fully fixed
-                    newCurSrcPos.x = newSelSrcPos.x;
-                    newCurSrcPos.y = newSelSrcPos.y + mSourcesAngularOrder[iCurItem];
-                    if (newCurSrcPos.y < 0) newCurSrcPos.y += kThetaMax;
-                    if (newCurSrcPos.y > kThetaMax) newCurSrcPos.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurItem, newCurSrcPos);
+                case 4:     // circular, fully fixed
+                    newCurSrcPosRT.x = newSelSrcPosRT.x;
+                    newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurItem];
+                    if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
+                    if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                    mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
                     break;
-                }
-                case 5: { // delta lock
+                case 5:      // delta lock
                     FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
                     mFilter->setSourceXY(iCurItem, mSourcesDownXY[iCurItem] + d);
                     break;
-                }
             }
         }
     }
-
-	 else if (mFilter->getNumberOfSources() == 2)
-	{
-		int iCurSrc = 1 - mSelectedSrc;
-		float vxo = fCurX01, vyo = fCurY01;
-		switch(mFilter->getMovementMode())
-		{
-			case 1: // sym x
-				vyo = 1 - vyo;
-				mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-				break;
-				
-			case 2: // sym y
-				vxo = 1 - vxo;
-				mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-				break;
-				
-			case 3: // sym x/y
-				vxo = 1 - vxo;
-				vyo = 1 - vyo;
-				mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-				break;
-				
-			case 4: // circular
-				{
-					FPoint s = mSourcesDownRT[mSelectedSrc];
-					FPoint o = mSourcesDownRT[iCurSrc];
-					FPoint n = o + mFilter->getSourceRT(mSelectedSrc) - s;
-					if (n.x < 0) n.x = 0;
-					if (n.x > kRadiusMax) n.x = kRadiusMax;
-					if (n.y < 0) n.y += kThetaMax;
-					if (n.y > kThetaMax) n.y -= kThetaMax;
-					mFilter->setSourceRT(iCurSrc, n);
-				}
-				break;
-				
-			case 5: // circular, fixed radius
-				{
-					FPoint s = mSourcesDownRT[mSelectedSrc];
-					FPoint o = mSourcesDownRT[iCurSrc];
-					FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-					FPoint n = o + sn - s;
-					n.x = sn.x;
-					if (n.y < 0) n.y += kThetaMax;
-					if (n.y > kThetaMax) n.y -= kThetaMax;
-					mFilter->setSourceRT(iCurSrc, n);
-				}
-				break;
-				
-			case 6: // circular, fixed angle
-				{
-					FPoint s = mSourcesDownRT[mSelectedSrc];
-					FPoint o = mSourcesDownRT[iCurSrc];
-					FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-					FPoint n = o + sn - s;
-					n.y = sn.y + mSourcesAngularOrder[iCurSrc];
-					if (n.x < 0) n.x = 0;
-					if (n.x > kRadiusMax) n.x = kRadiusMax;
-					if (n.y < 0) n.y += kThetaMax;
-					if (n.y > kThetaMax) n.y -= kThetaMax;
-					mFilter->setSourceRT(iCurSrc, n);
-				}
-				break;
-				
-			case 7: // circular, fully fixed
-				{
-					FPoint s = mSourcesDownRT[mSelectedSrc];
-					FPoint o = mSourcesDownRT[iCurSrc];
-					FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-					FPoint n = o + sn - s;
-					n.x = sn.x;
-					n.y = sn.y + mSourcesAngularOrder[iCurSrc];
-					if (n.y < 0) n.y += kThetaMax;
-					if (n.y > kThetaMax) n.y -= kThetaMax;
-					mFilter->setSourceRT(iCurSrc, n);
-				}
-				break;
-				
-			case 8: // delta lock
-				{
-					FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
-					mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d);
-				}
-				break;
-		}
-		
-	}
+    
+    //we need to have a whole different case for when we have 2 sources because the getMovementModes() are not the same!
+    else if (mFilter->getNumberOfSources() == 2)
+    {
+        int iCurSrc = 1 - mSelectedSrc;
+        float vxo = fCurX01, vyo = fCurY01;
+        
+        FPoint oldSelSrcPosRT = mSourcesDownRT[mSelectedSrc];
+        FPoint oldCurSrcPosRT = mSourcesDownRT[iCurSrc];
+        FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc);
+        FPoint newCurSrcPosRT = oldCurSrcPosRT + newSelSrcPosRT - oldSelSrcPosRT;
+        
+        switch(mFilter->getMovementMode())
+        {
+            case 1: // sym x
+                vyo = 1 - vyo;
+                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
+                break;
+                
+            case 2: // sym y
+                vxo = 1 - vxo;
+                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
+                break;
+                
+            case 3: // sym x/y
+                vxo = 1 - vxo;
+                vyo = 1 - vyo;
+                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
+                break;
+                
+            case 4: // circular
+                if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
+                if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
+                if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
+                if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
+                break;
+                
+            case 5: // circular, fixed radius
+                newCurSrcPosRT.x = newSelSrcPosRT.x;
+                if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
+                if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
+                break;
+                
+            case 6: // circular, fixed angle
+                newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
+                if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
+                if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
+                if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
+                if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
+                break;
+                
+            case 7: // circular, fully fixed
+                newCurSrcPosRT.x = newSelSrcPosRT.x;
+                newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
+                if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
+                if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
+                break;
+                
+            case 8: // delta lock
+                FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
+                mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d);
+                break;
+        }
+    }
 }
 
 //ORIGINAL SOURCEMOVER
