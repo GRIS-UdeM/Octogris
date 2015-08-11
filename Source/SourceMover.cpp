@@ -30,7 +30,7 @@
 SourceMover::SourceMover(OctogrisAudioProcessor *filter)
 :
 	mFilter(filter),
-	mMover(kVacant)
+	mMoverType(kVacant)
 {
     updateNumberOfSources();
 }
@@ -56,8 +56,8 @@ void SourceMover::updateNumberOfSources(){
 
 void SourceMover::begin(int s, MoverType mt)
 {
-	if (mMover != kVacant) return;
-	mMover = mt;
+	if (mMoverType != kVacant) return;
+	mMoverType = mt;
 	mSelectedItem = s;
 	
 	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSelectedItem));
@@ -128,7 +128,7 @@ void SourceMover::begin(int s, MoverType mt)
 void SourceMover::move(FPoint p, MoverType mt)
 {
     
-    if (mMover != mt){
+    if (mMoverType != mt){
         return;
     }
     
@@ -305,7 +305,7 @@ void SourceMover::move(FPoint p, MoverType mt)
 
 void SourceMover::end(MoverType mt)
 {
-	if (mMover != mt) return;
+	if (mMoverType != mt) return;
 	
 	mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedItem));
 	mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedItem));
@@ -319,5 +319,5 @@ void SourceMover::end(MoverType mt)
 		}
 	}
 	
-	mMover = kVacant;
+	mMoverType = kVacant;
 }
