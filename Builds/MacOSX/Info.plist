@@ -10,7 +10,7 @@
     <key>CFBundleIdentifier</key>
     <string>com.UdeM.Octogris2</string>
     <key>CFBundleName</key>
-    <string>Octogris2</string>
+    <string>Octogris</string>
     <key>CFBundlePackageType</key>
     <string>TDMw</string>
     <key>CFBundleSignature</key>

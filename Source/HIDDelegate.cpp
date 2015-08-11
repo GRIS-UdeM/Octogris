@@ -22,8 +22,6 @@
  #else*/
 
 //==============================================================================
-static const float kSourceRadius = 10;
-static const float kSourceDiameter = kSourceRadius * 2;
 
 
 /** HIDDelegate constructor taking two arguments and initializaing its others components by default */
@@ -184,7 +182,6 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
     OSStatus result = -1;
     do {    // TRY / THROW block
         // create the manager
-        IOOptionBits ioOptionBits = kIOHIDManagerOptionNone;
         if (!gIOHIDManagerRef) {
             printf("%s: Could not create IOHIDManager.\n", __PRETTY_FUNCTION__);
             break;  // THROW

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="ZtKxiG" name="Octogris2" projectType="audioplug" version="2.2.3"
+<JUCERPROJECT id="ZtKxiG" name="Octogris" projectType="audioplug" version="2.2.3"
               bundleIdentifier="com.UdeM.Octogris2" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildRTAS="0" buildAAX="0"
               pluginName="Octogris2" pluginDesc="Octogris2" pluginManufacturer="UdeM"
@@ -9,7 +9,7 @@
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
               pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="3.2.0">
-  <MAINGROUP id="rRl79u" name="Octogris2">
+  <MAINGROUP id="rRl79u" name="Octogris">
     <GROUP id="{B76B0FE8-BBC6-AA42-5E09-44DABB7BB441}" name="Resources">
       <FILE id="NATXje" name="logoGris.png" compile="0" resource="1" file="logoGris.png"/>
     </GROUP>
@@ -118,12 +118,11 @@
                externalLibraries="Leap" aaxFolder="~/Documents/sdks/AAX_SDK_2p1p1/"
                vst3Folder="~/Documents/sdks/steinberg/VST3 SDK">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" osxSDK="10.9 SDK" osxCompatibility="10.9 SDK" osxArchitecture="Native"
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="Native"
                        isDebug="1" optimisation="1" targetName="Octogris2" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
                        libraryPath="~/Documents/sdks/LeapSDK/lib&#10;"/>
-        <CONFIGURATION name="Release" osxSDK="10.9 SDK" osxCompatibility="10.9 SDK"
-                       osxArchitecture="64BitUniversal" isDebug="0" optimisation="3"
-                       targetName="Octogris2" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="64BitUniversal"
+                       isDebug="0" optimisation="3" targetName="Octogris2" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
                        libraryPath="~/Documents/sdks/LeapSDK/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
