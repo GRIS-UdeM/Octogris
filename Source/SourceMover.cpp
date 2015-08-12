@@ -63,9 +63,9 @@ void SourceMover::begin(int s, MoverType mt)
 	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
 	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
     
-    if (mMoverType != kSourceThread){
-        return;
-    }
+//    if (mMoverType != kSourceThread){
+//        return;
+//    }
     
     int iNbrSrc = mFilter->getNumberOfSources();
 
@@ -460,9 +460,9 @@ void SourceMover::end(MoverType mt)
 	mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
 	mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
     
-    if (mMoverType != kSourceThread){
-        return;
-    }
+//    if (mMoverType != kSourceThread){
+//        return;
+//    }
 
     
 	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1 && mFilter->getLinkMovement())
