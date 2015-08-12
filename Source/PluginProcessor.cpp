@@ -433,7 +433,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
                 else if (offset > 360) offset -= 360;
                 
                 setSourceRT(i,    FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
-                mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
+                //mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
             }
         }
         else //odd number of speakers, assign in circular fashion

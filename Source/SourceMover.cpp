@@ -154,7 +154,6 @@ void SourceMover::move(FPoint p, MoverType mt)
         for (int iCurItem = 0; iCurItem < mFilter->getNumberOfSources(); iCurItem++) {
             
             if (iCurItem == mSelectedSrc) {
-                NOW HERE, PROBABLY NOT WITH FCURX01 AND Y01
                 mFilter->mOldSrcLocRT[iCurItem] = FPoint(fCurX01, fCurY01);
                 continue;
             }
