@@ -1,3 +1,43 @@
 ok, so need to test presets in current octogris version--DONE
 
 now i need to make this oneSource business work. How to proceed? 
+need to have concept of selected source
+then mover only moves selected source
+and thread moves non-selected sources
+
+
+in zirkosc
+mouseDown/Up and slidersDragStarted/ended call begin/endParameterGesture on selectedsource only
+everyone calls processor::move, which
+    calls setParameterNotifyingHost for the source passed as argument
+        which sets m_iSourceLocationChanged to the source passed as argument
+    if independent, we simply set the old values
+    if not, call moveCircular(or other)
+        which calculates delta between the selected source position (argument) and the old one
+        then cycles through all sources
+            for selected one, simply set old values
+            for unselected, move by delta and set old values
+
+the thread moves sources if
+    X-!m_bIsRecordingAutomation
+        set whenever an automation begins+ends (mousedown/up, sliderDragStarted/ended
+    X-m_iMovementConstraint != Independent
+        just get this from processor
+    m_iSourceLocationChanged != -1
+        set to source number that is changed in setParameters
+
+IN OCTOGRIS
+everyone calls mover::begin, which
+    calls beginParameterGesture
+        X-need to have this only for selected source
+    FIGURES OUT ANGLES IF ANGLES ARE FIXED. This needs to be an instantaneous call instead of being
+    figured out here and used in move. Well actually, i don't think this is critical.
+then everyone calls mover::move, which 
+    moves selectedSource
+    moves the other sources in circular or delta. THOSE WILL BE THE 2 ONLY MODES ONCE I HAVE MADE
+    THE MOVEMENT CONSTRAINT CHANGES INSTANTANEOUS
+        NOW HERE. need to figure out how to move unselected sources using the delta of the selected
+        source. Some kind of similar mechanism is already in place. 
+    then of fucking course, there are the specific symmetric x/y fucking modes which i also need to
+    figure out
+    
