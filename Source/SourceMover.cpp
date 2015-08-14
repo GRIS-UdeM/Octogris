@@ -69,20 +69,17 @@ void SourceMover::begin(int s, MoverType mt)
     
     int iNbrSrc = mFilter->getNumberOfSources();
 
-	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1)
-	{
-		for (int j = 0; j < iNbrSrc; j++)
-		{
+	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1) {
+		for (int j = 0; j < iNbrSrc; j++) {
 			mSourcesDownRT.setUnchecked(j, mFilter->getSourceRT(j));
 			mSourcesDownXY.setUnchecked(j, mFilter->getSourceXY(j));
 			if (j == mSelectedSrc) continue;
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
+//            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
+//            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
 		}
 		
 		if	(	(iNbrSrc == 2 && (mFilter->getMovementMode() == 6 || mFilter->getMovementMode() == 7))
-			 ||	(iNbrSrc >  2 && (mFilter->getMovementMode() == 3 || mFilter->getMovementMode() == 4))
-			 )
+			 ||	(iNbrSrc >  2 && (mFilter->getMovementMode() == 3 || mFilter->getMovementMode() == 4)))
 		{
 			// need to calculate angular order
 			
@@ -106,22 +103,16 @@ void SourceMover::begin(int s, MoverType mt)
 			int b;
 			for (b = 0; b < iNbrSrc && ia[b].i != mSelectedSrc; b++) ;
 			
-			if (b == iNbrSrc)
-			{
+			if (b == iNbrSrc) {
 				printf("error!\n");
 				b = 0;
 			}
 			
-			//printf("mSelectedItem: %i base: %i step: %.3f\n", mSelectedItem+1, b+1, (M_PI * 2.) / mNumberOfSources);
-			
-			for (int j = 1; j < iNbrSrc; j++)
-			{
+			for (int j = 1; j < iNbrSrc; j++) {
 				int o = (b + j) % iNbrSrc;
 				o = ia[o].i;
 				mSourcesAngularOrder.set(o, (M_PI * 2. * j) / iNbrSrc);
 			}
-			
-			//for (int j = 0; j < mNumberOfSources; j++)  printf("mSourceAngularOrder[%i] = %.3f\n", j+1, mSourceAngularOrder[j]);
 
 			delete[] ia;
 		}
@@ -179,6 +170,7 @@ void SourceMover::move(FPoint p, MoverType mt)
                     mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
                     break;
                 case 3:     // circular, fixed angle
+                    JUCE_COMPILER_WARNING("need to remove this mSourceAngularOrder business. Is it some kind of delta? Why is the angle (y is angle) added to the existing one?")
                     newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurItem];
                     if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
                     if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
@@ -460,8 +452,8 @@ void SourceMover::end(MoverType mt)
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 		{
 			if (i == mSelectedSrc) continue;
-			mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(i));
-			mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(i));
+//			mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(i));
+//			mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(i));
 		}
 	}
     

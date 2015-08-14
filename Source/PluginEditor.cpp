@@ -1629,7 +1629,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 break;
             case kLeftCounterClockWise:
                 break;
-                
         }
         
         mFilter->updateSpeakerLocation(alternate, startAtTop, clockwise);
