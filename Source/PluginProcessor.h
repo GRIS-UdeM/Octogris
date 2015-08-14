@@ -496,6 +496,13 @@ public:
     void setIsSourcesChanged(bool pIsNumberSourcesChanged){ mIsNumberSourcesChanged = pIsNumberSourcesChanged;}
     void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
     
+    void setIsRecordingAutomation(bool b)   { m_bIsRecordingAutomation = b;     }
+    bool getIsRecordingAutomation()         { return m_bIsRecordingAutomation;  }
+
+    void setSourceLocationChanged(int i)   { m_iSourceLocationChanged = i;     }
+    int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
+
+    
     void storeCurrentLocations();
     void restoreCurrentLocations();
 	void reset();
@@ -579,16 +586,8 @@ private:
     float mBufferSpLocA[JucePlugin_MaxNumOutputChannels];
     float mBufferSpLocM[JucePlugin_MaxNumOutputChannels];
     
-    
-
-    
-    int mNumberOfSources;
-    int mNumberOfSpeakers;
-    
     void setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues);
     void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues);
-    
-    std::vector<FirFilter> mFilters;
 	
 	void findLeftAndRightSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
     
@@ -597,6 +596,15 @@ private:
 	void ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataPanSpanMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
+
+    int mNumberOfSources;
+    int mNumberOfSpeakers;
+    std::vector<FirFilter> mFilters;
+    bool m_bIsRecordingAutomation;
+    int m_iSourceLocationChanged;
+    
+    
+    
 	
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)

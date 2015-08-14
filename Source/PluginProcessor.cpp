@@ -69,7 +69,10 @@ int IndexedAngleCompare(const void *a, const void *b)
 }
 
 //==============================================================================
-OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
+OctogrisAudioProcessor::OctogrisAudioProcessor():
+mFilters()
+,m_bIsRecordingAutomation(false)
+,m_iSourceLocationChanged(-1)
 {
     
     //SET PARAMETERS

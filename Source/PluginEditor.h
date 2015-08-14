@@ -237,7 +237,7 @@ private:
 	Slider* addParamSlider(int paramType, int si, float v, int x, int y, int w, int h, Component *into);
     
     SourceUpdateThread* m_pSourceUpdateThread;
-    int m_iSourceLocationChanged;
+    
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED
