@@ -139,11 +139,11 @@ void SourceMover::move(FPoint p, MoverType mt)
     float fCurX01 = p.x, fCurY01 = p.y;;
     
     // in non-thread case, just update selectedSrc
-    if (mMoverType != kSourceThread){
+//    if (mMoverType != kSourceThread){
         mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
-       // mFilter->mOldSrcLocRT[mSelectedSrc] = FPoint(fCurX01, fCurY01);
-        return;
-    }
+//        mFilter->mOldSrcLocRT[mSelectedSrc] = FPoint(fCurX01, fCurY01);
+//        return;
+//    }
     
     int iMovementMode = mFilter->getMovementMode();
     if (iMovementMode == 0 || !mFilter->getLinkMovement()){

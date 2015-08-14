@@ -145,7 +145,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
     m_iTrDirection = 0,
     m_iTrReturn = 0,
     m_iTrSrcSelect = -1;//0;
-    m_fTrDuration = 1.f;
+    m_fTrDuration = 5.f;
     m_iTrUnits = 1;     //0 = beats, 1 = seconds
     m_fTrRepeats = 1.f;
 	

@@ -396,8 +396,8 @@ AudioProcessorEditor (ownerFilter)
 ,m_iSourceLocationChanged(-1)
 {
     
-    m_pSourceUpdateThread = new SourceUpdateThread(this);
-    mComponents.add(m_pSourceUpdateThread);
+    //m_pSourceUpdateThread = new SourceUpdateThread(this);
+    //mComponents.add(m_pSourceUpdateThread);
 
     mHostChangedParameter = mFilter->getHostChangedParameter();
     mHostChangedProperty = mFilter->getHostChangedProperty();
