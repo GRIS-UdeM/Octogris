@@ -145,7 +145,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
     m_iTrDirection = 0,
     m_iTrReturn = 0,
     m_iTrSrcSelect = -1;//0;
-    m_fTrDuration = 1.f;
+    m_fTrDuration = 5.f;
     m_iTrUnits = 1;     //0 = beats, 1 = seconds
     m_fTrRepeats = 1.f;
 	
@@ -413,6 +413,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
         
         if (mNumberOfSources == 1){
             setSourceRT(0, FPoint(0, 0));
+            //mOldSrcLocRT[0] = FPoint(0, 0);
         }
         else if(mNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
         {
@@ -432,6 +433,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
                 else if (offset > 360) offset -= 360;
                 
                 setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
+                //mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
             }
         }
         else //odd number of speakers, assign in circular fashion
@@ -443,6 +445,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
                 else if (offset > 360) offset -= 360;
                 
                 setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
+                //mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
                 offset += anglePerSource;
             }
         }

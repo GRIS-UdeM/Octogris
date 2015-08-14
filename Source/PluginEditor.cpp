@@ -340,6 +340,49 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParamSlider)
 };
 
+//==================================== SourceUpdateThread ===================================================================
+class SourceUpdateThread : public Thread, public Component
+{
+public:
+    SourceUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)
+    : Thread ("SourceUpdateThread")
+    ,m_iInterval(25)
+    ,m_pEditor(p_pProcessor) {
+        
+        startThread ();
+    }
+    
+    ~SourceUpdateThread() {
+        // allow the thread 1 second to stop cleanly - should be plenty of time.
+        stopThread (2 * m_iInterval);
+    }
+    
+    void run() override {
+        
+        // threadShouldExit() returns true when the stopThread() method has been called
+        while (! threadShouldExit()) {
+            
+            // sleep a bit so the threads don't all grind the CPU to a halt..
+            wait (m_iInterval);
+            
+//            // because this is a background thread, we mustn't do any UI work without first grabbing a MessageManagerLock..
+//            const MessageManagerLock mml (Thread::getCurrentThread());
+//            
+//            if (! mml.lockWasGained())  // if something is trying to kill this job, the lock
+//                return;                 // will fail, in which case we'd better return..
+            
+            // now we've got the UI thread locked, we can mess about with the components
+            //m_pEditor->updateNonSelectedSourcePositions();
+        }
+    }
+    
+private:
+    int m_iInterval;
+    OctogrisAudioProcessorEditor* m_pEditor;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SourceUpdateThread)
+};
+
 #define STRING2(x) #x
 #define STRING(x) STRING2(x)
 
@@ -350,9 +393,12 @@ AudioProcessorEditor (ownerFilter)
 ,mFilter(ownerFilter)
 ,mMover(ownerFilter)
 ,m_logoImage()
+,m_iSourceLocationChanged(-1)
 {
-
     
+    //m_pSourceUpdateThread = new SourceUpdateThread(this);
+    //mComponents.add(m_pSourceUpdateThread);
+
     mHostChangedParameter = mFilter->getHostChangedParameter();
     mHostChangedProperty = mFilter->getHostChangedProperty();
     
@@ -407,7 +453,6 @@ AudioProcessorEditor (ownerFilter)
     mTabs->setSize(kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
     addAndMakeVisible(mTabs);
     mComponents.add(mTabs);
-    
     
     
     // sources
@@ -1074,6 +1119,17 @@ AudioProcessorEditor (ownerFilter)
     mFilter->setCalculateLevels(true);
     
     refreshSize();
+}
+
+void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
+//    if (/*m_bCurrentlyPlaying && !m_bIsRecordingAutomation && m_iMovementConstraint != independent && */) {
+    
+        //we don't have the concept of selected sources here, so we just use automation from source 0
+
+    mMover.begin(0, kSourceThread);
+    mMover.move(mFilter->getSourceXY01(0), kSourceThread);
+    mMover.end(kSourceThread);
+//    }
 }
 
 void OctogrisAudioProcessorEditor::updateTrajectoryComboboxes(){

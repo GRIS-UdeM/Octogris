@@ -35,9 +35,11 @@
 #else
 #include "Leap.h"
 #endif
-class FieldComponent;
 
+class FieldComponent;
+class SourceUpdateThread;
 class Box;
+
 enum
 {
 	kParamSource,
@@ -122,7 +124,7 @@ public:
     //! Return the number of sources form the processor
     int getNbSources();
     
-
+    void updateNonSelectedSourcePositions();
 	
 private:
 	OctogrisAudioProcessor *mFilter;
@@ -234,6 +236,9 @@ private:
 	TextButton* addButton(const String &s, int x, int y, int w, int h, Component *into);
     TextEditor* addTextEditor(const String &s, int x, int y, int w, int h, Component *into);
 	Slider* addParamSlider(int paramType, int si, float v, int x, int y, int w, int h, Component *into);
+    
+    SourceUpdateThread* m_pSourceUpdateThread;
+    int m_iSourceLocationChanged;
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED
