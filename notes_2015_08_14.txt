@@ -1,0 +1,3 @@
+ok, so need to test presets in current octogris version--DONE
+
+now i need to make this oneSource business work. How to proceed? 
