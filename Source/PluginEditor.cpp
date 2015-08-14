@@ -540,9 +540,6 @@ AudioProcessorEditor (ownerFilter)
             mMovementMode->addListener(this);
         }
         
-        mLinkMovement = addCheckbox("Link movement", mFilter->getLinkMovement(), x, y, w, dh, box);
-        y += dh + 5;
-        
         {
             addLabel("Param smoothing (ms):", x, y, w, dh, box);
             y += dh + 5;
@@ -1658,10 +1655,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     {
         mFilter->setLinkDistances(button->getToggleState());
     }
-    else if (button == mLinkMovement)
-    {
-        mFilter->setLinkMovement(button->getToggleState());
-    }
     else if (button == mApplyFilter)
     {
         mFilter->setApplyFilter(button->getToggleState());
@@ -1817,7 +1810,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mFilter->setTrSrcSelect(source);
             
             bool bUniqueTarget = true;
-            if  (!mFilter->getLinkMovement() || mFilter->getMovementMode() == 0){
+            if  (mFilter->getMovementMode() == 0){
                 bUniqueTarget = false;
             }
 
@@ -1991,7 +1984,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 /*#if JUCE_MAC
         updateLeapComponent(mleap);
 #endif*/
-        mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);

@@ -78,7 +78,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
         mParameters.add(0);
     }
     
-	mParameters.set(kLinkMovement, 0);
 	mParameters.set(kSmooth, normalize(kSmoothMin, kSmoothMax, kSmoothDefault));
 	mParameters.set(kVolumeNear, normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault));
 	mParameters.set(kVolumeMid, normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault));
@@ -239,7 +238,6 @@ void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValu
 const String OctogrisAudioProcessor::getParameterName (int index)
 {
    
-    if (index == kLinkMovement) return "Link Movement";
 	if (index == kSmooth)		return "Smooth Param";
     if (index == kVolumeNear)	return "Volume Near";
 	if (index == kVolumeMid)	return "Volume Mid";
@@ -1745,7 +1743,6 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     
     xml.setAttribute ("kRoutingVolume", mParameters[kRoutingVolume]);
     xml.setAttribute ("mRoutingMode", mRoutingMode);
-    xml.setAttribute ("kLinkMovement", mParameters[kLinkMovement]);
     xml.setAttribute ("kSmooth", mParameters[kSmooth]);
     xml.setAttribute ("kVolumeNear", mParameters[kVolumeNear]);
     xml.setAttribute ("kVolumeMid", mParameters[kVolumeMid]);
@@ -1826,7 +1823,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mParameters.set(kRoutingVolume, static_cast<float>(xmlState->getDoubleAttribute("kRoutingVolume", normalize(kRoutingVolumeMin, kRoutingVolumeMax, kRoutingVolumeDefault))));
             setRoutingMode(xmlState->getIntAttribute ("mRoutingMode", 0));
             
-            mParameters.set(kLinkMovement,  static_cast<float>(xmlState->getDoubleAttribute("kLinkMovement", 0)));
             mParameters.set(kSmooth,        static_cast<float>(xmlState->getDoubleAttribute("kSmooth", normalize(kSmoothMin, kSmoothMax, kSmoothDefault))));
             mParameters.set(kVolumeNear,    static_cast<float>(xmlState->getDoubleAttribute("kVolumeNear", normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault))));
             mParameters.set(kVolumeMid,     static_cast<float>(xmlState->getDoubleAttribute("kVolumeMid", normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault))));
@@ -1906,7 +1902,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             
             if (version >= 4)
             {
-                mParameters.set(kLinkMovement, readFloatData(data, sizeInBytes, 0));
+                readFloatData(data, sizeInBytes, 0); //this was for kLinkMovement
                 mParameters.set(kSmooth, readFloatData(data, sizeInBytes, normalize(kSmoothMin, kSmoothMax, kSmoothDefault)));
                 mParameters.set(kVolumeNear, readFloatData(data, sizeInBytes, normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault)));
                 if (version >= 5) mParameters.set(kVolumeMid, readFloatData(data, sizeInBytes, normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault)));

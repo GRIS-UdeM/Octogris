@@ -149,8 +149,7 @@ private:
     ToggleButton *mEnableLeap;
 	ToggleButton *mShowGridLines;
 	ToggleButton *mLinkDistances;
-	ToggleButton *mLinkMovement;
-	ToggleButton *mApplyFilter;
+    ToggleButton *mApplyFilter;
 	ComboBox *mMovementMode;
 	ComboBox *mGuiSize;
     ComboBox *mInputOutputModeCombo;

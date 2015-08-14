@@ -69,7 +69,7 @@ void SourceMover::begin(int s, MoverType mt)
     
     int iNbrSrc = mFilter->getNumberOfSources();
 
-	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1 && mFilter->getLinkMovement())
+	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1)
 	{
 		for (int j = 0; j < iNbrSrc; j++)
 		{
@@ -146,7 +146,7 @@ void SourceMover::move(FPoint p, MoverType mt)
 //    }
     
     int iMovementMode = mFilter->getMovementMode();
-    if (iMovementMode == 0 || !mFilter->getLinkMovement()){
+    if (iMovementMode == 0){
         return;
     }
     
@@ -465,7 +465,7 @@ void SourceMover::end(MoverType mt)
 //    }
 
     
-	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1 && mFilter->getLinkMovement())
+	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1)
 	{
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 		{

@@ -71,17 +71,16 @@ enum {
 
 enum
 {
-	kLinkMovement =			0 + kConstantOffset,
-	kSmooth =				1 + kConstantOffset,
-	kVolumeNear =			2 + kConstantOffset,
-	kVolumeMid =			3 + kConstantOffset,
-	kVolumeFar =			4 + kConstantOffset,
-	kFilterNear =			5 + kConstantOffset,
-	kFilterMid =			6 + kConstantOffset,
-	kFilterFar =			7 + kConstantOffset,
-	kMaxSpanVolume =		8 + kConstantOffset,
-	kRoutingVolume =		9 + kConstantOffset,
-	kConstantParameters =	10
+	kSmooth =				0 + kConstantOffset,
+	kVolumeNear =			1 + kConstantOffset,
+	kVolumeMid =			2 + kConstantOffset,
+	kVolumeFar =			3 + kConstantOffset,
+	kFilterNear =			4 + kConstantOffset,
+	kFilterMid =			5 + kConstantOffset,
+	kFilterFar =			6 + kConstantOffset,
+	kMaxSpanVolume =		7 + kConstantOffset,
+	kRoutingVolume =		8 + kConstantOffset,
+	kConstantParameters =	9
 };
 
 #define kNumberOfParameters (kConstantParameters + kConstantOffset)
@@ -270,9 +269,6 @@ public:
 	
 	bool getShowGridLines() const { return mShowGridLines; }
 	void setShowGridLines(bool s) { mShowGridLines = s; }
-	
-	bool getLinkMovement() { return getParameter(kLinkMovement) > 0.5; }
-	void setLinkMovement(bool s) { setParameterNotifyingHost(kLinkMovement, s ? 1 : 0); }
 	
 	int getMovementMode() const { return mMovementMode; }
 	void setMovementMode(int s) { mMovementMode = s; }
