@@ -478,7 +478,7 @@ public:
 	void setSourceRT(int i, FPoint p, bool p_bNotifyHost = true) {
 		float x = p.x * cosf(p.y);
 		float y = p.x * sinf(p.y);
-		setSourceXY(i, FPoint(x, y));
+		setSourceXY(i, FPoint(x, y), p_bNotifyHost);
 	}
  
 	void setSpeakerXY01(int i, FPoint p) {
