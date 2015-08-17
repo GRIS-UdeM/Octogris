@@ -29,18 +29,15 @@
 #include "PluginProcessor.h"
 
 // ==============================================================================
-void Trajectory::start()
-{
-	if (mSource < 0)
-	{
-		for (int j = 0; j < mFilter->getNumberOfSources(); j++)
-		{
+void Trajectory::start() {
+
+    if (mSource < 0) {
+        //no source selected, so automation on all sources
+		for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
 			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
 			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
 		}
-	}
-	else
-	{
+	} else {
 		mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSource));
 		mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSource));
 	}
@@ -77,16 +74,14 @@ float Trajectory::progress()
 void Trajectory::stop()
 {
 	if (!mStarted || mStopped) return;
-	if (mSource < 0)
-	{
-		for (int j = 0; j < mFilter->getNumberOfSources(); j++)
-		{
+
+    if (mSource < 0){
+        //no source selected, so automation on all sources
+		for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
 			mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
 			mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
 		}
-	}
-	else
-	{
+	} else {
 		mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSource));
 		mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSource));
 	}
@@ -223,6 +218,7 @@ protected:
 	{
 		float da = mDone / mDuration * (2 * M_PI);
 		if (!mCCW) da = -da;
+        
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 		if (mSource < 0 || mSource == i)
 		{
