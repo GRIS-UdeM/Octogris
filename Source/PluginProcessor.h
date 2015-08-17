@@ -47,6 +47,10 @@ using namespace std;
 
 //==============================================================================
 
+static bool s_bUseOneSource = false;
+
+
+
 // x, y, distance
 enum {
     kSourceX = 0,
