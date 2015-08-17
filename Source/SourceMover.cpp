@@ -163,13 +163,13 @@ void SourceMover::move(FPoint p, MoverType mt)
                     if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
                     break;
                 case 2:     // circular, fixed radius
                     newCurSrcPosRT.x = newSelSrcPosRT.x;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
                     break;
                 case 3:     // circular, fixed angle
                     JUCE_COMPILER_WARNING("need to remove this mSourceAngularOrder business. Is it some kind of delta? Why is the angle (y is angle) added to the existing one?")
@@ -178,18 +178,18 @@ void SourceMover::move(FPoint p, MoverType mt)
                     if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
                     break;
                 case 4:     // circular, fully fixed
                     newCurSrcPosRT.x = newSelSrcPosRT.x;
                     newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
                     break;
                 case 5:      // delta lock
                     FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
-                    mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d);
+                    mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d, !s_bUseOneSource);
                     break;
             }
         }

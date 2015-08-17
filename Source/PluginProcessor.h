@@ -49,8 +49,6 @@ using namespace std;
 
 static bool s_bUseOneSource = false;
 
-
-
 // x, y, distance
 enum {
     kSourceX = 0,
@@ -458,7 +456,7 @@ public:
 		setParameterNotifyingHost(getParamForSourceY(i), p.y);
 	}
 
-	void setSourceXY(int i, FPoint p) {
+	void setSourceXY(int i, FPoint p, bool p_bNotifyHost = true) {
 		float r = hypotf(p.x, p.y);
 		if (r > kRadiusMax)
 		{
@@ -468,11 +466,16 @@ public:
 		}
 		p.x = (p.x + kRadiusMax) / (kRadiusMax*2);
 		p.y = (p.y + kRadiusMax) / (kRadiusMax*2);
-		setParameterNotifyingHost(getParamForSourceX(i), p.x);
-		setParameterNotifyingHost(getParamForSourceY(i), p.y);
+        if (p_bNotifyHost){
+            setParameterNotifyingHost(getParamForSourceX(i), p.x);
+            setParameterNotifyingHost(getParamForSourceY(i), p.y);
+        } else {
+            setParameter(getParamForSourceX(i), p.x);
+            setParameter(getParamForSourceY(i), p.y);
+        }
 	}
 
-	void setSourceRT(int i, FPoint p) {
+	void setSourceRT(int i, FPoint p, bool p_bNotifyHost = true) {
 		float x = p.x * cosf(p.y);
 		float y = p.x * sinf(p.y);
 		setSourceXY(i, FPoint(x, y));
