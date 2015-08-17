@@ -47,6 +47,10 @@ using namespace std;
 
 //==============================================================================
 
+static bool s_bUseOneSource = false;
+
+
+
 // x, y, distance
 enum {
     kSourceX = 0,
@@ -71,17 +75,16 @@ enum {
 
 enum
 {
-	kLinkMovement =			0 + kConstantOffset,
-	kSmooth =				1 + kConstantOffset,
-	kVolumeNear =			2 + kConstantOffset,
-	kVolumeMid =			3 + kConstantOffset,
-	kVolumeFar =			4 + kConstantOffset,
-	kFilterNear =			5 + kConstantOffset,
-	kFilterMid =			6 + kConstantOffset,
-	kFilterFar =			7 + kConstantOffset,
-	kMaxSpanVolume =		8 + kConstantOffset,
-	kRoutingVolume =		9 + kConstantOffset,
-	kConstantParameters =	10
+	kSmooth =				0 + kConstantOffset,
+	kVolumeNear =			1 + kConstantOffset,
+	kVolumeMid =			2 + kConstantOffset,
+	kVolumeFar =			3 + kConstantOffset,
+	kFilterNear =			4 + kConstantOffset,
+	kFilterMid =			5 + kConstantOffset,
+	kFilterFar =			6 + kConstantOffset,
+	kMaxSpanVolume =		7 + kConstantOffset,
+	kRoutingVolume =		8 + kConstantOffset,
+	kConstantParameters =	9
 };
 
 #define kNumberOfParameters (kConstantParameters + kConstantOffset)
@@ -270,9 +273,6 @@ public:
 	
 	bool getShowGridLines() const { return mShowGridLines; }
 	void setShowGridLines(bool s) { mShowGridLines = s; }
-	
-	bool getLinkMovement() { return getParameter(kLinkMovement) > 0.5; }
-	void setLinkMovement(bool s) { setParameterNotifyingHost(kLinkMovement, s ? 1 : 0); }
 	
 	int getMovementMode() const { return mMovementMode; }
 	void setMovementMode(int s) { mMovementMode = s; }
@@ -500,6 +500,13 @@ public:
     void setIsSourcesChanged(bool pIsNumberSourcesChanged){ mIsNumberSourcesChanged = pIsNumberSourcesChanged;}
     void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
     
+    void setIsRecordingAutomation(bool b)   { m_bIsRecordingAutomation = b;     }
+    bool getIsRecordingAutomation()         { return m_bIsRecordingAutomation;  }
+
+    void setSourceLocationChanged(int i)   { m_iSourceLocationChanged = i;     }
+    int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
+
+    
     void storeCurrentLocations();
     void restoreCurrentLocations();
 	void reset();
@@ -583,16 +590,8 @@ private:
     float mBufferSpLocA[JucePlugin_MaxNumOutputChannels];
     float mBufferSpLocM[JucePlugin_MaxNumOutputChannels];
     
-    
-
-    
-    int mNumberOfSources;
-    int mNumberOfSpeakers;
-    
     void setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues);
     void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues);
-    
-    std::vector<FirFilter> mFilters;
 	
 	void findLeftAndRightSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
     
@@ -601,6 +600,15 @@ private:
 	void ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataPanSpanMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
+
+    int mNumberOfSources;
+    int mNumberOfSpeakers;
+    std::vector<FirFilter> mFilters;
+    bool m_bIsRecordingAutomation;
+    int m_iSourceLocationChanged;
+    
+    
+    
 	
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)

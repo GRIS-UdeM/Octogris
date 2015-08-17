@@ -365,14 +365,7 @@ public:
             // sleep a bit so the threads don't all grind the CPU to a halt..
             wait (m_iInterval);
             
-//            // because this is a background thread, we mustn't do any UI work without first grabbing a MessageManagerLock..
-//            const MessageManagerLock mml (Thread::getCurrentThread());
-//            
-//            if (! mml.lockWasGained())  // if something is trying to kill this job, the lock
-//                return;                 // will fail, in which case we'd better return..
-            
-            // now we've got the UI thread locked, we can mess about with the components
-            //m_pEditor->updateNonSelectedSourcePositions();
+            m_pEditor->updateNonSelectedSourcePositions();
         }
     }
     
@@ -393,11 +386,10 @@ AudioProcessorEditor (ownerFilter)
 ,mFilter(ownerFilter)
 ,mMover(ownerFilter)
 ,m_logoImage()
-,m_iSourceLocationChanged(-1)
 {
     
-    //m_pSourceUpdateThread = new SourceUpdateThread(this);
-    //mComponents.add(m_pSourceUpdateThread);
+    m_pSourceUpdateThread = new SourceUpdateThread(this);
+    mComponents.add(m_pSourceUpdateThread);
 
     mHostChangedParameter = mFilter->getHostChangedParameter();
     mHostChangedProperty = mFilter->getHostChangedProperty();
@@ -539,9 +531,6 @@ AudioProcessorEditor (ownerFilter)
             
             mMovementMode->addListener(this);
         }
-        
-        mLinkMovement = addCheckbox("Link movement", mFilter->getLinkMovement(), x, y, w, dh, box);
-        y += dh + 5;
         
         {
             addLabel("Param smoothing (ms):", x, y, w, dh, box);
@@ -1122,14 +1111,14 @@ AudioProcessorEditor (ownerFilter)
 }
 
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
-//    if (/*m_bCurrentlyPlaying && !m_bIsRecordingAutomation && m_iMovementConstraint != independent && */) {
-    
-        //we don't have the concept of selected sources here, so we just use automation from source 0
-
-    mMover.begin(0, kSourceThread);
-    mMover.move(mFilter->getSourceXY01(0), kSourceThread);
-    mMover.end(kSourceThread);
-//    }
+    int iSourceChanged = mFilter->getSourceLocationChanged();
+    if (s_bUseOneSource && !mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && iSourceChanged != -1) {
+        mMover.begin(iSourceChanged, kSourceThread);
+        mMover.move(mFilter->getSourceXY01(iSourceChanged), kSourceThread);
+        mMover.end(kSourceThread);
+        
+        mFilter->setSourceLocationChanged(-1.f);
+    }
 }
 
 void OctogrisAudioProcessorEditor::updateTrajectoryComboboxes(){
@@ -1640,7 +1629,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 break;
             case kLeftCounterClockWise:
                 break;
-                
         }
         
         mFilter->updateSpeakerLocation(alternate, startAtTop, clockwise);
@@ -1657,10 +1645,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     else if (button == mLinkDistances)
     {
         mFilter->setLinkDistances(button->getToggleState());
-    }
-    else if (button == mLinkMovement)
-    {
-        mFilter->setLinkMovement(button->getToggleState());
     }
     else if (button == mApplyFilter)
     {
@@ -1817,7 +1801,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mFilter->setTrSrcSelect(source);
             
             bool bUniqueTarget = true;
-            if  (!mFilter->getLinkMovement() || mFilter->getMovementMode() == 0){
+            if  (mFilter->getMovementMode() == 0){
                 bUniqueTarget = false;
             }
 
@@ -1991,7 +1975,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 /*#if JUCE_MAC
         updateLeapComponent(mleap);
 #endif*/
-        mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);

@@ -149,8 +149,7 @@ private:
     ToggleButton *mEnableLeap;
 	ToggleButton *mShowGridLines;
 	ToggleButton *mLinkDistances;
-	ToggleButton *mLinkMovement;
-	ToggleButton *mApplyFilter;
+    ToggleButton *mApplyFilter;
 	ComboBox *mMovementMode;
 	ComboBox *mGuiSize;
     ComboBox *mInputOutputModeCombo;
@@ -238,7 +237,7 @@ private:
 	Slider* addParamSlider(int paramType, int si, float v, int x, int y, int w, int h, Component *into);
     
     SourceUpdateThread* m_pSourceUpdateThread;
-    int m_iSourceLocationChanged;
+    
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED

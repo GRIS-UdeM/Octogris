@@ -69,7 +69,10 @@ int IndexedAngleCompare(const void *a, const void *b)
 }
 
 //==============================================================================
-OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
+OctogrisAudioProcessor::OctogrisAudioProcessor():
+mFilters()
+,m_bIsRecordingAutomation(false)
+,m_iSourceLocationChanged(-1)
 {
     
     //SET PARAMETERS
@@ -78,7 +81,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
         mParameters.add(0);
     }
     
-	mParameters.set(kLinkMovement, 0);
 	mParameters.set(kSmooth, normalize(kSmoothMin, kSmoothMax, kSmoothDefault));
 	mParameters.set(kVolumeNear, normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault));
 	mParameters.set(kVolumeMid, normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault));
@@ -227,19 +229,38 @@ float OctogrisAudioProcessor::getParameter (int index)
 void OctogrisAudioProcessor::setParameter (int index, float newValue)
 {
 	mParameters.set(index, newValue);
+    
+    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { m_iSourceLocationChanged = 0;}
+    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { m_iSourceLocationChanged = 1;}
+    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { m_iSourceLocationChanged = 2;}
+    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { m_iSourceLocationChanged = 3;}
+    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { m_iSourceLocationChanged = 4;}
+    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { m_iSourceLocationChanged = 5;}
+    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { m_iSourceLocationChanged = 6;}
+    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { m_iSourceLocationChanged = 7;}
+    
 	mHostChangedParameter++;
 }
 
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
 {
 	mParameters.set(index, newValue);
+    
+    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { m_iSourceLocationChanged = 0;}
+    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { m_iSourceLocationChanged = 1;}
+    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { m_iSourceLocationChanged = 2;}
+    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { m_iSourceLocationChanged = 3;}
+    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { m_iSourceLocationChanged = 4;}
+    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { m_iSourceLocationChanged = 5;}
+    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { m_iSourceLocationChanged = 6;}
+    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { m_iSourceLocationChanged = 7;}
+    
     sendParamChangeMessageToListeners(index, newValue);
 }
 
 const String OctogrisAudioProcessor::getParameterName (int index)
 {
    
-    if (index == kLinkMovement) return "Link Movement";
 	if (index == kSmooth)		return "Smooth Param";
     if (index == kVolumeNear)	return "Volume Near";
 	if (index == kVolumeMid)	return "Volume Mid";
@@ -1745,7 +1766,6 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     
     xml.setAttribute ("kRoutingVolume", mParameters[kRoutingVolume]);
     xml.setAttribute ("mRoutingMode", mRoutingMode);
-    xml.setAttribute ("kLinkMovement", mParameters[kLinkMovement]);
     xml.setAttribute ("kSmooth", mParameters[kSmooth]);
     xml.setAttribute ("kVolumeNear", mParameters[kVolumeNear]);
     xml.setAttribute ("kVolumeMid", mParameters[kVolumeMid]);
@@ -1826,7 +1846,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mParameters.set(kRoutingVolume, static_cast<float>(xmlState->getDoubleAttribute("kRoutingVolume", normalize(kRoutingVolumeMin, kRoutingVolumeMax, kRoutingVolumeDefault))));
             setRoutingMode(xmlState->getIntAttribute ("mRoutingMode", 0));
             
-            mParameters.set(kLinkMovement,  static_cast<float>(xmlState->getDoubleAttribute("kLinkMovement", 0)));
             mParameters.set(kSmooth,        static_cast<float>(xmlState->getDoubleAttribute("kSmooth", normalize(kSmoothMin, kSmoothMax, kSmoothDefault))));
             mParameters.set(kVolumeNear,    static_cast<float>(xmlState->getDoubleAttribute("kVolumeNear", normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault))));
             mParameters.set(kVolumeMid,     static_cast<float>(xmlState->getDoubleAttribute("kVolumeMid", normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault))));
@@ -1906,7 +1925,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             
             if (version >= 4)
             {
-                mParameters.set(kLinkMovement, readFloatData(data, sizeInBytes, 0));
+                readFloatData(data, sizeInBytes, 0); //this was for kLinkMovement
                 mParameters.set(kSmooth, readFloatData(data, sizeInBytes, normalize(kSmoothMin, kSmoothMax, kSmoothDefault)));
                 mParameters.set(kVolumeNear, readFloatData(data, sizeInBytes, normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault)));
                 if (version >= 5) mParameters.set(kVolumeMid, readFloatData(data, sizeInBytes, normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault)));

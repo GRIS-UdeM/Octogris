@@ -60,29 +60,26 @@ void SourceMover::begin(int s, MoverType mt)
 	mMoverType = mt;
 	mSelectedSrc = s;
 	
+    if (mMoverType != kSourceThread){
+        mFilter->setIsRecordingAutomation(true);
+    }
+    
 	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
 	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
     
-//    if (mMoverType != kSourceThread){
-//        return;
-//    }
-    
     int iNbrSrc = mFilter->getNumberOfSources();
 
-	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1 && mFilter->getLinkMovement())
-	{
-		for (int j = 0; j < iNbrSrc; j++)
-		{
+	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1) {
+		for (int j = 0; j < iNbrSrc; j++) {
 			mSourcesDownRT.setUnchecked(j, mFilter->getSourceRT(j));
 			mSourcesDownXY.setUnchecked(j, mFilter->getSourceXY(j));
 			if (j == mSelectedSrc) continue;
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
+//            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
+//            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
 		}
 		
 		if	(	(iNbrSrc == 2 && (mFilter->getMovementMode() == 6 || mFilter->getMovementMode() == 7))
-			 ||	(iNbrSrc >  2 && (mFilter->getMovementMode() == 3 || mFilter->getMovementMode() == 4))
-			 )
+			 ||	(iNbrSrc >  2 && (mFilter->getMovementMode() == 3 || mFilter->getMovementMode() == 4)))
 		{
 			// need to calculate angular order
 			
@@ -106,22 +103,16 @@ void SourceMover::begin(int s, MoverType mt)
 			int b;
 			for (b = 0; b < iNbrSrc && ia[b].i != mSelectedSrc; b++) ;
 			
-			if (b == iNbrSrc)
-			{
+			if (b == iNbrSrc) {
 				printf("error!\n");
 				b = 0;
 			}
 			
-			//printf("mSelectedItem: %i base: %i step: %.3f\n", mSelectedItem+1, b+1, (M_PI * 2.) / mNumberOfSources);
-			
-			for (int j = 1; j < iNbrSrc; j++)
-			{
+			for (int j = 1; j < iNbrSrc; j++) {
 				int o = (b + j) % iNbrSrc;
 				o = ia[o].i;
 				mSourcesAngularOrder.set(o, (M_PI * 2. * j) / iNbrSrc);
 			}
-			
-			//for (int j = 0; j < mNumberOfSources; j++)  printf("mSourceAngularOrder[%i] = %.3f\n", j+1, mSourceAngularOrder[j]);
 
 			delete[] ia;
 		}
@@ -137,28 +128,22 @@ void SourceMover::move(FPoint p, MoverType mt)
     
     //move selected item
     float fCurX01 = p.x, fCurY01 = p.y;;
-    
-    // in non-thread case, just update selectedSrc
-//    if (mMoverType != kSourceThread){
-        mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
-//        mFilter->mOldSrcLocRT[mSelectedSrc] = FPoint(fCurX01, fCurY01);
-//        return;
-//    }
+    mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
     
     int iMovementMode = mFilter->getMovementMode();
-    if (iMovementMode == 0 || !mFilter->getLinkMovement()){
+    if (iMovementMode == 0){
         return;
     }
     
     if (mFilter->getNumberOfSources() > 2) {
-        for (int iCurItem = 0; iCurItem < mFilter->getNumberOfSources(); iCurItem++) {
+        for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); iCurSrc++) {
             
-            if (iCurItem == mSelectedSrc) {
+            if (iCurSrc == mSelectedSrc) {
                 //mFilter->mOldSrcLocRT[iCurItem] = FPoint(fCurX01, fCurY01);
                 continue;
             }
             
-            FPoint oldCurSrcPosRT = mSourcesDownRT[iCurItem];
+            //calculate delta for selected source
             FPoint oldSelSrcPosRT = mSourcesDownRT[mSelectedSrc];
             FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc);
             FPoint delSelSrcPosRT = newSelSrcPosRT - oldSelSrcPosRT;
@@ -167,6 +152,8 @@ void SourceMover::move(FPoint p, MoverType mt)
                 return;     //return if delta is null
             }
             
+            //calculate new position for curSrc using delta for selected source
+            FPoint oldCurSrcPosRT = mSourcesDownRT[iCurSrc];
             FPoint newCurSrcPosRT = oldCurSrcPosRT + delSelSrcPosRT;
             
             //all x's and y's here are actually r's and t's
@@ -176,32 +163,33 @@ void SourceMover::move(FPoint p, MoverType mt)
                     if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
                     break;
                 case 2:     // circular, fixed radius
                     newCurSrcPosRT.x = newSelSrcPosRT.x;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
                     break;
                 case 3:     // circular, fixed angle
-                    newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurItem];
+                    JUCE_COMPILER_WARNING("need to remove this mSourceAngularOrder business. Is it some kind of delta? Why is the angle (y is angle) added to the existing one?")
+                    newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
                     if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
                     if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
                     break;
                 case 4:     // circular, fully fixed
                     newCurSrcPosRT.x = newSelSrcPosRT.x;
-                    newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurItem];
+                    newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurItem, newCurSrcPosRT);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
                     break;
                 case 5:      // delta lock
                     FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
-                    mFilter->setSourceXY(iCurItem, mSourcesDownXY[iCurItem] + d);
+                    mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d);
                     break;
             }
         }
@@ -210,6 +198,8 @@ void SourceMover::move(FPoint p, MoverType mt)
     //we need to have a whole different case for when we have 2 sources because the getMovementModes() are not the same!
     else if (mFilter->getNumberOfSources() == 2)
     {
+        JUCE_COMPILER_WARNING("instead of having 2 whole different ifs, just put the 2-source-only modes at the end of the dropDown so that we cannot reach their case when we have more than 2 sources")
+        
         int iCurSrc = 1 - mSelectedSrc;
         float vxo = fCurX01, vyo = fCurY01;
         
@@ -456,24 +446,24 @@ void SourceMover::move(FPoint p, MoverType mt)
 void SourceMover::end(MoverType mt)
 {
 	if (mMoverType != mt) return;
-	
-	mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
-	mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
     
-//    if (mMoverType != kSourceThread){
-//        return;
-//    }
+    mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
+	mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
 
     
-	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1 && mFilter->getLinkMovement())
+	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1)
 	{
 		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 		{
 			if (i == mSelectedSrc) continue;
-			mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(i));
-			mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(i));
+//			mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(i));
+//			mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(i));
 		}
 	}
+    
+    if (mMoverType != kSourceThread){
+        mFilter->setIsRecordingAutomation(false);
+    }
 	
 	mMoverType = kVacant;
 }
