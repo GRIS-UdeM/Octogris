@@ -18,7 +18,8 @@ everyone calls processor::move, which
         which calculates delta between the selected source position (argument) and the old one
         then cycles through all sources
             for selected one, simply set old values
-            for unselected, move by delta DIRECTLY (ie not telling host so no automation) and set old values
+            for unselected, move by delta DIRECTLY (ie not telling host so no automation, not
+                setting srcLocation) and set old values
 
 the thread moves sources if
     X-!m_bIsRecordingAutomation
@@ -46,4 +47,26 @@ then everyone calls mover::move, which
 ---------------------- 2015 08 17 ----------------------
 Ah, i need to NOT record automations when move() is called NOT from kSourceThread
 
--cliquer sur start trajectore fait des automations
+-cliquer sur start trajectore fait des automations from sourceThread, because changing the number of
+sources calls it. should only happen once
+
+somthing isn't right. the thread is setting srcLocationChanged. that should really not happen
+we got
+    thread calls
+        mover.begin
+        mover.move
+            mFilter->setSourceXY01() for selected source (this should not happen, right?)
+                this sets the srcLocationChanged for the selected source
+            mFilter->setSourceRT for non selected sources
+                this sets the srcLocationChanged for all non-selected sources (shouldn't happen,
+                right?)
+        mover.end
+
+ok, so now i cleaned a bunch of code, and there are no automations written when changing movement
+constraints, BUT there is when starting a trajectory
+NOW HERE: can record automation on one source, but not read them. I think the problems are that
+-thread is not calculating delta properly (probably)
+-when writing trajectories we should use the mover (which we do?), somehow sources are not moving
+when writing trajectories. ah, it's probably because i force selected source 0, so i need a special
+case to have all sources move when kSourceThread
+
