@@ -47,7 +47,7 @@ using namespace std;
 
 //==============================================================================
 
-static bool s_bUseOneSource = false;
+static bool s_bUseOneSource = true;
 
 // x, y, distance
 enum {
@@ -450,10 +450,15 @@ public:
 		return p;
 	}
 
-	void setSourceXY01(int i, FPoint p) {
+	void setSourceXY01(int i, FPoint p, bool p_bNotifyHost = true) {
 		p = clampRadius01(p);
-		setParameterNotifyingHost(getParamForSourceX(i), p.x);
-		setParameterNotifyingHost(getParamForSourceY(i), p.y);
+        if (p_bNotifyHost){
+            setParameterNotifyingHost(getParamForSourceX(i), p.x);
+            setParameterNotifyingHost(getParamForSourceY(i), p.y);
+        } else {
+            setParameter(getParamForSourceX(i), p.x);
+            setParameter(getParamForSourceY(i), p.y);
+        }
 	}
 
 	void setSourceXY(int i, FPoint p, bool p_bNotifyHost = true) {
@@ -506,7 +511,9 @@ public:
     void setIsRecordingAutomation(bool b)   { m_bIsRecordingAutomation = b;     }
     bool getIsRecordingAutomation()         { return m_bIsRecordingAutomation;  }
 
-    void setSourceLocationChanged(int i)   { m_iSourceLocationChanged = i;     }
+    void setSourceLocationChanged(int i)   {
+        m_iSourceLocationChanged = i;
+    }
     int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
 
     

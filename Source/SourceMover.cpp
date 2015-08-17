@@ -62,10 +62,10 @@ void SourceMover::begin(int s, MoverType mt)
 	
     if (mMoverType != kSourceThread){
         mFilter->setIsRecordingAutomation(true);
+        
+        mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
+        mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
     }
-    
-	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
-	mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
     
     int iNbrSrc = mFilter->getNumberOfSources();
 
@@ -73,9 +73,11 @@ void SourceMover::begin(int s, MoverType mt)
 		for (int j = 0; j < iNbrSrc; j++) {
 			mSourcesDownRT.setUnchecked(j, mFilter->getSourceRT(j));
 			mSourcesDownXY.setUnchecked(j, mFilter->getSourceXY(j));
-			if (j == mSelectedSrc) continue;
-//            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
-//            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
+            if (j == mSelectedSrc) continue;
+            if (mMoverType != kSourceThread && !s_bUseOneSource){
+                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
+                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
+            }
 		}
 		
 		if	(	(iNbrSrc == 2 && (mFilter->getMovementMode() == 6 || mFilter->getMovementMode() == 7))
@@ -127,9 +129,10 @@ void SourceMover::move(FPoint p, MoverType mt)
     }
     
     //move selected item
-    float fCurX01 = p.x, fCurY01 = p.y;;
-    mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
-    
+    float fCurX01 = p.x, fCurY01 = p.y;
+    if (mMoverType != kSourceThread){
+        mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
+    }
     int iMovementMode = mFilter->getMovementMode();
     if (iMovementMode == 0){
         return;
@@ -446,24 +449,22 @@ void SourceMover::move(FPoint p, MoverType mt)
 void SourceMover::end(MoverType mt)
 {
 	if (mMoverType != mt) return;
-    
-    mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
-	mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
 
-    
-	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1)
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-		{
-			if (i == mSelectedSrc) continue;
-//			mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(i));
-//			mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(i));
-		}
-	}
-    
     if (mMoverType != kSourceThread){
+        mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
+        mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
+        
+        if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1) {
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
+                if (i == mSelectedSrc) continue;
+                if (!s_bUseOneSource){
+                    mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(i));
+                    mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(i));
+                }
+            }
+        }
         mFilter->setIsRecordingAutomation(false);
     }
-	
-	mMoverType = kVacant;
+    
+    mMoverType = kVacant;
 }

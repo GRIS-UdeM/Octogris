@@ -1,3 +1,5 @@
+---------------------- 2015 08 14 ----------------------
+
 ok, so need to test presets in current octogris version--DONE
 
 now i need to make this oneSource business work. How to proceed? 
@@ -16,7 +18,7 @@ everyone calls processor::move, which
         which calculates delta between the selected source position (argument) and the old one
         then cycles through all sources
             for selected one, simply set old values
-            for unselected, move by delta and set old values
+            for unselected, move by delta DIRECTLY (ie not telling host so no automation) and set old values
 
 the thread moves sources if
     X-!m_bIsRecordingAutomation
@@ -41,3 +43,7 @@ then everyone calls mover::move, which
     then of fucking course, there are the specific symmetric x/y fucking modes which i also need to
     figure out
     
+---------------------- 2015 08 17 ----------------------
+Ah, i need to NOT record automations when move() is called NOT from kSourceThread
+
+-cliquer sur start trajectore fait des automations

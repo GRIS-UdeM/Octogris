@@ -230,14 +230,14 @@ void OctogrisAudioProcessor::setParameter (int index, float newValue)
 {
 	mParameters.set(index, newValue);
     
-    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { m_iSourceLocationChanged = 0;}
-    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { m_iSourceLocationChanged = 1;}
-    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { m_iSourceLocationChanged = 2;}
-    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { m_iSourceLocationChanged = 3;}
-    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { m_iSourceLocationChanged = 4;}
-    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { m_iSourceLocationChanged = 5;}
-    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { m_iSourceLocationChanged = 6;}
-    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { m_iSourceLocationChanged = 7;}
+//    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { setSourceLocationChanged(0);}
+//    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { setSourceLocationChanged(1);}
+//    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { setSourceLocationChanged(2);}
+//    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { setSourceLocationChanged(3);}
+//    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { setSourceLocationChanged(4);}
+//    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { setSourceLocationChanged(5);}
+//    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { setSourceLocationChanged(6);}
+//    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { setSourceLocationChanged(7);}
     
 	mHostChangedParameter++;
 }
@@ -246,14 +246,14 @@ void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValu
 {
 	mParameters.set(index, newValue);
     
-    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { m_iSourceLocationChanged = 0;}
-    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { m_iSourceLocationChanged = 1;}
-    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { m_iSourceLocationChanged = 2;}
-    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { m_iSourceLocationChanged = 3;}
-    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { m_iSourceLocationChanged = 4;}
-    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { m_iSourceLocationChanged = 5;}
-    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { m_iSourceLocationChanged = 6;}
-    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { m_iSourceLocationChanged = 7;}
+    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { setSourceLocationChanged(0);}
+    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { setSourceLocationChanged(1);}
+    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { setSourceLocationChanged(2);}
+    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { setSourceLocationChanged(3);}
+    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { setSourceLocationChanged(4);}
+    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { setSourceLocationChanged(5);}
+    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { setSourceLocationChanged(6);}
+    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { setSourceLocationChanged(7);}
     
     sendParamChangeMessageToListeners(index, newValue);
 }
