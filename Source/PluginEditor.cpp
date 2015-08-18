@@ -1654,48 +1654,34 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     
 #else
     //Changements lié a l'ajout de joystick à l'onglet leap qui est devenu interface
-    if(button == mEnableJoystick)
+    else if(button == mEnableJoystick)
     {
 
         bool state = mEnableJoystick->getToggleState();
         mFilter->setIsJoystickEnabled(state);
-        if (state)
-        {
-            
-            if (!gIOHIDManagerRef)
-            {
+        if (state) {
+            if (!gIOHIDManagerRef) {
                 mStateJoystick->setText("Joystick not connected", dontSendNotification);
                 gIOHIDManagerRef = IOHIDManagerCreate(CFAllocatorGetDefault(),kIOHIDOptionsTypeNone);
-                if(!gIOHIDManagerRef)
-                {
+                if(!gIOHIDManagerRef) {
                     printf("Could not create IOHIDManager");
-                }
-                else
-                {
+                } else {
                     mHIDDel = HIDDelegate::CreateHIDDelegate(mFilter, this);
                     mHIDDel->Initialize_HID(this);
-                    if(mHIDDel->getDeviceSetRef())
-                    {
+                    if(mHIDDel->getDeviceSetRef()) {
                         mStateJoystick->setText("Joystick connected", dontSendNotification);
-                    }
-                    else
-                    {
+                    } else {
                         mStateJoystick->setText("Joystick not connected", dontSendNotification);
                         mEnableJoystick->setToggleState(false, dontSendNotification);
                         gIOHIDManagerRef = NULL;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 mEnableJoystick->setToggleState(false, dontSendNotification);
                 mStateJoystick->setText("Joystick connected to another Octogris", dontSendNotification);
             }
-        }
-        else
-        {
-            if(gIOHIDManagerRef)
-            {
+        } else {
+            if(gIOHIDManagerRef) {
                 IOHIDManagerUnscheduleFromRunLoop(gIOHIDManagerRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
                 IOHIDManagerRegisterInputValueCallback(gIOHIDManagerRef, NULL,this);
                 IOHIDManagerClose(gIOHIDManagerRef, kIOHIDOptionsTypeNone);
@@ -1704,54 +1690,35 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 gElementCFArrayRef = NULL;
                 mHIDDel = NULL;
                 mStateJoystick->setText("", dontSendNotification);
-                
             }
-            
         }
-        
     }
-    if(button == mEnableLeap)
-    {
+    
+    else if(button == mEnableLeap) {
         bool state = mEnableLeap->getToggleState();
         
-        if (state)
-        {
-            
-            
-            if (!gIsLeapConnected)
-            {
+        if (state) {
+            if (!gIsLeapConnected) {
                 mStateLeap->setText("Leap not connected", dontSendNotification);
                 mController = new Leap::Controller();
-                if(!mController)
-                {
+                if(!mController) {
                     printf("Could not create leap controler");
-                }
-                else
-                {
+                } else {
                     mleap = OctoLeap::CreateLeapComponent(mFilter, this);
-                    if(mleap)
-                    {
+                    if(mleap) {
                         gIsLeapConnected = 1;
                         mController->addListener(*mleap);
-                    }
-                    else
-                    {
+                    } else {
                         mStateLeap->setText("Leap not connected", dontSendNotification);
                     }
                 }
-                
-            }
-            else
-            {
+            } else {
                 mStateLeap->setText("Leap used in another Octogris", dontSendNotification);
                 mEnableLeap->setToggleState(false, dontSendNotification);
                
             }
-        }
-        else
-        {
-            if(gIsLeapConnected)
-            {
+        } else {
+            if(gIsLeapConnected) {
                 mController->enableGesture(Leap::Gesture::TYPE_INVALID);
                 mController->removeListener(*mleap);
                 mController = NULL;
@@ -1764,11 +1731,9 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     
 #endif
     
-    else if (button == mTrWriteButton)
-    {
+    else if (button == mTrWriteButton) {
         Trajectory::Ptr t = mFilter->getTrajectory();
-        if (t)
-        {
+        if (t) {
             mFilter->setTrajectory(NULL);
             mFilter->restoreCurrentLocations();
             mTrWriteButton->setButtonText("Ready");
@@ -1778,9 +1743,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             t->stop();
             
             mNeedRepaint = true;
-        }
-        else
-        {
+        } else {
             float duration = mTrDuration->getText().getFloatValue();
             bool beats = mTrUnits->getSelectedId() == 1;
             float repeats = mTrRepeats->getText().getFloatValue();
@@ -1816,9 +1779,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 			mTrProgressBar->setValue(0);
 			mTrProgressBar->setVisible(true);
 		}
-	}
-	else
-	{
+	} else {
 		printf("unknown button clicked...\n");
 	}
 }
