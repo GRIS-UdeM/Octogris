@@ -1741,7 +1741,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mTrStateEditor = kTrReady;
             mFilter->setTrState(mTrStateEditor);
             t->stop();
-            
+            mFilter->setIsRecordingAutomation(false);
             mNeedRepaint = true;
         } else {
             float duration = mTrDuration->getText().getFloatValue();
@@ -1769,7 +1769,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 bUniqueTarget = false;
             }
 
-            
+            mFilter->setIsRecordingAutomation(true);
 			mFilter->storeCurrentLocations();
 			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget));
 			mTrWriteButton->setButtonText("Cancel");
