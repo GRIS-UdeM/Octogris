@@ -45,6 +45,13 @@ void Trajectory::start() {
 	mStarted = true;
 }
 
+void Trajectory::spInit() {
+    for (int i = 0; i < mFilter->getNumberOfSources(); i++){
+        mSourcesInitRT.add(mFilter->getSourceRT(i));
+    }
+}
+
+
 bool Trajectory::process(float seconds, float beats)
 {
 	if (mStopped) return true;
@@ -205,30 +212,23 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleReturns(int p_i
 class CircleTrajectory : public Trajectory
 {
 public:
-	CircleTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw)
-	: Trajectory(filter, duration, beats, times, source), mCCW(ccw) {}
-	
+    CircleTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw)
+    : Trajectory(filter, duration, beats, times, source), mCCW(ccw) {}
+    
 protected:
-	void spInit()
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			mSourcesInitRT.add(mFilter->getSourceRT(i));
-	}
-	void spProcess(float duration, float seconds)
-	{
-		float da = mDone / mDuration * (2 * M_PI);
-		if (!mCCW) da = -da;
+    void spProcess(float duration, float seconds) {
+        float da = mDone / mDuration * (2 * M_PI);
+        if (!mCCW) da = -da;
         
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-		if (mSource < 0 || mSource == i)
-		{
-			FPoint p = mSourcesInitRT.getUnchecked(i);
-			mFilter->setSourceRT(i, FPoint(p.x, p.y + da));
-		}
-	}
+        for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+            if (mSource < 0 || mSource == i)
+            {
+                FPoint p = mSourcesInitRT.getUnchecked(i);
+                mFilter->setSourceRT(i, FPoint(p.x, p.y + da));
+            }
+    }
 	
 private:
-	Array<FPoint> mSourcesInitRT;
 	bool mCCW;
 };
 
@@ -240,11 +240,6 @@ public:
 	: Trajectory(filter, duration, beats, times, source), mCCW(ccw), mIn(in), mRT(rt) {}
 	
 protected:
-	void spInit()
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			mSourcesInitRT.add(mFilter->getSourceRT(i));
-	}
 	void spProcess(float duration, float seconds)
 	{
 		float da;
@@ -268,7 +263,6 @@ protected:
 	}
 	
 private:
-	Array<FPoint> mSourcesInitRT;
 	bool mCCW, mIn, mRT;
 };
 
@@ -280,11 +274,6 @@ public:
 	: Trajectory(filter, duration, beats, times, source), mIn(in), mRT(rt), mCross(cross) {}
 	
 protected:
-	void spInit()
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			mSourcesInitRT.add(mFilter->getSourceRT(i));
-	}
 	void spProcess(float duration, float seconds)
 	{
         float da;
@@ -309,7 +298,6 @@ protected:
 	}
 	
 private:
-	Array<FPoint> mSourcesInitRT;
 	bool mIn, mRT, mCross;
 };
 
@@ -321,11 +309,6 @@ public:
 	: Trajectory(filter, duration, beats, times, source), mCCW(ccw) {}
 	
 protected:
-	void spInit()
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			mSourcesInitRT.add(mFilter->getSourceRT(i));
-	}
 	void spProcess(float duration, float seconds)
 	{
 		float da = mDone / mDuration * (2 * M_PI);
@@ -350,7 +333,6 @@ protected:
 	}
 	
 private:
-	Array<FPoint> mSourcesInitRT;
 	bool mCCW;
 };
 

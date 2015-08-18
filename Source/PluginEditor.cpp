@@ -1754,8 +1754,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             
             bool bReturn = mTrReturnComboBox->getSelectedId() == 2;
             
-            JUCE_COMPILER_WARNING("replace this by notion of selected source?")
-            int source = s_bUseOneSource ? 0 : mTrSrcSelect->getSelectedId()-2;
+            int source = /*s_bUseOneSource ? 0 :*/ mTrSrcSelect->getSelectedId()-2;
             
             mFilter->setTrDuration(duration);
             JUCE_COMPILER_WARNING("this operation was already done by event funct, clean this up")
