@@ -66,6 +66,7 @@ ok, so now i cleaned a bunch of code, and there are no automations written when 
 constraints, BUT there is when starting a trajectory
 NOW HERE: can record automation on one source, but not read them. I think the problems are that
 -thread is not calculating delta properly (probably)
+===================================================================
 -when writing trajectories we should use the mover (which we do?), somehow sources are not moving
 when writing trajectories. ah, it's probably because i force selected source 0, so i need a special
 case to have all sources move when kSourceThread
@@ -90,13 +91,14 @@ ________________________________________
 reading automation only moves automated source. So delta must be wrong. i think the problem was that the delta was calculated inside the loop rather than outside, thus overwriting itself? can now read automations.
 
 REMAINING PROBLEMS
--trajectories write on all sources
+X-trajectories write on all sources
 -plugin is using too much CPU (reduce refresh rate, avoid mover::begin/end by making sort instantaneous)
-	apparently just lowering refresh rate form 25 to 50 helped a lot
+	apparently just lowering refresh rate form 25 to 50 helped a lot, but not enough
 X-refactor move to remove extra 2 source case
 	-need to check that can load project with 2 sources with automations using the 2-source-constraints modes
 	1->6, 2-7, 3-8
 	4-1,5-2,6-3,7-4,8-5	
+- trajectories
+	automation written when trajectory stops, because we are restoring the stored source locations. Forcing restoration only on source 0, which could need to be changed to selected Source if ever we have that concept. 
 	
- 
-
+	**************	IMPORTANT NOTE: with one-source-automations, it is impossible to have unique random trajectories for the different sources. all trajectories have to follow the selected source. Unless we force randomization, which will be different every time we run the automation************	

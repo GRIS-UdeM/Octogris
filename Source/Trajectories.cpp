@@ -30,33 +30,33 @@
 
 // ==============================================================================
 void Trajectory::start() {
-
-    if (mSource < 0) {
-        //no source selected, so automation on all sources
-		for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
-		}
-	} else {
-		mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSource));
-		mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSource));
-	}
-	spInit();
-	mStarted = true;
-}
-
-void Trajectory::spInit() {
+    if (s_bUseOneSource){
+        int j = 0;
+        mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
+        mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
+    } else {
+        if (mSource < 0) {
+            //no source selected, so automation on all sources
+            for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
+                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
+                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
+            }
+        } else {
+            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSource));
+            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSource));
+        }
+    }
     for (int i = 0; i < mFilter->getNumberOfSources(); i++){
         mSourcesInitRT.add(mFilter->getSourceRT(i));
     }
+    
+	mStarted = true;
 }
 
-bool Trajectory::process(float seconds, float beats)
-{
+bool Trajectory::process(float seconds, float beats) {
 	if (mStopped) return true;
 	if (!mStarted) start();
-	if (mDone == mTotalDuration)
-	{
+	if (mDone == mTotalDuration) {
 		spProcess(0, 0);
 		stop();
 		return true;
@@ -81,16 +81,22 @@ void Trajectory::stop()
 {
 	if (!mStarted || mStopped) return;
 
-    if (mSource < 0){
-        //no source selected, so automation on all sources
-		for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
-			mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
-			mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
-		}
-	} else {
-		mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSource));
-		mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSource));
-	}
+    if (s_bUseOneSource){
+        int j = 0;
+        mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
+        mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
+    } else {
+        if (mSource < 0){
+            //no source selected, so automation on all sources
+            for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
+                mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
+                mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
+            }
+        } else {
+            mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSource));
+            mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSource));
+        }
+    }
 	mStopped = true;
 }
 
@@ -222,7 +228,7 @@ protected:
         for (int i = 0; i < mFilter->getNumberOfSources(); i++)
             if (mSource < 0 || mSource == i)
             {
-                bool bWriteAutomation = (i == 0) ? true : false;
+                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
                 FPoint p = mSourcesInitRT.getUnchecked(i);
                 mFilter->setSourceRT(i, FPoint(p.x, p.y + da), bWriteAutomation);
             }
@@ -257,7 +263,7 @@ protected:
                 float l = (cos(da)+1)*0.5;
                 float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
                 float t = p.y + 2*da;
-                bool bWriteAutomation = (i == 0) ? true : false;
+                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
                 mFilter->setSourceRT(i, FPoint(r, t), bWriteAutomation);
             }
     }
@@ -292,7 +298,7 @@ protected:
                 FPoint p = mSourcesInitRT.getUnchecked(i);
                 float l = mCross ? cos(da) : (cos(da)+1)*0.5;
                 float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-                bool bWriteAutomation = (i == 0) ? true : false;
+                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
                 mFilter->setSourceRT(i, FPoint(r, p.y), bWriteAutomation);
             }
         }
@@ -329,7 +335,7 @@ protected:
 			float r2 = (a2*b2)/((b2-a2)*cosDa2+a2);
 			float r = sqrt(r2);
 			
-            bool bWriteAutomation = (i == 0) ? true : false;
+            bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
 			mFilter->setSourceRT(i, FPoint(p.x * r, p.y + da), bWriteAutomation);
 		}
 	}
@@ -399,7 +405,7 @@ protected:
 	void spProcess(float duration, float seconds)
 	{
         if (fmodf(mDone, mDuration) < 0.01){
-            mFilter->restoreCurrentLocations();
+            mFilter->restoreCurrentLocations(0);
         }
         
 		mClock += seconds;
@@ -420,7 +426,7 @@ protected:
                     }
                     p.x += (r1 - 0.5) * mSpeed;
                     p.y += (r2 - 0.5) * mSpeed;
-                    bool bWriteAutomation = (i == 0) ? true : false;
+                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
                     mFilter->setSourceXY(i, p, bWriteAutomation);
                 }
         }
@@ -474,7 +480,7 @@ protected:
 			FPoint a = mSourcesOrigins.getUnchecked(i);
 			FPoint b = mSourcesDestinations.getUnchecked(i);
 			FPoint p = a + (b - a) * d;
-            bool bWriteAutomation = (i == 0) ? true : false;
+            bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
 			mFilter->setSourceXY(i, p, bWriteAutomation);
 		}
 	}
@@ -511,7 +517,7 @@ protected:
 	}
     
     void resetIfRandomTarget(){
-        mFilter->restoreCurrentLocations();
+        mFilter->restoreCurrentLocations(0);
     }
 	
 private:

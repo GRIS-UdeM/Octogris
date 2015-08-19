@@ -517,7 +517,7 @@ public:
     int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
 
     void storeCurrentLocations();
-    void restoreCurrentLocations();
+    void restoreCurrentLocations(int p_iLocToRestore = -1);
 	void reset();
     
     void updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise);
@@ -571,7 +571,7 @@ private:
 	uint64_t mHostChangedParameter;
 	uint64_t mHostChangedProperty;
 	uint64_t mProcessCounter;
-	int64 mLastTimeInSamples;
+	//int64 mLastTimeInSamples;
 	
 	int mProcessMode;
 	int mRoutingMode;

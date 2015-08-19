@@ -1733,9 +1733,10 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     
     else if (button == mTrWriteButton) {
         Trajectory::Ptr t = mFilter->getTrajectory();
+        //a trajectory exists, so we want to cancel it
         if (t) {
             mFilter->setTrajectory(NULL);
-            mFilter->restoreCurrentLocations();
+            mFilter->restoreCurrentLocations(0);
             mTrWriteButton->setButtonText("Ready");
             mTrProgressBar->setVisible(false);
             mTrStateEditor = kTrReady;
@@ -1743,7 +1744,9 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             t->stop();
             mFilter->setIsRecordingAutomation(false);
             mNeedRepaint = true;
-        } else {
+        }
+        //a trajectory does not exist, create one
+        else {
             float duration = mTrDuration->getText().getFloatValue();
             bool beats = mTrUnits->getSelectedId() == 1;
             float repeats = mTrRepeats->getText().getFloatValue();
@@ -1885,7 +1888,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			} else {
 				mTrWriteButton->setButtonText("Ready");
                 mTrWriteButton->setToggleState(false, dontSendNotification);
-                mFilter->restoreCurrentLocations();
+                mFilter->restoreCurrentLocations(0);
 				mTrProgressBar->setVisible(false);
                 mTrStateEditor = kTrReady;
 				mFilter->setTrState(mTrStateEditor);

@@ -134,7 +134,7 @@ mFilters()
 	mHostChangedParameter = 0;
 	mHostChangedProperty = 0;
 	mProcessCounter = 0;
-	mLastTimeInSamples = -1;
+	//mLastTimeInSamples = -1;
 	mProcessMode = kPanVolumeMode;
 	mRoutingMode = 0;
     //version 9
@@ -734,7 +734,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
         if (cpi.isPlaying) // (cpi.timeInSamples != mLastTimeInSamples)
 		{
 			// we're playing!
-			mLastTimeInSamples = cpi.timeInSamples;
+			//mLastTimeInSamples = cpi.timeInSamples;
 	
 			double bps = cpi.bpm / 60;
 			float seconds = oriFramesToProcess / sampleRate;
@@ -1705,14 +1705,26 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
     }
 }
 
-void OctogrisAudioProcessor::restoreCurrentLocations(){
-    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
-    {
+void OctogrisAudioProcessor::restoreCurrentLocations(int p_iLocToRestore){
+    
+    if (p_iLocToRestore == -1){
+        for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
+        {
+            mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
+            mParameters.set(getParamForSourceY(i), mBufferSrcLocY[i]);
+            float fValue = mBufferSrcLocD[i];
+            mParameters.set(getParamForSourceD(i), fValue);
+        }
+    } else {
+        //only restore location for selected source, which is source 0 for now
+        int i = 0;
         mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
         mParameters.set(getParamForSourceY(i), mBufferSrcLocY[i]);
         float fValue = mBufferSrcLocD[i];
         mParameters.set(getParamForSourceD(i), fValue);
     }
+    
+    
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
     {
         mParameters.set(getParamForSpeakerX(i), mBufferSpLocX[i]);
@@ -1720,9 +1732,6 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
         mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);
 		mParameters.set(getParamForSpeakerM(i), mBufferSpLocM[i]);
     }
-    
-    int i =0;
-    ++i;
 }
 
 static const int kDataVersion = 14;
