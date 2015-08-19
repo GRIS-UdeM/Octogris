@@ -85,4 +85,11 @@ in zirk
     and once on mouse up
     once at the end of writing a trajectory
     continuously when reading trajectory/automation
+________________________________________
+-ok, DOING THIS FOR REEELZZZZ
+reading automation only moves automated source. So delta must be wrong. i think the problem was that the delta was calculated inside the loop rather than outside, thus overwriting itself? can now read automations.
 
+REMAINING PROBLEMS
+-trajectories write on all sources
+-plugin is using too much CPU (reduce refresh rate, avoid mover::begin/end by making sort instantaneous)
+-refactor move to remove extra 2 source case
