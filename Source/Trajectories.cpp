@@ -51,7 +51,6 @@ void Trajectory::spInit() {
     }
 }
 
-
 bool Trajectory::process(float seconds, float beats)
 {
 	if (mStopped) return true;

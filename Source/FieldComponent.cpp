@@ -380,7 +380,7 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 					mSavedValue = mFilter->getSourceRT(mSelectedItem).x;
 			
 				// force fixed radius
-				FPoint p = mFilter->convertRT01(FPoint(vx, vy));
+				FPoint p = mFilter->convertXy012Rt(FPoint(vx, vy));
 				p = mFilter->convertRt2Xy01(mSavedValue, p.y * kThetaMax);
 				vx = p.x; vy = p.y;
 			}

@@ -121,42 +121,43 @@ void SourceMover::begin(int s, MoverType mt)
 	}
 	
 }
-
-void SourceMover::move(FPoint p, MoverType mt)
+//in kSourceThread, FPoint p is the current location of the selected source, as read on the automation
+void SourceMover::move(FPoint pointXY01, MoverType mt)
 {
     if (mMoverType != mt){
         return;
     }
     
-    //move selected item
-    float fCurX01 = p.x, fCurY01 = p.y;
+    //move selected item only if not kSourceThread, since in kSourceThread item is already moved by automation
     if (mMoverType != kSourceThread){
-        mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
+        mFilter->setSourceXY01(mSelectedSrc, pointXY01);
+        mFilter->mOldSrcLocRT[mSelectedSrc] = mFilter->convertXy012Rt(pointXY01);
     }
+    
     int iMovementMode = mFilter->getMovementMode();
     if (iMovementMode == 0){
-        return;
+        return; //independent, so no need to move unselected sources
     }
     
     if (mFilter->getNumberOfSources() > 2) {
         for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); iCurSrc++) {
-            
-            if (iCurSrc == mSelectedSrc) {
-                //mFilter->mOldSrcLocRT[iCurItem] = FPoint(fCurX01, fCurY01);
-                continue;
-            }
-            
+
             //calculate delta for selected source
-            FPoint oldSelSrcPosRT = mSourcesDownRT[mSelectedSrc];
-            FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc);
+            FPoint oldSelSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[mSelectedSrc] : mSourcesDownRT[mSelectedSrc];
+            FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc); //in kSourceThread, this will be the same as mFilter->convertXy012Rt(pointXY01)
             FPoint delSelSrcPosRT = newSelSrcPosRT - oldSelSrcPosRT;
             
             if (delSelSrcPosRT.isOrigin()){
                 return;     //return if delta is null
             }
             
+            if (iCurSrc == mSelectedSrc) {
+                mFilter->mOldSrcLocRT[iCurSrc] = newSelSrcPosRT  ;
+                continue;
+            }
+            
             //calculate new position for curSrc using delta for selected source
-            FPoint oldCurSrcPosRT = mSourcesDownRT[iCurSrc];
+            FPoint oldCurSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[iCurSrc] : mSourcesDownRT[iCurSrc];
             FPoint newCurSrcPosRT = oldCurSrcPosRT + delSelSrcPosRT;
             
             //all x's and y's here are actually r's and t's
@@ -167,12 +168,14 @@ void SourceMover::move(FPoint p, MoverType mt)
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
                     mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
+                    mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
                 case 2:     // circular, fixed radius
                     newCurSrcPosRT.x = newSelSrcPosRT.x;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
                     mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
+                    mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
                 case 3:     // circular, fixed angle
                     JUCE_COMPILER_WARNING("need to remove this mSourceAngularOrder business. Is it some kind of delta? Why is the angle (y is angle) added to the existing one?")
@@ -182,6 +185,7 @@ void SourceMover::move(FPoint p, MoverType mt)
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
                     mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
+                    mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
                 case 4:     // circular, fully fixed
                     newCurSrcPosRT.x = newSelSrcPosRT.x;
@@ -189,10 +193,12 @@ void SourceMover::move(FPoint p, MoverType mt)
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
                     mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
+                    mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
                 case 5:      // delta lock
                     FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
                     mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d, !s_bUseOneSource);
+                    mFilter->mOldSrcLocRT[iCurSrc] = mSourcesDownXY[iCurSrc] + d;
                     break;
             }
         }
@@ -204,7 +210,7 @@ void SourceMover::move(FPoint p, MoverType mt)
         JUCE_COMPILER_WARNING("instead of having 2 whole different ifs, just put the 2-source-only modes at the end of the dropDown so that we cannot reach their case when we have more than 2 sources")
         
         int iCurSrc = 1 - mSelectedSrc;
-        float vxo = fCurX01, vyo = fCurY01;
+        float vxo = pointXY01.x, vyo = pointXY01.y;
         
         FPoint oldSelSrcPosRT = mSourcesDownRT[mSelectedSrc];
         FPoint oldCurSrcPosRT = mSourcesDownRT[iCurSrc];

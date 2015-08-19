@@ -420,7 +420,7 @@ public:
 		return FPoint(r, t);
 	}
 	
-	FPoint convertRT(FPoint p) {
+	FPoint convertXy2Rt(FPoint p) {
 		float vx = p.x;
 		float vy = p.y;
 		float r = sqrtf(vx*vx + vy*vy) / kRadiusMax;
@@ -431,8 +431,8 @@ public:
 		return FPoint(r, t);
 	}
 
-	FPoint convertRT01(FPoint p) {
-		return convertRT(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
+	FPoint convertXy012Rt(FPoint p) {
+		return convertXy2Rt(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
 	}
 
 	FPoint clampRadius01(FPoint p) {
@@ -516,7 +516,6 @@ public:
     }
     int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
 
-    
     void storeCurrentLocations();
     void restoreCurrentLocations();
 	void reset();

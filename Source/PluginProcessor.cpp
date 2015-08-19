@@ -230,22 +230,6 @@ void OctogrisAudioProcessor::setParameter (int index, float newValue)
 {
 	mParameters.set(index, newValue);
     
-//    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { setSourceLocationChanged(0);}
-//    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { setSourceLocationChanged(1);}
-//    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { setSourceLocationChanged(2);}
-//    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { setSourceLocationChanged(3);}
-//    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { setSourceLocationChanged(4);}
-//    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { setSourceLocationChanged(5);}
-//    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { setSourceLocationChanged(6);}
-//    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { setSourceLocationChanged(7);}
-    
-	mHostChangedParameter++;
-}
-
-void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
-{
-	mParameters.set(index, newValue);
-    
     if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { setSourceLocationChanged(0);}
     else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { setSourceLocationChanged(1);}
     else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { setSourceLocationChanged(2);}
@@ -254,6 +238,22 @@ void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValu
     else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { setSourceLocationChanged(5);}
     else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { setSourceLocationChanged(6);}
     else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { setSourceLocationChanged(7);}
+    
+	mHostChangedParameter++;
+}
+
+void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
+{
+	mParameters.set(index, newValue);
+    
+//    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { setSourceLocationChanged(0);}
+//    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { setSourceLocationChanged(1);}
+//    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { setSourceLocationChanged(2);}
+//    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { setSourceLocationChanged(3);}
+//    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { setSourceLocationChanged(4);}
+//    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { setSourceLocationChanged(5);}
+//    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { setSourceLocationChanged(6);}
+//    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { setSourceLocationChanged(7);}
     
     sendParamChangeMessageToListeners(index, newValue);
 }
@@ -434,7 +434,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
         
         if (mNumberOfSources == 1){
             setSourceRT(0, FPoint(0, 0));
-            //mOldSrcLocRT[0] = FPoint(0, 0);
+            mOldSrcLocRT[0] = FPoint(0, 0);
         }
         else if(mNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
         {
@@ -454,7 +454,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
                 else if (offset > 360) offset -= 360;
                 
                 setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
-                //mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
+                mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
             }
         }
         else //odd number of speakers, assign in circular fashion
@@ -466,7 +466,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
                 else if (offset > 360) offset -= 360;
                 
                 setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
-                //mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
+                mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
                 offset += anglePerSource;
             }
         }
@@ -1856,9 +1856,15 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             
             for (int i = 0; i < JucePlugin_MaxNumInputChannels; ++i){
                 String srcX = "src" + to_string(i) + "x";
-                mParameters.set(getParamForSourceX(i), static_cast<float>(xmlState->getDoubleAttribute(srcX, 0)));
+                float fX01 = static_cast<float>(xmlState->getDoubleAttribute(srcX, 0));
+                mParameters.set(getParamForSourceX(i), fX01);
                 String srcY = "src" + to_string(i) + "y";
-                mParameters.set(getParamForSourceY(i), static_cast<float>(xmlState->getDoubleAttribute(srcY, 0)));
+                float fY01 = static_cast<float>(xmlState->getDoubleAttribute(srcY, 0));
+                mParameters.set(getParamForSourceY(i), fY01);
+                FPoint curPoint = FPoint(fX01, fY01);
+                mOldSrcLocRT[i] = convertXy012Rt(curPoint);
+                
+                
                 String srcD = "src" + to_string(i) + "d";
                 mParameters.set(getParamForSourceD(i), static_cast<float>(xmlState->getDoubleAttribute(srcD, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance))));
             }

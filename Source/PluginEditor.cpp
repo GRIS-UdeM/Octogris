@@ -1113,11 +1113,14 @@ AudioProcessorEditor (ownerFilter)
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
     int iSourceChanged = mFilter->getSourceLocationChanged();
     if (s_bUseOneSource && !mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && iSourceChanged != -1) {
+        
+        cout << "THREAD: " << s_bUseOneSource << ", " << !mFilter->getIsRecordingAutomation() << ", " << mFilter->getMovementMode() << ", " << iSourceChanged << "----------";
+        
         mMover.begin(iSourceChanged, kSourceThread);
         mMover.move(mFilter->getSourceXY01(iSourceChanged), kSourceThread);
         mMover.end(kSourceThread);
         
-        mFilter->setSourceLocationChanged(-1.f);
+        mFilter->setSourceLocationChanged(-1);
     }
 }
 
