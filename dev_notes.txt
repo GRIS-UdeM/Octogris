@@ -70,3 +70,19 @@ NOW HERE: can record automation on one source, but not read them. I think the pr
 when writing trajectories. ah, it's probably because i force selected source 0, so i need a special
 case to have all sources move when kSourceThread
 
+
+-----------------------------------
+-Changing constraint does activate the thread once, with a delta of 0, should not
+-clicking trajectory button also activates the thread once
+-writing trajectory, thread is activated... is that so also in zirkosc? it should not. the regular
+move should set the parameters directly, then the gui should update based on its reading of the
+processor
+    right, there should be a writingAutomation flag set
+    it is not set because the trajectory does not use the mover. this is bad. Ah, that's because
+    antoine used my code, which does not have a mover. right. 
+in zirk
+    thread called once when setting to circular
+    and once on mouse up
+    once at the end of writing a trajectory
+    continuously when reading trajectory/automation
+
