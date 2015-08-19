@@ -140,17 +140,23 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
     }
     
     if (mFilter->getNumberOfSources() > 2) {
+        
+        //calculate delta for selected source
+        FPoint oldSelSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[mSelectedSrc] : mSourcesDownRT[mSelectedSrc];
+        FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc); //in kSourceThread, this will be the same as mFilter->convertXy012Rt(pointXY01)
+        FPoint delSelSrcPosRT = newSelSrcPosRT - oldSelSrcPosRT;
+        
+        if (mMoverType == kSourceThread){
+            cout << "old (" << oldSelSrcPosRT.x << ", " << oldSelSrcPosRT.y << "), new (" << newSelSrcPosRT.x << ", " << newSelSrcPosRT.x << ")\n";
+        }
+        
+        if (delSelSrcPosRT.isOrigin()){
+            return;     //return if delta is null
+        }
+
+        
         for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); iCurSrc++) {
 
-            //calculate delta for selected source
-            FPoint oldSelSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[mSelectedSrc] : mSourcesDownRT[mSelectedSrc];
-            FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc); //in kSourceThread, this will be the same as mFilter->convertXy012Rt(pointXY01)
-            FPoint delSelSrcPosRT = newSelSrcPosRT - oldSelSrcPosRT;
-            
-            if (delSelSrcPosRT.isOrigin()){
-                return;     //return if delta is null
-            }
-            
             if (iCurSrc == mSelectedSrc) {
                 mFilter->mOldSrcLocRT[iCurSrc] = newSelSrcPosRT  ;
                 continue;

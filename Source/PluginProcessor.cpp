@@ -178,8 +178,6 @@ mFilters()
         mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
         mParameters.set(getParamForSpeakerM(i), 0);
     }
-    
-
 }
 
 OctogrisAudioProcessor::~OctogrisAudioProcessor()
