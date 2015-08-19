@@ -346,7 +346,7 @@ class SourceUpdateThread : public Thread, public Component
 public:
     SourceUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)
     : Thread ("SourceUpdateThread")
-    ,m_iInterval(25)
+    ,m_iInterval(50)
     ,m_pEditor(p_pProcessor) {
         
         startThread ();
