@@ -1374,22 +1374,19 @@ void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor)
 void OctogrisAudioProcessorEditor::updateMovementModeCombo(){
     int index = 1;
     mMovementMode->addItem("Independent", index++);
-    if (mFilter->getNumberOfSources() == 2)
-    {
-        mMovementMode->addItem("Symmetric X", index++);
-        mMovementMode->addItem("Symmetric Y", index++);
-        mMovementMode->addItem("Symmetric X & Y", index++);
-    }
-    if (mFilter->getNumberOfSources() >= 2)
-    {
+    if (mFilter->getNumberOfSources() > 1){
         mMovementMode->addItem("Circular", index++);
         mMovementMode->addItem("Circular Fixed Radius", index++);
         mMovementMode->addItem("Circular Fixed Angle", index++);
         mMovementMode->addItem("Circular Fully Fixed", index++);
         mMovementMode->addItem("Delta Lock", index++);
+        mMovementMode->addItem("Symmetric X", index++);
+        mMovementMode->addItem("Symmetric Y", index++);
+        mMovementMode->addItem("Symmetric X & Y", index++);
     }
     int iCurMode = mFilter->getMovementMode() + 1;
-    iCurMode > mMovementMode->getNumItems() ? mMovementMode->setSelectedId(1) : mMovementMode->setSelectedId(iCurMode);
+    //iCurMode > mMovementMode->getNumItems() ? mMovementMode->setSelectedId(1) : mMovementMode->setSelectedId(iCurMode);
+    mMovementMode->setSelectedId(iCurMode);
     
 }
 

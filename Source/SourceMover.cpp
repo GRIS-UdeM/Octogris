@@ -139,22 +139,18 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
         return; //independent, so no need to move unselected sources
     }
     
-    if (mFilter->getNumberOfSources() > 2) {
+    if (mFilter->getNumberOfSources() > 1) {
         
         //calculate delta for selected source
         FPoint oldSelSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[mSelectedSrc] : mSourcesDownRT[mSelectedSrc];
         FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc); //in kSourceThread, this will be the same as mFilter->convertXy012Rt(pointXY01)
         FPoint delSelSrcPosRT = newSelSrcPosRT - oldSelSrcPosRT;
         
-        if (mMoverType == kSourceThread){
-            cout << "old (" << oldSelSrcPosRT.x << ", " << oldSelSrcPosRT.y << "), new (" << newSelSrcPosRT.x << ", " << newSelSrcPosRT.x << ")\n";
-        }
-        
         if (delSelSrcPosRT.isOrigin()){
             return;     //return if delta is null
         }
 
-        
+        float vxo = pointXY01.x, vyo = pointXY01.y;
         for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); iCurSrc++) {
 
             if (iCurSrc == mSelectedSrc) {
@@ -167,6 +163,7 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
             FPoint newCurSrcPosRT = oldCurSrcPosRT + delSelSrcPosRT;
             
             //all x's and y's here are actually r's and t's
+            
             switch(mFilter->getMovementMode()) {
                 case 1:     // circular
                     if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
@@ -201,82 +198,27 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
                     mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
-                case 5:      // delta lock
+                case 5:{      // delta lock
                     FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
                     mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d, !s_bUseOneSource);
                     mFilter->mOldSrcLocRT[iCurSrc] = mSourcesDownXY[iCurSrc] + d;
                     break;
+                }
+                case 6:  // sym x
+                    vyo = 1 - vyo;
+                    mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
+                    break;
+                case 7: // sym y
+                    vxo = 1 - vxo;
+                    mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
+                    break;
+                    
+                case 8: // sym x/y
+                    vxo = 1 - vxo;
+                    vyo = 1 - vyo;
+                    mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
+                    break;
             }
-        }
-    }
-    
-    //we need to have a whole different case for when we have 2 sources because the getMovementModes() are not the same!
-    else if (mFilter->getNumberOfSources() == 2)
-    {
-        JUCE_COMPILER_WARNING("instead of having 2 whole different ifs, just put the 2-source-only modes at the end of the dropDown so that we cannot reach their case when we have more than 2 sources")
-        
-        int iCurSrc = 1 - mSelectedSrc;
-        float vxo = pointXY01.x, vyo = pointXY01.y;
-        
-        FPoint oldSelSrcPosRT = mSourcesDownRT[mSelectedSrc];
-        FPoint oldCurSrcPosRT = mSourcesDownRT[iCurSrc];
-        FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc);
-        FPoint newCurSrcPosRT = oldCurSrcPosRT + newSelSrcPosRT - oldSelSrcPosRT;
-        
-        switch(mFilter->getMovementMode())
-        {
-            case 1: // sym x
-                vyo = 1 - vyo;
-                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-                break;
-                
-            case 2: // sym y
-                vxo = 1 - vxo;
-                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-                break;
-                
-            case 3: // sym x/y
-                vxo = 1 - vxo;
-                vyo = 1 - vyo;
-                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-                break;
-                
-            case 4: // circular
-                if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
-                if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
-                if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
-                if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
-                break;
-                
-            case 5: // circular, fixed radius
-                newCurSrcPosRT.x = newSelSrcPosRT.x;
-                if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
-                if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
-                break;
-                
-            case 6: // circular, fixed angle
-                newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
-                if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
-                if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
-                if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
-                if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
-                break;
-                
-            case 7: // circular, fully fixed
-                newCurSrcPosRT.x = newSelSrcPosRT.x;
-                newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
-                if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
-                if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                mFilter->setSourceRT(iCurSrc, newCurSrcPosRT);
-                break;
-                
-            case 8: // delta lock
-                FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
-                mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d);
-                break;
         }
     }
 }
