@@ -1748,13 +1748,12 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             bool beats = mTrUnits->getSelectedId() == 1;
             float repeats = mTrRepeats->getText().getFloatValue();
             int type = mTrTypeComboBox->getSelectedId();
-            
           
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
             
             bool bReturn = mTrReturnComboBox->getSelectedId() == 2;
             
-            int source = /*s_bUseOneSource ? 0 :*/ mTrSrcSelect->getSelectedId()-2;
+            int source = /*s_bUseOneSource ? 0 : */ mTrSrcSelect->getSelectedId()-2;
             
             mFilter->setTrDuration(duration);
             JUCE_COMPILER_WARNING("this operation was already done by event funct, clean this up")

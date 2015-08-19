@@ -92,4 +92,11 @@ reading automation only moves automated source. So delta must be wrong. i think 
 REMAINING PROBLEMS
 -trajectories write on all sources
 -plugin is using too much CPU (reduce refresh rate, avoid mover::begin/end by making sort instantaneous)
--refactor move to remove extra 2 source case
+	apparently just lowering refresh rate form 25 to 50 helped a lot
+X-refactor move to remove extra 2 source case
+	-need to check that can load project with 2 sources with automations using the 2-source-constraints modes
+	1->6, 2-7, 3-8
+	4-1,5-2,6-3,7-4,8-5	
+	
+ 
+

@@ -731,7 +731,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		AudioPlayHead::CurrentPositionInfo cpi;
 		getPlayHead()->getCurrentPosition(cpi);
 		
-		if (cpi.timeInSamples != mLastTimeInSamples)
+        if (cpi.isPlaying) // (cpi.timeInSamples != mLastTimeInSamples)
 		{
 			// we're playing!
 			mLastTimeInSamples = cpi.timeInSamples;
