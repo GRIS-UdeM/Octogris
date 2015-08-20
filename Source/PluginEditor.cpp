@@ -1810,11 +1810,10 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
                     mMover.setEqualRadius();
                     break;
                 case 3:
-                    mMover.sortAngles();
+                    mMover.setEqualAngles();
                     break;
                 case 4:
-                    mMover.sortAngles();
-                    mMover.setEqualRadius();
+                    mMover.setEqualRadiusAndAngles();
                     break;
                 default:
                     break;

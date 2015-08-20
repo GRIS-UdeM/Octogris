@@ -49,6 +49,8 @@ public:
 	void begin(int s, MoverType mt);
     void sortAngles();
     void setEqualRadius();
+    void setEqualAngles();
+    void setEqualRadiusAndAngles();
 	void move(FPoint p, MoverType mt);
 	void end(MoverType mt);
 	
