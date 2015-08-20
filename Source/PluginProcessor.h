@@ -515,7 +515,20 @@ public:
         m_iSourceLocationChanged = i;
     }
     int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
+    
+    int getSelectedSource(){
+        return m_iSelectedSource;
+    }
+    
+    void setSelectedSource (int iSrc){
+        m_iSelectedSource = iSrc;
+    }
 
+    void setPreventSourceLocationUpdate(bool b){
+        m_bPreventSourceLocationUpdate = b;
+    }
+    
+    
     void storeCurrentLocations();
     void restoreCurrentLocations(int p_iLocToRestore = -1);
 	void reset();
@@ -525,6 +538,8 @@ public:
     JUCE_COMPILER_WARNING("have getters and setters for this instead of making it public")
     FPoint mOldSrcLocRT[JucePlugin_MaxNumInputChannels];
 	
+    
+    
 private:
 
 	bool m_bAllowInputOutputModeSelection;
@@ -616,8 +631,9 @@ private:
     bool m_bIsRecordingAutomation;
     int m_iSourceLocationChanged;
     
+    int m_iSelectedSource;
     
-    
+    bool m_bPreventSourceLocationUpdate;
 	
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)

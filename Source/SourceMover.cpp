@@ -28,9 +28,9 @@
 
 
 SourceMover::SourceMover(OctogrisAudioProcessor *filter)
-:
-	mFilter(filter),
-	mMoverType(kVacant)
+: mFilter(filter)
+ ,mMoverType(kVacant)
+ ,mSelectedSrc(0)
 {
     updateNumberOfSources();
 }
@@ -59,6 +59,7 @@ void SourceMover::begin(int s, MoverType mt)
 	if (mMoverType != kVacant) return;
 	mMoverType = mt;
 	mSelectedSrc = s;
+    mFilter->setSelectedSource(s);
 	
     if (mMoverType != kSourceThread){
         mFilter->setIsRecordingAutomation(true);
@@ -117,6 +118,24 @@ void SourceMover::sortAngles(){
     delete[] ia;
 }
 
+void SourceMover::setEqualRadius(){
+    FPoint selSrcRT = mFilter->getSourceRT(mSelectedSrc);
+    cout << "(" << selSrcRT.x << ", " << selSrcRT.y << ")\n";
+    for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); iCurSrc++) {
+        
+        if (iCurSrc == mSelectedSrc){
+            continue;
+        }
+        FPoint curSrcRT = mFilter->getSourceRT(iCurSrc);
+        curSrcRT.x = selSrcRT.x;
+        if (curSrcRT.y < 0) curSrcRT.y += kThetaMax;
+        if (curSrcRT.y > kThetaMax) curSrcRT.y -= kThetaMax;
+        mFilter->setPreventSourceLocationUpdate(true);
+        mFilter->setSourceRT(iCurSrc, curSrcRT, !s_bUseOneSource);  //this call needs to NOT triger a call to processor::setSourceLocationChanged
+        mFilter->setPreventSourceLocationUpdate(false);
+    }
+}
+
 //in kSourceThread, FPoint p is the current location of the selected source, as read on the automation
 void SourceMover::move(FPoint pointXY01, MoverType mt)
 {
@@ -147,6 +166,11 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
         }
 
         float vxo = pointXY01.x, vyo = pointXY01.y;
+        
+        if (kSourceThread){
+            mFilter->setPreventSourceLocationUpdate(true);
+        }
+        
         for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); iCurSrc++) {
 
             if (iCurSrc == mSelectedSrc) {
@@ -173,11 +197,10 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     newCurSrcPosRT.x = newSelSrcPosRT.x;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);     //when kSourceThread, this call needs to NOT triger a call to processor::setSourceLocationChanged
                     mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
                 case 3:     // circular, fixed angle
-                    JUCE_COMPILER_WARNING("need to remove this mSourceAngularOrder business. Is it some kind of delta? Why is the angle (y is angle) added to the existing one?")
                     newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
                     if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
                     if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
@@ -216,185 +239,11 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     break;
             }
         }
+        if (kSourceThread){
+            mFilter->setPreventSourceLocationUpdate(false);
+        }
     }
 }
-
-//ORIGINAL SOURCEMOVER
-//void SourceMover::move(FPoint p, MoverType mt)
-//{
-//    if (mMoverType != mt){
-//        return;
-//    }
-//    
-//    //move selected item
-//    float fCurX01 = p.x, fCurY01 = p.y;
-//    mFilter->setSourceXY01(mSelectedSrc, FPoint(fCurX01, fCurY01));
-//    
-//    int iMovementMode = mFilter->getMovementMode();
-//    if (iMovementMode == 0 || !mFilter->getLinkMovement()){
-//        return;
-//    }
-//    
-//    if (mFilter->getNumberOfSources() > 2) {
-//        for (int iCurItem = 0; iCurItem < mFilter->getNumberOfSources(); iCurItem++) {
-//            if (iCurItem == mSelectedSrc) {
-//                continue;
-//            }
-//            
-//            switch(mFilter->getMovementMode()) {
-//                case 1: // circular
-//                {
-//                    FPoint s = mSourcesDownRT[mSelectedSrc];
-//                    FPoint o = mSourcesDownRT[iCurItem];
-//                    FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-//                    FPoint n = o + sn - s;
-//                    if (n.x < 0) n.x = 0;
-//                    if (n.x > kRadiusMax) n.x = kRadiusMax;
-//                    if (n.y < 0) n.y += kThetaMax;
-//                    if (n.y > kThetaMax) n.y -= kThetaMax;
-//                    mFilter->setSourceRT(iCurItem, n);
-//                }
-//                    break;
-//                    
-//                case 2: // circular, fixed radius
-//                {
-//                    FPoint s = mSourcesDownRT[mSelectedSrc];
-//                    FPoint o = mSourcesDownRT[iCurItem];
-//                    FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-//                    FPoint n = o + sn - s;
-//                    n.x = sn.x;
-//                    if (n.y < 0) n.y += kThetaMax;
-//                    if (n.y > kThetaMax) n.y -= kThetaMax;
-//                    mFilter->setSourceRT(iCurItem, n);
-//                }
-//                    break;
-//                    
-//                case 3: // circular, fixed angle
-//                {
-//                    FPoint s = mSourcesDownRT[mSelectedSrc];
-//                    FPoint o = mSourcesDownRT[iCurItem];
-//                    FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-//                    FPoint n = o + sn - s;
-//                    n.y = sn.y + mSourcesAngularOrder[iCurItem];
-//                    if (n.x < 0) n.x = 0;
-//                    if (n.x > kRadiusMax) n.x = kRadiusMax;
-//                    if (n.y < 0) n.y += kThetaMax;
-//                    if (n.y > kThetaMax) n.y -= kThetaMax;
-//                    mFilter->setSourceRT(iCurItem, n);
-//                }
-//                    break;
-//                    
-//                case 4: // circular, fully fixed
-//                {
-//                    FPoint s = mSourcesDownRT[mSelectedSrc];
-//                    FPoint o = mSourcesDownRT[iCurItem];
-//                    FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-//                    FPoint n = o + sn - s;
-//                    n.x = sn.x;
-//                    n.y = sn.y + mSourcesAngularOrder[iCurItem];
-//                    if (n.y < 0) n.y += kThetaMax;
-//                    if (n.y > kThetaMax) n.y -= kThetaMax;
-//                    mFilter->setSourceRT(iCurItem, n);
-//                }
-//                    break;
-//                    
-//                case 5: // delta lock
-//                {
-//                    FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
-//                    mFilter->setSourceXY(iCurItem, mSourcesDownXY[iCurItem] + d);
-//                }
-//                    break;
-//            }
-//        }
-//    }
-//    
-//    else if (mFilter->getNumberOfSources() == 2)
-//    {
-//        int iCurSrc = 1 - mSelectedSrc;
-//        float vxo = fCurX01, vyo = fCurY01;
-//        switch(mFilter->getMovementMode())
-//        {
-//            case 1: // sym x
-//                vyo = 1 - vyo;
-//                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-//                break;
-//                
-//            case 2: // sym y
-//                vxo = 1 - vxo;
-//                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-//                break;
-//                
-//            case 3: // sym x/y
-//                vxo = 1 - vxo;
-//                vyo = 1 - vyo;
-//                mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
-//                break;
-//                
-//            case 4: // circular
-//            {
-//                FPoint s = mSourcesDownRT[mSelectedSrc];
-//                FPoint o = mSourcesDownRT[iCurSrc];
-//                FPoint n = o + mFilter->getSourceRT(mSelectedSrc) - s;
-//                if (n.x < 0) n.x = 0;
-//                if (n.x > kRadiusMax) n.x = kRadiusMax;
-//                if (n.y < 0) n.y += kThetaMax;
-//                if (n.y > kThetaMax) n.y -= kThetaMax;
-//                mFilter->setSourceRT(iCurSrc, n);
-//            }
-//                break;
-//                
-//            case 5: // circular, fixed radius
-//            {
-//                FPoint s = mSourcesDownRT[mSelectedSrc];
-//                FPoint o = mSourcesDownRT[iCurSrc];
-//                FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-//                FPoint n = o + sn - s;
-//                n.x = sn.x;
-//                if (n.y < 0) n.y += kThetaMax;
-//                if (n.y > kThetaMax) n.y -= kThetaMax;
-//                mFilter->setSourceRT(iCurSrc, n);
-//            }
-//                break;
-//                
-//            case 6: // circular, fixed angle
-//            {
-//                FPoint s = mSourcesDownRT[mSelectedSrc];
-//                FPoint o = mSourcesDownRT[iCurSrc];
-//                FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-//                FPoint n = o + sn - s;
-//                n.y = sn.y + mSourcesAngularOrder[iCurSrc];
-//                if (n.x < 0) n.x = 0;
-//                if (n.x > kRadiusMax) n.x = kRadiusMax;
-//                if (n.y < 0) n.y += kThetaMax;
-//                if (n.y > kThetaMax) n.y -= kThetaMax;
-//                mFilter->setSourceRT(iCurSrc, n);
-//            }
-//                break;
-//                
-//            case 7: // circular, fully fixed
-//            {
-//                FPoint s = mSourcesDownRT[mSelectedSrc];
-//                FPoint o = mSourcesDownRT[iCurSrc];
-//                FPoint sn = mFilter->getSourceRT(mSelectedSrc);
-//                FPoint n = o + sn - s;
-//                n.x = sn.x;
-//                n.y = sn.y + mSourcesAngularOrder[iCurSrc];
-//                if (n.y < 0) n.y += kThetaMax;
-//                if (n.y > kThetaMax) n.y -= kThetaMax;
-//                mFilter->setSourceRT(iCurSrc, n);
-//            }
-//                break;
-//                
-//            case 8: // delta lock
-//            {
-//                FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
-//                mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d);
-//            }
-//                break;
-//        }
-//        
-//    }
-//}
 
 void SourceMover::end(MoverType mt)
 {

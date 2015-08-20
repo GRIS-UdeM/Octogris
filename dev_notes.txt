@@ -102,3 +102,10 @@ X-refactor move to remove extra 2 source case
 	automation written when trajectory stops, because we are restoring the stored source locations. Forcing restoration only on source 0, which could need to be changed to selected Source if ever we have that concept. 
 	
 	**************	IMPORTANT NOTE: with one-source-automations, it is impossible to have unique random trajectories for the different sources. all trajectories have to follow the selected source. Unless we force randomization, which will be different every time we run the automation************	
+______________________________________________
+ok, so trajectories are not read. how can that be? delta of 0. because old or new values are not set
+when reading? 
+
+NOW HERE: NEED TO EXTRA STUFF IN MOVER THAT IS IN CHARGE OF MOVING WITH EQUAL ANGLES AND PUT IT IN
+SETEQUALANGLES (NEW FUNCTION). ALSO NEED TO REMOVE STUFF FOR EQUAL RADIUS. SO IN FACT MOVER::MOVE
+WILL ONLY HAVE 2 MODES: INDEPENDENT CIRCULAR DELTA

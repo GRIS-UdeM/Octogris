@@ -347,7 +347,9 @@ public:
     SourceUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)
     : Thread ("SourceUpdateThread")
     ,m_iInterval(50)
-    ,m_pEditor(p_pProcessor) {
+    ,m_pEditor(p_pProcessor)
+    ,m_bIsPaused(false)
+    {
         
         startThread ();
     }
@@ -364,14 +366,19 @@ public:
             
             // sleep a bit so the threads don't all grind the CPU to a halt..
             wait (m_iInterval);
-            
-            m_pEditor->updateNonSelectedSourcePositions();
+            if (!m_bIsPaused){
+                m_pEditor->updateNonSelectedSourcePositions();
+            }
         }
     }
     
+    void setIsPaused(bool b){
+        m_bIsPaused = b;
+    }
 private:
     int m_iInterval;
     OctogrisAudioProcessorEditor* m_pEditor;
+    bool m_bIsPaused;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SourceUpdateThread)
 };
@@ -1793,25 +1800,42 @@ void OctogrisAudioProcessorEditor::textEditorFocusLost (TextEditor &textEditor){
 
 void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 {
-    if (comboBox == mMovementMode)
-    {
-        mFilter->setMovementMode(comboBox->getSelectedId() - 1);
+    if (comboBox == mMovementMode) {
+        int iSelectedMode = comboBox->getSelectedId() - 1;
+        mFilter->setMovementMode(iSelectedMode);
+        if(mFilter->getNumberOfSources() > 1){
+            m_pSourceUpdateThread->setIsPaused(true);
+            switch (iSelectedMode) {
+                case 2:
+                    mMover.setEqualRadius();
+                    break;
+                case 3:
+                    mMover.sortAngles();
+                    break;
+                case 4:
+                    mMover.sortAngles();
+                    mMover.setEqualRadius();
+                    break;
+                default:
+                    break;
+            }
+            m_pSourceUpdateThread->setIsPaused(false);
+        }
     }
-	else if (comboBox == mRoutingMode)
-	{
+    else if (comboBox == mRoutingMode) {
 		mFilter->setRoutingMode(comboBox->getSelectedId() - 1);
 	}
-    else if (comboBox == mGuiSize)
-    {
+    else if (comboBox == mGuiSize) {
         mFilter->setGuiSize(comboBox->getSelectedId() - 1);
         refreshSize();
     }
-    else if (comboBox == mProcessModeCombo)
-    {
+    else if (comboBox == mProcessModeCombo) {
         int iSelectedMode = comboBox->getSelectedId() - 1;
         mFilter->setProcessMode(iSelectedMode);
         if (iSelectedMode == kPanVolumeMode){
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(false);  }
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
+                mDistances.getUnchecked(i)->setEnabled(false);
+            }
         } else {
             for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
                 mDistances.getUnchecked(i)->setEnabled(true);
