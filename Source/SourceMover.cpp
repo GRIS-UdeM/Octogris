@@ -62,13 +62,13 @@ void SourceMover::begin(int s, MoverType mt)
 	
     if (mMoverType != kSourceThread){
         mFilter->setIsRecordingAutomation(true);
-        
         mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
         mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
     }
     
     int iNbrSrc = mFilter->getNumberOfSources();
 
+    //if we are not in independent mode and have more than 1 source
 	if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1) {
 		for (int j = 0; j < iNbrSrc; j++) {
 			mSourcesDownRT.setUnchecked(j, mFilter->getSourceRT(j));
@@ -80,47 +80,43 @@ void SourceMover::begin(int s, MoverType mt)
             }
 		}
 		
-		if	(	(iNbrSrc == 2 && (mFilter->getMovementMode() == 6 || mFilter->getMovementMode() == 7))
-			 ||	(iNbrSrc >  2 && (mFilter->getMovementMode() == 3 || mFilter->getMovementMode() == 4)))
-		{
-			// need to calculate angular order
-			
-			//IndexedAngle ia[iNbrSrc];
-			IndexedAngle * ia = new IndexedAngle[iNbrSrc];
-			
-			for (int j = 0; j < iNbrSrc; j++)
-			{
-				ia[j].i = j;
-				ia[j].a = mFilter->getSourceRT(j).y;
-			}
-			
-			//printf("==============\nbefore sort:\n");
-			//for (int j = 0; j < mNumberOfSources; j++) printf("ia[%i] = { %i, %.3f }\n", j+1, ia[j].i+1, ia[j].a);
-			
-			qsort(ia, iNbrSrc, sizeof(IndexedAngle), IndexedAngleCompare);
-			
-			//printf("after sort:\n");
-			//for (int j = 0; j < mNumberOfSources; j++) printf("ia[%i] = { %i, %.3f }\n", j+1, ia[j].i+1, ia[j].a);
-			
-			int b;
-			for (b = 0; b < iNbrSrc && ia[b].i != mSelectedSrc; b++) ;
-			
-			if (b == iNbrSrc) {
-				printf("error!\n");
-				b = 0;
-			}
-			
-			for (int j = 1; j < iNbrSrc; j++) {
-				int o = (b + j) % iNbrSrc;
-				o = ia[o].i;
-				mSourcesAngularOrder.set(o, (M_PI * 2. * j) / iNbrSrc);
-			}
-
-			delete[] ia;
+        //if we are in a circular-y mode, figure out the angular order
+		if	(iNbrSrc > 1 && (mFilter->getMovementMode() == 3 || mFilter->getMovementMode() == 4)) {
+            sortAngles();
 		}
 	}
-	
 }
+
+void SourceMover::sortAngles(){
+    
+    int iNbrSrc = mFilter->getNumberOfSources();
+    
+    IndexedAngle * ia = new IndexedAngle[iNbrSrc];
+    
+    for (int j = 0; j < iNbrSrc; j++) {
+        ia[j].i = j;
+        ia[j].a = mFilter->getSourceRT(j).y;
+    }
+    
+    qsort(ia, iNbrSrc, sizeof(IndexedAngle), IndexedAngleCompare);
+    
+    int b;
+    for (b = 0; b < iNbrSrc && ia[b].i != mSelectedSrc; b++) ;
+    
+    if (b == iNbrSrc) {
+        printf("error!\n");
+        b = 0;
+    }
+    
+    for (int j = 1; j < iNbrSrc; j++) {
+        int o = (b + j) % iNbrSrc;
+        o = ia[o].i;
+        mSourcesAngularOrder.set(o, (M_PI * 2. * j) / iNbrSrc);
+    }
+    
+    delete[] ia;
+}
+
 //in kSourceThread, FPoint p is the current location of the selected source, as read on the automation
 void SourceMover::move(FPoint pointXY01, MoverType mt)
 {
