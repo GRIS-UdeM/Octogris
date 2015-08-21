@@ -131,7 +131,6 @@ void SourceMover::setEqualRadius(){
         if (curSrcRT.y > kThetaMax) curSrcRT.y -= kThetaMax;
         mFilter->setPreventSourceLocationUpdate(true);
         mFilter->setSourceRT(iCurSrc, curSrcRT, !s_bUseOneSource);  //this call needs to NOT triger a call to processor::setSourceLocationChanged
-        JUCE_COMPILER_WARNING("not actually sure we should record the old values here")
         mFilter->mOldSrcLocRT[iCurSrc] = curSrcRT;
         mFilter->setPreventSourceLocationUpdate(false);
     }
@@ -155,7 +154,6 @@ void SourceMover::setEqualAngles(){
         if (curSrcRT.y > kThetaMax) curSrcRT.y -= kThetaMax;
         mFilter->setPreventSourceLocationUpdate(true);
         mFilter->setSourceRT(iCurSrc, curSrcRT, !s_bUseOneSource);
-        JUCE_COMPILER_WARNING("not actually sure we should record the old values here")
         mFilter->mOldSrcLocRT[iCurSrc] = curSrcRT;
         mFilter->setPreventSourceLocationUpdate(false);
 
@@ -180,7 +178,6 @@ void SourceMover::setEqualRadiusAndAngles(){
         if (curSrcRT.y > kThetaMax) curSrcRT.y -= kThetaMax;
         mFilter->setPreventSourceLocationUpdate(true);
         mFilter->setSourceRT(iCurSrc, curSrcRT, !s_bUseOneSource);
-        JUCE_COMPILER_WARNING("not actually sure we should record the old values here")
         mFilter->mOldSrcLocRT[iCurSrc] = curSrcRT;
         mFilter->setPreventSourceLocationUpdate(false);
     }
@@ -237,8 +234,8 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
             switch(mFilter->getMovementMode()) {
                 case 1:     // circular
                 case 2:     // circular, fixed radius
-                case 3:
-                case 4:
+                case 3:     // circular, fixed angle
+                case 4:     // circular, fully fixed
                     if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
                     if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;

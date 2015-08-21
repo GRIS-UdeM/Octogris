@@ -226,20 +226,23 @@ float OctogrisAudioProcessor::getParameter (int index)
     return mParameters[index];
 }
 
-void OctogrisAudioProcessor::setParameter (int index, float newValue)
-{
-	mParameters.set(index, newValue);
+void OctogrisAudioProcessor::setParameter (int index, float newValue){
     
-    if      (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(0) || index == getParamForSourceY(0))) { setSourceLocationChanged(0);}
-    else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(1) || index == getParamForSourceY(1))) { setSourceLocationChanged(1);}
-    else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(2) || index == getParamForSourceY(2))) { setSourceLocationChanged(2);}
-    else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(3) || index == getParamForSourceY(3))) { setSourceLocationChanged(3);}
-    else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(4) || index == getParamForSourceY(4))) { setSourceLocationChanged(4);}
-    else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(5) || index == getParamForSourceY(5))) { setSourceLocationChanged(5);}
-    else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(6) || index == getParamForSourceY(6))) { setSourceLocationChanged(6);}
-    else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(7) || index == getParamForSourceY(7))) { setSourceLocationChanged(7);}
+    float fOldValue = mParameters.getUnchecked(index);
     
-	mHostChangedParameter++;
+    if (!areSame(fOldValue, newValue)){
+        mParameters.set(index, newValue);
+
+        if      (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(0) || index == getParamForSourceY(0))) { setSourceLocationChanged(0);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(1) || index == getParamForSourceY(1))) { setSourceLocationChanged(1);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(2) || index == getParamForSourceY(2))) { setSourceLocationChanged(2);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(3) || index == getParamForSourceY(3))) { setSourceLocationChanged(3);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(4) || index == getParamForSourceY(4))) { setSourceLocationChanged(4);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(5) || index == getParamForSourceY(5))) { setSourceLocationChanged(5);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(6) || index == getParamForSourceY(6))) { setSourceLocationChanged(6);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(7) || index == getParamForSourceY(7))) { setSourceLocationChanged(7);}
+        mHostChangedParameter++;
+    }
 }
 
 
