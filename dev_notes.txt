@@ -109,3 +109,12 @@ when reading?
 NOW HERE: NEED TO EXTRA STUFF IN MOVER THAT IS IN CHARGE OF MOVING WITH EQUAL ANGLES AND PUT IT IN
 SETEQUALANGLES (NEW FUNCTION). ALSO NEED TO REMOVE STUFF FOR EQUAL RADIUS. SO IN FACT MOVER::MOVE
 WILL ONLY HAVE 2 MODES: INDEPENDENT CIRCULAR DELTA
+_________________________________________________________
+ok. 
+
+reaper: 
+	circle does more than 1 circle
+
+DP: 
+	circle does a circle
+	trajectory automation not read. after rebooting it is read but delta is off
