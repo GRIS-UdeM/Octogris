@@ -29,31 +29,34 @@
 #include "PluginProcessor.h"
 
 // ==============================================================================
-void Trajectory::start()
-{
-	if (mSource < 0)
-	{
-		for (int j = 0; j < mFilter->getNumberOfSources(); j++)
-		{
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
-			mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
-		}
-	}
-	else
-	{
-		mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSource));
-		mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSource));
-	}
-	spInit();
+void Trajectory::start() {
+    if (s_bUseOneSource){
+        int j = 0;
+        mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
+        mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
+    } else {
+        if (mSource < 0) {
+            //no source selected, so automation on all sources
+            for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
+                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
+                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
+            }
+        } else {
+            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSource));
+            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSource));
+        }
+    }
+    for (int i = 0; i < mFilter->getNumberOfSources(); i++){
+        mSourcesInitRT.add(mFilter->getSourceRT(i));
+    }
+    
 	mStarted = true;
 }
 
-bool Trajectory::process(float seconds, float beats)
-{
+bool Trajectory::process(float seconds, float beats) {
 	if (mStopped) return true;
 	if (!mStarted) start();
-	if (mDone == mTotalDuration)
-	{
+	if (mDone == mTotalDuration) {
 		spProcess(0, 0);
 		stop();
 		return true;
@@ -77,19 +80,23 @@ float Trajectory::progress()
 void Trajectory::stop()
 {
 	if (!mStarted || mStopped) return;
-	if (mSource < 0)
-	{
-		for (int j = 0; j < mFilter->getNumberOfSources(); j++)
-		{
-			mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
-			mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
-		}
-	}
-	else
-	{
-		mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSource));
-		mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSource));
-	}
+
+    if (s_bUseOneSource){
+        int j = 0;
+        mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
+        mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
+    } else {
+        if (mSource < 0){
+            //no source selected, so automation on all sources
+            for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
+                mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
+                mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
+            }
+        } else {
+            mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSource));
+            mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSource));
+        }
+    }
 	mStopped = true;
 }
 
@@ -210,29 +217,24 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleReturns(int p_i
 class CircleTrajectory : public Trajectory
 {
 public:
-	CircleTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw)
-	: Trajectory(filter, duration, beats, times, source), mCCW(ccw) {}
-	
+    CircleTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw)
+    : Trajectory(filter, duration, beats, times, source), mCCW(ccw) {}
+    
 protected:
-	void spInit()
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			mSourcesInitRT.add(mFilter->getSourceRT(i));
-	}
-	void spProcess(float duration, float seconds)
-	{
-		float da = mDone / mDuration * (2 * M_PI);
-		if (!mCCW) da = -da;
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-		if (mSource < 0 || mSource == i)
-		{
-			FPoint p = mSourcesInitRT.getUnchecked(i);
-			mFilter->setSourceRT(i, FPoint(p.x, p.y + da));
-		}
-	}
+    void spProcess(float duration, float seconds) {
+        float da = mDone / mDuration * (2 * M_PI);
+        if (!mCCW) da = -da;
+        
+        for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+            if (mSource < 0 || mSource == i)
+            {
+                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+                FPoint p = mSourcesInitRT.getUnchecked(i);
+                mFilter->setSourceRT(i, FPoint(p.x, p.y + da), bWriteAutomation);
+            }
+    }
 	
 private:
-	Array<FPoint> mSourcesInitRT;
 	bool mCCW;
 };
 
@@ -244,35 +246,29 @@ public:
 	: Trajectory(filter, duration, beats, times, source), mCCW(ccw), mIn(in), mRT(rt) {}
 	
 protected:
-	void spInit()
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			mSourcesInitRT.add(mFilter->getSourceRT(i));
-	}
-	void spProcess(float duration, float seconds)
-	{
-		float da;
-		if (mRT)
-			da = mDone / mDuration * (2 * M_PI);
-		else
-		{
-			if (mDone < mTotalDuration) da = fmodf(mDone / mDuration * M_PI, M_PI);
-			else da = M_PI;
-		}
-		if (!mCCW) da = -da;
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-		if (mSource < 0 || mSource == i)
-		{
-			FPoint p = mSourcesInitRT.getUnchecked(i);
-			float l = (cos(da)+1)*0.5;
-			float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-			float t = p.y + 2*da;
-			mFilter->setSourceRT(i, FPoint(r, t));
-		}
-	}
+    void spProcess(float duration, float seconds)
+    {
+        float da;
+        if (mRT) {
+            da = mDone / mDuration * (2 * M_PI);
+        } else {
+            if (mDone < mTotalDuration) da = fmodf(mDone / mDuration * M_PI, M_PI);
+            else da = M_PI;
+        }
+        if (!mCCW) da = -da;
+        for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+            if (mSource < 0 || mSource == i)
+            {
+                FPoint p = mSourcesInitRT.getUnchecked(i);
+                float l = (cos(da)+1)*0.5;
+                float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+                float t = p.y + 2*da;
+                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+                mFilter->setSourceRT(i, FPoint(r, t), bWriteAutomation);
+            }
+    }
 	
 private:
-	Array<FPoint> mSourcesInitRT;
 	bool mCCW, mIn, mRT;
 };
 
@@ -284,11 +280,6 @@ public:
 	: Trajectory(filter, duration, beats, times, source), mIn(in), mRT(rt), mCross(cross) {}
 	
 protected:
-	void spInit()
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			mSourcesInitRT.add(mFilter->getSourceRT(i));
-	}
 	void spProcess(float duration, float seconds)
 	{
         float da;
@@ -307,13 +298,13 @@ protected:
                 FPoint p = mSourcesInitRT.getUnchecked(i);
                 float l = mCross ? cos(da) : (cos(da)+1)*0.5;
                 float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-                mFilter->setSourceRT(i, FPoint(r, p.y));
+                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+                mFilter->setSourceRT(i, FPoint(r, p.y), bWriteAutomation);
             }
         }
 	}
 	
 private:
-	Array<FPoint> mSourcesInitRT;
 	bool mIn, mRT, mCross;
 };
 
@@ -325,11 +316,6 @@ public:
 	: Trajectory(filter, duration, beats, times, source), mCCW(ccw) {}
 	
 protected:
-	void spInit()
-	{
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			mSourcesInitRT.add(mFilter->getSourceRT(i));
-	}
 	void spProcess(float duration, float seconds)
 	{
 		float da = mDone / mDuration * (2 * M_PI);
@@ -349,12 +335,12 @@ protected:
 			float r2 = (a2*b2)/((b2-a2)*cosDa2+a2);
 			float r = sqrt(r2);
 			
-			mFilter->setSourceRT(i, FPoint(p.x * r, p.y + da));
+            bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+			mFilter->setSourceRT(i, FPoint(p.x * r, p.y + da), bWriteAutomation);
 		}
 	}
 	
 private:
-	Array<FPoint> mSourcesInitRT;
 	bool mCCW;
 };
 
@@ -419,7 +405,7 @@ protected:
 	void spProcess(float duration, float seconds)
 	{
         if (fmodf(mDone, mDuration) < 0.01){
-            mFilter->restoreCurrentLocations();
+            mFilter->restoreCurrentLocations(0);
         }
         
 		mClock += seconds;
@@ -440,7 +426,8 @@ protected:
                     }
                     p.x += (r1 - 0.5) * mSpeed;
                     p.y += (r2 - 0.5) * mSpeed;
-                    mFilter->setSourceXY(i, p);
+                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+                    mFilter->setSourceXY(i, p, bWriteAutomation);
                 }
         }
     }
@@ -475,14 +462,6 @@ protected:
 			mCycle = cycle;
 			mSourcesOrigins.clearQuick();
 			mSourcesDestinations.clearQuick();
-
-            
-//            FPoint o = mFilter->getSourceXY(1);
-//            mSourcesOrigins.add(o);
-//            FPoint uniqueDestination = destinationForSource(1, o);
-            
-            
-             
             
 			for (int i = 0; i < mFilter->getNumberOfSources(); i++)
 			if (mSource < 0 || mSource == i)
@@ -501,7 +480,8 @@ protected:
 			FPoint a = mSourcesOrigins.getUnchecked(i);
 			FPoint b = mSourcesDestinations.getUnchecked(i);
 			FPoint p = a + (b - a) * d;
-			mFilter->setSourceXY(i, p);
+            bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+			mFilter->setSourceXY(i, p, bWriteAutomation);
 		}
 	}
 	
@@ -537,7 +517,7 @@ protected:
 	}
     
     void resetIfRandomTarget(){
-        mFilter->restoreCurrentLocations();
+        mFilter->restoreCurrentLocations(0);
     }
 	
 private:
@@ -599,40 +579,6 @@ protected:
 	}
 };
 
-// ==============================================================================
-//int Trajectory::NumberOfTrajectories() { return 23; }
-//String Trajectory::GetTrajectoryName(int i)
-//{
-//	switch(i)
-//	{
-//		case 0: return "Circle (CW)";
-//		case 1: return "Circle (CCW)";
-//		case 2: return "Ellipse (CW)";
-//		case 3: return "Ellipse (CCW)";
-//		case 4: return "Spiral (In, RT, CW)";
-//		case 5: return "Spiral (In, RT, CCW)";
-//		case 6: return "Spiral (Out, RT, CW)";
-//		case 7: return "Spiral (Out, RT, CCW)";
-//		case 8: return "Spiral (In, OW, CW)";
-//		case 9: return "Spiral (In, OW, CCW)";
-//		case 10: return "Spiral (Out, OW, CW)";
-//		case 11: return "Spiral (Out, OW, CCW)";
-//		case 12: return "Pendulum (In, RT)";
-//		case 13: return "Pendulum (Out, RT)";
-//		case 14: return "Pendulum (In, OW)";
-//		case 15: return "Pendulum (Out, OW)";
-//		case 16: return "Random Target";
-//		case 17: return "Random (Slow)";
-//		case 18: return "Random (Mid)";
-//		case 19: return "Random (Fast)";
-//		case 20: return "Sym X Target";
-//		case 21: return "Sym Y Target";
-//		case 22: return "Closest Speaker Target";
-//	}
-//	jassert(0);
-//	return "";
-//}
-
 
 int Trajectory::NumberOfTrajectories() { return TotalNumberTrajectories-1; }
 
@@ -653,39 +599,6 @@ String Trajectory::GetTrajectoryName(int i)
     jassert(0);
     return "";
 }
-
-
-//Trajectory::Ptr Trajectory::CreateTrajectory(int i, OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source)
-//{
-//	switch(i)
-//	{
-//		case 0: return new CircleTrajectory(filter, duration, beats, times, source, false);
-//		case 1: return new CircleTrajectory(filter, duration, beats, times, source, true);
-//		case 2: return new EllipseTrajectory(filter, duration, beats, times, source, false);
-//		case 3: return new EllipseTrajectory(filter, duration, beats, times, source, true);
-//		case 4: return new SpiralTrajectory(filter, duration, beats, times, source, false, true, true);
-//		case 5: return new SpiralTrajectory(filter, duration, beats, times, source, true, true, true);
-//		case 6: return new SpiralTrajectory(filter, duration, beats, times, source, false, false, true);
-//		case 7: return new SpiralTrajectory(filter, duration, beats, times, source, true, false, true);
-//		case 8: return new SpiralTrajectory(filter, duration, beats, times, source, false, true, false);
-//		case 9: return new SpiralTrajectory(filter, duration, beats, times, source, true, true, false);
-//		case 10: return new SpiralTrajectory(filter, duration, beats, times, source, false, false, false);
-//		case 11: return new SpiralTrajectory(filter, duration, beats, times, source, true, false, false);
-//		case 12: return new PendulumTrajectory(filter, duration, beats, times, source, true, true);
-//		case 13: return new PendulumTrajectory(filter, duration, beats, times, source, false, true);
-//		case 14: return new PendulumTrajectory(filter, duration, beats, times, source, true, false);
-//		case 15: return new PendulumTrajectory(filter, duration, beats, times, source, false, false);
-//		case 16: return new RandomTargetTrajectory(filter, duration, beats, times, source);
-//		case 17: return new RandomTrajectory(filter, duration, beats, times, source, 0.02);
-//		case 18: return new RandomTrajectory(filter, duration, beats, times, source, 0.06);
-//		case 19: return new RandomTrajectory(filter, duration, beats, times, source, 0.1);
-//		case 20: return new SymXTargetTrajectory(filter, duration, beats, times, source);
-//		case 21: return new SymYTargetTrajectory(filter, duration, beats, times, source);
-//		case 22: return new ClosestSpeakerTargetTrajectory(filter, duration, beats, times, source);
-//	}
-//	jassert(0);
-//	return NULL;
-//}
 
 Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *filter, float duration, bool beats, AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget)
 {
@@ -758,6 +671,3 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
     jassert(0);
     return NULL;
 }
-
-
-

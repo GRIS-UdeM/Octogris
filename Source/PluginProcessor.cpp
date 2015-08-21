@@ -69,7 +69,12 @@ int IndexedAngleCompare(const void *a, const void *b)
 }
 
 //==============================================================================
-OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
+OctogrisAudioProcessor::OctogrisAudioProcessor():
+mFilters()
+,m_bIsRecordingAutomation(false)
+,m_iSourceLocationChanged(-1)
+,m_iSelectedSource(0)
+,m_bPreventSourceLocationUpdate(false)
 {
     
     //SET PARAMETERS
@@ -78,7 +83,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
         mParameters.add(0);
     }
     
-	mParameters.set(kLinkMovement, 0);
 	mParameters.set(kSmooth, normalize(kSmoothMin, kSmoothMax, kSmoothDefault));
 	mParameters.set(kVolumeNear, normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault));
 	mParameters.set(kVolumeMid, normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault));
@@ -132,7 +136,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
 	mHostChangedParameter = 0;
 	mHostChangedProperty = 0;
 	mProcessCounter = 0;
-	mLastTimeInSamples = -1;
+	//mLastTimeInSamples = -1;
 	mProcessMode = kPanVolumeMode;
 	mRoutingMode = 0;
     //version 9
@@ -145,7 +149,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
     m_iTrDirection = 0,
     m_iTrReturn = 0,
     m_iTrSrcSelect = -1;//0;
-    m_fTrDuration = 1.f;
+    m_fTrDuration = 5.f;
     m_iTrUnits = 1;     //0 = beats, 1 = seconds
     m_fTrRepeats = 1.f;
 	
@@ -176,8 +180,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():mFilters()
         mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
         mParameters.set(getParamForSpeakerM(i), 0);
     }
-    
-
 }
 
 OctogrisAudioProcessor::~OctogrisAudioProcessor()
@@ -224,22 +226,47 @@ float OctogrisAudioProcessor::getParameter (int index)
     return mParameters[index];
 }
 
-void OctogrisAudioProcessor::setParameter (int index, float newValue)
-{
-	mParameters.set(index, newValue);
-	mHostChangedParameter++;
+void OctogrisAudioProcessor::setParameter (int index, float newValue){
+    
+    float fOldValue = mParameters.getUnchecked(index);
+    
+    if (!areSame(fOldValue, newValue)){
+        mParameters.set(index, newValue);
+
+        if      (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(0) || index == getParamForSourceY(0))) { setSourceLocationChanged(0);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(1) || index == getParamForSourceY(1))) { setSourceLocationChanged(1);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(2) || index == getParamForSourceY(2))) { setSourceLocationChanged(2);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(3) || index == getParamForSourceY(3))) { setSourceLocationChanged(3);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(4) || index == getParamForSourceY(4))) { setSourceLocationChanged(4);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(5) || index == getParamForSourceY(5))) { setSourceLocationChanged(5);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(6) || index == getParamForSourceY(6))) { setSourceLocationChanged(6);}
+        else if (!m_bPreventSourceLocationUpdate && (index == getParamForSourceX(7) || index == getParamForSourceY(7))) { setSourceLocationChanged(7);}
+        mHostChangedParameter++;
+    }
 }
+
+
+
 
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
 {
 	mParameters.set(index, newValue);
+    
+//    if      (index == getParamForSourceX(0) || index == getParamForSourceY(0)) { setSourceLocationChanged(0);}
+//    else if (index == getParamForSourceX(1) || index == getParamForSourceY(1)) { setSourceLocationChanged(1);}
+//    else if (index == getParamForSourceX(2) || index == getParamForSourceY(2)) { setSourceLocationChanged(2);}
+//    else if (index == getParamForSourceX(3) || index == getParamForSourceY(3)) { setSourceLocationChanged(3);}
+//    else if (index == getParamForSourceX(4) || index == getParamForSourceY(4)) { setSourceLocationChanged(4);}
+//    else if (index == getParamForSourceX(5) || index == getParamForSourceY(5)) { setSourceLocationChanged(5);}
+//    else if (index == getParamForSourceX(6) || index == getParamForSourceY(6)) { setSourceLocationChanged(6);}
+//    else if (index == getParamForSourceX(7) || index == getParamForSourceY(7)) { setSourceLocationChanged(7);}
+    
     sendParamChangeMessageToListeners(index, newValue);
 }
 
 const String OctogrisAudioProcessor::getParameterName (int index)
 {
    
-    if (index == kLinkMovement) return "Link Movement";
 	if (index == kSmooth)		return "Smooth Param";
     if (index == kVolumeNear)	return "Volume Near";
 	if (index == kVolumeMid)	return "Volume Mid";
@@ -413,6 +440,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
         
         if (mNumberOfSources == 1){
             setSourceRT(0, FPoint(0, 0));
+            mOldSrcLocRT[0] = FPoint(0, 0);
         }
         else if(mNumberOfSources%2 == 0) //if the number of speakers is even we will assign them as stereo pairs
         {
@@ -432,6 +460,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
                 else if (offset > 360) offset -= 360;
                 
                 setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
+                mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
             }
         }
         else //odd number of speakers, assign in circular fashion
@@ -443,6 +472,7 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
                 else if (offset > 360) offset -= 360;
                 
                 setSourceRT(i, FPoint(kSourceDefaultRadius, offset/360*kThetaMax));
+                mOldSrcLocRT[i] = FPoint(kSourceDefaultRadius, offset/360*kThetaMax);
                 offset += anglePerSource;
             }
         }
@@ -709,10 +739,10 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		AudioPlayHead::CurrentPositionInfo cpi;
 		getPlayHead()->getCurrentPosition(cpi);
 		
-		if (cpi.timeInSamples != mLastTimeInSamples)
+        if (cpi.isPlaying) // (cpi.timeInSamples != mLastTimeInSamples)
 		{
 			// we're playing!
-			mLastTimeInSamples = cpi.timeInSamples;
+			//mLastTimeInSamples = cpi.timeInSamples;
 	
 			double bps = cpi.bpm / 60;
 			float seconds = oriFramesToProcess / sampleRate;
@@ -1683,14 +1713,26 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
     }
 }
 
-void OctogrisAudioProcessor::restoreCurrentLocations(){
-    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
-    {
+void OctogrisAudioProcessor::restoreCurrentLocations(int p_iLocToRestore){
+    
+    if (p_iLocToRestore == -1){
+        for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
+        {
+            mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
+            mParameters.set(getParamForSourceY(i), mBufferSrcLocY[i]);
+            float fValue = mBufferSrcLocD[i];
+            mParameters.set(getParamForSourceD(i), fValue);
+        }
+    } else {
+        //only restore location for selected source, which is source 0 for now
+        int i = 0;
         mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
         mParameters.set(getParamForSourceY(i), mBufferSrcLocY[i]);
         float fValue = mBufferSrcLocD[i];
         mParameters.set(getParamForSourceD(i), fValue);
     }
+    
+    
     for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
     {
         mParameters.set(getParamForSpeakerX(i), mBufferSpLocX[i]);
@@ -1698,9 +1740,6 @@ void OctogrisAudioProcessor::restoreCurrentLocations(){
         mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);
 		mParameters.set(getParamForSpeakerM(i), mBufferSpLocM[i]);
     }
-    
-    int i =0;
-    ++i;
 }
 
 static const int kDataVersion = 14;
@@ -1742,7 +1781,6 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     
     xml.setAttribute ("kRoutingVolume", mParameters[kRoutingVolume]);
     xml.setAttribute ("mRoutingMode", mRoutingMode);
-    xml.setAttribute ("kLinkMovement", mParameters[kLinkMovement]);
     xml.setAttribute ("kSmooth", mParameters[kSmooth]);
     xml.setAttribute ("kVolumeNear", mParameters[kVolumeNear]);
     xml.setAttribute ("kVolumeMid", mParameters[kVolumeMid]);
@@ -1823,7 +1861,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mParameters.set(kRoutingVolume, static_cast<float>(xmlState->getDoubleAttribute("kRoutingVolume", normalize(kRoutingVolumeMin, kRoutingVolumeMax, kRoutingVolumeDefault))));
             setRoutingMode(xmlState->getIntAttribute ("mRoutingMode", 0));
             
-            mParameters.set(kLinkMovement,  static_cast<float>(xmlState->getDoubleAttribute("kLinkMovement", 0)));
             mParameters.set(kSmooth,        static_cast<float>(xmlState->getDoubleAttribute("kSmooth", normalize(kSmoothMin, kSmoothMax, kSmoothDefault))));
             mParameters.set(kVolumeNear,    static_cast<float>(xmlState->getDoubleAttribute("kVolumeNear", normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault))));
             mParameters.set(kVolumeMid,     static_cast<float>(xmlState->getDoubleAttribute("kVolumeMid", normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault))));
@@ -1834,9 +1871,15 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             
             for (int i = 0; i < JucePlugin_MaxNumInputChannels; ++i){
                 String srcX = "src" + to_string(i) + "x";
-                mParameters.set(getParamForSourceX(i), static_cast<float>(xmlState->getDoubleAttribute(srcX, 0)));
+                float fX01 = static_cast<float>(xmlState->getDoubleAttribute(srcX, 0));
+                mParameters.set(getParamForSourceX(i), fX01);
                 String srcY = "src" + to_string(i) + "y";
-                mParameters.set(getParamForSourceY(i), static_cast<float>(xmlState->getDoubleAttribute(srcY, 0)));
+                float fY01 = static_cast<float>(xmlState->getDoubleAttribute(srcY, 0));
+                mParameters.set(getParamForSourceY(i), fY01);
+                FPoint curPoint = FPoint(fX01, fY01);
+                mOldSrcLocRT[i] = convertXy012Rt(curPoint);
+                
+                
                 String srcD = "src" + to_string(i) + "d";
                 mParameters.set(getParamForSourceD(i), static_cast<float>(xmlState->getDoubleAttribute(srcD, normalize(kSourceMinDistance, kSourceMaxDistance, kSourceDefaultDistance))));
             }
@@ -1878,7 +1921,20 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             if (version >= 6) mApplyFilter = readIntData(data, sizeInBytes, 1);
             
             if (version >= 9){
-                setInputOutputMode(readIntData(data, sizeInBytes, 1));
+                int iInputOutputMode = readIntData(data, sizeInBytes, 1);
+                setInputOutputMode(iInputOutputMode);
+                if (iInputOutputMode >= i2o2 && iInputOutputMode <= i2o16){
+                    if (mMovementMode >= 1 && mMovementMode <= 3){
+                        mMovementMode += 5;
+                    } else if (mMovementMode >= 4 && mMovementMode < 8){
+                        mMovementMode -= 3;
+                    } else if (mMovementMode == 8){
+                        JUCE_COMPILER_WARNING("need to test this")
+                        mMovementMode = 4;  //if mMovementMode was symmetric XY, we convert that to circular fully fixed, since that is the same thing
+                    }
+                }
+                
+                
                 mSrcPlacementMode = readIntData(data, sizeInBytes, 1);
                 mSpPlacementMode = readIntData(data, sizeInBytes, 1);
                 mSrcSelected = readIntData(data, sizeInBytes, 1);
@@ -1903,7 +1959,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             
             if (version >= 4)
             {
-                mParameters.set(kLinkMovement, readFloatData(data, sizeInBytes, 0));
+                readFloatData(data, sizeInBytes, 0); //this was for kLinkMovement
                 mParameters.set(kSmooth, readFloatData(data, sizeInBytes, normalize(kSmoothMin, kSmoothMax, kSmoothDefault)));
                 mParameters.set(kVolumeNear, readFloatData(data, sizeInBytes, normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault)));
                 if (version >= 5) mParameters.set(kVolumeMid, readFloatData(data, sizeInBytes, normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault)));

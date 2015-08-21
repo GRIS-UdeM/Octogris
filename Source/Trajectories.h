@@ -81,8 +81,8 @@ public:
 	void stop();
 	
 protected:
-	virtual void spInit() {}
 	virtual void spProcess(float duration, float seconds) = 0;
+    Array<Point<float>> mSourcesInitRT;
 	
 private:
 	void start();

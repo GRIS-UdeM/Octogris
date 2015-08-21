@@ -1,0 +1,124 @@
+---------------------- 2015 08 14 ----------------------
+
+ok, so need to test presets in current octogris version--DONE
+
+now i need to make this oneSource business work. How to proceed? 
+need to have concept of selected source
+then mover only moves selected source
+and thread moves non-selected sources
+
+
+in zirkosc
+mouseDown/Up and slidersDragStarted/ended call begin/endParameterGesture on selectedsource only
+everyone calls processor::move, which
+    calls setParameterNotifyingHost for the source passed as argument
+        which sets m_iSourceLocationChanged to the source passed as argument
+    if independent, we simply set the old values
+    if not, call moveCircular(or other)
+        which calculates delta between the selected source position (argument) and the old one
+        then cycles through all sources
+            for selected one, simply set old values
+            for unselected, move by delta DIRECTLY (ie not telling host so no automation, not
+                setting srcLocation) and set old values
+
+the thread moves sources if
+    X-!m_bIsRecordingAutomation
+        set whenever an automation begins+ends (mousedown/up, sliderDragStarted/ended
+    X-m_iMovementConstraint != Independent
+        just get this from processor
+    m_iSourceLocationChanged != -1
+        set to source number that is changed in setParameters
+
+IN OCTOGRIS
+everyone calls mover::begin, which
+    calls beginParameterGesture
+        X-need to have this only for selected source
+    FIGURES OUT ANGLES IF ANGLES ARE FIXED. This needs to be an instantaneous call instead of being
+    figured out here and used in move. Well actually, i don't think this is critical.
+then everyone calls mover::move, which 
+    moves selectedSource
+    moves the other sources in circular or delta. THOSE WILL BE THE 2 ONLY MODES ONCE I HAVE MADE
+    THE MOVEMENT CONSTRAINT CHANGES INSTANTANEOUS
+        NOW HERE. need to figure out how to move unselected sources using the delta of the selected
+        source. Some kind of similar mechanism is already in place. 
+    then of fucking course, there are the specific symmetric x/y fucking modes which i also need to
+    figure out
+    
+---------------------- 2015 08 17 ----------------------
+Ah, i need to NOT record automations when move() is called NOT from kSourceThread
+
+-cliquer sur start trajectore fait des automations from sourceThread, because changing the number of
+sources calls it. should only happen once
+
+somthing isn't right. the thread is setting srcLocationChanged. that should really not happen
+we got
+    thread calls
+        mover.begin
+        mover.move
+            mFilter->setSourceXY01() for selected source (this should not happen, right?)
+                this sets the srcLocationChanged for the selected source
+            mFilter->setSourceRT for non selected sources
+                this sets the srcLocationChanged for all non-selected sources (shouldn't happen,
+                right?)
+        mover.end
+
+ok, so now i cleaned a bunch of code, and there are no automations written when changing movement
+constraints, BUT there is when starting a trajectory
+NOW HERE: can record automation on one source, but not read them. I think the problems are that
+-thread is not calculating delta properly (probably)
+===================================================================
+-when writing trajectories we should use the mover (which we do?), somehow sources are not moving
+when writing trajectories. ah, it's probably because i force selected source 0, so i need a special
+case to have all sources move when kSourceThread
+
+
+-----------------------------------
+-Changing constraint does activate the thread once, with a delta of 0, should not
+-clicking trajectory button also activates the thread once
+-writing trajectory, thread is activated... is that so also in zirkosc? it should not. the regular
+move should set the parameters directly, then the gui should update based on its reading of the
+processor
+    right, there should be a writingAutomation flag set
+    it is not set because the trajectory does not use the mover. this is bad. Ah, that's because
+    antoine used my code, which does not have a mover. right. 
+in zirk
+    thread called once when setting to circular
+    and once on mouse up
+    once at the end of writing a trajectory
+    continuously when reading trajectory/automation
+________________________________________
+-ok, DOING THIS FOR REEELZZZZ
+reading automation only moves automated source. So delta must be wrong. i think the problem was that the delta was calculated inside the loop rather than outside, thus overwriting itself? can now read automations.
+
+REMAINING PROBLEMS
+X-trajectories write on all sources
+-plugin is using too much CPU (reduce refresh rate, avoid mover::begin/end by making sort instantaneous)
+	apparently just lowering refresh rate form 25 to 50 helped a lot, but not enough
+X-refactor move to remove extra 2 source case
+	-need to check that can load project with 2 sources with automations using the 2-source-constraints modes
+	1->6, 2-7, 3-8
+	4-1,5-2,6-3,7-4,8-5	
+- trajectories
+	automation written when trajectory stops, because we are restoring the stored source locations. Forcing restoration only on source 0, which could need to be changed to selected Source if ever we have that concept. 
+	
+	**************	IMPORTANT NOTE: with one-source-automations, it is impossible to have unique random trajectories for the different sources. all trajectories have to follow the selected source. Unless we force randomization, which will be different every time we run the automation************	
+______________________________________________
+ok, so trajectories are not read. how can that be? delta of 0. because old or new values are not set
+when reading? 
+
+NOW HERE: NEED TO EXTRA STUFF IN MOVER THAT IS IN CHARGE OF MOVING WITH EQUAL ANGLES AND PUT IT IN
+SETEQUALANGLES (NEW FUNCTION). ALSO NEED TO REMOVE STUFF FOR EQUAL RADIUS. SO IN FACT MOVER::MOVE
+WILL ONLY HAVE 2 MODES: INDEPENDENT CIRCULAR DELTA
+_________________________________________________________
+ok. 
+
+reaper: 
+	circle does more than 1 circle
+
+DP: 
+	trajectory automation not read. after rebooting it, then it works
+		that's because we're still recording automation
+	trajectories are incrementing when we reboot the daw (or not? not clear)
+	delta mode doesn't work
+	something is wrong with the faders
+

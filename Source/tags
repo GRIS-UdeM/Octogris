@@ -1,0 +1,790 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AddArea	PluginProcessor.cpp	/^static void AddArea(int speaker, float ix1, float iy1, float ix2, float iy2, vector<Area> &areas, int &areaCount, int &speakerCount)$/;"	f	file:
+AllTrajectoryDirections	Trajectories.h	/^enum AllTrajectoryDirections {$/;"	g
+AllTrajectoryTypes	Trajectories.h	/^enum AllTrajectoryTypes {$/;"	g
+Area	PluginProcessor.cpp	/^    Area() {}$/;"	f	class:Area
+Area	PluginProcessor.cpp	/^    Area(int sp, float ix1, float iy1, float ix2, float iy2)$/;"	f	class:Area
+Area	PluginProcessor.cpp	/^class Area$/;"	c	file:
+Box	PluginEditor.cpp	/^    Box(bool useViewport)$/;"	f	class:Box
+Box	PluginEditor.cpp	/^class Box : public Component$/;"	c	file:
+CCW	Trajectories.h	/^    CCW,$/;"	e	enum:AllTrajectoryDirections
+CW	Trajectories.h	/^    CW = 1,$/;"	e	enum:AllTrajectoryDirections
+Circle	Trajectories.h	/^    Circle = 1,$/;"	e	enum:AllTrajectoryTypes
+CircleTrajectory	Trajectories.cpp	/^	CircleTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw)$/;"	f	class:CircleTrajectory
+CircleTrajectory	Trajectories.cpp	/^class CircleTrajectory : public Trajectory$/;"	c	file:
+ClosestSpeakerTarget	Trajectories.h	/^    ClosestSpeakerTarget,$/;"	e	enum:AllTrajectoryTypes
+ClosestSpeakerTargetTrajectory	Trajectories.cpp	/^	ClosestSpeakerTargetTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source)$/;"	f	class:ClosestSpeakerTargetTrajectory
+ClosestSpeakerTargetTrajectory	Trajectories.cpp	/^class ClosestSpeakerTargetTrajectory : public TargetTrajectory$/;"	c	file:
+CreateHIDDelegate	HIDDelegate.cpp	/^HIDDelegate::Ptr HIDDelegate::CreateHIDDelegate(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)$/;"	f	class:HIDDelegate
+CreateLeapComponent	OctoLeap.cpp	/^Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)$/;"	f
+CreateLeapComponent	OctoLeap.cpp	/^OctoLeap::Ptr OctoLeap::CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)$/;"	f	class:OctoLeap
+CreateOscComponent	OscComponent.cpp	/^HeartbeatComponent * CreateOscComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)$/;"	f
+CreateTrajectory	Trajectories.cpp	/^Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *filter, float duration, bool beats, AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget)$/;"	f	class:Trajectory
+Crossover	Trajectories.h	/^    Crossover,$/;"	e	enum:AllTrajectoryDirections
+EllipseTr	Trajectories.h	/^    EllipseTr, \/\/Ellipse was clashing with some random windows class...$/;"	e	enum:AllTrajectoryTypes
+EllipseTrajectory	Trajectories.cpp	/^	EllipseTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw)$/;"	f	class:EllipseTrajectory
+EllipseTrajectory	Trajectories.cpp	/^class EllipseTrajectory : public Trajectory$/;"	c	file:
+FIELDCOMPONENT_H_INCLUDED	FieldComponent.h	/^#define FIELDCOMPONENT_H_INCLUDED$/;"	d
+FIRFILTER_H_INCLUDED	FirFilter.h	/^#define FIRFILTER_H_INCLUDED$/;"	d
+FPoint	PluginProcessor.h	/^typedef Point<float> FPoint;$/;"	t
+Fast	Trajectories.h	/^    Fast,$/;"	e	enum:AllTrajectoryDirections
+FieldComponent	FieldComponent.cpp	/^FieldComponent::FieldComponent(OctogrisAudioProcessor* filter, SourceMover *mover)$/;"	f	class:FieldComponent
+FieldComponent	FieldComponent.h	/^class FieldComponent : public Component$/;"	c
+FirFilter	FirFilter.h	/^    FirFilter():mFir(0), mPos(0) { reset(); setSampleRate(0); }$/;"	f	class:FirFilter
+FirFilter	FirFilter.h	/^class FirFilter$/;"	c
+GetTrajectoryName	Trajectories.cpp	/^String Trajectory::GetTrajectoryName(int i)$/;"	f	class:Trajectory
+HIDDelegate	HIDDelegate.cpp	/^HIDDelegate::HIDDelegate(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor):$/;"	f	class:HIDDelegate
+HIDDelegate	HIDDelegate.h	/^class HIDDelegate : public ReferenceCountedObject$/;"	c
+Handle_DeviceMatchingCallback	HIDDelegate.cpp	/^void HIDDelegate::Handle_DeviceMatchingCallback(void *inContext, IOReturn inResult, void *inSender, IOHIDDeviceRef inIOHIDDeviceRef) {$/;"	f	class:HIDDelegate
+Handle_DeviceRemovalCallback	HIDDelegate.cpp	/^void HIDDelegate::Handle_DeviceRemovalCallback(void *inContext, IOReturn inResult, void *inSender, IOHIDDeviceRef inIOHIDDeviceRef) {$/;"	f	class:HIDDelegate
+Handle_IOHIDDeviceInputValueCallback	HIDDelegate.cpp	/^void HIDDelegate::Handle_IOHIDDeviceInputValueCallback($/;"	f	class:HIDDelegate
+HeartbeatComponent	PluginEditor.h	/^class HeartbeatComponent : public Component$/;"	c
+IOBuf	PluginProcessor.h	/^	struct IOBuf { float b[kChunkSize]; };$/;"	s	class:OctogrisAudioProcessor
+In	Trajectories.h	/^    In,$/;"	e	enum:AllTrajectoryDirections
+InCCW	Trajectories.h	/^    InCCW,$/;"	e	enum:AllTrajectoryDirections
+InCW	Trajectories.h	/^    InCW,$/;"	e	enum:AllTrajectoryDirections
+IndexedAngle	PluginProcessor.h	/^} IndexedAngle;$/;"	t	typeref:struct:__anon8
+IndexedAngleCompare	PluginProcessor.cpp	/^int IndexedAngleCompare(const void *a, const void *b)$/;"	f
+Initialize_HID	HIDDelegate.cpp	/^OSStatus HIDDelegate::Initialize_HID(void *inContext) {$/;"	f	class:HIDDelegate
+InputOutputModes	PluginProcessor.h	/^enum InputOutputModes {$/;"	g
+Integrate	PluginProcessor.cpp	/^static void Integrate(float x1, float x2, const vector<Area> &areas, int areaCount, float *outFactors, float factor)$/;"	f	file:
+JoystickUsed	HIDDelegate.cpp	/^void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValue, double maxValue)$/;"	f	class:HIDDelegate
+LEVELCOMPONENT_H_INCLUDED	LevelComponent.h	/^#define LEVELCOMPONENT_H_INCLUDED$/;"	d
+LevelComponent	LevelComponent.cpp	/^LevelComponent::LevelComponent(OctogrisAudioProcessor* filter, int index)$/;"	f	class:LevelComponent
+LevelComponent	LevelComponent.h	/^class LevelComponent : public Component$/;"	c
+MTRand_int32	Trajectories.cpp	/^	MTRand_int32()$/;"	f	class:MTRand_int32
+MTRand_int32	Trajectories.cpp	/^class MTRand_int32$/;"	c	file:
+M_PI	PluginProcessor.h	/^#define M_PI /;"	d
+Mid	Trajectories.h	/^    Mid,$/;"	e	enum:AllTrajectoryDirections
+MiniProgressBar	PluginEditor.cpp	/^    MiniProgressBar() : mValue(0) {}$/;"	f	class:MiniProgressBar
+MiniProgressBar	PluginEditor.cpp	/^class MiniProgressBar : public Component$/;"	c	file:
+MoverType	SourceMover.h	/^} MoverType;$/;"	t	typeref:enum:__anon9
+None	Trajectories.h	/^    None$/;"	e	enum:AllTrajectoryDirections
+NumberOfTrajectories	Trajectories.cpp	/^int Trajectory::NumberOfTrajectories() { return TotalNumberTrajectories-1; }$/;"	f	class:Trajectory
+OCTOLEAP_H_INCLUDED	OctoLeap.h	/^#define OCTOLEAP_H_INCLUDED$/;"	d
+OSCCOMPONENT_H_INCLUDED	OscComponent.h	/^#define OSCCOMPONENT_H_INCLUDED$/;"	d
+OctTabbedComponent	PluginEditor.cpp	/^    OctTabbedComponent(TabbedButtonBar::Orientation orientation, OctogrisAudioProcessor *filter)$/;"	f	class:OctTabbedComponent
+OctTabbedComponent	PluginEditor.cpp	/^class OctTabbedComponent : public TabbedComponent$/;"	c	file:
+OctoLeap	OctoLeap.cpp	/^	OctoLeap::OctoLeap(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor):$/;"	f	class:OctoLeap
+OctoLeap	OctoLeap.h	/^class OctoLeap : public ReferenceCountedObject , public Leap::Listener$/;"	c
+OctogrisAudioProcessor	PluginProcessor.cpp	/^OctogrisAudioProcessor::OctogrisAudioProcessor():$/;"	f	class:OctogrisAudioProcessor
+OctogrisAudioProcessor	PluginProcessor.h	/^class OctogrisAudioProcessor : public AudioProcessor$/;"	c
+OctogrisAudioProcessorEditor	PluginEditor.cpp	/^OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcessor* ownerFilter):$/;"	f	class:OctogrisAudioProcessorEditor
+OctogrisAudioProcessorEditor	PluginEditor.h	/^class OctogrisAudioProcessorEditor  : public AudioProcessorEditor,$/;"	c
+OscComponent	OscComponent.cpp	/^    OscComponent(OctogrisAudioProcessor* filter, OctogrisAudioProcessorEditor *editor)$/;"	f	class:OscComponent
+OscComponent	OscComponent.cpp	/^class OscComponent : public HeartbeatComponent, public Button::Listener, public TextEditor::Listener$/;"	c	file:
+Out	Trajectories.h	/^    Out,$/;"	e	enum:AllTrajectoryDirections
+OutCCW	Trajectories.h	/^    OutCCW,$/;"	e	enum:AllTrajectoryDirections
+OutCW	Trajectories.h	/^    OutCW,$/;"	e	enum:AllTrajectoryDirections
+PLUGINEDITOR_H_INCLUDED	PluginEditor.h	/^#define PLUGINEDITOR_H_INCLUDED$/;"	d
+PLUGINPROCESSOR_H_INCLUDED	PluginProcessor.h	/^#define PLUGINPROCESSOR_H_INCLUDED$/;"	d
+ParamSlider	PluginEditor.cpp	/^    ParamSlider(int paramIndex, int paramType, ToggleButton *link, OctogrisAudioProcessor *filter)$/;"	f	class:ParamSlider
+ParamSlider	PluginEditor.cpp	/^class ParamSlider : public Slider$/;"	c	file:
+Pendulum	Trajectories.h	/^    Pendulum,$/;"	e	enum:AllTrajectoryTypes
+PendulumTrajectory	Trajectories.cpp	/^	PendulumTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, bool in, bool rt, bool cross)$/;"	f	class:PendulumTrajectory
+PendulumTrajectory	Trajectories.cpp	/^class PendulumTrajectory : public Trajectory$/;"	c	file:
+ProcessData	PluginProcessor.cpp	/^void OctogrisAudioProcessor::ProcessData(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)$/;"	f	class:OctogrisAudioProcessor
+ProcessDataFreeVolumeMode	PluginProcessor.cpp	/^void OctogrisAudioProcessor::ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)$/;"	f	class:OctogrisAudioProcessor
+ProcessDataPanSpanMode	PluginProcessor.cpp	/^void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)$/;"	f	class:OctogrisAudioProcessor
+ProcessDataPanVolumeMode	PluginProcessor.cpp	/^void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)$/;"	f	class:OctogrisAudioProcessor
+Ptr	HIDDelegate.h	/^    typedef ReferenceCountedObjectPtr<HIDDelegate> Ptr;$/;"	t	class:HIDDelegate
+Ptr	OctoLeap.h	/^    typedef ReferenceCountedObjectPtr<OctoLeap> Ptr;$/;"	t	class:OctoLeap
+Ptr	Trajectories.h	/^	typedef ReferenceCountedObjectPtr<Trajectory> Ptr;$/;"	t	class:Trajectory
+ROUTING_H_INCLUDED	Routing.h	/^#define ROUTING_H_INCLUDED$/;"	d
+Random	Trajectories.h	/^    Random,$/;"	e	enum:AllTrajectoryTypes
+RandomTarget	Trajectories.h	/^    RandomTarget,$/;"	e	enum:AllTrajectoryTypes
+RandomTargetTrajectory	Trajectories.cpp	/^	RandomTargetTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source)$/;"	f	class:RandomTargetTrajectory
+RandomTargetTrajectory	Trajectories.cpp	/^class RandomTargetTrajectory : public TargetTrajectory$/;"	c	file:
+RandomTrajectory	Trajectories.cpp	/^	RandomTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, float speed, bool bUniqueTarget)$/;"	f	class:RandomTrajectory
+RandomTrajectory	Trajectories.cpp	/^class RandomTrajectory : public Trajectory$/;"	c	file:
+Router	Routing.cpp	/^Router::Router()$/;"	f	class:Router
+Router	Routing.h	/^class Router$/;"	c
+SOURCEMOVER_H_INCLUDED	SourceMover.h	/^#define SOURCEMOVER_H_INCLUDED$/;"	d
+STRING	PluginEditor.cpp	/^#define STRING(/;"	d	file:
+STRING2	PluginEditor.cpp	/^#define STRING2(/;"	d	file:
+SelectionType	FieldComponent.h	/^} SelectionType;$/;"	t	typeref:enum:__anon1
+Slow	Trajectories.h	/^    Slow,$/;"	e	enum:AllTrajectoryDirections
+SourceMover	SourceMover.cpp	/^SourceMover::SourceMover(OctogrisAudioProcessor *filter)$/;"	f	class:SourceMover
+SourceMover	SourceMover.h	/^class SourceMover$/;"	c
+SourceUpdateThread	PluginEditor.cpp	/^    SourceUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)$/;"	f	class:SourceUpdateThread
+SourceUpdateThread	PluginEditor.cpp	/^class SourceUpdateThread : public Thread, public Component$/;"	c	file:
+Spiral	Trajectories.h	/^    Spiral,$/;"	e	enum:AllTrajectoryTypes
+SpiralTrajectory	Trajectories.cpp	/^	SpiralTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw, bool in, bool rt)$/;"	f	class:SpiralTrajectory
+SpiralTrajectory	Trajectories.cpp	/^class SpiralTrajectory : public Trajectory$/;"	c	file:
+SymXTarget	Trajectories.h	/^    SymXTarget,$/;"	e	enum:AllTrajectoryTypes
+SymXTargetTrajectory	Trajectories.cpp	/^	SymXTargetTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source)$/;"	f	class:SymXTargetTrajectory
+SymXTargetTrajectory	Trajectories.cpp	/^class SymXTargetTrajectory : public TargetTrajectory$/;"	c	file:
+SymYTarget	Trajectories.h	/^    SymYTarget,$/;"	e	enum:AllTrajectoryTypes
+SymYTargetTrajectory	Trajectories.cpp	/^	SymYTargetTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source)$/;"	f	class:SymYTargetTrajectory
+SymYTargetTrajectory	Trajectories.cpp	/^class SymYTargetTrajectory : public TargetTrajectory$/;"	c	file:
+TRAJECTORIES_H_INCLUDED	Trajectories.h	/^#define TRAJECTORIES_H_INCLUDED$/;"	d
+TargetTrajectory	Trajectories.cpp	/^	TargetTrajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source)$/;"	f	class:TargetTrajectory
+TargetTrajectory	Trajectories.cpp	/^class TargetTrajectory : public Trajectory$/;"	c	file:
+TotalNumberTrajectories	Trajectories.h	/^    TotalNumberTrajectories$/;"	e	enum:AllTrajectoryTypes
+Trajectory	Trajectories.cpp	/^Trajectory::Trajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source)$/;"	f	class:Trajectory
+Trajectory	Trajectories.h	/^class Trajectory : public ReferenceCountedObject$/;"	c
+__Octogris2__HIDDelegate__	HIDDelegate.h	/^#define __Octogris2__HIDDelegate__$/;"	d
+a	PluginProcessor.h	/^	float a;$/;"	m	struct:__anon8
+acceptsMidi	PluginProcessor.cpp	/^bool OctogrisAudioProcessor::acceptsMidi() const$/;"	f	class:OctogrisAudioProcessor
+accumulate	Routing.cpp	/^void Router::accumulate(int channels, int frames, const AudioSampleBuffer &buffer)$/;"	f	class:Router
+addButton	PluginEditor.cpp	/^TextButton* OctogrisAudioProcessorEditor::addButton(const String &s, int x, int y, int w, int h, Component *into)$/;"	f	class:OctogrisAudioProcessorEditor
+addCheckbox	PluginEditor.cpp	/^ToggleButton* OctogrisAudioProcessorEditor::addCheckbox(const String &s, bool v, int x, int y, int w, int h, Component *into)$/;"	f	class:OctogrisAudioProcessorEditor
+addLabel	PluginEditor.cpp	/^Component* OctogrisAudioProcessorEditor::addLabel(const String &s, int x, int y, int w, int h, Component *into)$/;"	f	class:OctogrisAudioProcessorEditor
+addParamSlider	PluginEditor.cpp	/^Slider* OctogrisAudioProcessorEditor::addParamSlider(int paramType, int si, float v, int x, int y, int w, int h, Component *into)$/;"	f	class:OctogrisAudioProcessorEditor
+addTextEditor	PluginEditor.cpp	/^TextEditor* OctogrisAudioProcessorEditor::addTextEditor(const String &s, int x, int y, int w, int h, Component *into)$/;"	f	class:OctogrisAudioProcessorEditor
+addToOutput	PluginProcessor.cpp	/^void OctogrisAudioProcessor::addToOutput(float s, float **outputs, int o, int f)$/;"	f	class:OctogrisAudioProcessor
+appendFloatData	PluginProcessor.cpp	/^static inline void appendFloatData(MemoryBlock& destData, float d)$/;"	f	file:
+appendIntData	PluginProcessor.cpp	/^static inline void appendIntData(MemoryBlock& destData, int32_t d)$/;"	f	file:
+appendStringData	PluginProcessor.cpp	/^static inline void appendStringData(MemoryBlock& destData, const char *d, int length)$/;"	f	file:
+areSame	PluginProcessor.h	/^static bool areSame(double a, double b)$/;"	f
+audioProcessorChanged	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::audioProcessorChanged (AudioProcessor* processor)$/;"	f	class:OctogrisAudioProcessorEditor
+audioProcessorParameterChanged	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::audioProcessorParameterChanged(AudioProcessor* processor,$/;"	f	class:OctogrisAudioProcessorEditor
+b	PluginProcessor.cpp	/^    float m, b;$/;"	m	class:Area	file:
+b	PluginProcessor.h	/^	struct IOBuf { float b[kChunkSize]; };$/;"	m	struct:OctogrisAudioProcessor::IOBuf
+begin	SourceMover.cpp	/^void SourceMover::begin(int s, MoverType mt)$/;"	f	class:SourceMover
+buttonClicked	OscComponent.cpp	/^	void buttonClicked (Button *button)$/;"	f	class:OscComponent
+buttonClicked	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::buttonClicked (Button *button)$/;"	f	class:OctogrisAudioProcessorEditor
+buttonPressedTab	HIDDelegate.h	/^    bool* buttonPressedTab;$/;"	m	class:HIDDelegate
+changeProgramName	PluginProcessor.cpp	/^void OctogrisAudioProcessor::changeProgramName (int index, const String& newName)$/;"	f	class:OctogrisAudioProcessor
+clampRadius01	PluginProcessor.h	/^	FPoint clampRadius01(FPoint p) {$/;"	f	class:OctogrisAudioProcessor
+clear	Routing.h	/^	void clear(int channel) { mOutputs.clear(channel, 0, mOutputs.getNumSamples()); }$/;"	f	class:Router
+comboBoxChanged	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)$/;"	f	class:OctogrisAudioProcessorEditor
+convertRT	PluginProcessor.h	/^	FPoint convertRT(FPoint p) {$/;"	f	class:OctogrisAudioProcessor
+convertRT01	PluginProcessor.h	/^	FPoint convertRT01(FPoint p) {$/;"	f	class:OctogrisAudioProcessor
+convertRt2Xy01	PluginProcessor.h	/^	FPoint convertRt2Xy01(float r, float t) {$/;"	f	class:OctogrisAudioProcessor
+convertSourceRT	FieldComponent.cpp	/^FPoint FieldComponent::convertSourceRT(float r, float t)$/;"	f	class:FieldComponent
+createEditor	PluginProcessor.cpp	/^AudioProcessorEditor* OctogrisAudioProcessor::createEditor()$/;"	f	class:OctogrisAudioProcessor
+createPluginFilter	PluginProcessor.cpp	/^AudioProcessor* JUCE_CALLTYPE createPluginFilter()$/;"	f
+currentTabChanged	PluginEditor.cpp	/^    void currentTabChanged (int newCurrentTabIndex, const String& newCurrentTabName)$/;"	f	class:OctTabbedComponent
+dbToLinear	PluginProcessor.h	/^static inline float dbToLinear(float db)$/;"	f
+denormalize	PluginProcessor.h	/^static inline float denormalize(float min, float max, float value)$/;"	f
+destinationForSource	Trajectories.cpp	/^	FPoint destinationForSource(int s, FPoint o)$/;"	f	class:ClosestSpeakerTargetTrajectory
+destinationForSource	Trajectories.cpp	/^	FPoint destinationForSource(int s, FPoint o)$/;"	f	class:RandomTargetTrajectory
+destinationForSource	Trajectories.cpp	/^	FPoint destinationForSource(int s, FPoint o)$/;"	f	class:SymXTargetTrajectory
+destinationForSource	Trajectories.cpp	/^	FPoint destinationForSource(int s, FPoint o)$/;"	f	class:SymYTargetTrajectory
+deviceRef	HIDDelegate.h	/^    IOHIDDeviceRef deviceRef;$/;"	m	class:HIDDelegate
+deviceSetRef	HIDDelegate.h	/^    CFSetRef deviceSetRef;$/;"	m	class:HIDDelegate
+end	SourceMover.cpp	/^void SourceMover::end(MoverType mt)$/;"	f	class:SourceMover
+eval	PluginProcessor.cpp	/^    float eval(float x) const { return m * x + b; }$/;"	f	class:Area
+fieldChanged	PluginEditor.h	/^	void fieldChanged() { mFieldNeedRepaint = true; }$/;"	f	class:OctogrisAudioProcessorEditor
+findLeftAndRightSpeakers	PluginProcessor.cpp	/^void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetAngle, float *params, int &p_piLeftSpeaker, int &p_piRightSpeaker,$/;"	f	class:OctogrisAudioProcessor
+gen_state	Trajectories.cpp	/^	void gen_state()$/;"	f	class:MTRand_int32	file:
+getApplyFilter	PluginProcessor.h	/^	bool getApplyFilter() const { return mApplyFilter; }$/;"	f	class:OctogrisAudioProcessor
+getButtonPressedTab	HIDDelegate.cpp	/^bool HIDDelegate::getButtonPressedTab(u_int32_t index)$/;"	f	class:HIDDelegate
+getContent	PluginEditor.cpp	/^    Component * getContent()$/;"	f	class:Box
+getCurrentProgram	PluginProcessor.cpp	/^int OctogrisAudioProcessor::getCurrentProgram()$/;"	f	class:OctogrisAudioProcessor
+getDenormedSourceD	PluginProcessor.h	/^	float getDenormedSourceD(int index) const { return denormalize(kSourceMinDistance, kSourceMaxDistance, getSourceD(index)); }$/;"	f	class:OctogrisAudioProcessor
+getDenormedSpeakerA	PluginProcessor.h	/^	float getDenormedSpeakerA(int index) const { return denormalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, getSpeakerA(index)); }$/;"	f	class:OctogrisAudioProcessor
+getDeviceRef	HIDDelegate.h	/^    IOHIDDeviceRef getDeviceRef(){return deviceRef;}$/;"	f	class:HIDDelegate
+getDeviceSetRef	HIDDelegate.h	/^    CFSetRef getDeviceSetRef(){return deviceSetRef;}$/;"	f	class:HIDDelegate
+getDistance	FieldComponent.cpp	/^float FieldComponent::getDistance(int source, int speaker)$/;"	f	class:FieldComponent
+getGuiSize	PluginProcessor.h	/^	int getGuiSize() const { return mGuiSize; }$/;"	f	class:OctogrisAudioProcessor
+getGuiTab	PluginProcessor.h	/^	int getGuiTab() const { return mGuiTab; }$/;"	f	class:OctogrisAudioProcessor
+getHIDDel	PluginEditor.h	/^    HIDDelegate * getHIDDel() {return mHIDDel;};$/;"	f	class:OctogrisAudioProcessorEditor
+getHostChangedParameter	PluginProcessor.h	/^	uint64_t getHostChangedParameter() { return mHostChangedParameter; }$/;"	f	class:OctogrisAudioProcessor
+getHostChangedProperty	PluginProcessor.h	/^	uint64_t getHostChangedProperty() { return mHostChangedProperty; }$/;"	f	class:OctogrisAudioProcessor
+getInputChannelName	PluginProcessor.cpp	/^const String OctogrisAudioProcessor::getInputChannelName (int channelIndex) const$/;"	f	class:OctogrisAudioProcessor
+getInputOutputMode	PluginProcessor.h	/^    int getInputOutputMode() const {return mInputOutputMode;}$/;"	f	class:OctogrisAudioProcessor
+getIsAllowInputOutputModeSelection	PluginProcessor.h	/^	bool getIsAllowInputOutputModeSelection(){$/;"	f	class:OctogrisAudioProcessor
+getIsJoystickEnabled	PluginProcessor.h	/^    int getIsJoystickEnabled() const { return mJoystickEnabled; }$/;"	f	class:OctogrisAudioProcessor
+getIsLeapEnabled	PluginProcessor.h	/^    int getIsLeapEnabled() const { return mLeapEnabled; }$/;"	f	class:OctogrisAudioProcessor
+getIsRecordingAutomation	PluginProcessor.h	/^    bool getIsRecordingAutomation()         { return m_bIsRecordingAutomation;  }$/;"	f	class:OctogrisAudioProcessor
+getIsSourcesChanged	PluginProcessor.h	/^    bool getIsSourcesChanged(){ return mIsNumberSourcesChanged;}$/;"	f	class:OctogrisAudioProcessor
+getIsSpeakersChanged	PluginProcessor.h	/^    bool getIsSpeakersChanged(){ return mIsNumberSpeakersChanged;}$/;"	f	class:OctogrisAudioProcessor
+getLevel	PluginProcessor.h	/^	float getLevel(int index) const { return mLevels.getUnchecked(index); }$/;"	f	class:OctogrisAudioProcessor
+getLinkDistances	PluginProcessor.h	/^	bool getLinkDistances() const { return mLinkDistances; }$/;"	f	class:OctogrisAudioProcessor
+getMovementMode	PluginProcessor.h	/^	int getMovementMode() const { return mMovementMode; }$/;"	f	class:OctogrisAudioProcessor
+getMover	PluginEditor.h	/^	SourceMover * getMover() { return &mMover; }$/;"	f	class:OctogrisAudioProcessorEditor
+getName	PluginProcessor.cpp	/^const String OctogrisAudioProcessor::getName() const$/;"	f	class:OctogrisAudioProcessor
+getNbButton	HIDDelegate.h	/^    int getNbButton(){return nbButton;};$/;"	f	class:HIDDelegate
+getNbSources	PluginEditor.cpp	/^int OctogrisAudioProcessorEditor::getNbSources()$/;"	f	class:OctogrisAudioProcessorEditor
+getNumParameters	PluginProcessor.cpp	/^int OctogrisAudioProcessor::getNumParameters()$/;"	f	class:OctogrisAudioProcessor
+getNumPrograms	PluginProcessor.cpp	/^int OctogrisAudioProcessor::getNumPrograms()$/;"	f	class:OctogrisAudioProcessor
+getNumberOfSources	PluginProcessor.h	/^	int getNumberOfSources() const { return mNumberOfSources; }$/;"	f	class:OctogrisAudioProcessor
+getNumberOfSpeakers	PluginProcessor.h	/^	int getNumberOfSpeakers() const { return mNumberOfSpeakers; }$/;"	f	class:OctogrisAudioProcessor
+getOscJoystickSource	PluginProcessor.h	/^    int getOscJoystickSource() const { return mOscJoystickSource; }$/;"	f	class:OctogrisAudioProcessor
+getOscLeapSource	PluginEditor.h	/^	int getOscLeapSource() { return mFilter->getOscLeapSource(); }$/;"	f	class:OctogrisAudioProcessorEditor
+getOscLeapSource	PluginProcessor.h	/^	int getOscLeapSource() const { return mOscLeapSource; }$/;"	f	class:OctogrisAudioProcessor
+getOscReceiveEnabled	PluginProcessor.h	/^	int getOscReceiveEnabled() const { return mOscReceiveEnabled; }$/;"	f	class:OctogrisAudioProcessor
+getOscReceivePort	PluginProcessor.h	/^	int getOscReceivePort() const { return mOscReceivePort; }$/;"	f	class:OctogrisAudioProcessor
+getOscSendEnabled	PluginProcessor.h	/^	int getOscSendEnabled() const { return mOscSendEnabled; }$/;"	f	class:OctogrisAudioProcessor
+getOscSendIp	PluginProcessor.h	/^	const char * getOscSendIp() const { return mOscSendIp; }$/;"	f	class:OctogrisAudioProcessor
+getOscSendPort	PluginProcessor.h	/^	int getOscSendPort() const { return mOscSendPort; }$/;"	f	class:OctogrisAudioProcessor
+getOutputChannelName	PluginProcessor.cpp	/^const String OctogrisAudioProcessor::getOutputChannelName (int channelIndex) const$/;"	f	class:OctogrisAudioProcessor
+getParamForSourceD	PluginProcessor.h	/^	int getParamForSourceD(int index) const { return kSourceD + index * kParamsPerSource; }$/;"	f	class:OctogrisAudioProcessor
+getParamForSourceX	PluginProcessor.h	/^	int getParamForSourceX(int index) const { return kSourceX + index * kParamsPerSource; }$/;"	f	class:OctogrisAudioProcessor
+getParamForSourceY	PluginProcessor.h	/^	int getParamForSourceY(int index) const { return kSourceY + index * kParamsPerSource; }$/;"	f	class:OctogrisAudioProcessor
+getParamForSpeakerA	PluginProcessor.h	/^    inline int getParamForSpeakerA(int index) const { return kSpeakerA + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }$/;"	f	class:OctogrisAudioProcessor
+getParamForSpeakerM	PluginProcessor.h	/^    inline int getParamForSpeakerM(int index) const { return kSpeakerM + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }$/;"	f	class:OctogrisAudioProcessor
+getParamForSpeakerX	PluginProcessor.h	/^	inline int getParamForSpeakerX(int index) const { return kSpeakerX + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }$/;"	f	class:OctogrisAudioProcessor
+getParamForSpeakerY	PluginProcessor.h	/^    inline int getParamForSpeakerY(int index) const { return kSpeakerY + JucePlugin_MaxNumInputChannels * kParamsPerSource + index * kParamsPerSpeakers; }$/;"	f	class:OctogrisAudioProcessor
+getParameter	PluginProcessor.cpp	/^float OctogrisAudioProcessor::getParameter (int index)$/;"	f	class:OctogrisAudioProcessor
+getParameterName	PluginProcessor.cpp	/^const String OctogrisAudioProcessor::getParameterName (int index)$/;"	f	class:OctogrisAudioProcessor
+getParameterText	PluginProcessor.cpp	/^const String OctogrisAudioProcessor::getParameterText (int index)$/;"	f	class:OctogrisAudioProcessor
+getProcessCounter	PluginProcessor.h	/^	uint64_t getProcessCounter() { return mProcessCounter; }$/;"	f	class:OctogrisAudioProcessor
+getProcessMode	PluginProcessor.h	/^	int getProcessMode() const { return mProcessMode; }$/;"	f	class:OctogrisAudioProcessor
+getProgramName	PluginProcessor.cpp	/^const String OctogrisAudioProcessor::getProgramName (int index)$/;"	f	class:OctogrisAudioProcessor
+getRoutingMode	PluginProcessor.h	/^	int getRoutingMode() const { return mRoutingMode; }$/;"	f	class:OctogrisAudioProcessor
+getShowGridLines	PluginProcessor.h	/^	bool getShowGridLines() const { return mShowGridLines; }$/;"	f	class:OctogrisAudioProcessor
+getSourceD	PluginProcessor.h	/^	float getSourceD(int index) const { return mParameters.getUnchecked(kSourceD + index * kParamsPerSource); }$/;"	f	class:OctogrisAudioProcessor
+getSourceLocationChanged	PluginProcessor.h	/^    int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }$/;"	f	class:OctogrisAudioProcessor
+getSourcePoint	FieldComponent.cpp	/^FPoint FieldComponent::getSourcePoint(int i)$/;"	f	class:FieldComponent
+getSourceRT	PluginProcessor.h	/^	FPoint getSourceRT(int i) {$/;"	f	class:OctogrisAudioProcessor
+getSourceX	PluginProcessor.h	/^	float getSourceX(int index) const { return mParameters.getUnchecked(kSourceX + index * kParamsPerSource); }$/;"	f	class:OctogrisAudioProcessor
+getSourceXY	PluginProcessor.h	/^	FPoint getSourceXY(int i) {$/;"	f	class:OctogrisAudioProcessor
+getSourceXY01	PluginProcessor.h	/^	FPoint getSourceXY01(int i)	{$/;"	f	class:OctogrisAudioProcessor
+getSourceY	PluginProcessor.h	/^	float getSourceY(int index) const { return mParameters.getUnchecked(kSourceY + index * kParamsPerSource); }$/;"	f	class:OctogrisAudioProcessor
+getSpPlacementMode	PluginProcessor.h	/^    int getSpPlacementMode() const {return mSpPlacementMode;}$/;"	f	class:OctogrisAudioProcessor
+getSpSelected	PluginProcessor.h	/^    int getSpSelected() const {return mSpSelected;}$/;"	f	class:OctogrisAudioProcessor
+getSpeakerA	PluginProcessor.h	/^	float getSpeakerA(int index) const { return mParameters.getUnchecked(getParamForSpeakerA(index)); }$/;"	f	class:OctogrisAudioProcessor
+getSpeakerM	PluginProcessor.h	/^	float getSpeakerM(int index) const { return mParameters.getUnchecked(getParamForSpeakerM(index)); }$/;"	f	class:OctogrisAudioProcessor
+getSpeakerPoint	FieldComponent.cpp	/^FPoint FieldComponent::getSpeakerPoint(int i)$/;"	f	class:FieldComponent
+getSpeakerRT	PluginProcessor.h	/^	FPoint getSpeakerRT(int i) {$/;"	f	class:OctogrisAudioProcessor
+getSpeakerX	PluginProcessor.h	/^    float getSpeakerX(int index) const { return mParameters.getUnchecked(getParamForSpeakerX(index)); }$/;"	f	class:OctogrisAudioProcessor
+getSpeakerXY	PluginProcessor.h	/^	FPoint getSpeakerXY(int i) {$/;"	f	class:OctogrisAudioProcessor
+getSpeakerY	PluginProcessor.h	/^	float getSpeakerY(int index) const { return mParameters.getUnchecked(getParamForSpeakerY(index)); }$/;"	f	class:OctogrisAudioProcessor
+getSrcPlacementMode	PluginProcessor.h	/^    int getSrcPlacementMode() const {return mSrcPlacementMode;}$/;"	f	class:OctogrisAudioProcessor
+getSrcSelected	PluginProcessor.h	/^    int getSrcSelected() const {return mSrcSelected;}$/;"	f	class:OctogrisAudioProcessor
+getStateInformation	PluginProcessor.cpp	/^void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)$/;"	f	class:OctogrisAudioProcessor
+getTailLengthSeconds	PluginProcessor.cpp	/^double OctogrisAudioProcessor::getTailLengthSeconds() const$/;"	f	class:OctogrisAudioProcessor
+getTextFromValue	PluginEditor.cpp	/^    String getTextFromValue (double value)$/;"	f	class:ParamSlider
+getTrDirection	PluginProcessor.h	/^    int getTrDirection() const {return m_iTrDirection;}$/;"	f	class:OctogrisAudioProcessor
+getTrDuration	PluginProcessor.h	/^    float getTrDuration() const {return m_fTrDuration;}$/;"	f	class:OctogrisAudioProcessor
+getTrRepeats	PluginProcessor.h	/^    float getTrRepeats() const {return m_fTrRepeats;}$/;"	f	class:OctogrisAudioProcessor
+getTrReturn	PluginProcessor.h	/^    int getTrReturn() const {return m_iTrReturn;}$/;"	f	class:OctogrisAudioProcessor
+getTrSrcSelect	PluginProcessor.h	/^    int getTrSrcSelect() const {return m_iTrSrcSelect;}$/;"	f	class:OctogrisAudioProcessor
+getTrState	PluginProcessor.h	/^    int getTrState() const {return mTrState;}$/;"	f	class:OctogrisAudioProcessor
+getTrType	PluginProcessor.h	/^    int getTrType() const {return m_iTrType;}$/;"	f	class:OctogrisAudioProcessor
+getTrUnits	PluginProcessor.h	/^    int getTrUnits() const {return m_iTrUnits + 1;}$/;"	f	class:OctogrisAudioProcessor
+getTrajectory	PluginProcessor.h	/^	Trajectory::Ptr getTrajectory() { return mTrajectory; }$/;"	f	class:OctogrisAudioProcessor
+getTrajectoryDirection	Trajectories.cpp	/^unique_ptr<AllTrajectoryDirections> Trajectory::getTrajectoryDirection(int p_iSelectedTrajectory, int p_iSelectedDirection){$/;"	f	class:Trajectory
+getTrajectoryPossibleDirections	Trajectories.cpp	/^std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleDirections(int p_iTrajectory){$/;"	f	class:Trajectory
+getTrajectoryPossibleReturns	Trajectories.cpp	/^std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleReturns(int p_iTrajectory){$/;"	f	class:Trajectory
+getValueFromText	PluginEditor.cpp	/^    double getValueFromText (const String& text)$/;"	f	class:ParamSlider
+getmStateLeap	PluginEditor.h	/^    Label * getmStateLeap() {return mStateLeap;}$/;"	f	class:OctogrisAudioProcessorEditor
+hasEditor	PluginProcessor.cpp	/^bool OctogrisAudioProcessor::hasEditor() const$/;"	f	class:OctogrisAudioProcessor
+heartbeat	OscComponent.cpp	/^	void heartbeat()$/;"	f	class:OscComponent
+heartbeat	PluginEditor.h	/^	virtual void heartbeat() {}$/;"	f	class:HeartbeatComponent
+hu_CreateMatchingDictionary	HIDDelegate.cpp	/^CFDictionaryRef HIDDelegate::hu_CreateMatchingDictionary(uint32_t inUsagePage, uint32_t inUsage) {$/;"	f	class:HIDDelegate
+i	PluginProcessor.h	/^	int i;$/;"	m	struct:__anon8
+i1o16	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i1o2	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i1o4	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i1o6	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i1o8	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i2o16	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i2o2	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i2o4	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i2o6	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i2o8	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i4o16	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i4o4	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i4o6	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i4o8	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i6o16	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i6o6	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i6o8	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i8o16	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+i8o8	PluginProcessor.h	/^    i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16$/;"	e	enum:InputOutputModes
+initDone	PluginEditor.cpp	/^    void initDone() { mInited = true; }$/;"	f	class:OctTabbedComponent
+instance	Routing.cpp	/^Router & Router::instance()$/;"	f	class:Router
+isInputChannelStereoPair	PluginProcessor.cpp	/^bool OctogrisAudioProcessor::isInputChannelStereoPair (int index) const$/;"	f	class:OctogrisAudioProcessor
+isOutputChannelStereoPair	PluginProcessor.cpp	/^bool OctogrisAudioProcessor::isOutputChannelStereoPair (int index) const$/;"	f	class:OctogrisAudioProcessor
+kBufferSize	FirFilter.h	/^#define kBufferSize /;"	d
+kCenterColumnWidth	PluginEditor.cpp	/^static const int kCenterColumnWidth = 180;$/;"	v	file:
+kChannels	Routing.h	/^#define kChannels /;"	d
+kChunkSize	PluginProcessor.h	/^	#define kChunkSize /;"	d
+kConstantOffset	PluginProcessor.h	/^#define kConstantOffset /;"	d
+kConstantParameters	PluginProcessor.h	/^	kConstantParameters =	9$/;"	e	enum:__anon6
+kDataVersion	PluginProcessor.cpp	/^static const int kDataVersion = 14;$/;"	v	file:
+kDefaultLabelHeight	PluginEditor.cpp	/^static const int kDefaultLabelHeight = 18;$/;"	v	file:
+kDistanceMultipler	_firs.h	/^const int kDistanceMultipler = 2;$/;"	v
+kField	SourceMover.h	/^	kField,$/;"	e	enum:__anon9
+kFilterFar	PluginProcessor.h	/^	kFilterFar =			6 + kConstantOffset,$/;"	e	enum:__anon6
+kFilterFarDefault	PluginProcessor.h	/^static const float kFilterFarDefault = kMaxDistance;$/;"	v
+kFilterFarMax	PluginProcessor.h	/^static const float kFilterFarMax = 0;$/;"	v
+kFilterFarMin	PluginProcessor.h	/^static const float kFilterFarMin = kMaxDistance;$/;"	v
+kFilterMid	PluginProcessor.h	/^	kFilterMid =			5 + kConstantOffset,$/;"	e	enum:__anon6
+kFilterMidDefault	PluginProcessor.h	/^static const float kFilterMidDefault = 0;$/;"	v
+kFilterMidMax	PluginProcessor.h	/^static const float kFilterMidMax = 0;$/;"	v
+kFilterMidMin	PluginProcessor.h	/^static const float kFilterMidMin = kMaxDistance;$/;"	v
+kFilterNear	PluginProcessor.h	/^	kFilterNear =			4 + kConstantOffset,$/;"	e	enum:__anon6
+kFilterNearDefault	PluginProcessor.h	/^static const float kFilterNearDefault = 0;$/;"	v
+kFilterNearMax	PluginProcessor.h	/^static const float kFilterNearMax = 0;$/;"	v
+kFilterNearMin	PluginProcessor.h	/^static const float kFilterNearMin = kMaxDistance;$/;"	v
+kFirSize	_firs.h	/^const int kFirSize = 127;$/;"	v
+kFirs	_firs.h	/^const float kFirs[7][1001][127] = {{{-1.73472347598e-17,-7.6327832943e-17,2.08166817117e-17,-1.14491749414e-16,5.98479599212e-17,-2.60208521397e-18,1.01481323345e-16,-3.98986399475e-17,-2.16840434497e-17,-7.97972798949e-17,1.64798730218e-17,4.51028103754e-17,5.20417042793e-17,9.54097911787e-18,1.04083408559e-16,-3.81639164715e-17,-3.12250225676e-17,-8.67361737988e-17,1.99493199737e-17,-1.43982048506e-16,6.15826833972e-17,1.30104260698e-17,1.2490009027e-16,-3.81639164715e-17,7.02563007771e-17,-9.36750677027e-17,8.67361737988e-18,-3.98986399475e-17,7.2858385991e-17,2.60208521397e-17,5.20417042793e-18,-3.98986399475e-17,7.2858385991e-17,-1.17961196366e-16,5.20417042793e-18,-3.64291929955e-17,7.97972798949e-17,5.37764277553e-17,-6.93889390391e-18,-3.98986399475e-17,8.32667268469e-17,-1.45716771982e-16,-1.38777878078e-17,-3.46944695195e-17,1.02348685083e-16,-3.46944695195e-17,-2.77555756156e-17,-3.81639164715e-17,1.11022302463e-16,-4.51028103754e-17,-4.51028103754e-17,-4.16333634234e-17,1.4224732503e-16,-4.51028103754e-17,3.81639164715e-17,-3.81639164715e-17,3.81639164715e-17,-3.81639164715e-17,2.42861286637e-17,-3.81639164715e-17,3.81639164715e-17,-3.81639164715e-17,3.81639164715e-17,           1,3.81639164715e-17,-3.81639164715e-17,3.81639164715e-17,-3.81639164715e-17,2.42861286637e-17,-3.81639164715e-17,3.81639164715e-17,-3.81639164715e-17,3.81639164715e-17,-4.51028103754e-17,1.4224732503e-16,-4.16333634234e-17,-4.51028103754e-17,-4.51028103754e-17,1.11022302463e-16,-3.81639164715e-17,-2.77555756156e-17,-3.46944695195e-17,1.02348685083e-16,-3.46944695195e-17,-1.38777878078e-17,-1.45716771982e-16,8.32667268469e-17,-3.98986399475e-17,-6.93889390391e-18,5.37764277553e-17,7.97972798949e-17,-3.64291929955e-17,5.20417042793e-18,-1.17961196366e-16,7.2858385991e-17,-3.98986399475e-17,5.20417042793e-18,2.60208521397e-17,7.2858385991e-17,-3.98986399475e-17,8.67361737988e-18,-9.36750677027e-17,7.02563007771e-17,-3.81639164715e-17,1.2490009027e-16,1.30104260698e-17,6.15826833972e-17,-1.43982048506e-16,1.99493199737e-17,-8.67361737988e-17,-3.12250225676e-17,-3.81639164715e-17,1.04083408559e-16,9.54097911787e-18,5.20417042793e-17,4.51028103754e-17,1.64798730218e-17,-7.97972798949e-17,-2.16840434497e-17,-3.98986399475e-17,1.01481323345e-16,-2.60208521397e-18,5.98479599212e-17,-1.14491749414e-16,2.08166817117e-17,-7.6327832943e-17,-1.73472347598e-17,}$/;"	v
+kFreeVolumeMode	PluginProcessor.h	/^	kFreeVolumeMode = 0,$/;"	e	enum:__anon7
+kHID	SourceMover.h	/^    kHID,$/;"	e	enum:__anon9
+kHalfCircle	PluginProcessor.h	/^static const float kHalfCircle = M_PI;$/;"	v
+kLeap	SourceMover.h	/^	kLeap,$/;"	e	enum:__anon9
+kLeftAlternate	PluginEditor.h	/^    kLeftAlternate = 1,$/;"	e	enum:placement
+kLeftClockwise	PluginEditor.h	/^    kLeftClockwise,$/;"	e	enum:placement
+kLeftCounterClockWise	PluginEditor.h	/^    kLeftCounterClockWise,$/;"	e	enum:placement
+kLevelAttackDefault	PluginProcessor.cpp	/^static const float kLevelAttackDefault = 0.05f;$/;"	v	file:
+kLevelReleaseDefault	PluginProcessor.cpp	/^static const float kLevelReleaseDefault = 100;$/;"	v	file:
+kMargin	PluginEditor.cpp	/^static const int kMargin = 10;$/;"	v	file:
+kMaxDistance	PluginProcessor.h	/^static const float kMaxDistance = 2000;$/;"	v
+kMaxLevel	LevelComponent.cpp	/^static const float kMaxLevel = 1.f;$/;"	v	file:
+kMaxOffset	_firs.h	/^const int kMaxOffset = 1000;$/;"	v
+kMaxSize	Routing.h	/^#define kMaxSize /;"	d
+kMaxSpanVolume	PluginProcessor.h	/^	kMaxSpanVolume =		7 + kConstantOffset,$/;"	e	enum:__anon6
+kMaxSpanVolumeDefault	PluginProcessor.h	/^static const float kMaxSpanVolumeDefault = 0;$/;"	v
+kMaxSpanVolumeMax	PluginProcessor.h	/^static const float kMaxSpanVolumeMax = 20;$/;"	v
+kMaxSpanVolumeMin	PluginProcessor.h	/^static const float kMaxSpanVolumeMin = 0;$/;"	v
+kMinLevel	LevelComponent.cpp	/^static const float kMinLevel = -60.f;$/;"	v	file:
+kNoSelection	FieldComponent.h	/^	kNoSelection,$/;"	e	enum:__anon1
+kNumberOfModes	PluginProcessor.h	/^	kNumberOfModes = 3$/;"	e	enum:__anon7
+kNumberOfParameters	PluginProcessor.h	/^#define kNumberOfParameters /;"	d
+kOsc	SourceMover.h	/^	kOsc,$/;"	e	enum:__anon9
+kPanSpanMode	PluginProcessor.h	/^	kPanSpanMode = 2,$/;"	e	enum:__anon7
+kPanVolumeMode	PluginProcessor.h	/^	kPanVolumeMode = 1,$/;"	e	enum:__anon7
+kParamBoxHeight	PluginEditor.cpp	/^static const int kParamBoxHeight = 165;$/;"	v	file:
+kParamFilterFar	PluginEditor.h	/^	kParamFilterFar,$/;"	e	enum:__anon2
+kParamFilterMid	PluginEditor.h	/^	kParamFilterMid,$/;"	e	enum:__anon2
+kParamFilterNear	PluginEditor.h	/^	kParamFilterNear,$/;"	e	enum:__anon2
+kParamMaxSpanVolume	PluginEditor.h	/^	kParamMaxSpanVolume,$/;"	e	enum:__anon2
+kParamRoutingVolume	PluginEditor.h	/^	kParamRoutingVolume$/;"	e	enum:__anon2
+kParamSmooth	PluginEditor.h	/^	kParamSmooth,$/;"	e	enum:__anon2
+kParamSource	PluginEditor.h	/^	kParamSource,$/;"	e	enum:__anon2
+kParamSpeaker	PluginEditor.h	/^	kParamSpeaker,$/;"	e	enum:__anon2
+kParamVolumeFar	PluginEditor.h	/^	kParamVolumeFar,$/;"	e	enum:__anon2
+kParamVolumeMid	PluginEditor.h	/^	kParamVolumeMid,$/;"	e	enum:__anon2
+kParamVolumeNear	PluginEditor.h	/^	kParamVolumeNear,$/;"	e	enum:__anon2
+kParamsPerSource	PluginProcessor.h	/^    kParamsPerSource$/;"	e	enum:__anon4
+kParamsPerSpeakers	PluginProcessor.h	/^    kParamsPerSpeakers };$/;"	e	enum:__anon5
+kQuarterCircle	PluginProcessor.h	/^static const float kQuarterCircle = M_PI \/ 2;$/;"	v
+kRadiusMax	PluginProcessor.h	/^static const float kRadiusMax = 2;$/;"	v
+kRightColumnWidth	PluginEditor.cpp	/^static const int kRightColumnWidth = 340;$/;"	v	file:
+kRoutingVolume	PluginProcessor.h	/^	kRoutingVolume =		8 + kConstantOffset,$/;"	e	enum:__anon6
+kRoutingVolumeDefault	PluginProcessor.h	/^static const float kRoutingVolumeDefault = 0;$/;"	v
+kRoutingVolumeMax	PluginProcessor.h	/^static const float kRoutingVolumeMax = 6;$/;"	v
+kRoutingVolumeMin	PluginProcessor.h	/^static const float kRoutingVolumeMin = -120;$/;"	v
+kSampleRates	_firs.h	/^const int kSampleRates[7] = { 32000, 44100, 48000, 88200, 96000, 176400, 192000, };$/;"	v
+kSelectSourcePath	OscComponent.cpp	/^const char *kSelectSourcePath = "\/Octo\/Source";$/;"	v
+kSelectedSource	FieldComponent.h	/^	kSelectedSource,$/;"	e	enum:__anon1
+kSelectedSpeaker	FieldComponent.h	/^	kSelectedSpeaker$/;"	e	enum:__anon1
+kSmooth	PluginProcessor.h	/^	kSmooth =				0 + kConstantOffset,$/;"	e	enum:__anon6
+kSmoothDefault	PluginProcessor.h	/^static const float kSmoothDefault = 10;$/;"	v
+kSmoothMax	PluginProcessor.h	/^static const float kSmoothMax = 200;$/;"	v
+kSmoothMin	PluginProcessor.h	/^static const float kSmoothMin = 1;$/;"	v
+kSourceD	PluginProcessor.h	/^    kSourceD,$/;"	e	enum:__anon4
+kSourceDefaultDistance	PluginProcessor.h	/^static const float kSourceDefaultDistance = 5 * 0.5;$/;"	v
+kSourceDefaultRadius	PluginProcessor.h	/^static const float kSourceDefaultRadius = 1.f;$/;"	v
+kSourceDiameter	FieldComponent.cpp	/^static const float kSourceDiameter = kSourceRadius * 2;$/;"	v	file:
+kSourceDiameter	HIDDelegate.cpp	/^static const float kSourceDiameter = kSourceRadius * 2;$/;"	v	file:
+kSourceMaxDistance	PluginProcessor.h	/^static const float kSourceMaxDistance = 20 * 0.5;$/;"	v
+kSourceMinDistance	PluginProcessor.h	/^static const float kSourceMinDistance = 2.5 * 0.5;$/;"	v
+kSourceRadius	FieldComponent.cpp	/^static const float kSourceRadius = 10;$/;"	v	file:
+kSourceRadius	HIDDelegate.cpp	/^static const float kSourceRadius = 10;$/;"	v	file:
+kSourceThread	SourceMover.h	/^    kSourceThread$/;"	e	enum:__anon9
+kSourceUnused	PluginProcessor.h	/^    kSourceUnused,$/;"	e	enum:__anon4
+kSourceX	PluginProcessor.h	/^    kSourceX = 0,$/;"	e	enum:__anon4
+kSourceXYPath	OscComponent.cpp	/^const char *kSourceXYPath = "\/Octo\/SourceXY";$/;"	v
+kSourceY	PluginProcessor.h	/^    kSourceY,$/;"	e	enum:__anon4
+kSpeakerA	PluginProcessor.h	/^    kSpeakerA,$/;"	e	enum:__anon5
+kSpeakerDefaultAttenuation	PluginProcessor.h	/^static const float kSpeakerDefaultAttenuation = 0;$/;"	v
+kSpeakerDiameter	FieldComponent.cpp	/^static const float kSpeakerDiameter = kSpeakerRadius * 2;$/;"	v	file:
+kSpeakerM	PluginProcessor.h	/^    kSpeakerM,$/;"	e	enum:__anon5
+kSpeakerMaxAttenuation	PluginProcessor.h	/^static const float kSpeakerMaxAttenuation = 20;$/;"	v
+kSpeakerMinAttenuation	PluginProcessor.h	/^static const float kSpeakerMinAttenuation = -70;$/;"	v
+kSpeakerRadius	FieldComponent.cpp	/^static const float kSpeakerRadius = 10;$/;"	v	file:
+kSpeakerUnused	PluginProcessor.h	/^    kSpeakerUnused,$/;"	e	enum:__anon5
+kSpeakerX	PluginProcessor.h	/^    kSpeakerX = 0,$/;"	e	enum:__anon5
+kSpeakerY	PluginProcessor.h	/^    kSpeakerY,$/;"	e	enum:__anon5
+kThetaLockRadius	PluginProcessor.h	/^static const float kThetaLockRadius = 0.05;$/;"	v
+kThetaLockRampRadius	PluginProcessor.h	/^static const float kThetaLockRampRadius = 0.025;$/;"	v
+kThetaMax	PluginProcessor.h	/^static const float kThetaMax = M_PI * 2;$/;"	v
+kTimerDelay	PluginEditor.cpp	/^static const int kTimerDelay = 1000 \/ 20; \/\/ 20 fps$/;"	v	file:
+kTopClockwise	PluginEditor.h	/^    kTopClockwise,$/;"	e	enum:placement
+kTopCounterClockwise	PluginEditor.h	/^    kTopCounterClockwise,$/;"	e	enum:placement
+kTrReady	PluginEditor.h	/^		kTrReady,$/;"	e	enum:OctogrisAudioProcessorEditor::__anon3
+kTrWriting	PluginEditor.h	/^		kTrWriting$/;"	e	enum:OctogrisAudioProcessorEditor::__anon3
+kVacant	SourceMover.h	/^	kVacant,$/;"	e	enum:__anon9
+kVolumeFar	PluginProcessor.h	/^	kVolumeFar =			3 + kConstantOffset,$/;"	e	enum:__anon6
+kVolumeFarDefault	PluginProcessor.h	/^static const float kVolumeFarDefault = -40;$/;"	v
+kVolumeFarMax	PluginProcessor.h	/^static const float kVolumeFarMax = 0;$/;"	v
+kVolumeFarMin	PluginProcessor.h	/^static const float kVolumeFarMin = -120;$/;"	v
+kVolumeMid	PluginProcessor.h	/^	kVolumeMid =			2 + kConstantOffset,$/;"	e	enum:__anon6
+kVolumeMidDefault	PluginProcessor.h	/^static const float kVolumeMidDefault = -6;$/;"	v
+kVolumeMidMax	PluginProcessor.h	/^static const float kVolumeMidMax = 10;$/;"	v
+kVolumeMidMin	PluginProcessor.h	/^static const float kVolumeMidMin = -30;$/;"	v
+kVolumeNear	PluginProcessor.h	/^	kVolumeNear =			1 + kConstantOffset,$/;"	e	enum:__anon6
+kVolumeNearDefault	PluginProcessor.h	/^static const float kVolumeNearDefault = 0;$/;"	v
+kVolumeNearMax	PluginProcessor.h	/^static const float kVolumeNearMax = 30;$/;"	v
+kVolumeNearMin	PluginProcessor.h	/^static const float kVolumeNearMin = 0;$/;"	v
+leapList	PluginEditor.h	/^    Leap::Listener leapList;$/;"	m	class:OctogrisAudioProcessorEditor
+linearToDb	PluginProcessor.h	/^static inline float linearToDb(float linear)$/;"	f
+m	PluginProcessor.cpp	/^    float m, b;$/;"	m	class:Area	file:
+m	Trajectories.cpp	/^	static const int n = 624, m = 397;$/;"	m	class:MTRand_int32	file:
+mAddress	OscComponent.cpp	/^	lo_address mAddress;$/;"	m	class:OscComponent	file:
+mApplyFilter	PluginEditor.h	/^    ToggleButton *mApplyFilter;$/;"	m	class:OctogrisAudioProcessorEditor
+mApplyFilter	PluginProcessor.h	/^	bool mApplyFilter;$/;"	m	class:OctogrisAudioProcessor
+mApplyInputOutputModeButton	PluginEditor.h	/^    TextButton *mApplyInputOutputModeButton;$/;"	m	class:OctogrisAudioProcessorEditor
+mApplySpPlacementButton	PluginEditor.h	/^    TextButton *mApplySpPlacementButton;$/;"	m	class:OctogrisAudioProcessorEditor
+mApplySrcPlacementButton	PluginEditor.h	/^    TextButton *mApplySrcPlacementButton;$/;"	m	class:OctogrisAudioProcessorEditor
+mAttenuations	PluginEditor.h	/^	Array<Slider*> mAttenuations;$/;"	m	class:OctogrisAudioProcessorEditor
+mBeats	Trajectories.h	/^	bool mBeats;$/;"	m	class:Trajectory
+mBeganGesture	PluginEditor.cpp	/^    bool mBeganGesture, mMouseDown;$/;"	m	class:ParamSlider	file:
+mBuf	FirFilter.h	/^	float mBuf[kBufferSize];$/;"	m	class:FirFilter
+mBufferSpLocA	PluginProcessor.h	/^    float mBufferSpLocA[JucePlugin_MaxNumOutputChannels];$/;"	m	class:OctogrisAudioProcessor
+mBufferSpLocM	PluginProcessor.h	/^    float mBufferSpLocM[JucePlugin_MaxNumOutputChannels];$/;"	m	class:OctogrisAudioProcessor
+mBufferSpLocX	PluginProcessor.h	/^    float mBufferSpLocX[JucePlugin_MaxNumOutputChannels];$/;"	m	class:OctogrisAudioProcessor
+mBufferSpLocY	PluginProcessor.h	/^    float mBufferSpLocY[JucePlugin_MaxNumOutputChannels];$/;"	m	class:OctogrisAudioProcessor
+mBufferSrcLocD	PluginProcessor.h	/^    float mBufferSrcLocD[JucePlugin_MaxNumInputChannels];$/;"	m	class:OctogrisAudioProcessor
+mBufferSrcLocX	PluginProcessor.h	/^    float mBufferSrcLocX[JucePlugin_MaxNumInputChannels];$/;"	m	class:OctogrisAudioProcessor
+mBufferSrcLocY	PluginProcessor.h	/^    float mBufferSrcLocY[JucePlugin_MaxNumInputChannels];$/;"	m	class:OctogrisAudioProcessor
+mCCW	Trajectories.cpp	/^	bool mCCW, mIn, mRT;$/;"	m	class:SpiralTrajectory	file:
+mCCW	Trajectories.cpp	/^	bool mCCW;$/;"	m	class:CircleTrajectory	file:
+mCCW	Trajectories.cpp	/^	bool mCCW;$/;"	m	class:EllipseTrajectory	file:
+mCalculateLevels	PluginProcessor.h	/^	int mCalculateLevels;$/;"	m	class:OctogrisAudioProcessor
+mClock	Trajectories.cpp	/^	float mClock;$/;"	m	class:RandomTrajectory	file:
+mComponents	PluginEditor.h	/^	OwnedArray<Component> mComponents;$/;"	m	class:OctogrisAudioProcessorEditor
+mContent	PluginEditor.cpp	/^    ScopedPointer<Component> mContent;$/;"	m	class:Box	file:
+mController	OctoLeap.h	/^    ScopedPointer<Leap::Controller> mController;$/;"	m	class:OctoLeap
+mController	PluginEditor.h	/^    ScopedPointer<Leap::Controller> mController;$/;"	m	class:OctogrisAudioProcessorEditor
+mCross	Trajectories.cpp	/^	bool mIn, mRT, mCross;$/;"	m	class:PendulumTrajectory	file:
+mCycle	Trajectories.cpp	/^	int mCycle;$/;"	m	class:TargetTrajectory	file:
+mDistances	PluginEditor.h	/^	Array<Slider*> mDistances;$/;"	m	class:OctogrisAudioProcessorEditor
+mDone	Trajectories.h	/^	float mDone;$/;"	m	class:Trajectory
+mDuration	Trajectories.h	/^	float mDuration;$/;"	m	class:Trajectory
+mEditor	HIDDelegate.h	/^    OctogrisAudioProcessorEditor *mEditor;$/;"	m	class:HIDDelegate
+mEditor	OctoLeap.h	/^    OctogrisAudioProcessorEditor *mEditor;$/;"	m	class:OctoLeap
+mEditor	OscComponent.cpp	/^	OctogrisAudioProcessorEditor *mEditor;$/;"	m	class:OscComponent	file:
+mEnableJoystick	PluginEditor.h	/^    ToggleButton *mEnableJoystick;$/;"	m	class:OctogrisAudioProcessorEditor
+mEnableLeap	PluginEditor.h	/^    ToggleButton *mEnableLeap;$/;"	m	class:OctogrisAudioProcessorEditor
+mField	PluginEditor.h	/^	Component *mField;$/;"	m	class:OctogrisAudioProcessorEditor
+mFieldNeedRepaint	PluginEditor.h	/^	bool mFieldNeedRepaint;$/;"	m	class:OctogrisAudioProcessorEditor
+mFilter	FieldComponent.h	/^	OctogrisAudioProcessor *mFilter;$/;"	m	class:FieldComponent
+mFilter	HIDDelegate.h	/^    OctogrisAudioProcessor *mFilter;$/;"	m	class:HIDDelegate
+mFilter	LevelComponent.h	/^	OctogrisAudioProcessor *mFilter;$/;"	m	class:LevelComponent
+mFilter	OctoLeap.h	/^    OctogrisAudioProcessor *mFilter;$/;"	m	class:OctoLeap
+mFilter	OscComponent.cpp	/^	OctogrisAudioProcessor *mFilter;$/;"	m	class:OscComponent	file:
+mFilter	PluginEditor.cpp	/^    OctogrisAudioProcessor *mFilter;$/;"	m	class:OctTabbedComponent	file:
+mFilter	PluginEditor.cpp	/^    OctogrisAudioProcessor *mFilter;$/;"	m	class:ParamSlider	file:
+mFilter	PluginEditor.h	/^	OctogrisAudioProcessor *mFilter;$/;"	m	class:OctogrisAudioProcessorEditor
+mFilter	SourceMover.h	/^	OctogrisAudioProcessor *mFilter;$/;"	m	class:SourceMover
+mFilter	Trajectories.h	/^	OctogrisAudioProcessor *mFilter;$/;"	m	class:Trajectory
+mFilterFar	PluginEditor.h	/^	Slider *mFilterFar;$/;"	m	class:OctogrisAudioProcessorEditor
+mFilterMid	PluginEditor.h	/^	Slider *mFilterMid;$/;"	m	class:OctogrisAudioProcessorEditor
+mFilterNear	PluginEditor.h	/^	Slider *mFilterNear;$/;"	m	class:OctogrisAudioProcessorEditor
+mFilters	PluginProcessor.h	/^    std::vector<FirFilter> mFilters;$/;"	m	class:OctogrisAudioProcessor
+mFir	FirFilter.h	/^	int mFir;$/;"	m	class:FirFilter
+mGuiSize	PluginEditor.h	/^	ComboBox *mGuiSize;$/;"	m	class:OctogrisAudioProcessorEditor
+mGuiSize	PluginProcessor.h	/^	int mGuiSize;$/;"	m	class:OctogrisAudioProcessor
+mGuiTab	PluginProcessor.h	/^    int mGuiTab;$/;"	m	class:OctogrisAudioProcessor
+mHIDDel	PluginEditor.h	/^    ReferenceCountedObjectPtr<HIDDelegate>  mHIDDel;$/;"	m	class:OctogrisAudioProcessorEditor
+mHostChangedParameter	PluginEditor.h	/^    uint64_t mHostChangedParameter;$/;"	m	class:OctogrisAudioProcessorEditor
+mHostChangedParameter	PluginProcessor.h	/^	uint64_t mHostChangedParameter;$/;"	m	class:OctogrisAudioProcessor
+mHostChangedProperty	PluginEditor.h	/^	uint64_t mHostChangedProperty;$/;"	m	class:OctogrisAudioProcessorEditor
+mHostChangedProperty	PluginProcessor.h	/^	uint64_t mHostChangedProperty;$/;"	m	class:OctogrisAudioProcessor
+mIn	Trajectories.cpp	/^	bool mCCW, mIn, mRT;$/;"	m	class:SpiralTrajectory	file:
+mIn	Trajectories.cpp	/^	bool mIn, mRT, mCross;$/;"	m	class:PendulumTrajectory	file:
+mIndex	LevelComponent.h	/^	int mIndex;$/;"	m	class:LevelComponent
+mInited	PluginEditor.cpp	/^    bool mInited;$/;"	m	class:OctTabbedComponent	file:
+mInputOutputMode	PluginProcessor.h	/^    int mInputOutputMode;$/;"	m	class:OctogrisAudioProcessor
+mInputOutputModeCombo	PluginEditor.h	/^    ComboBox *mInputOutputModeCombo;$/;"	m	class:OctogrisAudioProcessorEditor
+mInputsCopy	PluginProcessor.h	/^	Array<IOBuf> mInputsCopy;$/;"	m	class:OctogrisAudioProcessor
+mIsNumberSourcesChanged	PluginProcessor.h	/^    bool mIsNumberSourcesChanged;$/;"	m	class:OctogrisAudioProcessor
+mIsNumberSpeakersChanged	PluginProcessor.h	/^    bool mIsNumberSpeakersChanged;$/;"	m	class:OctogrisAudioProcessor
+mJoystickEnabled	PluginProcessor.h	/^    int mJoystickEnabled;$/;"	m	class:OctogrisAudioProcessor
+mLabels	PluginEditor.h	/^	Array<Component*> mLabels;$/;"	m	class:OctogrisAudioProcessorEditor
+mLastKeys	FieldComponent.h	/^	ModifierKeys mLastKeys;$/;"	m	class:FieldComponent
+mLastPosition	OctoLeap.h	/^    Leap::Vector mLastPosition;$/;"	m	class:OctoLeap
+mLastPositionValid	OctoLeap.h	/^    bool mLastPositionValid;$/;"	m	class:OctoLeap
+mLastProcessCounter	LevelComponent.h	/^	uint64_t mLastProcessCounter;$/;"	m	class:LevelComponent
+mLastTimeInSamples	PluginProcessor.h	/^	int64 mLastTimeInSamples;$/;"	m	class:OctogrisAudioProcessor
+mLastXYTime	OscComponent.cpp	/^	Time mLastXYTime;$/;"	m	class:OscComponent	file:
+mLeapEnabled	PluginProcessor.h	/^    int mLeapEnabled;$/;"	m	class:OctogrisAudioProcessor
+mLevelAdjustment	LevelComponent.h	/^	float mLevelAdjustment;$/;"	m	class:LevelComponent
+mLevels	PluginEditor.h	/^	Array<LevelComponent*> mLevels;$/;"	m	class:OctogrisAudioProcessorEditor
+mLevels	PluginProcessor.h	/^	Array<float> mLevels;$/;"	m	class:OctogrisAudioProcessor
+mLink	PluginEditor.cpp	/^    ToggleButton *mLink;$/;"	m	class:ParamSlider	file:
+mLinkDistances	PluginEditor.h	/^	ToggleButton *mLinkDistances;$/;"	m	class:OctogrisAudioProcessorEditor
+mLinkDistances	PluginProcessor.h	/^	bool mLinkDistances;$/;"	m	class:OctogrisAudioProcessor
+mLock	Routing.h	/^	SpinLock mLock;$/;"	m	class:Router
+mLockedThetas	PluginProcessor.h	/^	Array<float> mLockedThetas;$/;"	m	class:OctogrisAudioProcessor
+mMaxSpanVolume	PluginEditor.h	/^	Slider *mMaxSpanVolume;$/;"	m	class:OctogrisAudioProcessorEditor
+mMouseDown	PluginEditor.cpp	/^    bool mBeganGesture, mMouseDown;$/;"	m	class:ParamSlider	file:
+mMovementMode	PluginEditor.h	/^	ComboBox *mMovementMode;$/;"	m	class:OctogrisAudioProcessorEditor
+mMovementMode	PluginProcessor.h	/^	int mMovementMode;$/;"	m	class:OctogrisAudioProcessor
+mMover	FieldComponent.h	/^	SourceMover *mMover;$/;"	m	class:FieldComponent
+mMover	PluginEditor.h	/^	SourceMover mMover;$/;"	m	class:OctogrisAudioProcessorEditor
+mMoverType	SourceMover.h	/^	MoverType mMoverType;$/;"	m	class:SourceMover
+mMutes	PluginEditor.h	/^	Array<ToggleButton*> mMutes;$/;"	m	class:OctogrisAudioProcessorEditor
+mNeedRepaint	PluginEditor.h	/^	bool mNeedRepaint;$/;"	m	class:OctogrisAudioProcessorEditor
+mNeedToEnd	OscComponent.cpp	/^	bool mNeedToEnd;$/;"	m	class:OscComponent	file:
+mNumberOfSources	PluginProcessor.h	/^    int mNumberOfSources;$/;"	m	class:OctogrisAudioProcessor
+mNumberOfSpeakers	PluginProcessor.h	/^    int mNumberOfSpeakers;$/;"	m	class:OctogrisAudioProcessor
+mOldSrcLocRT	PluginProcessor.h	/^    FPoint mOldSrcLocRT[JucePlugin_MaxNumInputChannels];$/;"	m	class:OctogrisAudioProcessor
+mOsc	PluginEditor.h	/^	HeartbeatComponent *mOsc;$/;"	m	class:OctogrisAudioProcessorEditor
+mOscJoystickSource	PluginProcessor.h	/^    int mOscJoystickSource;$/;"	m	class:OctogrisAudioProcessor
+mOscLeapSource	PluginProcessor.h	/^	int mOscLeapSource;$/;"	m	class:OctogrisAudioProcessor
+mOscLeapSourceCb	PluginEditor.h	/^	ComboBox *mOscLeapSourceCb;$/;"	m	class:OctogrisAudioProcessorEditor
+mOscReceiveEnabled	PluginProcessor.h	/^	int mOscReceiveEnabled;$/;"	m	class:OctogrisAudioProcessor
+mOscReceivePort	PluginProcessor.h	/^	int mOscReceivePort;$/;"	m	class:OctogrisAudioProcessor
+mOscSendEnabled	PluginProcessor.h	/^	int mOscSendEnabled;$/;"	m	class:OctogrisAudioProcessor
+mOscSendIp	PluginProcessor.h	/^	char mOscSendIp[64]; \/\/ if changing size, change kDataVersion$/;"	m	class:OctogrisAudioProcessor
+mOscSendPort	PluginProcessor.h	/^	int mOscSendPort;$/;"	m	class:OctogrisAudioProcessor
+mOutputs	Routing.h	/^	AudioSampleBuffer mOutputs;$/;"	m	class:Router
+mParamIndex	PluginEditor.cpp	/^    int mParamIndex, mParamType;$/;"	m	class:ParamSlider	file:
+mParamType	PluginEditor.cpp	/^    int mParamIndex, mParamType;$/;"	m	class:ParamSlider	file:
+mParameters	PluginProcessor.h	/^	Array<float> mParameters;$/;"	m	class:OctogrisAudioProcessor
+mPointableId	OctoLeap.h	/^    int32_t mPointableId;$/;"	m	class:OctoLeap
+mPos	FirFilter.h	/^	int mPos;$/;"	m	class:FirFilter
+mProcessCounter	PluginProcessor.h	/^	uint64_t mProcessCounter;$/;"	m	class:OctogrisAudioProcessor
+mProcessMode	PluginProcessor.h	/^	int mProcessMode;$/;"	m	class:OctogrisAudioProcessor
+mProcessModeCombo	PluginEditor.h	/^	ComboBox *mProcessModeCombo;$/;"	m	class:OctogrisAudioProcessorEditor
+mRNG	Trajectories.cpp	/^	MTRand_int32 mRNG;$/;"	m	class:RandomTargetTrajectory	file:
+mRNG	Trajectories.cpp	/^	MTRand_int32 mRNG;$/;"	m	class:RandomTrajectory	file:
+mRT	Trajectories.cpp	/^	bool mCCW, mIn, mRT;$/;"	m	class:SpiralTrajectory	file:
+mRT	Trajectories.cpp	/^	bool mIn, mRT, mCross;$/;"	m	class:PendulumTrajectory	file:
+mReceive	OscComponent.cpp	/^	ScopedPointer<ToggleButton> mReceive;$/;"	m	class:OscComponent	file:
+mReceivePort	OscComponent.cpp	/^	ScopedPointer<TextEditor> mReceivePort;$/;"	m	class:OscComponent	file:
+mRoutingMode	PluginEditor.h	/^	ComboBox *mRoutingMode;$/;"	m	class:OctogrisAudioProcessorEditor
+mRoutingMode	PluginProcessor.h	/^	int mRoutingMode;$/;"	m	class:OctogrisAudioProcessor
+mRoutingTemp	PluginProcessor.h	/^	AudioSampleBuffer mRoutingTemp;$/;"	m	class:OctogrisAudioProcessor
+mRoutingVolume	PluginEditor.h	/^	Slider *mRoutingVolume;$/;"	m	class:OctogrisAudioProcessorEditor
+mSavedValue	FieldComponent.h	/^	float mSavedValue;$/;"	m	class:FieldComponent
+mSelectedItem	FieldComponent.h	/^	int mSelectedItem;$/;"	m	class:FieldComponent
+mSelectedSrc	SourceMover.h	/^	int mSelectedSrc;$/;"	m	class:SourceMover
+mSelectionType	FieldComponent.h	/^	SelectionType mSelectionType;$/;"	m	class:FieldComponent
+mSend	OscComponent.cpp	/^	ScopedPointer<ToggleButton> mSend;$/;"	m	class:OscComponent	file:
+mSendIp	OscComponent.cpp	/^	ScopedPointer<TextEditor> mSendIp;$/;"	m	class:OscComponent	file:
+mSendPort	OscComponent.cpp	/^	ScopedPointer<TextEditor> mSendPort;$/;"	m	class:OscComponent	file:
+mServer	OscComponent.cpp	/^	lo_server_thread mServer;$/;"	m	class:OscComponent	file:
+mShowGridLines	PluginEditor.h	/^	ToggleButton *mShowGridLines;$/;"	m	class:OctogrisAudioProcessorEditor
+mShowGridLines	PluginProcessor.h	/^	bool mShowGridLines;$/;"	m	class:OctogrisAudioProcessor
+mShowLevel	LevelComponent.h	/^	float mShowLevel;$/;"	m	class:LevelComponent
+mSmoothedParameters	PluginProcessor.h	/^	Array<float> mSmoothedParameters;$/;"	m	class:OctogrisAudioProcessor
+mSmoothedParametersInited	PluginProcessor.h	/^	bool mSmoothedParametersInited;$/;"	m	class:OctogrisAudioProcessor
+mSmoothedParametersRamps	PluginProcessor.h	/^	Array<IOBuf> mSmoothedParametersRamps;$/;"	m	class:OctogrisAudioProcessor
+mSmoothing	PluginEditor.h	/^	Slider *mSmoothing;$/;"	m	class:OctogrisAudioProcessorEditor
+mSource	OscComponent.cpp	/^	int mSource;$/;"	m	class:OscComponent	file:
+mSource	Trajectories.h	/^	int mSource;$/;"	m	class:Trajectory
+mSourceXY	OscComponent.cpp	/^	FPoint mSourceXY;$/;"	m	class:OscComponent	file:
+mSourcesAngularOrder	SourceMover.h	/^	Array<float> mSourcesAngularOrder;$/;"	m	class:SourceMover
+mSourcesBox	PluginEditor.h	/^	Box *mSourcesBox;$/;"	m	class:OctogrisAudioProcessorEditor
+mSourcesBoxLabel	PluginEditor.h	/^    Component *mSourcesBoxLabel;$/;"	m	class:OctogrisAudioProcessorEditor
+mSourcesDestinations	Trajectories.cpp	/^	Array<FPoint> mSourcesDestinations;$/;"	m	class:TargetTrajectory	file:
+mSourcesDownRT	SourceMover.h	/^	Array<FPoint> mSourcesDownRT;$/;"	m	class:SourceMover
+mSourcesDownXY	SourceMover.h	/^	Array<FPoint> mSourcesDownXY;$/;"	m	class:SourceMover
+mSourcesInitRT	Trajectories.cpp	/^	Array<FPoint> mSourcesInitRT;$/;"	m	class:CircleTrajectory	file:
+mSourcesInitRT	Trajectories.cpp	/^	Array<FPoint> mSourcesInitRT;$/;"	m	class:EllipseTrajectory	file:
+mSourcesInitRT	Trajectories.cpp	/^	Array<FPoint> mSourcesInitRT;$/;"	m	class:PendulumTrajectory	file:
+mSourcesInitRT	Trajectories.cpp	/^	Array<FPoint> mSourcesInitRT;$/;"	m	class:SpiralTrajectory	file:
+mSourcesOrigins	Trajectories.cpp	/^	Array<FPoint> mSourcesOrigins;$/;"	m	class:TargetTrajectory	file:
+mSpPlacement	PluginEditor.h	/^	ComboBox *mSpSelect, *mSpPlacement;$/;"	m	class:OctogrisAudioProcessorEditor
+mSpPlacementMode	PluginProcessor.h	/^    int mSpPlacementMode;$/;"	m	class:OctogrisAudioProcessor
+mSpR	PluginEditor.h	/^	TextEditor *mSpR, *mSpT;$/;"	m	class:OctogrisAudioProcessorEditor
+mSpSelect	PluginEditor.h	/^	ComboBox *mSpSelect, *mSpPlacement;$/;"	m	class:OctogrisAudioProcessorEditor
+mSpSelected	PluginProcessor.h	/^    int mSpSelected;$/;"	m	class:OctogrisAudioProcessor
+mSpT	PluginEditor.h	/^	TextEditor *mSpR, *mSpT;$/;"	m	class:OctogrisAudioProcessorEditor
+mSpeakersBox	PluginEditor.h	/^	Box *mSpeakersBox;$/;"	m	class:OctogrisAudioProcessorEditor
+mSpeakersBoxLabel	PluginEditor.h	/^	Component *mSpeakersBoxLabel;$/;"	m	class:OctogrisAudioProcessorEditor
+mSpeed	Trajectories.cpp	/^	float mSpeed;$/;"	m	class:RandomTrajectory	file:
+mSrcPlacement	PluginEditor.h	/^    ComboBox *mSrcSelect, *mSrcPlacement;$/;"	m	class:OctogrisAudioProcessorEditor
+mSrcPlacementMode	PluginProcessor.h	/^    int mSrcPlacementMode;$/;"	m	class:OctogrisAudioProcessor
+mSrcR	PluginEditor.h	/^    TextEditor *mSrcR, *mSrcT;$/;"	m	class:OctogrisAudioProcessorEditor
+mSrcSelect	PluginEditor.h	/^    ComboBox *mSrcSelect, *mSrcPlacement;$/;"	m	class:OctogrisAudioProcessorEditor
+mSrcSelected	PluginProcessor.h	/^    int mSrcSelected;$/;"	m	class:OctogrisAudioProcessor
+mSrcT	PluginEditor.h	/^    TextEditor *mSrcR, *mSrcT;$/;"	m	class:OctogrisAudioProcessorEditor
+mStarted	Trajectories.h	/^	bool mStarted, mStopped;$/;"	m	class:Trajectory
+mStateJoystick	PluginEditor.h	/^    Label *mStateJoystick;$/;"	m	class:OctogrisAudioProcessorEditor
+mStateLeap	PluginEditor.h	/^    Label *mStateLeap;$/;"	m	class:OctogrisAudioProcessorEditor
+mStopped	Trajectories.h	/^	bool mStarted, mStopped;$/;"	m	class:Trajectory
+mTabs	PluginEditor.h	/^	OctTabbedComponent *mTabs;$/;"	m	class:OctogrisAudioProcessorEditor
+mTotalDuration	Trajectories.h	/^	float mTotalDuration;$/;"	m	class:Trajectory
+mTrDirectionComboBox	PluginEditor.h	/^    ComboBox* mTrDirectionComboBox;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrDuration	PluginEditor.h	/^	TextEditor *mTrDuration;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrProgressBar	PluginEditor.h	/^	MiniProgressBar *mTrProgressBar;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrRepeats	PluginEditor.h	/^	TextEditor *mTrRepeats;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrReturnComboBox	PluginEditor.h	/^    ComboBox* mTrReturnComboBox;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrSrcSelect	PluginEditor.h	/^	ComboBox *mTrSrcSelect;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrState	PluginProcessor.h	/^    int mTrState;$/;"	m	class:OctogrisAudioProcessor
+mTrStateEditor	PluginEditor.h	/^    int mTrStateEditor;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrTypeComboBox	PluginEditor.h	/^	ComboBox *mTrTypeComboBox;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrUnits	PluginEditor.h	/^	ComboBox *mTrUnits;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrWriteButton	PluginEditor.h	/^	TextButton *mTrWriteButton;$/;"	m	class:OctogrisAudioProcessorEditor
+mTrajectory	PluginProcessor.h	/^	Trajectory::Ptr mTrajectory;$/;"	m	class:OctogrisAudioProcessor
+mUniqueTarget	Trajectories.cpp	/^    bool mUniqueTarget;$/;"	m	class:RandomTrajectory	file:
+mValue	PluginEditor.cpp	/^    float mValue;$/;"	m	class:MiniProgressBar	file:
+mViewport	PluginEditor.cpp	/^    ScopedPointer<Viewport> mViewport;$/;"	m	class:Box	file:
+mVolumeFar	PluginEditor.h	/^	Slider *mVolumeFar;$/;"	m	class:OctogrisAudioProcessorEditor
+mVolumeMid	PluginEditor.h	/^	Slider *mVolumeMid;$/;"	m	class:OctogrisAudioProcessorEditor
+mVolumeNear	PluginEditor.h	/^	Slider *mVolumeNear;$/;"	m	class:OctogrisAudioProcessorEditor
+m_VersionLabel	PluginEditor.h	/^    Label *m_VersionLabel;$/;"	m	class:OctogrisAudioProcessorEditor
+m_bAllowInputOutputModeSelection	PluginProcessor.h	/^	bool m_bAllowInputOutputModeSelection;$/;"	m	class:OctogrisAudioProcessor
+m_bIsRecordingAutomation	PluginProcessor.h	/^    bool m_bIsRecordingAutomation;$/;"	m	class:OctogrisAudioProcessor
+m_bIsReturnKeyPressedCalledFromFocusLost	PluginEditor.h	/^    bool m_bIsReturnKeyPressedCalledFromFocusLost;$/;"	m	class:OctogrisAudioProcessorEditor
+m_bLoadingPreset	PluginEditor.h	/^    bool m_bLoadingPreset;$/;"	m	class:OctogrisAudioProcessorEditor
+m_fTrDuration	PluginProcessor.h	/^    float m_fTrDuration;$/;"	m	class:OctogrisAudioProcessor
+m_fTrRepeats	PluginProcessor.h	/^    float m_fTrRepeats;$/;"	m	class:OctogrisAudioProcessor
+m_iInterval	PluginEditor.cpp	/^    int m_iInterval;$/;"	m	class:SourceUpdateThread	file:
+m_iSourceLocationChanged	PluginProcessor.h	/^    int m_iSourceLocationChanged;$/;"	m	class:OctogrisAudioProcessor
+m_iTrDirection	PluginProcessor.h	/^    int m_iTrDirection;$/;"	m	class:OctogrisAudioProcessor
+m_iTrReturn	PluginProcessor.h	/^    int m_iTrReturn;$/;"	m	class:OctogrisAudioProcessor
+m_iTrSrcSelect	PluginProcessor.h	/^    int m_iTrSrcSelect;$/;"	m	class:OctogrisAudioProcessor
+m_iTrType	PluginProcessor.h	/^    int m_iTrType;$/;"	m	class:OctogrisAudioProcessor
+m_iTrUnits	PluginProcessor.h	/^    int m_iTrUnits; \/\/0 = beats, 1 = seconds$/;"	m	class:OctogrisAudioProcessor
+m_logoImage	PluginEditor.h	/^    ImageComponent m_logoImage;$/;"	m	class:OctogrisAudioProcessorEditor
+m_pEditor	PluginEditor.cpp	/^    OctogrisAudioProcessorEditor* m_pEditor;$/;"	m	class:SourceUpdateThread	file:
+m_pSourceUpdateThread	PluginEditor.h	/^    SourceUpdateThread* m_pSourceUpdateThread;$/;"	m	class:OctogrisAudioProcessorEditor
+method_handler	OscComponent.cpp	/^	int method_handler(const char *path, const char *types,$/;"	f	class:OscComponent
+mleap	PluginEditor.h	/^    ReferenceCountedObjectPtr<OctoLeap> mleap;$/;"	m	class:OctogrisAudioProcessorEditor
+mouseDown	FieldComponent.cpp	/^void FieldComponent::mouseDown(const MouseEvent &event)$/;"	f	class:FieldComponent
+mouseDown	PluginEditor.cpp	/^    void mouseDown (const MouseEvent &e)$/;"	f	class:ParamSlider
+mouseDrag	FieldComponent.cpp	/^void FieldComponent::mouseDrag(const MouseEvent &event)$/;"	f	class:FieldComponent
+mouseUp	FieldComponent.cpp	/^void FieldComponent::mouseUp(const MouseEvent &event)$/;"	f	class:FieldComponent
+mouseUp	PluginEditor.cpp	/^    void mouseUp (const MouseEvent &e)$/;"	f	class:ParamSlider
+move	SourceMover.cpp	/^void SourceMover::move(FPoint p, MoverType mt)$/;"	f	class:SourceMover
+n	Trajectories.cpp	/^	static const int n = 624, m = 397;$/;"	m	class:MTRand_int32	file:
+nbButton	HIDDelegate.h	/^    int nbButton;$/;"	m	class:HIDDelegate
+normalize	PluginProcessor.h	/^static inline float normalize(float min, float max, float value)$/;"	f
+onConnect	OctoLeap.cpp	/^	void OctoLeap::onConnect(const Leap::Controller& controller)$/;"	f	class:OctoLeap
+onDisconnect	OctoLeap.cpp	/^	void OctoLeap::onDisconnect(const Leap::Controller& controller)$/;"	f	class:OctoLeap
+onFrame	OctoLeap.cpp	/^	void OctoLeap::onFrame(const Leap::Controller& controller)$/;"	f	class:OctoLeap
+onServiceDisconnect	OctoLeap.cpp	/^    void OctoLeap::onServiceDisconnect(const Leap::Controller& controller )$/;"	f	class:OctoLeap
+osc_err_handler	OscComponent.cpp	/^static void osc_err_handler(int num, const char *msg,$/;"	f	file:
+osc_method_handler	OscComponent.cpp	/^static int osc_method_handler(const char *path, const char *types,$/;"	f	file:
+outputBuffers	Routing.cpp	/^float ** Router::outputBuffers(int frames)$/;"	f	class:Router
+p	Trajectories.cpp	/^	int p;$/;"	m	class:MTRand_int32	file:
+paint	FieldComponent.cpp	/^void FieldComponent::paint (Graphics& g)$/;"	f	class:FieldComponent
+paint	LevelComponent.cpp	/^void LevelComponent::paint (Graphics& g)$/;"	f	class:LevelComponent
+paint	PluginEditor.cpp	/^    void paint(Graphics &g)$/;"	f	class:Box
+paint	PluginEditor.cpp	/^    void paint(Graphics &g)$/;"	f	class:MiniProgressBar
+paint	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::paint (Graphics& g)$/;"	f	class:OctogrisAudioProcessorEditor
+placement	PluginEditor.h	/^enum placement{$/;"	g
+prepareToPlay	PluginProcessor.cpp	/^void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)$/;"	f	class:OctogrisAudioProcessor
+process	FirFilter.cpp	/^float FirFilter::process(float sample, int distance)$/;"	f	class:FirFilter
+process	Trajectories.cpp	/^bool Trajectory::process(float seconds, float beats)$/;"	f	class:Trajectory
+processBlock	PluginProcessor.cpp	/^void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)$/;"	f	class:OctogrisAudioProcessor
+processBlockBypassed	PluginProcessor.cpp	/^void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)$/;"	f	class:OctogrisAudioProcessor
+producesMidi	PluginProcessor.cpp	/^bool OctogrisAudioProcessor::producesMidi() const$/;"	f	class:OctogrisAudioProcessor
+progress	Trajectories.cpp	/^float Trajectory::progress()$/;"	f	class:Trajectory
+rand_uint32	Trajectories.cpp	/^	uint32_t rand_uint32()$/;"	f	class:MTRand_int32
+readFloatData	PluginProcessor.cpp	/^static inline float readFloatData(const void* &data, int &dataLength, float defaultValue)$/;"	f	file:
+readIntData	PluginProcessor.cpp	/^static inline int32_t readIntData(const void* &data, int &dataLength, int32_t defaultValue)$/;"	f	file:
+readJoystickValuesAndUsingThem	HIDDelegate.cpp	/^void HIDDelegate::readJoystickValuesAndUsingThem()$/;"	f	class:HIDDelegate
+readStringData	PluginProcessor.cpp	/^static inline void readStringData(const void* &data, int &dataLength, const char *defaultValue, char *d, int length)$/;"	f	file:
+refreshIfNeeded	LevelComponent.h	/^	void refreshIfNeeded()$/;"	f	class:LevelComponent
+refreshSize	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::refreshSize()$/;"	f	class:OctogrisAudioProcessorEditor
+releaseResources	PluginProcessor.cpp	/^void OctogrisAudioProcessor::releaseResources()$/;"	f	class:OctogrisAudioProcessor
+reset	FirFilter.cpp	/^void FirFilter::reset()$/;"	f	class:FirFilter
+reset	PluginProcessor.cpp	/^void OctogrisAudioProcessor::reset()$/;"	f	class:OctogrisAudioProcessor
+reset	Routing.h	/^	void reset() { mOutputs.clear(); }$/;"	f	class:Router
+resetIfRandomTarget	Trajectories.cpp	/^    virtual void resetIfRandomTarget(){};$/;"	f	class:TargetTrajectory
+resetIfRandomTarget	Trajectories.cpp	/^    void resetIfRandomTarget(){$/;"	f	class:RandomTargetTrajectory
+resized	PluginEditor.cpp	/^    void resized()$/;"	f	class:Box
+resized	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::resized()$/;"	f	class:OctogrisAudioProcessorEditor
+restoreCurrentLocations	PluginProcessor.cpp	/^void OctogrisAudioProcessor::restoreCurrentLocations(){$/;"	f	class:OctogrisAudioProcessor
+s_iMaxAreas	PluginProcessor.h	/^static const int s_iMaxAreas = 3; \/\/this number is used as a multiplicator of mNumberOfSpeakers$/;"	v
+seed	Trajectories.cpp	/^	void seed(uint32_t s)$/;"	f	class:MTRand_int32
+setApplyFilter	PluginProcessor.h	/^	void setApplyFilter(bool s) { mApplyFilter = s; }$/;"	f	class:OctogrisAudioProcessor
+setButtonPressedTab	HIDDelegate.cpp	/^void HIDDelegate::setButtonPressedTab(u_int32_t usage, bool state)  \/\/Get and Set to use the button pressed array$/;"	f	class:HIDDelegate
+setCalculateLevels	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setCalculateLevels(bool c)$/;"	f	class:OctogrisAudioProcessor
+setCurrentProgram	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setCurrentProgram (int index)$/;"	f	class:OctogrisAudioProcessor
+setGuiSize	PluginProcessor.h	/^	void setGuiSize(int s) { mGuiSize = s; }$/;"	f	class:OctogrisAudioProcessor
+setGuiTab	PluginProcessor.h	/^	void setGuiTab(int s) { mGuiTab = s; }$/;"	f	class:OctogrisAudioProcessor
+setInputOutputMode	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){$/;"	f	class:OctogrisAudioProcessor
+setIsJoystickEnabled	PluginProcessor.h	/^    void setIsJoystickEnabled(int s) { mJoystickEnabled = s; }$/;"	f	class:OctogrisAudioProcessor
+setIsLeapEnabled	PluginProcessor.h	/^    void setIsLeapEnabled(int s) { mLeapEnabled = s; }$/;"	f	class:OctogrisAudioProcessor
+setIsRecordingAutomation	PluginProcessor.h	/^    void setIsRecordingAutomation(bool b)   { m_bIsRecordingAutomation = b;     }$/;"	f	class:OctogrisAudioProcessor
+setIsSourcesChanged	PluginProcessor.h	/^    void setIsSourcesChanged(bool pIsNumberSourcesChanged){ mIsNumberSourcesChanged = pIsNumberSourcesChanged;}$/;"	f	class:OctogrisAudioProcessor
+setIsSpeakersChanged	PluginProcessor.h	/^    void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}$/;"	f	class:OctogrisAudioProcessor
+setLinkDistances	PluginProcessor.h	/^	void setLinkDistances(bool s) { mLinkDistances = s; }$/;"	f	class:OctogrisAudioProcessor
+setMovementMode	PluginProcessor.h	/^	void setMovementMode(int s) { mMovementMode = s; }$/;"	f	class:OctogrisAudioProcessor
+setNumberOfSources	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues){$/;"	f	class:OctogrisAudioProcessor
+setNumberOfSpeakers	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues){$/;"	f	class:OctogrisAudioProcessor
+setOscJoystickSource	PluginProcessor.h	/^    void setOscJoystickSource(int s) { mOscJoystickSource = s; }$/;"	f	class:OctogrisAudioProcessor
+setOscLeapSource	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::setOscLeapSource(int s)$/;"	f	class:OctogrisAudioProcessorEditor
+setOscLeapSource	PluginProcessor.h	/^	void setOscLeapSource(int s) { mOscLeapSource = s; }$/;"	f	class:OctogrisAudioProcessor
+setOscReceiveEnabled	PluginProcessor.h	/^	void setOscReceiveEnabled(int s) { mOscReceiveEnabled = s; }$/;"	f	class:OctogrisAudioProcessor
+setOscReceivePort	PluginProcessor.h	/^	void setOscReceivePort(int s) { mOscReceivePort = s; }$/;"	f	class:OctogrisAudioProcessor
+setOscSendEnabled	PluginProcessor.h	/^	void setOscSendEnabled(int s) { mOscSendEnabled = s; }$/;"	f	class:OctogrisAudioProcessor
+setOscSendIp	PluginProcessor.h	/^	void setOscSendIp(const char *s) { strlcpy(mOscSendIp, s, sizeof(mOscSendIp)); }$/;"	f	class:OctogrisAudioProcessor
+setOscSendPort	PluginProcessor.h	/^	void setOscSendPort(int s) { mOscSendPort = s; }$/;"	f	class:OctogrisAudioProcessor
+setParameter	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setParameter (int index, float newValue)$/;"	f	class:OctogrisAudioProcessor
+setParameterNotifyingHost	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)$/;"	f	class:OctogrisAudioProcessor
+setProcessMode	PluginProcessor.h	/^	void setProcessMode(int s) { mProcessMode = s; jassert(mProcessMode >= 0 && mProcessMode < kNumberOfModes); }$/;"	f	class:OctogrisAudioProcessor
+setRoutingMode	PluginProcessor.h	/^	void setRoutingMode(int s) { mRoutingMode = s; if (mRoutingMode == 1) updateRoutingTemp(); }$/;"	f	class:OctogrisAudioProcessor
+setSampleRate	FirFilter.cpp	/^void FirFilter::setSampleRate(int sr)$/;"	f	class:FirFilter
+setShowGridLines	PluginProcessor.h	/^	void setShowGridLines(bool s) { mShowGridLines = s; }$/;"	f	class:OctogrisAudioProcessor
+setSourceLocationChanged	PluginProcessor.h	/^    void setSourceLocationChanged(int i)   { m_iSourceLocationChanged = i;     }$/;"	f	class:OctogrisAudioProcessor
+setSourceRT	PluginProcessor.h	/^	void setSourceRT(int i, FPoint p) {$/;"	f	class:OctogrisAudioProcessor
+setSourceXY	PluginProcessor.h	/^	void setSourceXY(int i, FPoint p) {$/;"	f	class:OctogrisAudioProcessor
+setSourceXY01	PluginProcessor.h	/^	void setSourceXY01(int i, FPoint p) {$/;"	f	class:OctogrisAudioProcessor
+setSpPlacementMode	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setSpPlacementMode(int p_i){$/;"	f	class:OctogrisAudioProcessor
+setSpSelected	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setSpSelected(int p_i){$/;"	f	class:OctogrisAudioProcessor
+setSpeakerRT	PluginProcessor.h	/^	void setSpeakerRT(int i, FPoint p) {$/;"	f	class:OctogrisAudioProcessor
+setSpeakerXY01	PluginProcessor.h	/^	void setSpeakerXY01(int i, FPoint p) {$/;"	f	class:OctogrisAudioProcessor
+setSrcPlacementMode	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setSrcPlacementMode(int p_i){$/;"	f	class:OctogrisAudioProcessor
+setSrcSelected	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setSrcSelected(int p_i){$/;"	f	class:OctogrisAudioProcessor
+setStateInformation	PluginProcessor.cpp	/^void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)$/;"	f	class:OctogrisAudioProcessor
+setTrDirection	PluginProcessor.h	/^    void setTrDirection(int i){m_iTrDirection = i;}$/;"	f	class:OctogrisAudioProcessor
+setTrDuration	PluginProcessor.h	/^    void setTrDuration(float i){m_fTrDuration = i;}$/;"	f	class:OctogrisAudioProcessor
+setTrRepeats	PluginProcessor.h	/^    void setTrRepeats(float i){m_fTrRepeats = i;}$/;"	f	class:OctogrisAudioProcessor
+setTrReturn	PluginProcessor.h	/^    void setTrReturn(int i){m_iTrReturn = i;}$/;"	f	class:OctogrisAudioProcessor
+setTrSrcSelect	PluginProcessor.h	/^    void setTrSrcSelect(int i){m_iTrSrcSelect = i;}$/;"	f	class:OctogrisAudioProcessor
+setTrState	PluginProcessor.h	/^    void setTrState(int tr) {mTrState = tr;}$/;"	f	class:OctogrisAudioProcessor
+setTrType	PluginProcessor.h	/^    void setTrType(int i){m_iTrType = i;}$/;"	f	class:OctogrisAudioProcessor
+setTrUnits	PluginProcessor.h	/^    void setTrUnits(int i){m_iTrUnits = i - 1;}$/;"	f	class:OctogrisAudioProcessor
+setTrajectory	PluginProcessor.h	/^	void setTrajectory(Trajectory::Ptr t) { mTrajectory = t; }$/;"	f	class:OctogrisAudioProcessor
+setValue	PluginEditor.cpp	/^    void setValue(float v) { mValue = v; repaint(); }$/;"	f	class:MiniProgressBar
+silenceInProducesSilenceOut	PluginProcessor.cpp	/^bool OctogrisAudioProcessor::silenceInProducesSilenceOut() const$/;"	f	class:OctogrisAudioProcessor
+spInit	Trajectories.cpp	/^	void spInit()$/;"	f	class:CircleTrajectory
+spInit	Trajectories.cpp	/^	void spInit()$/;"	f	class:EllipseTrajectory
+spInit	Trajectories.cpp	/^	void spInit()$/;"	f	class:PendulumTrajectory
+spInit	Trajectories.cpp	/^	void spInit()$/;"	f	class:SpiralTrajectory
+spInit	Trajectories.h	/^	virtual void spInit() {}$/;"	f	class:Trajectory
+spProcess	Trajectories.cpp	/^	void spProcess(float duration, float seconds)$/;"	f	class:CircleTrajectory
+spProcess	Trajectories.cpp	/^	void spProcess(float duration, float seconds)$/;"	f	class:EllipseTrajectory
+spProcess	Trajectories.cpp	/^	void spProcess(float duration, float seconds)$/;"	f	class:PendulumTrajectory
+spProcess	Trajectories.cpp	/^	void spProcess(float duration, float seconds)$/;"	f	class:RandomTrajectory
+spProcess	Trajectories.cpp	/^	void spProcess(float duration, float seconds)$/;"	f	class:SpiralTrajectory
+spProcess	Trajectories.cpp	/^	void spProcess(float duration, float seconds)$/;"	f	class:TargetTrajectory
+speaker	PluginProcessor.cpp	/^    int speaker;$/;"	m	class:Area	file:
+start	Trajectories.cpp	/^void Trajectory::start()$/;"	f	class:Trajectory
+state	Trajectories.cpp	/^	unsigned long state[n];$/;"	m	class:MTRand_int32	file:
+stop	Trajectories.cpp	/^void Trajectory::stop()$/;"	f	class:Trajectory
+storeCurrentLocations	PluginProcessor.cpp	/^void OctogrisAudioProcessor::storeCurrentLocations(){$/;"	f	class:OctogrisAudioProcessor
+strlcpy	PluginProcessor.cpp	/^size_t strlcpy(char * dst, const char * src, size_t dstsize)$/;"	f
+textEditorFocusLost	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::textEditorFocusLost (TextEditor &textEditor){$/;"	f	class:OctogrisAudioProcessorEditor
+textEditorReturnKeyPressed	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textEditor){$/;"	f	class:OctogrisAudioProcessorEditor
+textEditorTextChanged	OscComponent.cpp	/^	void textEditorTextChanged (TextEditor &te)$/;"	f	class:OscComponent
+timerCallback	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::timerCallback()$/;"	f	class:OctogrisAudioProcessorEditor
+twiddle	Trajectories.cpp	/^	unsigned long twiddle(uint32_t u, uint32_t v)$/;"	f	class:MTRand_int32	file:
+uncheckJoystickButton	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::uncheckJoystickButton()$/;"	f	class:OctogrisAudioProcessorEditor
+updateInfo	OscComponent.cpp	/^    void updateInfo(){$/;"	f	class:OscComponent
+updateMovementModeCombo	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::updateMovementModeCombo(){$/;"	f	class:OctogrisAudioProcessorEditor
+updateNonSelectedSourcePositions	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){$/;"	f	class:OctogrisAudioProcessorEditor
+updateNumberOfSources	SourceMover.cpp	/^void SourceMover::updateNumberOfSources(){$/;"	f	class:SourceMover
+updateOscComponent	OscComponent.cpp	/^void updateOscComponent(HeartbeatComponent* oscComponent){$/;"	f
+updateRoutingTemp	PluginProcessor.cpp	/^void OctogrisAudioProcessor::updateRoutingTemp()$/;"	f	class:OctogrisAudioProcessor
+updateSourceLocationTextEditor	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){$/;"	f	class:OctogrisAudioProcessorEditor
+updateSources	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){$/;"	f	class:OctogrisAudioProcessorEditor
+updateSpeakerLocation	PluginProcessor.cpp	/^void OctogrisAudioProcessor::updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise){$/;"	f	class:OctogrisAudioProcessor
+updateSpeakerLocationTextEditor	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){$/;"	f	class:OctogrisAudioProcessorEditor
+updateSpeakers	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor){$/;"	f	class:OctogrisAudioProcessorEditor
+updateTrajectoryComboboxes	PluginEditor.cpp	/^void OctogrisAudioProcessorEditor::updateTrajectoryComboboxes(){$/;"	f	class:OctogrisAudioProcessorEditor
+valueChanged	PluginEditor.cpp	/^    void valueChanged()$/;"	f	class:ParamSlider
+vx	HIDDelegate.h	/^    float vx, vy;$/;"	m	class:HIDDelegate
+vy	HIDDelegate.h	/^    float vx, vy;$/;"	m	class:HIDDelegate
+x1	PluginProcessor.cpp	/^    float x1, x2;$/;"	m	class:Area	file:
+x2	PluginProcessor.cpp	/^    float x1, x2;$/;"	m	class:Area	file:
+~Box	PluginEditor.cpp	/^    ~Box()$/;"	f	class:Box
+~FieldComponent	FieldComponent.cpp	/^FieldComponent::~FieldComponent()$/;"	f	class:FieldComponent
+~HIDDelegate	HIDDelegate.h	/^    virtual ~HIDDelegate() {};$/;"	f	class:HIDDelegate
+~LevelComponent	LevelComponent.cpp	/^LevelComponent::~LevelComponent()$/;"	f	class:LevelComponent
+~OctoLeap	OctoLeap.h	/^    virtual ~OctoLeap(){$/;"	f	class:OctoLeap
+~OctogrisAudioProcessor	PluginProcessor.cpp	/^OctogrisAudioProcessor::~OctogrisAudioProcessor()$/;"	f	class:OctogrisAudioProcessor
+~OctogrisAudioProcessorEditor	PluginEditor.cpp	/^OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()$/;"	f	class:OctogrisAudioProcessorEditor
+~OscComponent	OscComponent.cpp	/^	~OscComponent()$/;"	f	class:OscComponent
+~Router	Routing.cpp	/^Router::~Router()$/;"	f	class:Router
+~SourceUpdateThread	PluginEditor.cpp	/^    ~SourceUpdateThread() {$/;"	f	class:SourceUpdateThread
+~Trajectory	Trajectories.h	/^	virtual ~Trajectory() {}$/;"	f	class:Trajectory

@@ -340,6 +340,49 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParamSlider)
 };
 
+//==================================== SourceUpdateThread ===================================================================
+class SourceUpdateThread : public Thread, public Component
+{
+public:
+    SourceUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)
+    : Thread ("SourceUpdateThread")
+    ,m_iInterval(50)
+    ,m_pEditor(p_pProcessor)
+    ,m_bIsPaused(false)
+    {
+        
+        startThread ();
+    }
+    
+    ~SourceUpdateThread() {
+        // allow the thread 1 second to stop cleanly - should be plenty of time.
+        stopThread (2 * m_iInterval);
+    }
+    
+    void run() override {
+        
+        // threadShouldExit() returns true when the stopThread() method has been called
+        while (! threadShouldExit()) {
+            
+            // sleep a bit so the threads don't all grind the CPU to a halt..
+            wait (m_iInterval);
+            if (!m_bIsPaused){
+                m_pEditor->updateNonSelectedSourcePositions();
+            }
+        }
+    }
+    
+    void setIsPaused(bool b){
+        m_bIsPaused = b;
+    }
+private:
+    int m_iInterval;
+    OctogrisAudioProcessorEditor* m_pEditor;
+    bool m_bIsPaused;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SourceUpdateThread)
+};
+
 #define STRING2(x) #x
 #define STRING(x) STRING2(x)
 
@@ -351,8 +394,10 @@ AudioProcessorEditor (ownerFilter)
 ,mMover(ownerFilter)
 ,m_logoImage()
 {
-
     
+    m_pSourceUpdateThread = new SourceUpdateThread(this);
+    mComponents.add(m_pSourceUpdateThread);
+
     mHostChangedParameter = mFilter->getHostChangedParameter();
     mHostChangedProperty = mFilter->getHostChangedProperty();
     
@@ -407,7 +452,6 @@ AudioProcessorEditor (ownerFilter)
     mTabs->setSize(kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
     addAndMakeVisible(mTabs);
     mComponents.add(mTabs);
-    
     
     
     // sources
@@ -494,9 +538,6 @@ AudioProcessorEditor (ownerFilter)
             
             mMovementMode->addListener(this);
         }
-        
-        mLinkMovement = addCheckbox("Link movement", mFilter->getLinkMovement(), x, y, w, dh, box);
-        y += dh + 5;
         
         {
             addLabel("Param smoothing (ms):", x, y, w, dh, box);
@@ -1076,6 +1117,20 @@ AudioProcessorEditor (ownerFilter)
     refreshSize();
 }
 
+void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
+    int iSourceChanged = mFilter->getSourceLocationChanged();
+    if (s_bUseOneSource && !mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && iSourceChanged != -1) {
+        
+        //cout << "THREAD: " << s_bUseOneSource << ", " << !mFilter->getIsRecordingAutomation() << ", " << mFilter->getMovementMode() << ", " << iSourceChanged << "----------";
+        
+        mMover.begin(iSourceChanged, kSourceThread);
+        mMover.move(mFilter->getSourceXY01(iSourceChanged), kSourceThread);
+        mMover.end(kSourceThread);
+        
+        mFilter->setSourceLocationChanged(-1);
+    }
+}
+
 void OctogrisAudioProcessorEditor::updateTrajectoryComboboxes(){
     int iSelectedTrajectory = mFilter->getTrType()+1;
     
@@ -1326,22 +1381,19 @@ void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor)
 void OctogrisAudioProcessorEditor::updateMovementModeCombo(){
     int index = 1;
     mMovementMode->addItem("Independent", index++);
-    if (mFilter->getNumberOfSources() == 2)
-    {
-        mMovementMode->addItem("Symmetric X", index++);
-        mMovementMode->addItem("Symmetric Y", index++);
-        mMovementMode->addItem("Symmetric X & Y", index++);
-    }
-    if (mFilter->getNumberOfSources() >= 2)
-    {
+    if (mFilter->getNumberOfSources() > 1){
         mMovementMode->addItem("Circular", index++);
         mMovementMode->addItem("Circular Fixed Radius", index++);
         mMovementMode->addItem("Circular Fixed Angle", index++);
         mMovementMode->addItem("Circular Fully Fixed", index++);
         mMovementMode->addItem("Delta Lock", index++);
+        mMovementMode->addItem("Symmetric X", index++);
+        mMovementMode->addItem("Symmetric Y", index++);
+        //mMovementMode->addItem("Symmetric X & Y", index++);
     }
     int iCurMode = mFilter->getMovementMode() + 1;
-    iCurMode > mMovementMode->getNumItems() ? mMovementMode->setSelectedId(1) : mMovementMode->setSelectedId(iCurMode);
+    //iCurMode > mMovementMode->getNumItems() ? mMovementMode->setSelectedId(1) : mMovementMode->setSelectedId(iCurMode);
+    mMovementMode->setSelectedId(iCurMode);
     
 }
 
@@ -1584,7 +1636,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 break;
             case kLeftCounterClockWise:
                 break;
-                
         }
         
         mFilter->updateSpeakerLocation(alternate, startAtTop, clockwise);
@@ -1602,10 +1653,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     {
         mFilter->setLinkDistances(button->getToggleState());
     }
-    else if (button == mLinkMovement)
-    {
-        mFilter->setLinkMovement(button->getToggleState());
-    }
     else if (button == mApplyFilter)
     {
         mFilter->setApplyFilter(button->getToggleState());
@@ -1614,48 +1661,34 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     
 #else
     //Changements lié a l'ajout de joystick à l'onglet leap qui est devenu interface
-    if(button == mEnableJoystick)
+    else if(button == mEnableJoystick)
     {
 
         bool state = mEnableJoystick->getToggleState();
         mFilter->setIsJoystickEnabled(state);
-        if (state)
-        {
-            
-            if (!gIOHIDManagerRef)
-            {
+        if (state) {
+            if (!gIOHIDManagerRef) {
                 mStateJoystick->setText("Joystick not connected", dontSendNotification);
                 gIOHIDManagerRef = IOHIDManagerCreate(CFAllocatorGetDefault(),kIOHIDOptionsTypeNone);
-                if(!gIOHIDManagerRef)
-                {
+                if(!gIOHIDManagerRef) {
                     printf("Could not create IOHIDManager");
-                }
-                else
-                {
+                } else {
                     mHIDDel = HIDDelegate::CreateHIDDelegate(mFilter, this);
                     mHIDDel->Initialize_HID(this);
-                    if(mHIDDel->getDeviceSetRef())
-                    {
+                    if(mHIDDel->getDeviceSetRef()) {
                         mStateJoystick->setText("Joystick connected", dontSendNotification);
-                    }
-                    else
-                    {
+                    } else {
                         mStateJoystick->setText("Joystick not connected", dontSendNotification);
                         mEnableJoystick->setToggleState(false, dontSendNotification);
                         gIOHIDManagerRef = NULL;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 mEnableJoystick->setToggleState(false, dontSendNotification);
                 mStateJoystick->setText("Joystick connected to another Octogris", dontSendNotification);
             }
-        }
-        else
-        {
-            if(gIOHIDManagerRef)
-            {
+        } else {
+            if(gIOHIDManagerRef) {
                 IOHIDManagerUnscheduleFromRunLoop(gIOHIDManagerRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
                 IOHIDManagerRegisterInputValueCallback(gIOHIDManagerRef, NULL,this);
                 IOHIDManagerClose(gIOHIDManagerRef, kIOHIDOptionsTypeNone);
@@ -1664,54 +1697,35 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
                 gElementCFArrayRef = NULL;
                 mHIDDel = NULL;
                 mStateJoystick->setText("", dontSendNotification);
-                
             }
-            
         }
-        
     }
-    if(button == mEnableLeap)
-    {
+    
+    else if(button == mEnableLeap) {
         bool state = mEnableLeap->getToggleState();
         
-        if (state)
-        {
-            
-            
-            if (!gIsLeapConnected)
-            {
+        if (state) {
+            if (!gIsLeapConnected) {
                 mStateLeap->setText("Leap not connected", dontSendNotification);
                 mController = new Leap::Controller();
-                if(!mController)
-                {
+                if(!mController) {
                     printf("Could not create leap controler");
-                }
-                else
-                {
+                } else {
                     mleap = OctoLeap::CreateLeapComponent(mFilter, this);
-                    if(mleap)
-                    {
+                    if(mleap) {
                         gIsLeapConnected = 1;
                         mController->addListener(*mleap);
-                    }
-                    else
-                    {
+                    } else {
                         mStateLeap->setText("Leap not connected", dontSendNotification);
                     }
                 }
-                
-            }
-            else
-            {
+            } else {
                 mStateLeap->setText("Leap used in another Octogris", dontSendNotification);
                 mEnableLeap->setToggleState(false, dontSendNotification);
                
             }
-        }
-        else
-        {
-            if(gIsLeapConnected)
-            {
+        } else {
+            if(gIsLeapConnected) {
                 mController->enableGesture(Leap::Gesture::TYPE_INVALID);
                 mController->removeListener(*mleap);
                 mController = NULL;
@@ -1724,34 +1738,32 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     
 #endif
     
-    else if (button == mTrWriteButton)
-    {
+    else if (button == mTrWriteButton) {
         Trajectory::Ptr t = mFilter->getTrajectory();
-        if (t)
-        {
+        //a trajectory exists, so we want to cancel it
+        if (t) {
             mFilter->setTrajectory(NULL);
-            mFilter->restoreCurrentLocations();
+            mFilter->restoreCurrentLocations(0);
             mTrWriteButton->setButtonText("Ready");
             mTrProgressBar->setVisible(false);
             mTrStateEditor = kTrReady;
             mFilter->setTrState(mTrStateEditor);
             t->stop();
-            
+            mFilter->setIsRecordingAutomation(false);
             mNeedRepaint = true;
         }
-        else
-        {
+        //a trajectory does not exist, create one
+        else {
             float duration = mTrDuration->getText().getFloatValue();
             bool beats = mTrUnits->getSelectedId() == 1;
             float repeats = mTrRepeats->getText().getFloatValue();
             int type = mTrTypeComboBox->getSelectedId();
-            
           
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
             
             bool bReturn = mTrReturnComboBox->getSelectedId() == 2;
             
-            int source = mTrSrcSelect->getSelectedId()-2;
+            int source = /*s_bUseOneSource ? 0 : */ mTrSrcSelect->getSelectedId()-2;
             
             mFilter->setTrDuration(duration);
             JUCE_COMPILER_WARNING("this operation was already done by event funct, clean this up")
@@ -1761,11 +1773,11 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             mFilter->setTrSrcSelect(source);
             
             bool bUniqueTarget = true;
-            if  (!mFilter->getLinkMovement() || mFilter->getMovementMode() == 0){
+            if  (mFilter->getMovementMode() == 0){
                 bUniqueTarget = false;
             }
 
-            
+            mFilter->setIsRecordingAutomation(true);
 			mFilter->storeCurrentLocations();
 			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget));
 			mTrWriteButton->setButtonText("Cancel");
@@ -1775,9 +1787,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
 			mTrProgressBar->setValue(0);
 			mTrProgressBar->setVisible(true);
 		}
-	}
-	else
-	{
+	} else {
 		printf("unknown button clicked...\n");
 	}
 }
@@ -1790,25 +1800,41 @@ void OctogrisAudioProcessorEditor::textEditorFocusLost (TextEditor &textEditor){
 
 void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 {
-    if (comboBox == mMovementMode)
-    {
-        mFilter->setMovementMode(comboBox->getSelectedId() - 1);
+    if (comboBox == mMovementMode) {
+        int iSelectedMode = comboBox->getSelectedId() - 1;
+        mFilter->setMovementMode(iSelectedMode);
+        if(mFilter->getNumberOfSources() > 1){
+            m_pSourceUpdateThread->setIsPaused(true);
+            switch (iSelectedMode) {
+                case 2:
+                    mMover.setEqualRadius();
+                    break;
+                case 3:
+                    mMover.setEqualAngles();
+                    break;
+                case 4:
+                    mMover.setEqualRadiusAndAngles();
+                    break;
+                default:
+                    break;
+            }
+            m_pSourceUpdateThread->setIsPaused(false);
+        }
     }
-	else if (comboBox == mRoutingMode)
-	{
+    else if (comboBox == mRoutingMode) {
 		mFilter->setRoutingMode(comboBox->getSelectedId() - 1);
 	}
-    else if (comboBox == mGuiSize)
-    {
+    else if (comboBox == mGuiSize) {
         mFilter->setGuiSize(comboBox->getSelectedId() - 1);
         refreshSize();
     }
-    else if (comboBox == mProcessModeCombo)
-    {
+    else if (comboBox == mProcessModeCombo) {
         int iSelectedMode = comboBox->getSelectedId() - 1;
         mFilter->setProcessMode(iSelectedMode);
         if (iSelectedMode == kPanVolumeMode){
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++) { mDistances.getUnchecked(i)->setEnabled(false);  }
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
+                mDistances.getUnchecked(i)->setEnabled(false);
+            }
         } else {
             for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
                 mDistances.getUnchecked(i)->setEnabled(true);
@@ -1885,10 +1911,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			} else {
 				mTrWriteButton->setButtonText("Ready");
                 mTrWriteButton->setToggleState(false, dontSendNotification);
-                mFilter->restoreCurrentLocations();
+                mFilter->restoreCurrentLocations(0);
 				mTrProgressBar->setVisible(false);
                 mTrStateEditor = kTrReady;
 				mFilter->setTrState(mTrStateEditor);
+                mFilter->setIsRecordingAutomation(false);
 			}
 		}
 		break;
@@ -1935,7 +1962,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 /*#if JUCE_MAC
         updateLeapComponent(mleap);
 #endif*/
-        mLinkMovement->setToggleState(mFilter->getLinkMovement(), dontSendNotification);
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);

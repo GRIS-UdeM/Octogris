@@ -36,7 +36,8 @@ typedef enum
 	kField,
 	kOsc,
 	kLeap,
-    kHID
+    kHID,
+    kSourceThread
 } MoverType;
 
 class SourceMover
@@ -46,13 +47,17 @@ public:
     void updateNumberOfSources();
 	
 	void begin(int s, MoverType mt);
+    void sortAngles();
+    void setEqualRadius();
+    void setEqualAngles();
+    void setEqualRadiusAndAngles();
 	void move(FPoint p, MoverType mt);
 	void end(MoverType mt);
 	
 private:
 	OctogrisAudioProcessor *mFilter;
-	MoverType mMover;
-	int mSelectedItem;
+	MoverType mMoverType;
+	int mSelectedSrc;
 	
 	Array<FPoint> mSourcesDownXY;
 	Array<FPoint> mSourcesDownRT;

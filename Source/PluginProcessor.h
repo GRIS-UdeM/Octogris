@@ -47,6 +47,8 @@ using namespace std;
 
 //==============================================================================
 
+static bool s_bUseOneSource = true;
+
 // x, y, distance
 enum {
     kSourceX = 0,
@@ -71,17 +73,16 @@ enum {
 
 enum
 {
-	kLinkMovement =			0 + kConstantOffset,
-	kSmooth =				1 + kConstantOffset,
-	kVolumeNear =			2 + kConstantOffset,
-	kVolumeMid =			3 + kConstantOffset,
-	kVolumeFar =			4 + kConstantOffset,
-	kFilterNear =			5 + kConstantOffset,
-	kFilterMid =			6 + kConstantOffset,
-	kFilterFar =			7 + kConstantOffset,
-	kMaxSpanVolume =		8 + kConstantOffset,
-	kRoutingVolume =		9 + kConstantOffset,
-	kConstantParameters =	10
+	kSmooth =				0 + kConstantOffset,
+	kVolumeNear =			1 + kConstantOffset,
+	kVolumeMid =			2 + kConstantOffset,
+	kVolumeFar =			3 + kConstantOffset,
+	kFilterNear =			4 + kConstantOffset,
+	kFilterMid =			5 + kConstantOffset,
+	kFilterFar =			6 + kConstantOffset,
+	kMaxSpanVolume =		7 + kConstantOffset,
+	kRoutingVolume =		8 + kConstantOffset,
+	kConstantParameters =	9
 };
 
 #define kNumberOfParameters (kConstantParameters + kConstantOffset)
@@ -271,9 +272,6 @@ public:
 	bool getShowGridLines() const { return mShowGridLines; }
 	void setShowGridLines(bool s) { mShowGridLines = s; }
 	
-	bool getLinkMovement() { return getParameter(kLinkMovement) > 0.5; }
-	void setLinkMovement(bool s) { setParameterNotifyingHost(kLinkMovement, s ? 1 : 0); }
-	
 	int getMovementMode() const { return mMovementMode; }
 	void setMovementMode(int s) { mMovementMode = s; }
 	
@@ -373,13 +371,6 @@ public:
 	
 	// convenience functions for gui:
 	//01 here means that the output is normalized to [0,1]
-	FPoint convertRt2Xy01(float r, float t) {
-		float x = r * cosf(t);
-		float y = r * sinf(t);
-		return FPoint((x + kRadiusMax)/(kRadiusMax*2), (y + kRadiusMax)/(kRadiusMax*2));
-	}
-
-	//01 here means that the output is normalized to [0,1]
 	FPoint getSourceXY01(int i)	{
 		float x = getSourceX(i);
 		float y = getSourceY(i);
@@ -421,8 +412,15 @@ public:
 		if (t < 0) t += kThetaMax;
 		return FPoint(r, t);
 	}
+    
+    //01 here means that the output is normalized to [0,1]
+    FPoint convertRt2Xy01(float r, float t) {
+        float x = r * cosf(t);
+        float y = r * sinf(t);
+        return FPoint((x + kRadiusMax)/(kRadiusMax*2), (y + kRadiusMax)/(kRadiusMax*2));
+    }
 	
-	FPoint convertRT(FPoint p) {
+	FPoint convertXy2Rt01(FPoint p) {
 		float vx = p.x;
 		float vy = p.y;
 		float r = sqrtf(vx*vx + vy*vy) / kRadiusMax;
@@ -433,9 +431,23 @@ public:
 		return FPoint(r, t);
 	}
 
-	FPoint convertRT01(FPoint p) {
-		return convertRT(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
-	}
+    FPoint convertXy012Rt01(FPoint p) {
+        return convertXy2Rt01(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
+    }
+    
+    FPoint convertXy2Rt(FPoint p) {
+        float vx = p.x;
+        float vy = p.y;
+        float r = sqrtf(vx*vx + vy*vy);
+        if (r > 1) r = 1;
+        float t = atan2f(vy, vx);
+        if (t < 0) t += kThetaMax;
+        return FPoint(r, t);
+    }
+    
+    FPoint convertXy012Rt(FPoint p) {
+        return convertXy2Rt(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
+    }
 
 	FPoint clampRadius01(FPoint p) {
 		float dx = p.x - 0.5f;
@@ -452,13 +464,18 @@ public:
 		return p;
 	}
 
-	void setSourceXY01(int i, FPoint p) {
+	void setSourceXY01(int i, FPoint p, bool p_bNotifyHost = true) {
 		p = clampRadius01(p);
-		setParameterNotifyingHost(getParamForSourceX(i), p.x);
-		setParameterNotifyingHost(getParamForSourceY(i), p.y);
+        if (p_bNotifyHost){
+            setParameterNotifyingHost(getParamForSourceX(i), p.x);
+            setParameterNotifyingHost(getParamForSourceY(i), p.y);
+        } else {
+            setParameter(getParamForSourceX(i), p.x);
+            setParameter(getParamForSourceY(i), p.y);
+        }
 	}
 
-	void setSourceXY(int i, FPoint p) {
+	void setSourceXY(int i, FPoint p, bool p_bNotifyHost = true) {
 		float r = hypotf(p.x, p.y);
 		if (r > kRadiusMax)
 		{
@@ -468,14 +485,19 @@ public:
 		}
 		p.x = (p.x + kRadiusMax) / (kRadiusMax*2);
 		p.y = (p.y + kRadiusMax) / (kRadiusMax*2);
-		setParameterNotifyingHost(getParamForSourceX(i), p.x);
-		setParameterNotifyingHost(getParamForSourceY(i), p.y);
+        if (p_bNotifyHost){
+            setParameterNotifyingHost(getParamForSourceX(i), p.x);
+            setParameterNotifyingHost(getParamForSourceY(i), p.y);
+        } else {
+            setParameter(getParamForSourceX(i), p.x);
+            setParameter(getParamForSourceY(i), p.y);
+        }
 	}
 
-	void setSourceRT(int i, FPoint p) {
+	void setSourceRT(int i, FPoint p, bool p_bNotifyHost = true) {
 		float x = p.x * cosf(p.y);
 		float y = p.x * sinf(p.y);
-		setSourceXY(i, FPoint(x, y));
+		setSourceXY(i, FPoint(x, y), p_bNotifyHost);
 	}
  
 	void setSpeakerXY01(int i, FPoint p) {
@@ -500,12 +522,38 @@ public:
     void setIsSourcesChanged(bool pIsNumberSourcesChanged){ mIsNumberSourcesChanged = pIsNumberSourcesChanged;}
     void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
     
+    void setIsRecordingAutomation(bool b)   { m_bIsRecordingAutomation = b;     }
+    bool getIsRecordingAutomation()         { return m_bIsRecordingAutomation;  }
+
+    void setSourceLocationChanged(int i)   {
+        m_iSourceLocationChanged = i;
+    }
+    int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
+    
+    int getSelectedSource(){
+        return m_iSelectedSource;
+    }
+    
+    void setSelectedSource (int iSrc){
+        m_iSelectedSource = iSrc;
+    }
+
+    void setPreventSourceLocationUpdate(bool b){
+        m_bPreventSourceLocationUpdate = b;
+    }
+    
+    
     void storeCurrentLocations();
-    void restoreCurrentLocations();
+    void restoreCurrentLocations(int p_iLocToRestore = -1);
 	void reset();
     
     void updateSpeakerLocation(bool p_bAlternate, bool p_bStartAtTop, bool p_bClockwise);
+    
+    JUCE_COMPILER_WARNING("have getters and setters for this instead of making it public")
+    FPoint mOldSrcLocRT[JucePlugin_MaxNumInputChannels];
 	
+    
+    
 private:
 
 	bool m_bAllowInputOutputModeSelection;
@@ -552,7 +600,7 @@ private:
 	uint64_t mHostChangedParameter;
 	uint64_t mHostChangedProperty;
 	uint64_t mProcessCounter;
-	int64 mLastTimeInSamples;
+	//int64 mLastTimeInSamples;
 	
 	int mProcessMode;
 	int mRoutingMode;
@@ -580,13 +628,8 @@ private:
     float mBufferSpLocA[JucePlugin_MaxNumOutputChannels];
     float mBufferSpLocM[JucePlugin_MaxNumOutputChannels];
     
-    int mNumberOfSources;
-    int mNumberOfSpeakers;
-    
     void setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues);
     void setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues);
-    
-    std::vector<FirFilter> mFilters;
 	
 	void findLeftAndRightSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
     
@@ -595,6 +638,16 @@ private:
 	void ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataPanSpanMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
+
+    int mNumberOfSources;
+    int mNumberOfSpeakers;
+    std::vector<FirFilter> mFilters;
+    bool m_bIsRecordingAutomation;
+    int m_iSourceLocationChanged;
+    
+    int m_iSelectedSource;
+    
+    bool m_bPreventSourceLocationUpdate;
 	
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)
