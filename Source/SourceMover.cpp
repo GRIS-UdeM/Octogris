@@ -243,30 +243,6 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
                     mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
-//                case 2:     // circular, fixed radius
-//                    newCurSrcPosRT.x = newSelSrcPosRT.x;
-//                    if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
-//                    if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-//                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);     //when kSourceThread, this call needs to NOT triger a call to processor::setSourceLocationChanged
-//                    mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
-//                    break;
-//                case 3:     // circular, fixed angle
-//                    newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
-//                    if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
-//                    if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
-//                    if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
-//                    if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-//                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
-//                    mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
-//                    break;
-//                case 4:     // circular, fully fixed
-//                    newCurSrcPosRT.x = newSelSrcPosRT.x;
-//                    newCurSrcPosRT.y = newSelSrcPosRT.y + mSourcesAngularOrder[iCurSrc];
-//                    if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
-//                    if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
-//                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
-//                    mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
-//                    break;
                 case 5:{      // delta lock
                     FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
                     FPoint newPoint = mSourcesDownXY[iCurSrc] + d;
