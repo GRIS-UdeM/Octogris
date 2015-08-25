@@ -202,7 +202,6 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
     }
     
     if (mFilter->getNumberOfSources() > 1) {
-        
         //calculate delta for selected source
         FPoint oldSelSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[mSelectedSrc] : mSourcesDownRT[mSelectedSrc];
         FPoint newSelSrcPosRT = mFilter->getSourceRT(mSelectedSrc); //in kSourceThread, this will be the same as mFilter->convertXy012Rt(pointXY01)
@@ -211,43 +210,56 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
         if (delSelSrcPosRT.isOrigin()){
             return;     //return if delta is null
         }
-
         float vxo = pointXY01.x, vyo = pointXY01.y;
-        
         if (kSourceThread){
             mFilter->setPreventSourceLocationUpdate(true);
         }
         
         for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); iCurSrc++) {
-
             if (iCurSrc == mSelectedSrc) {
                 mFilter->mOldSrcLocRT[iCurSrc] = newSelSrcPosRT  ;
                 continue;
             }
-            
-            //calculate new position for curSrc using delta for selected source
-            FPoint oldCurSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[iCurSrc] : mSourcesDownRT[iCurSrc];
-            FPoint newCurSrcPosRT = oldCurSrcPosRT + delSelSrcPosRT;
-            
             //all x's and y's here are actually r's and t's
-            
             switch(mFilter->getMovementMode()) {
                 case 1:     // circular
                 case 2:     // circular, fixed radius
                 case 3:     // circular, fixed angle
-                case 4:     // circular, fully fixed
+                case 4:{    // circular, fully fixed
+                    
+                    //calculate new position for curSrc using delta for selected source
+                    FPoint oldCurSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[iCurSrc] : mSourcesDownRT[iCurSrc];
+                    FPoint newCurSrcPosRT = oldCurSrcPosRT + delSelSrcPosRT;
+                    
+                    JUCE_COMPILER_WARNING("this needs to bounce like when we're going off circle, otherwise we lose the delta")
                     if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
                     if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
                     if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
                     if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                    
                     mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
                     mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
+                }
                 case 5:{      // delta lock
-                    FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
-                    FPoint newPoint = mSourcesDownXY[iCurSrc] + d;
-                    mFilter->setSourceXY(iCurSrc, newPoint, !s_bUseOneSource);
-                    mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy2Rt(newPoint);
+                    //calculate delta for selected source
+//                    FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
+                    
+                    //calculate new position for current source
+//                    FPoint newPoint = mSourcesDownXY[iCurSrc] + d;
+                    
+                    //set current positions
+//                    mFilter->setSourceXY(iCurSrc, newPoint, !s_bUseOneSource);
+//                    mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy2Rt(newPoint);
+                    
+                    FPoint delSelSrcPosXY = mFilter->convertRt2Xy(newSelSrcPosRT) - mFilter->convertRt2Xy(oldSelSrcPosRT);
+                    
+                    //calculate new position for curSrc using delta for selected source
+                    FPoint oldCurSrcPosXY = (mMoverType == kSourceThread) ? mFilter->convertRt2Xy(mFilter->mOldSrcLocRT[iCurSrc]) : mSourcesDownXY[mSelectedSrc];
+                    FPoint newCurSrcPosXY = oldCurSrcPosXY + delSelSrcPosXY;
+                    
+                    mFilter->setSourceXY(iCurSrc, newCurSrcPosXY, !s_bUseOneSource);
+                    mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy2Rt(newCurSrcPosXY);
                     break;
                 }
                 case 6:  // sym x

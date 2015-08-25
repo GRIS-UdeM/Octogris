@@ -413,6 +413,13 @@ public:
 		return FPoint(r, t);
 	}
     
+    FPoint convertRt2Xy(FPoint p) {
+        float x = p.x * cosf(p.y);
+        float y = p.x * sinf(p.y);
+        return FPoint(x, y);
+    }
+    
+    
     //01 here means that the output is normalized to [0,1]
     FPoint convertRt2Xy01(float r, float t) {
         float x = r * cosf(t);

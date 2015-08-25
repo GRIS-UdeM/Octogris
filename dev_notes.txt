@@ -116,9 +116,7 @@ reaper:
 	circle does more than 1 circle
 
 DP: 
-	trajectory automation not read. after rebooting it, then it works
-		that's because we're still recording automation
 	trajectories are incrementing when we reboot the daw (or not? not clear)
-	delta mode doesn't work
+	delta mode doesn't work; cant read traj with it; prob in thread
 	something is wrong with the faders
 
