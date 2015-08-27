@@ -31,7 +31,9 @@
 
 // ==============================================================================
 void Trajectory::start() {
-    if (s_bUseOneSource){
+    if (s_bTrajMover){
+        mMover->begin(mFilter->getSelectedSource(), kTrajectory);
+    } else if (s_bUseOneSource){
         int j = 0;
         mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
         mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
@@ -86,7 +88,9 @@ void Trajectory::stop()
 {
 	if (!mStarted || mStopped) return;
 
-    if (s_bUseOneSource){
+    if (s_bTrajMover){
+        mMover->end(kTrajectory);
+    } else if (s_bUseOneSource){
         int j = 0;
         mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
         mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
@@ -229,14 +233,17 @@ protected:
     void spProcess(float duration, float seconds) {
         float da = mDone / mDuration * (2 * M_PI);
         if (!mCCW) da = -da;
-        
-        for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-            if (mSource < 0 || mSource == i)
-            {
-                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                FPoint p = mSourcesInitRT.getUnchecked(i);
-                mFilter->setSourceRT(i, FPoint(p.x, p.y + da), bWriteAutomation);
-            }
+        if (s_bTrajMover){
+            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSelectedSource());
+            mMover->move(mFilter->convertRt2Xy01(p.x, p.y+da), kTrajectory);
+        } else {
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+                if (mSource < 0 || mSource == i){
+                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+                    FPoint p = mSourcesInitRT.getUnchecked(i);
+                    mFilter->setSourceRT(i, FPoint(p.x, p.y + da), bWriteAutomation);
+                }
+        }
     }
 	
 private:
@@ -269,7 +276,11 @@ protected:
                 float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
                 float t = p.y + 2*da;
                 bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                mFilter->setSourceRT(i, FPoint(r, t), bWriteAutomation);
+                if (s_bTrajMover){
+                    mMover->move(FPoint(r, t), kTrajectory);
+                } else {
+                    mFilter->setSourceRT(i, FPoint(r, t), bWriteAutomation);
+                }
             }
     }
 	
@@ -304,7 +315,11 @@ protected:
                 float l = mCross ? cos(da) : (cos(da)+1)*0.5;
                 float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
                 bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                mFilter->setSourceRT(i, FPoint(r, p.y), bWriteAutomation);
+                if (s_bTrajMover){
+                    mMover->move(FPoint(r, p.y), kTrajectory);
+                } else {
+                    mFilter->setSourceRT(i, FPoint(r, p.y), bWriteAutomation);
+                }
             }
         }
 	}
@@ -341,7 +356,11 @@ protected:
 			float r = sqrt(r2);
 			
             bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-			mFilter->setSourceRT(i, FPoint(p.x * r, p.y + da), bWriteAutomation);
+            if (s_bTrajMover){
+                mMover->move(FPoint(p.x * r, p.y + da), kTrajectory);
+            } else {
+                mFilter->setSourceRT(i, FPoint(p.x * r, p.y + da), bWriteAutomation);
+            }
 		}
 	}
 	
@@ -432,7 +451,11 @@ protected:
                     p.x += (r1 - 0.5) * mSpeed;
                     p.y += (r2 - 0.5) * mSpeed;
                     bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                    mFilter->setSourceXY(i, p, bWriteAutomation);
+                    if (s_bTrajMover){
+                        mMover->move(p, kTrajectory);
+                    } else {
+                        mFilter->setSourceXY(i, p, bWriteAutomation);
+                    }
                 }
         }
     }
