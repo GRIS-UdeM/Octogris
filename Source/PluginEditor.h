@@ -202,11 +202,7 @@ private:
 	MiniProgressBar *mTrProgressBar;
 	ComboBox *mTrSrcSelect;
     
-	enum
-	{
-		kTrReady,
-		kTrWriting
-	};
+
     int mTrStateEditor;
 	
 	// osc, leap

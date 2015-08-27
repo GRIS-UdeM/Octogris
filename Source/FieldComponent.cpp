@@ -291,6 +291,11 @@ void FieldComponent::paint (Graphics& g)
 
 void FieldComponent::mouseDown(const MouseEvent &event)
 {
+    
+    if (mFilter->getTrState() == kTrWriting) {
+        return;
+    }
+    
 	int fieldWidth = getWidth();
 	
 	int fieldHeight = getHeight();

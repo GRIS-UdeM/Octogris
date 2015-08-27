@@ -66,7 +66,14 @@ enum {
     kSpeakerA,
     kSpeakerM,
     kSpeakerUnused,
-    kParamsPerSpeakers };
+    kParamsPerSpeakers
+};
+
+enum
+{
+    kTrReady,
+    kTrWriting
+};
 
 
 #define kConstantOffset (JucePlugin_MaxNumInputChannels * kParamsPerSource + JucePlugin_MaxNumOutputChannels * kParamsPerSpeakers)
