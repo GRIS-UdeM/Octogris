@@ -106,6 +106,10 @@ ______________________________________________
 ok, so trajectories are not read. how can that be? delta of 0. because old or new values are not set
 when reading? 
 
+loading a preset with a non-independent contraint is bad, because it triggers a call to the thread,
+because it changes the position of sources
+___________________
+
 NOW HERE: NEED TO EXTRA STUFF IN MOVER THAT IS IN CHARGE OF MOVING WITH EQUAL ANGLES AND PUT IT IN
 SETEQUALANGLES (NEW FUNCTION). ALSO NEED TO REMOVE STUFF FOR EQUAL RADIUS. SO IN FACT MOVER::MOVE
 WILL ONLY HAVE 2 MODES: INDEPENDENT CIRCULAR DELTA
