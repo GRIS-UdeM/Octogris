@@ -31,6 +31,7 @@
 #include <memory>
 
 class OctogrisAudioProcessor;
+class SourceMover;
 
 enum AllTrajectoryTypes {
     Circle = 1,
@@ -68,7 +69,7 @@ public:
 
 	static int NumberOfTrajectories();
 	static String GetTrajectoryName(int i);
-	static Trajectory::Ptr CreateTrajectory(int i, OctogrisAudioProcessor *filter, float duration, bool beats, AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget);
+	static Trajectory::Ptr CreateTrajectory(int i, OctogrisAudioProcessor *filter, SourceMover *mover, float duration, bool beats, AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget);
     static std::unique_ptr<std::vector<String>> getTrajectoryPossibleDirections(int p_iTrajectory);
     static std::unique_ptr<AllTrajectoryDirections> getTrajectoryDirection(int p_iSelectedTrajectory, int p_iSelectedDirection);
     static std::unique_ptr<std::vector<String>> getTrajectoryPossibleReturns(int p_iTrajectory);
@@ -88,9 +89,10 @@ private:
 	void start();
 	
 protected:
-	Trajectory(OctogrisAudioProcessor *filter, float duration, bool beats, float times, int source);
+	Trajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source);
 	
 	OctogrisAudioProcessor *mFilter;
+    SourceMover *mMover;
 	bool mStarted, mStopped;
 	float mDone;
 	float mDuration;

@@ -80,13 +80,7 @@ void SourceMover::begin(int s, MoverType mt)
                 mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
             }
 		}
-		
-        //if we are in a circular-y mode, figure out the angular order
-        JUCE_COMPILER_WARNING("still necessary after instantanous change of constraint, unclear why. without it, circular same angle, move unselected source messes things up")
-		if	(iNbrSrc > 1 && (mFilter->getMovementMode() == 3 || mFilter->getMovementMode() == 4)) {
-            sortAngles();
-		}
-	}
+    }
 }
 
 void SourceMover::sortAngles(){
