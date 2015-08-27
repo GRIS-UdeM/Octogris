@@ -120,7 +120,6 @@ reaper:
 	circle does more than 1 circle
 
 DP: 
-	trajectories are incrementing when we reboot the daw (or not? not clear)
-	delta mode doesn't work; cant read traj with it; prob in thread
-	something is wrong with the faders
+	delta mode is weird
+	something is wrong with faders for second (last?) channel
 

@@ -248,14 +248,15 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     //calculate new position for current source
 //                    FPoint newPoint = mSourcesDownXY[iCurSrc] + d;
                     
-                    //set current positions
-//                    mFilter->setSourceXY(iCurSrc, newPoint, !s_bUseOneSource);
-//                    mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy2Rt(newPoint);
-                    
-                    FPoint delSelSrcPosXY = mFilter->convertRt2Xy(newSelSrcPosRT) - mFilter->convertRt2Xy(oldSelSrcPosRT);
+                    FPoint delSelSrcPosXY;
+                    if (mMoverType == kSourceThread){
+                        delSelSrcPosXY = mFilter->convertRt2Xy(newSelSrcPosRT) - mFilter->convertRt2Xy(oldSelSrcPosRT);
+                    } else {
+                        delSelSrcPosXY = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
+                    }
                     
                     //calculate new position for curSrc using delta for selected source
-                    FPoint oldCurSrcPosXY = (mMoverType == kSourceThread) ? mFilter->convertRt2Xy(mFilter->mOldSrcLocRT[iCurSrc]) : mSourcesDownXY[mSelectedSrc];
+                    FPoint oldCurSrcPosXY = (mMoverType == kSourceThread) ? mFilter->convertRt2Xy(mFilter->mOldSrcLocRT[iCurSrc]) : mSourcesDownXY[iCurSrc];
                     FPoint newCurSrcPosXY = oldCurSrcPosXY + delSelSrcPosXY;
                     
                     mFilter->setSourceXY(iCurSrc, newCurSrcPosXY, !s_bUseOneSource);
