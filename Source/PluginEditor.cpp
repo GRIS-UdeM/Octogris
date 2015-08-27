@@ -1757,7 +1757,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
             float duration = mTrDuration->getText().getFloatValue();
             bool beats = mTrUnits->getSelectedId() == 1;
             float repeats = mTrRepeats->getText().getFloatValue();
-            int type = mTrTypeComboBox->getSelectedId();
+            int type = mTrTypeComboBox->getSelectedId()-1;
           
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
             
@@ -1940,7 +1940,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
                 buttonClicked(mApplyInputOutputModeButton);
             }
         }
-        
         
         mSrcSelect->setSelectedId(mFilter->getSrcSelected());
         mSpSelect->setSelectedId(mFilter->getSpSelected());

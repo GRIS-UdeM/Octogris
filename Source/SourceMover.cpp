@@ -252,13 +252,6 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     FPoint oldCurSrcPosXY = (mMoverType == kSourceThread) ? mFilter->convertRt2Xy(mFilter->mOldSrcLocRT[iCurSrc]) : mSourcesDownXY[iCurSrc];
                     FPoint newCurSrcPosXY = oldCurSrcPosXY + delSelSrcPosXY;
                     
-                    
-//                    FPoint newCurSrcPoxRT, newCurSrcPosXY2;
-//                    if (mMoverType == kSourceThread){
-//                        newCurSrcPoxRT  = mFilter->convertXy2Rt(newCurSrcPosXY);
-//                        newCurSrcPosXY2 = mFilter->convertRt2Xy(newCurSrcPoxRT);
-//                    }
-                    
                     mFilter->setSourceXY(iCurSrc, newCurSrcPosXY, !s_bUseOneSource);
                     mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy2Rt(newCurSrcPosXY, false);
                     break;
