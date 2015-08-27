@@ -442,11 +442,11 @@ public:
         return convertXy2Rt01(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
     }
     
-    FPoint convertXy2Rt(FPoint p) {
+    FPoint convertXy2Rt(FPoint p, bool p_bLimitR = true) {
         float vx = p.x;
         float vy = p.y;
         float r = sqrtf(vx*vx + vy*vy);
-        if (r > 1) r = 1;
+        if (p_bLimitR && r > 1) r = 1;
         float t = atan2f(vy, vx);
         if (t < 0) t += kThetaMax;
         return FPoint(r, t);

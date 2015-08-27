@@ -122,4 +122,6 @@ reaper:
 DP: 
 	delta mode is weird
 	something is wrong with faders for second (last?) channel
+        trajectories are definitely increasing when closing and reopening project
+
 
