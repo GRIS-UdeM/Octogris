@@ -37,7 +37,8 @@ typedef enum
 	kOsc,
 	kLeap,
     kHID,
-    kSourceThread
+    kSourceThread,
+    kTrajectory
 } MoverType;
 
 class SourceMover

@@ -117,7 +117,8 @@ _________________________________________________________
 ok. 
 
 reaper: 
-	circle does more than 1 circle
+	circle does more than 1 circle, only when writing, not reading
+            will probably be fixed when traj uses mover(?)
 
 DP: 
         writing trajectories is not using the constraints, although reading them (using source thread, is). Need to use mover. Wait for robert's reply before doing this? 
