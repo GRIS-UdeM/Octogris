@@ -268,20 +268,24 @@ protected:
             else da = M_PI;
         }
         if (!mCCW) da = -da;
-        for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-            if (mSource < 0 || mSource == i)
-            {
-                FPoint p = mSourcesInitRT.getUnchecked(i);
-                float l = (cos(da)+1)*0.5;
-                float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-                float t = p.y + 2*da;
-                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                if (s_bTrajMover){
-                    mMover->move(FPoint(r, t), kTrajectory);
-                } else {
+        
+        if (s_bTrajMover){
+            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSelectedSource());
+            float l = (cos(da)+1)*0.5;
+            float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+            float t = p.y + 2*da;
+            mMover->move(mFilter->convertRt2Xy01(r, t), kTrajectory);
+        } else {
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+                if (mSource < 0 || mSource == i) {
+                    FPoint p = mSourcesInitRT.getUnchecked(i);
+                    float l = (cos(da)+1)*0.5;
+                    float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+                    float t = p.y + 2*da;
+                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
                     mFilter->setSourceRT(i, FPoint(r, t), bWriteAutomation);
                 }
-            }
+        }
     }
 	
 private:
@@ -308,16 +312,18 @@ protected:
             else da = M_PI;
         }
         
-        for (int i = 0; i < mFilter->getNumberOfSources(); i++){
-            if (mSource < 0 || mSource == i)
-            {
-                FPoint p = mSourcesInitRT.getUnchecked(i);
-                float l = mCross ? cos(da) : (cos(da)+1)*0.5;
-                float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-                bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                if (s_bTrajMover){
-                    mMover->move(FPoint(r, p.y), kTrajectory);
-                } else {
+        if (s_bTrajMover){
+            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSelectedSource());
+            float l = mCross ? cos(da) : (cos(da)+1)*0.5;
+            float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+            mMover->move(mFilter->convertRt2Xy01(r, p.y), kTrajectory);
+        } else {
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++){
+                if (mSource < 0 || mSource == i) {
+                    FPoint p = mSourcesInitRT.getUnchecked(i);
+                    float l = mCross ? cos(da) : (cos(da)+1)*0.5;
+                    float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
                     mFilter->setSourceRT(i, FPoint(r, p.y), bWriteAutomation);
                 }
             }
@@ -339,30 +345,41 @@ protected:
 	void spProcess(float duration, float seconds)
 	{
 		float da = mDone / mDuration * (2 * M_PI);
-		if (!mCCW) da = -da;
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-		if (mSource < 0 || mSource == i)
-		{
-			FPoint p = mSourcesInitRT.getUnchecked(i);
-			
-			// http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
-			float a = 1;
-			float b = 0.5;
-			float cosDa = cos(da);
-			float a2 = a*a;
-			float b2 = b*b;
-			float cosDa2 = cosDa*cosDa;
-			float r2 = (a2*b2)/((b2-a2)*cosDa2+a2);
-			float r = sqrt(r2);
-			
-            bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-            if (s_bTrajMover){
-                mMover->move(FPoint(p.x * r, p.y + da), kTrajectory);
-            } else {
-                mFilter->setSourceRT(i, FPoint(p.x * r, p.y + da), bWriteAutomation);
+        if (!mCCW) da = -da;
+        if (s_bTrajMover){
+            // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
+            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSelectedSource());
+            float a = 1;
+            float b = 0.5;
+            float cosDa = cos(da);
+            float a2 = a*a;
+            float b2 = b*b;
+            float cosDa2 = cosDa*cosDa;
+            float r2 = (a2*b2)/((b2-a2)*cosDa2+a2);
+            float r = sqrt(r2);
+            mMover->move(mFilter->convertRt2Xy01(p.x * r, p.y + da), kTrajectory);
+        } else {
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++){
+                if (mSource < 0 || mSource == i)
+                {
+                    FPoint p = mSourcesInitRT.getUnchecked(i);
+                    
+                    // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
+                    float a = 1;
+                    float b = 0.5;
+                    float cosDa = cos(da);
+                    float a2 = a*a;
+                    float b2 = b*b;
+                    float cosDa2 = cosDa*cosDa;
+                    float r2 = (a2*b2)/((b2-a2)*cosDa2+a2);
+                    float r = sqrt(r2);
+                    
+                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+                    mFilter->setSourceRT(i, FPoint(p.x * r, p.y + da), bWriteAutomation);
+                }
             }
-		}
-	}
+        }
+    }
 	
 private:
 	bool mCCW;
@@ -440,23 +457,30 @@ protected:
             float r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
             float r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
             
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-                if (mSource < 0 || mSource == i)
-                {
-                    FPoint p = mFilter->getSourceXY(i);
-                    if (!mUniqueTarget){
-                        r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                        r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                    }
-                    p.x += (r1 - 0.5) * mSpeed;
-                    p.y += (r2 - 0.5) * mSpeed;
-                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                    if (s_bTrajMover){
-                        mMover->move(p, kTrajectory);
-                    } else {
+            if (s_bTrajMover){
+                FPoint p = mFilter->getSourceXY(mFilter->getSelectedSource());
+                if (!mUniqueTarget){
+                    r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                    r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                }
+                p.x += (r1 - 0.5) * mSpeed;
+                p.y += (r2 - 0.5) * mSpeed;
+                mMover->move(mFilter->convertRt2Xy01(p.x, p.y), kTrajectory);
+            } else {
+                for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+                    if (mSource < 0 || mSource == i)
+                    {
+                        FPoint p = mFilter->getSourceXY(i);
+                        if (!mUniqueTarget){
+                            r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                            r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                        }
+                        p.x += (r1 - 0.5) * mSpeed;
+                        p.y += (r2 - 0.5) * mSpeed;
+                        bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
                         mFilter->setSourceXY(i, p, bWriteAutomation);
                     }
-                }
+            }
         }
     }
 	
