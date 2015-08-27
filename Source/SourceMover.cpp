@@ -269,8 +269,9 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
 //                    break;
                 case 5:{      // delta lock
                     FPoint d = mFilter->getSourceXY(mSelectedSrc) - mSourcesDownXY[mSelectedSrc];
-                    mFilter->setSourceXY(iCurSrc, mSourcesDownXY[iCurSrc] + d, !s_bUseOneSource);
-                    mFilter->mOldSrcLocRT[iCurSrc] = mSourcesDownXY[iCurSrc] + d;
+                    FPoint newPoint = mSourcesDownXY[iCurSrc] + d;
+                    mFilter->setSourceXY(iCurSrc, newPoint, !s_bUseOneSource);
+                    mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy2Rt(newPoint);
                     break;
                 }
                 case 6:  // sym x

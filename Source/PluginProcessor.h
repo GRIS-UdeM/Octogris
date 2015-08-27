@@ -371,13 +371,6 @@ public:
 	
 	// convenience functions for gui:
 	//01 here means that the output is normalized to [0,1]
-	FPoint convertRt2Xy01(float r, float t) {
-		float x = r * cosf(t);
-		float y = r * sinf(t);
-		return FPoint((x + kRadiusMax)/(kRadiusMax*2), (y + kRadiusMax)/(kRadiusMax*2));
-	}
-
-	//01 here means that the output is normalized to [0,1]
 	FPoint getSourceXY01(int i)	{
 		float x = getSourceX(i);
 		float y = getSourceY(i);
@@ -419,8 +412,15 @@ public:
 		if (t < 0) t += kThetaMax;
 		return FPoint(r, t);
 	}
+    
+    //01 here means that the output is normalized to [0,1]
+    FPoint convertRt2Xy01(float r, float t) {
+        float x = r * cosf(t);
+        float y = r * sinf(t);
+        return FPoint((x + kRadiusMax)/(kRadiusMax*2), (y + kRadiusMax)/(kRadiusMax*2));
+    }
 	
-	FPoint convertXy2Rt(FPoint p) {
+	FPoint convertXy2Rt01(FPoint p) {
 		float vx = p.x;
 		float vy = p.y;
 		float r = sqrtf(vx*vx + vy*vy) / kRadiusMax;
@@ -431,9 +431,23 @@ public:
 		return FPoint(r, t);
 	}
 
-	FPoint convertXy012Rt(FPoint p) {
-		return convertXy2Rt(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
-	}
+    FPoint convertXy012Rt01(FPoint p) {
+        return convertXy2Rt01(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
+    }
+    
+    FPoint convertXy2Rt(FPoint p) {
+        float vx = p.x;
+        float vy = p.y;
+        float r = sqrtf(vx*vx + vy*vy);
+        if (r > 1) r = 1;
+        float t = atan2f(vy, vx);
+        if (t < 0) t += kThetaMax;
+        return FPoint(r, t);
+    }
+    
+    FPoint convertXy012Rt(FPoint p) {
+        return convertXy2Rt(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
+    }
 
 	FPoint clampRadius01(FPoint p) {
 		float dx = p.x - 0.5f;

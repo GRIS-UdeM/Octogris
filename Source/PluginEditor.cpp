@@ -1389,7 +1389,7 @@ void OctogrisAudioProcessorEditor::updateMovementModeCombo(){
         mMovementMode->addItem("Delta Lock", index++);
         mMovementMode->addItem("Symmetric X", index++);
         mMovementMode->addItem("Symmetric Y", index++);
-        mMovementMode->addItem("Symmetric X & Y", index++);
+        //mMovementMode->addItem("Symmetric X & Y", index++);
     }
     int iCurMode = mFilter->getMovementMode() + 1;
     //iCurMode > mMovementMode->getNumItems() ? mMovementMode->setSelectedId(1) : mMovementMode->setSelectedId(iCurMode);
@@ -1915,6 +1915,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 				mTrProgressBar->setVisible(false);
                 mTrStateEditor = kTrReady;
 				mFilter->setTrState(mTrStateEditor);
+                mFilter->setIsRecordingAutomation(false);
 			}
 		}
 		break;
