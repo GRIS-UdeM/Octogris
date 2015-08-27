@@ -187,8 +187,9 @@ OctogrisAudioProcessor::~OctogrisAudioProcessor()
     //delete[] mFilters;
     
     Trajectory::Ptr t = getTrajectory();
-    if (t)
+    if (t){
         t->stop();
+    }
 }
 
 

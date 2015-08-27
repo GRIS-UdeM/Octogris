@@ -47,6 +47,7 @@ void Trajectory::start() {
             mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSource));
         }
     }
+    
     for (int i = 0; i < mFilter->getNumberOfSources(); i++){
         mSourcesInitRT.add(mFilter->getSourceRT(i));
     }
@@ -56,10 +57,13 @@ void Trajectory::start() {
 
 bool Trajectory::process(float seconds, float beats) {
 	if (mStopped) return true;
-	if (!mStarted) start();
+    if (!mStarted) {
+            start();
+    }
 	if (mDone == mTotalDuration) {
 		spProcess(0, 0);
-		stop();
+        stop();
+        
 		return true;
 	}
 
