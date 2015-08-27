@@ -55,8 +55,10 @@ void LevelComponent::paint (Graphics& g)
 
 	const float yellowStart = -6;
 	float hue;
-	if (level > 0) hue = 0;
-	else if (level < yellowStart) hue = 1 / 3.f;
+	if (level > 0)
+        hue = 0;
+	else if (level < yellowStart)
+        hue = 1 / 3.f;
 	else
 	{
 		float p = (level - yellowStart) / (-yellowStart); // 0 .. 1

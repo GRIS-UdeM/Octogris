@@ -120,9 +120,6 @@ reaper:
 	circle does more than 1 circle
 
 DP: 
-	something is wrong with faders for second (last?) channel
-        trajectories are definitely increasing when closing and reopening project
-        writing trajectories is not using the constraints, although reading them (using source
-        thread, is). Need to use mover. Wait for robert's reply before doing this? 
+        writing trajectories is not using the constraints, although reading them (using source thread, is). Need to use mover. Wait for robert's reply before doing this? 
 
 
