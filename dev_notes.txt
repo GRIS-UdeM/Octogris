@@ -129,8 +129,14 @@ DP
     * and could not figure how to loop, had to copy a bunch of files
 _________________________________________________________
 SETTING UP FOR ZIRKOSC
+LOGIC
+    * is working!
+REAPER
+    * is not seen in jack (either 64 or 32 bits version)
+        * the doc says this might be because some apps need to send audio to be detected
 DP
-    * 
+    * no sound in either my new or old project, probably problem with bundles
+
 ___________________________
 CURRENT PROBLEMS
 reaper: 
