@@ -139,8 +139,11 @@ DP
 
 ___________________________
 CURRENT PROBLEMS
-reaper: 
-    circle traj is not exactly a circle. very imprecise. looks like there's an offset right at the start, 
-DP: 
-    if you move a source, then start a traj, traj starts from previous source location
+LOGIC:
+    * wiggly movements on nicolai, ok at school
 
+REAPER: 
+    * circle traj is not exactly a circle. very imprecise. looks like there's an offset right at the start, 
+
+DP: 
+    * faders are random (in hexa at least)

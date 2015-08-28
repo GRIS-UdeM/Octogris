@@ -991,7 +991,7 @@ AudioProcessorEditor (ownerFilter)
         
         x += tew + kMargin;
         
-        {
+        if (!s_bTrajMover){
             ComboBox *cb = new ComboBox();
             int index = 1;
             cb->addItem("All sources", index++);
@@ -1255,7 +1255,9 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
 
     if (!p_bCalledFromConstructor){
         mSrcSelect->clear(dontSendNotification);
-        mTrSrcSelect->clear(dontSendNotification);
+        if (!s_bTrajMover){
+            mTrSrcSelect->clear(dontSendNotification);
+        }
         mMovementMode->clear(dontSendNotification);
         updateMovementModeCombo();
     }
@@ -1300,7 +1302,7 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
     
     
     //source selection combo in trajectory tab
-    if (!p_bCalledFromConstructor){
+    if (!s_bTrajMover && !p_bCalledFromConstructor){
         int index = 1;
         mTrSrcSelect->addItem("All sources", index++);
         for (int i = 0; i < mFilter->getNumberOfSources(); i++)
@@ -1558,7 +1560,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             
             bool bReturn = mTrReturnComboBox->getSelectedId() == 2;
             
-            int source = /*s_bUseOneSource ? 0 : */ mTrSrcSelect->getSelectedId()-2;
+            int source = s_bTrajMover ? -1 :  mTrSrcSelect->getSelectedId()-2;
             
             mFilter->setTrDuration(duration);
             JUCE_COMPILER_WARNING("this operation was already done by event funct, clean this up")
@@ -1869,7 +1871,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
         int iReturn = mTrReturnComboBox->getSelectedId()-1;
         mFilter->setTrReturn(iReturn);
     }
-    else if (comboBox == mTrSrcSelect)
+    else if (!s_bTrajMover && comboBox == mTrSrcSelect)
     {
         int source = mTrSrcSelect->getSelectedId()-2;
         mFilter->setTrSrcSelect(source);
@@ -1945,8 +1947,9 @@ void OctogrisAudioProcessorEditor::timerCallback()
         updateSpeakerLocationTextEditor();
         
         mTrTypeComboBox->setSelectedId(mFilter->getTrType()+1);
-        
-        mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);
+        if (!s_bTrajMover){
+            mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);
+        }
         mTrDuration->setText(String(mFilter->getTrDuration()));
         mTrUnits->setSelectedId(mFilter->getTrUnits());
         mTrRepeats->setText(String(mFilter->getTrRepeats()));

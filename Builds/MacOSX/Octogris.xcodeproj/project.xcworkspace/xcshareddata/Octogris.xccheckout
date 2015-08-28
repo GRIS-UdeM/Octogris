@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>61FDCBA1-CE22-48F1-A416-8BCDE91CC7D2</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>Octogris</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>4C5334256ADE7BE6B8B0CF3B0BDFC04203B98A7F</key>
 		<string>https://github.com/GRIS-UdeM/Octogris.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Builds/MacOSX/Octogris.xcodeproj/project.xcworkspace</string>
+	<string>Builds/MacOSX/Octogris.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>4C5334256ADE7BE6B8B0CF3B0BDFC04203B98A7F</key>
