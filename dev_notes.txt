@@ -113,9 +113,26 @@ ___________________
 NOW HERE: NEED TO EXTRA STUFF IN MOVER THAT IS IN CHARGE OF MOVING WITH EQUAL ANGLES AND PUT IT IN
 SETEQUALANGLES (NEW FUNCTION). ALSO NEED TO REMOVE STUFF FOR EQUAL RADIUS. SO IN FACT MOVER::MOVE
 WILL ONLY HAVE 2 MODES: INDEPENDENT CIRCULAR DELTA
+____________________________________
+SETTING UP OCTOGRIS TO WORK WITH AUDIO
+LOGIC
+    * cannot get it in 7.1, but it was relatively easy to figure out in the options
+    * open project, start random traj, sources don't come back to original position
+REAPER
+    * also easy to configure, just select 8 outputs in master and track routing
+    * sources don't come back to original position
+    * in touch mode, not write, circle (and spiral...) do more than 1 turn
+DP
+    * need to select fireface interface, then go in Studio/Bundles, add a surround bundle, then
+    * drag all square so they start at 1
+    * need to also do a bundle for stereo inputs. really a pain
+    * and could not figure how to loop, had to copy a bunch of files
 _________________________________________________________
-ok. 
-
+SETTING UP FOR ZIRKOSC
+DP
+    * 
+___________________________
+CURRENT PROBLEMS
 reaper: 
     circle traj is not exactly a circle. very imprecise. looks like there's an offset right at the start, 
 DP: 

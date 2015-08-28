@@ -1387,9 +1387,11 @@ void OctogrisAudioProcessorEditor::updateMovementModeCombo(){
         mMovementMode->addItem("Circular Fixed Angle", index++);
         mMovementMode->addItem("Circular Fully Fixed", index++);
         mMovementMode->addItem("Delta Lock", index++);
-        mMovementMode->addItem("Symmetric X", index++);
-        mMovementMode->addItem("Symmetric Y", index++);
-        //mMovementMode->addItem("Symmetric X & Y", index++);
+        if (mFilter->getNumberOfSources() == 2){
+            mMovementMode->addItem("Symmetric X", index++);
+            mMovementMode->addItem("Symmetric Y", index++);
+            //mMovementMode->addItem("Symmetric X & Y", index++);
+        }
     }
     int iCurMode = mFilter->getMovementMode() + 1;
     //iCurMode > mMovementMode->getNumItems() ? mMovementMode->setSelectedId(1) : mMovementMode->setSelectedId(iCurMode);
