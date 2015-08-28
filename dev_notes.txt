@@ -117,10 +117,7 @@ _________________________________________________________
 ok. 
 
 reaper: 
-	circle does more than 1 circle, only when writing, not reading
-            will probably be fixed when traj uses mover(?)
-
+    circle traj is not exactly a circle. very imprecise. looks like there's an offset right at the start, 
 DP: 
-        writing trajectories is not using the constraints, although reading them (using source thread, is). Need to use mover. Wait for robert's reply before doing this? 
-
+    if you move a source, then start a traj, traj starts from previous source location
 

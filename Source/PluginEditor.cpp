@@ -1521,13 +1521,9 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
     
 }
 
-void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
-{
-    
-    for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-    {
-        if (button == mMutes[i])
-        {
+void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
+    for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++) {
+        if (button == mMutes[i]) {
             float v = button->getToggleState() ? 1.f : 0.f;
             mFilter->setParameterNotifyingHost(mFilter->getParamForSpeakerM(i), v);
             mField->repaint();
@@ -1535,8 +1531,57 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         }
     }
     
-	if (mFilter->getIsAllowInputOutputModeSelection() && button == mApplyInputOutputModeButton)
-    {
+    if (button == mTrWriteButton) {
+        Trajectory::Ptr t = mFilter->getTrajectory();
+        //a trajectory exists, so we want to cancel it
+        if (t) {
+            mFilter->setTrajectory(NULL);
+            mFilter->restoreCurrentLocations(0);
+            mTrWriteButton->setButtonText("Ready");
+            mTrProgressBar->setVisible(false);
+            mTrStateEditor = kTrReady;
+            mFilter->setTrState(mTrStateEditor);
+            t->stop();
+            mFilter->setIsRecordingAutomation(false);
+            mNeedRepaint = true;
+        }
+        //a trajectory does not exist, create one
+        else {
+            float duration = mTrDuration->getText().getFloatValue();
+            bool beats = mTrUnits->getSelectedId() == 1;
+            float repeats = mTrRepeats->getText().getFloatValue();
+            int type = mTrTypeComboBox->getSelectedId();
+            
+            unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
+            
+            bool bReturn = mTrReturnComboBox->getSelectedId() == 2;
+            
+            int source = /*s_bUseOneSource ? 0 : */ mTrSrcSelect->getSelectedId()-2;
+            
+            mFilter->setTrDuration(duration);
+            JUCE_COMPILER_WARNING("this operation was already done by event funct, clean this up")
+            mFilter->setTrUnits(mTrUnits->getSelectedId());
+            mFilter->setTrRepeats(repeats);
+            mFilter->setTrType(type-1);
+            mFilter->setTrSrcSelect(source);
+            
+            bool bUniqueTarget = true;
+            if  (mFilter->getMovementMode() == 0){
+                bUniqueTarget = false;
+            }
+            
+            mFilter->setIsRecordingAutomation(true);
+            mFilter->storeCurrentLocations();
+            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget));
+            mTrWriteButton->setButtonText("Cancel");
+            mTrStateEditor = kTrWriting;
+            mFilter->setTrState(mTrStateEditor);
+            
+            mTrProgressBar->setValue(0);
+            mTrProgressBar->setVisible(true);
+        }
+    }
+    else if (mFilter->getIsAllowInputOutputModeSelection() && button == mApplyInputOutputModeButton) {
         mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
         
 		updateSources(false);
@@ -1548,8 +1593,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         mField->repaint();
         
     }
-    else if (button == mApplySrcPlacementButton)
-    {
+    else if (button == mApplySrcPlacementButton) {
         
         if (mFilter->getNumberOfSources() == 1){
             mFilter->setSourceRT(0, FPoint(0, 0));
@@ -1613,8 +1657,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         updateSourceLocationTextEditor();
         mFilter->setSrcPlacementMode(mSrcPlacement->getSelectedId());
     }
-    else if (button == mApplySpPlacementButton)
-    {
+    else if (button == mApplySpPlacementButton) {
         
         bool alternate = false;
         bool startAtTop = false;
@@ -1644,8 +1687,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
         mFilter->setSpPlacementMode(mSpPlacement->getSelectedId());
     }
     
-    else if (button == mShowGridLines)
-    {
+    else if (button == mShowGridLines) {
         mFilter->setShowGridLines(button->getToggleState());
         mField->repaint();
     }
@@ -1738,56 +1780,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button)
     
 #endif
     
-    else if (button == mTrWriteButton) {
-        Trajectory::Ptr t = mFilter->getTrajectory();
-        //a trajectory exists, so we want to cancel it
-        if (t) {
-            mFilter->setTrajectory(NULL);
-            mFilter->restoreCurrentLocations(0);
-            mTrWriteButton->setButtonText("Ready");
-            mTrProgressBar->setVisible(false);
-            mTrStateEditor = kTrReady;
-            mFilter->setTrState(mTrStateEditor);
-            t->stop();
-            mFilter->setIsRecordingAutomation(false);
-            mNeedRepaint = true;
-        }
-        //a trajectory does not exist, create one
-        else {
-            float duration = mTrDuration->getText().getFloatValue();
-            bool beats = mTrUnits->getSelectedId() == 1;
-            float repeats = mTrRepeats->getText().getFloatValue();
-            int type = mTrTypeComboBox->getSelectedId();
-          
-            unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
-            
-            bool bReturn = mTrReturnComboBox->getSelectedId() == 2;
-            
-            int source = /*s_bUseOneSource ? 0 : */ mTrSrcSelect->getSelectedId()-2;
-            
-            mFilter->setTrDuration(duration);
-            JUCE_COMPILER_WARNING("this operation was already done by event funct, clean this up")
-            mFilter->setTrUnits(mTrUnits->getSelectedId());
-            mFilter->setTrRepeats(repeats);
-            mFilter->setTrType(type-1);
-            mFilter->setTrSrcSelect(source);
-            
-            bool bUniqueTarget = true;
-            if  (mFilter->getMovementMode() == 0){
-                bUniqueTarget = false;
-            }
-
-            mFilter->setIsRecordingAutomation(true);
-			mFilter->storeCurrentLocations();
-			mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget));
-			mTrWriteButton->setButtonText("Cancel");
-            mTrStateEditor = kTrWriting;
-            mFilter->setTrState(mTrStateEditor);
-			
-			mTrProgressBar->setValue(0);
-			mTrProgressBar->setVisible(true);
-		}
-	} else {
+ else {
 		printf("unknown button clicked...\n");
 	}
 }
