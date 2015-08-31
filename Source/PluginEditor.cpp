@@ -38,10 +38,9 @@
 #include "HID_Utilities_External.h"
 #endif
 //==============================================================================
-static const int kMargin = 10;
 static const int kDefaultLabelHeight = 18;
-static const int kCenterColumnWidth = 180;
-static const int kRightColumnWidth = 340;
+
+
 static const int kParamBoxHeight = 165;
 static const int kTimerDelay = 1000 / 20; // 20 fps
 
@@ -553,25 +552,25 @@ AudioProcessorEditor (ownerFilter)
         y = kMargin;
         x += w + kMargin;
         
-        addLabel("Gui size:", x, y, w, dh, box);
-        y += dh + 5;
-        
-        {
-            ComboBox *cb = new ComboBox();
-            int index = 1;
-            cb->addItem("Small", index++);
-            cb->addItem("Medium", index++);
-            cb->addItem("Large", index++);
-            cb->setSelectedId(mFilter->getGuiSize() + 1);
-            cb->setSize(w, dh);
-            cb->setTopLeftPosition(x, y);
-            box->addAndMakeVisible(cb);
-            mComponents.add(cb);
-            y += dh + 5;
-            
-            cb->addListener(this);
-            mGuiSize = cb;
-        }
+//        addLabel("Gui size:", x, y, w, dh, box);
+//        y += dh + 5;
+//        
+//        {
+//            ComboBox *cb = new ComboBox();
+//            int index = 1;
+//            cb->addItem("Small", index++);
+//            cb->addItem("Medium", index++);
+//            cb->addItem("Large", index++);
+//            cb->setSelectedId(mFilter->getGuiSize() + 1);
+//            cb->setSize(w, dh);
+//            cb->setTopLeftPosition(x, y);
+//            box->addAndMakeVisible(cb);
+//            mComponents.add(cb);
+//            y += dh + 5;
+//            
+//            cb->addListener(this);
+//            mGuiSize = cb;
+//        }
         
         mShowGridLines = addCheckbox("Show grid lines", mFilter->getShowGridLines(), x, y, w, dh, box);
         y += dh + 5;
@@ -1116,8 +1115,8 @@ AudioProcessorEditor (ownerFilter)
     //resizable corner
     m_oResizeLimits.setSizeLimits (960, 420, 1160, 620);
     addAndMakeVisible (m_pResizer = new ResizableCornerComponent (this, &m_oResizeLimits));
-    
-    refreshSize();
+    setSize (mFilter->getGuiWidth(), mFilter->getGuiHeight());
+    //refreshSize();
 }
 
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
@@ -1199,21 +1198,24 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 }
 
 //==============================================================================
-void OctogrisAudioProcessorEditor::refreshSize()
-{
-    int fieldSize = 500;
-    
-    int guiSize = mFilter->getGuiSize();
-    fieldSize += (guiSize - 1) * 100;
-    size_t x = kMargin + fieldSize + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin;
-    size_t y = kMargin + fieldSize + kMargin;
-    setSize(x, y);
-}
+//void OctogrisAudioProcessorEditor::refreshSize()
+//{
+//    int fieldSize = 500;
+//    
+//    int guiSize = mFilter->getGuiSize();
+//    fieldSize += (guiSize - 1) * 100;
+//    size_t x = kMargin + fieldSize + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin;
+//    size_t y = kMargin + fieldSize + kMargin;
+//    setSize(x, y);
+//}
 
 void OctogrisAudioProcessorEditor::resized()
 {
     int w = getWidth();
     int h = getHeight();
+    
+    mFilter->setGuiWidth(w);
+    mFilter->setGuiHeight(h);
     
     m_pResizer->setBounds (w - 16, h - 16, 16, 16);
     
@@ -1812,10 +1814,10 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     else if (comboBox == mRoutingMode) {
 		mFilter->setRoutingMode(comboBox->getSelectedId() - 1);
 	}
-    else if (comboBox == mGuiSize) {
-        mFilter->setGuiSize(comboBox->getSelectedId() - 1);
-        refreshSize();
-    }
+//    else if (comboBox == mGuiSize) {
+//        mFilter->setGuiSize(comboBox->getSelectedId() - 1);
+//        refreshSize();
+//    }
     else if (comboBox == mProcessModeCombo) {
         int iSelectedMode = comboBox->getSelectedId() - 1;
         mFilter->setProcessMode(iSelectedMode);
@@ -1915,7 +1917,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 
 		mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
 		mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
-		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
+//		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
         mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
         
 		if (mFilter->getIsAllowInputOutputModeSelection()){
@@ -1954,7 +1956,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);
         
-        refreshSize();
+        //refreshSize();
     }
     
     hcp = mFilter->getHostChangedParameter();

@@ -165,6 +165,13 @@ static const float kThetaLockRadius = 0.05;
 static const float kThetaLockRampRadius = 0.025;
 static const float kSourceDefaultRadius = 1.f;
 
+static const int    kMargin = 10;
+static const int    kCenterColumnWidth = 180;
+static const int    kDefaultFieldSize = 500;
+static const int    kRightColumnWidth = 340;
+static const int    kDefaultWidth  = kMargin + kDefaultFieldSize + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin;
+static const int    kDefaultHeight = kMargin + kDefaultFieldSize + kMargin;
+
 //==============================================================================
 static inline float normalize(float min, float max, float value)
 {
@@ -293,8 +300,15 @@ public:
 	void setRoutingMode(int s) { mRoutingMode = s; if (mRoutingMode == 1) updateRoutingTemp(); }
 	void updateRoutingTemp();
 	
-	int getGuiSize() const { return mGuiSize; }
-	void setGuiSize(int s) { mGuiSize = s; }
+//	int getGuiSize() const { return mGuiSize; }
+//	void setGuiSize(int s) { mGuiSize = s; }
+    
+    int getGuiWidth() const{return mGuiWidth;}
+    int getGuiHeight() const{return mGuiHeight;}
+    
+    void setGuiWidth(int w) {mGuiWidth = w;}
+    void setGuiHeight(int h) {mGuiHeight = h;}
+
     
     //version 9
     int getInputOutputMode() const {return mInputOutputMode;}
@@ -567,8 +581,6 @@ public:
     JUCE_COMPILER_WARNING("have getters and setters for this instead of making it public")
     FPoint mOldSrcLocRT[JucePlugin_MaxNumInputChannels];
 	
-    
-    
 private:
 
 	bool m_bAllowInputOutputModeSelection;
@@ -583,7 +595,9 @@ private:
 	bool mLinkDistances;
 	int mMovementMode;
 	bool mShowGridLines;
-	int mGuiSize;
+	//int mGuiSize;
+    int mGuiWidth;
+    int mGuiHeight;
 
     //version 9
     int mInputOutputMode;

@@ -106,7 +106,7 @@ public:
                                                  int parameterIndex,
                                                  float newValue);
 				
-	void refreshSize();
+	//void refreshSize();
 	void fieldChanged() { mFieldNeedRepaint = true; }
 	
     //! Return the number of the source selected for the Leap Motion
@@ -151,7 +151,7 @@ private:
 	ToggleButton *mLinkDistances;
     ToggleButton *mApplyFilter;
 	ComboBox *mMovementMode;
-	ComboBox *mGuiSize;
+//	ComboBox *mGuiSize;
     ComboBox *mInputOutputModeCombo;
     TextButton *mApplyInputOutputModeButton;
 	ComboBox *mProcessModeCombo;

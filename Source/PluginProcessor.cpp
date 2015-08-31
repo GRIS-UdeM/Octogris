@@ -130,7 +130,9 @@ mFilters()
 	mShowGridLines = false;
     mIsNumberSourcesChanged = false;
     mIsNumberSpeakersChanged = false;
-	mGuiSize = 1;
+//	mGuiSize = 1;
+    mGuiWidth = kDefaultWidth,
+    mGuiHeight = kDefaultHeight,
 	mGuiTab = 0;
 	mHostChangedParameter = 0;
 	mHostChangedProperty = 0;
@@ -1782,7 +1784,8 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute ("mShowGridLines", mShowGridLines);
     xml.setAttribute ("mMovementMode", mMovementMode);
     xml.setAttribute ("mLinkDistances", mLinkDistances);
-    xml.setAttribute ("mGuiSize", mGuiSize);
+    xml.setAttribute ("mGuiWidth", mGuiWidth);
+    xml.setAttribute ("mGuiHeight", mGuiHeight);
     xml.setAttribute ("mGuiTab", mGuiTab);
     xml.setAttribute ("mOscLeapSource", mOscLeapSource);
     xml.setAttribute ("mOscReceiveEnabled", mOscReceiveEnabled);
@@ -1855,7 +1858,8 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mShowGridLines      = xmlState->getIntAttribute ("mShowGridLines", 0);
             mMovementMode       = xmlState->getIntAttribute ("mMovementMode", 0);
             mLinkDistances      = xmlState->getIntAttribute ("mLinkDistances", 0);
-            mGuiSize            = xmlState->getIntAttribute ("mGuiSize", 1);
+            mGuiWidth           = xmlState->getIntAttribute ("mGuiWidth", kDefaultWidth);
+            mGuiHeight          = xmlState->getIntAttribute ("mGuiHeight", kDefaultHeight);
             mGuiTab             = xmlState->getIntAttribute ("mGuiTab", 0);
             mOscLeapSource      = xmlState->getIntAttribute ("mOscLeapSource", 0);
             mOscReceiveEnabled  = xmlState->getIntAttribute ("mOscReceiveEnabled", 0);
@@ -1938,7 +1942,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             if (version < 2) readIntData(data, sizeInBytes, 0); // old link movement
             mMovementMode = readIntData(data, sizeInBytes, 0);
             mLinkDistances = readIntData(data, sizeInBytes, 0);
-            mGuiSize = readIntData(data, sizeInBytes, 1);
+            readIntData(data, sizeInBytes, 1); //mGuiSize
             if (version >= 8)
             {
                 mGuiTab = readIntData(data, sizeInBytes, 0);
