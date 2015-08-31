@@ -235,6 +235,11 @@ private:
     
     SourceUpdateThread* m_pSourceUpdateThread;
     
+    //! Bounds of the resizable window
+    ComponentBoundsConstrainer m_oResizeLimits;
+    
+    ScopedPointer<ResizableCornerComponent> m_pResizer;
+    
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED

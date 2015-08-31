@@ -509,9 +509,9 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
     for (int i = 0; i < mNumberOfSpeakers; i++){
         mLevels.add(0);
 
-		JUCE_COMPILER_WARNING("what is the point of setting something to itself?")
-        mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
-		mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
+//		JUCE_COMPILER_WARNING("what is the point of setting something to itself?")
+//        mParameters.set(getParamForSpeakerA(i), mParameters[getParamForSpeakerA(i)]);
+//		mParameters.set(getParamForSpeakerM(i), mParameters[getParamForSpeakerM(i)]);
     }
 
     if (bUseDefaultValues){

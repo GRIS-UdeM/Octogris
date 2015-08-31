@@ -1113,6 +1113,10 @@ AudioProcessorEditor (ownerFilter)
     
     mFilter->setCalculateLevels(true);
     
+    //resizable corner
+    m_oResizeLimits.setSizeLimits (960, 420, 1160, 620);
+    addAndMakeVisible (m_pResizer = new ResizableCornerComponent (this, &m_oResizeLimits));
+    
     refreshSize();
 }
 
@@ -1201,15 +1205,17 @@ void OctogrisAudioProcessorEditor::refreshSize()
     
     int guiSize = mFilter->getGuiSize();
     fieldSize += (guiSize - 1) * 100;
-    
-    setSize(kMargin + fieldSize + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin,
-            kMargin + fieldSize + kMargin);
+    size_t x = kMargin + fieldSize + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin;
+    size_t y = kMargin + fieldSize + kMargin;
+    setSize(x, y);
 }
 
 void OctogrisAudioProcessorEditor::resized()
 {
     int w = getWidth();
     int h = getHeight();
+    
+    m_pResizer->setBounds (w - 16, h - 16, 16, 16);
     
     int fieldWidth = w - (kMargin + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin);
     int fieldHeight = h - (kMargin + kMargin);
