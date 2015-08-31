@@ -749,7 +749,8 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			float beats = seconds * bps;
 			
 			bool done = trajectory->process(seconds, beats);
-			if (done) mTrajectory = NULL;
+            JUCE_COMPILER_WARNING("souldn't we delete mTrajectory instead of just setting to NULL?")
+            if (done) mTrajectory = NULL;
 		}
 	}
 	
@@ -831,33 +832,39 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	// process data
 	while(1)
 	{
-		unsigned int todo = (inFramesToProcess > kChunkSize) ? kChunkSize : inFramesToProcess;
+        //we process either kChunkSize frames or whatever is left in inFramesToProcess
+		unsigned int numFramesToDo = (inFramesToProcess > kChunkSize) ? kChunkSize : inFramesToProcess;
 		
-		if (processesInPlaceIsIgnored)
-		{
+		if (processesInPlaceIsIgnored) {
 			//float *inputsCopy[iActualNumberOfSources];
 			float **inputsCopy = new float* [mNumberOfSources];
 
-			for (int i = 0; i < mNumberOfSources; i++)
-			{
-				memcpy(mInputsCopy.getReference(i).b, inputs[i], todo * sizeof(float));
+			for (int i = 0; i < mNumberOfSources; i++) {
+				memcpy(mInputsCopy.getReference(i).b, inputs[i], numFramesToDo * sizeof(float));
 				inputsCopy[i] = mInputsCopy.getReference(i).b;
 			}
 			
-			ProcessData(inputsCopy, outputs, params, sampleRate, todo);
+			ProcessData(inputsCopy, outputs, params, sampleRate, numFramesToDo);
 			delete[] inputsCopy;
-		}
-		else
-			ProcessData(inputs, outputs, params, sampleRate, todo);
+        } else {
+			ProcessData(inputs, outputs, params, sampleRate, numFramesToDo);
+        }
 		
-		inFramesToProcess -= todo;
+		inFramesToProcess -= numFramesToDo;
 		if (inFramesToProcess == 0) break;
 		
 		for (int i = 0; i < mNumberOfSources; i++)
-			inputs[i] += todo;
+			inputs[i] += numFramesToDo;
 			
-		for (int o = 0; o < mNumberOfSpeakers; o++)
-			outputs[o] += todo; 
+        for (int o = 0; o < mNumberOfSpeakers; o++){
+
+            //VB_DEBUG
+            if (numFramesToDo > 1){
+                int i=0;
+            }
+            outputs[o] += numFramesToDo;
+        }
+			 
 	}
 	
 	if (mRoutingMode == 1)
@@ -884,25 +891,41 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		}
 	}
 	
-	if (mCalculateLevels)
-	{
+	if (mCalculateLevels) {
 		const float attack = kLevelAttackDefault; //params[kLevelAttackParam]; // milliseconds
 		const float release = kLevelReleaseDefault; //params[kLevelReleaseParam]; // milliseconds
 		const float ag = powf(0.01f, 1000.f / (attack * sampleRate));
 		const float rg = powf(0.01f, 1000.f / (release * sampleRate));
 		
-		for (int o = 0; o < mNumberOfSpeakers; o++)
-		{
+		for (int o = 0; o < mNumberOfSpeakers; o++) {
 			float *output = outputs[o];
 			float env = mLevels[o];
 			
-			for (unsigned int f = 0; f < oriFramesToProcess; f++)
-			{
+			for (unsigned int f = 0; f < oriFramesToProcess; f++) {
 				float s = fabsf(output[f]);
 				float g = (s > env) ? ag : rg;
 				env = g * env + (1.f - g) * s;
 			}
-			
+            
+            //VB_DEBUG
+            if (env > 1){
+                for (int iCurSmp = 0; iCurSmp < oriFramesToProcess; ++iCurSmp) {
+                    DBG(output[iCurSmp]);
+                }
+                
+                float env2 = mLevels[o];
+                for (unsigned int f = 0; f < oriFramesToProcess; f++) {
+                    float s2 = fabsf(output[f]);
+                    if (s2 > 1){
+                        int i= 0;
+                    }
+                    float g2 = (s2 > env2) ? ag : rg;
+                    env2 = g2 * env2 + (1.f - g2) * s2;
+                    if (env2 > 1){
+                        int i= 0;
+                    }
+                }
+            }
 			mLevels.setUnchecked(o, env);
 		}
 	}
@@ -1020,6 +1043,11 @@ void OctogrisAudioProcessor::addToOutput(float s, float **outputs, int o, int f)
 	float output_adj = a * m;
 	float *output = outputs[o];
 	output[f] += s * output_adj;
+    
+    //VB_DEBUG
+    if(s > 1){
+        int i = 0;
+    }
 }
 
 void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
@@ -1061,7 +1089,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	}
 
 	// compute
-	// in this context: source T, R are actually source X, Y
+	// in this context: input_x and input_x are actually source T and R
 	for (int i = 0; i < mNumberOfSources; i++)
 	{
 		float *input = inputs[i];

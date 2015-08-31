@@ -47,12 +47,32 @@ LevelComponent::~LevelComponent()
 	
 }
 
+void LevelComponent::refreshIfNeeded(){
+    float level;
+    
+    uint64_t processCounter = mFilter->getProcessCounter();
+    if (mLastProcessCounter != processCounter) {
+        mLastProcessCounter = processCounter;
+        mLevelAdjustment = 1;
+        level = mFilter->getLevel(mIndex);
+    } else {
+        mLevelAdjustment *= 0.8;
+        level = mLevelAdjustment * mFilter->getLevel(mIndex);
+    }
+    
+    if (mShowLevel != level) {
+        mShowLevel = level;
+        repaint();
+    }
+}
+
 void LevelComponent::paint (Graphics& g)
 {
 	float level = linearToDb(mShowLevel);
 	if (level < kMinLevel) level = kMinLevel;
-	else if (level > kMaxLevel) level = kMaxLevel;
-
+    else if (level > kMaxLevel){
+        level = kMaxLevel;
+    }
 	const float yellowStart = -6;
 	float hue;
 	if (level > 0)

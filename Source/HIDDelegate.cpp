@@ -216,6 +216,7 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
                             //Scheduling each detected device with the running loop to get the Handle_IOHIDDeviceInputValueCallback to be called
                             //IOHIDDeviceScheduleWithRunLoop(deviceRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
                             CFIndex nbElement = CFArrayGetCount(elementRefTab);
+                            JUCE_COMPILER_WARNING("on the devices i tried! and don't use new")
                             //There was usually 13 elements which weren't buttons on the devices I tried
                             nbButton = nbElement-13;
                             buttonPressedTab = new bool[nbButton]{false};

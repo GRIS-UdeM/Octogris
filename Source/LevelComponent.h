@@ -40,29 +40,7 @@ public:
     ~LevelComponent();
 
     void paint (Graphics&);
-	void refreshIfNeeded()
-	{
-		float level;
-	
-		uint64_t processCounter = mFilter->getProcessCounter();
-		if (mLastProcessCounter != processCounter)
-		{
-			mLastProcessCounter = processCounter;
-			mLevelAdjustment = 1;
-			level = mFilter->getLevel(mIndex);
-		}
-		else
-		{
-			mLevelAdjustment *= 0.8;
-			level = mLevelAdjustment * mFilter->getLevel(mIndex);
-		}
-		
-		if (mShowLevel != level)
-		{
-			mShowLevel = level;
-			repaint();
-		}
-	}
+    void refreshIfNeeded();
 	
 private:
 	OctogrisAudioProcessor *mFilter;

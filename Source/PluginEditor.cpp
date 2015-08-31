@@ -274,7 +274,7 @@ public:
             else
             {
                 if (mFilter->getParameter(mParamIndex) != newVal){
-                    JUCE_COMPILER_WARNING(new string("had to comment this for panspan to work... does this break other things?"))
+                    JUCE_COMPILER_WARNING("had to comment this for panspan to work... does this break other things?")
                     
                     //mFilter->beginParameterChangeGesture(mParamIndex);
                     mFilter->setParameterNotifyingHost(mParamIndex, newVal);
