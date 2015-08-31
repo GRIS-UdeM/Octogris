@@ -858,10 +858,12 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			
         for (int o = 0; o < mNumberOfSpeakers; o++){
 
+#ifdef JUCE_DEBUG
             //VB_DEBUG
             if (numFramesToDo > 1){
                 int i=0;
             }
+#endif
             outputs[o] += numFramesToDo;
         }
 			 
@@ -906,7 +908,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 				float g = (s > env) ? ag : rg;
 				env = g * env + (1.f - g) * s;
 			}
-            
+#ifdef JUCE_DEBUG
             //VB_DEBUG
             if (env > 1){
                 for (int iCurSmp = 0; iCurSmp < oriFramesToProcess; ++iCurSmp) {
@@ -926,6 +928,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
                     }
                 }
             }
+#endif
 			mLevels.setUnchecked(o, env);
 		}
 	}
@@ -1043,11 +1046,12 @@ void OctogrisAudioProcessor::addToOutput(float s, float **outputs, int o, int f)
 	float output_adj = a * m;
 	float *output = outputs[o];
 	output[f] += s * output_adj;
-    
+#ifdef JUCE_DEBUG
     //VB_DEBUG
     if(s > 1){
         int i = 0;
     }
+#endif
 }
 
 void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)

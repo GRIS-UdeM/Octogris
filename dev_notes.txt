@@ -143,7 +143,8 @@ LOGIC:
     * wiggly movements on nicolai, ok at school
 
 REAPER: 
-    * circle traj is not exactly a circle. very imprecise. looks like there's an offset right at the start, 
+    * only in touch mode, circle traj makes more than a circle
+    * check if change of constraing is instantaneous (# 51)
 
 DP: 
-    * faders are random (in hexa at least)
+    * faders are not behaving... i added a bunch of debug code, but hard to pin down and not  happening often

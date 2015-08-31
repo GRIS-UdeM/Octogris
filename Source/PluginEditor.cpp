@@ -474,7 +474,6 @@ AudioProcessorEditor (ownerFilter)
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
         
-        JUCE_COMPILER_WARNING("WTF is this????")
         if (mFilter->getIsAllowInputOutputModeSelection()){
             mFilter->setInputOutputMode(mFilter->getInputOutputMode());
         }
@@ -1551,29 +1550,15 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         }
         //a trajectory does not exist, create one
         else {
-            float duration = mTrDuration->getText().getFloatValue();
-            bool beats = mTrUnits->getSelectedId() == 1;
-            float repeats = mTrRepeats->getText().getFloatValue();
-            int type = mTrTypeComboBox->getSelectedId();
-            
+            float   duration        = mTrDuration->getText().getFloatValue();
+            bool    beats           = mTrUnits->getSelectedId() == 1;
+            float   repeats         = mTrRepeats->getText().getFloatValue();
+            int     type            = mTrTypeComboBox->getSelectedId();
+            bool    bReturn         = (mTrReturnComboBox->getSelectedId() == 2);
+            int     source          = s_bTrajMover ? -1 :  mTrSrcSelect->getSelectedId()-2;
+            bool    bUniqueTarget   = !(mFilter->getMovementMode() == 0);
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
-            
-            bool bReturn = mTrReturnComboBox->getSelectedId() == 2;
-            
-            int source = s_bTrajMover ? -1 :  mTrSrcSelect->getSelectedId()-2;
-            
-            mFilter->setTrDuration(duration);
-            JUCE_COMPILER_WARNING("this operation was already done by event funct, clean this up")
-            mFilter->setTrUnits(mTrUnits->getSelectedId());
-            mFilter->setTrRepeats(repeats);
-            mFilter->setTrType(type-1);
-            mFilter->setTrSrcSelect(source);
-            
-            bool bUniqueTarget = true;
-            if  (mFilter->getMovementMode() == 0){
-                bUniqueTarget = false;
-            }
-            
+
             mFilter->setIsRecordingAutomation(true);
             mFilter->storeCurrentLocations();
             mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget));
