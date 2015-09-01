@@ -436,18 +436,17 @@ AudioProcessorEditor (ownerFilter)
     // param box
     Colour tabBg = Colour::fromRGB(200,200,200);
     mTabs = new OctTabbedComponent(TabbedButtonBar::TabsAtTop, mFilter);
-    mTabs->addTab("Settings", tabBg, new Component(), true);
-    mTabs->addTab("Volume & Filters", tabBg, new Component(), true);
-    mTabs->addTab("Sources", tabBg, new Component(), true);
-   	mTabs->addTab("Speakers", tabBg, new Component(), true);
-    mTabs->addTab("Trajectories", tabBg, new Component(), true);
-    {
+    mTabs->addTab("Settings",           tabBg, new Component(), true);
+    mTabs->addTab("Trajectories",       tabBg, new Component(), true);
+    mTabs->addTab("Volume & Filters",   tabBg, new Component(), true);
+    mTabs->addTab("Sources",            tabBg, new Component(), true);
+   	mTabs->addTab("Speakers",           tabBg, new Component(), true);
+        {
         mOsc = CreateOscComponent(mFilter, this);
-        
-        if (mOsc) mTabs->addTab("OSC", tabBg, mOsc, true);
+        if (mOsc) mTabs->addTab("OSC",  tabBg, mOsc, true);
     }
-    mTabs->addTab("Interfaces", tabBg, new Component(), true);
-	
+    mTabs->addTab("Interfaces",         tabBg, new Component(), true);
+
     mTabs->setSize(kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
     addAndMakeVisible(mTabs);
     mComponents.add(mTabs);
@@ -469,7 +468,7 @@ AudioProcessorEditor (ownerFilter)
         addLabel("Distance/Span", x+w/3, y, w*2/3, dh, ct);
         
         mSrcSelect = new ComboBox();
-        mTabs->getTabContentComponent(2)->addAndMakeVisible(mSrcSelect);
+        mTabs->getTabContentComponent(3)->addAndMakeVisible(mSrcSelect);
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
         
@@ -498,7 +497,7 @@ AudioProcessorEditor (ownerFilter)
         addLabel("Level", x+w*2/3, y, w/3, dh, ct);
         
         mSpSelect = new ComboBox();
-        mTabs->getTabContentComponent(3)->addAndMakeVisible(mSpSelect);
+        mTabs->getTabContentComponent(4)->addAndMakeVisible(mSpSelect);
         mComponents.add(mSpSelect);
         mSpSelect->addListener(this);
 
@@ -546,6 +545,7 @@ AudioProcessorEditor (ownerFilter)
             mSmoothing = ds;
             y += dh + 5;
         }
+        mShowGridLines = addCheckbox("Show grid lines", mFilter->getShowGridLines(), x, y, w, dh, box);
         
         //-----------------------------
         // start 2nd column
@@ -571,10 +571,6 @@ AudioProcessorEditor (ownerFilter)
 //            cb->addListener(this);
 //            mGuiSize = cb;
 //        }
-        
-        mShowGridLines = addCheckbox("Show grid lines", mFilter->getShowGridLines(), x, y, w, dh, box);
-        y += dh + 5;
-        
         //only using the combo box in reaper, because other hosts set the inputs and outputs automatically
 		if (mFilter->getIsAllowInputOutputModeSelection()) {
             
@@ -618,6 +614,53 @@ AudioProcessorEditor (ownerFilter)
             
         }
         
+        y += dh + 5;
+        
+        addLabel("Routing mode:", x, y, w, dh, box);
+        y += dh + 5;
+        {
+            ComboBox *cb = new ComboBox();
+            int index = 1;
+            cb->addItem("Normal", index++);
+            cb->addItem("Internal write", index++);
+            cb->addItem("Internal read 1-2", index++);
+            cb->addItem("Internal read 3-4", index++);
+            cb->addItem("Internal read 5-6", index++);
+            cb->addItem("Internal read 7-8", index++);
+            cb->addItem("Internal read 9-10", index++);
+            cb->addItem("Internal read 11-12", index++);
+            cb->addItem("Internal read 13-14", index++);
+            cb->addItem("Internal read 15-16", index++);
+            cb->setSelectedId(mFilter->getRoutingMode() + 1);
+            cb->setSize(w, dh);
+            cb->setTopLeftPosition(x, y);
+            box->addAndMakeVisible(cb);
+            mComponents.add(cb);
+            y += dh + 5;
+            
+            cb->addListener(this);
+            mRoutingMode = cb;
+        }
+        
+        addLabel("Routing volume (dB):", x, y, w, dh, box);
+        y += dh + 5;
+        {
+            Slider *ds = addParamSlider(kParamRoutingVolume, kRoutingVolume, mFilter->getParameter(kRoutingVolume), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mRoutingVolume = ds;
+            y += dh + 5;
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
         //-----------------------------
         // start 3rd column
         y = kMargin;
@@ -651,272 +694,10 @@ AudioProcessorEditor (ownerFilter)
             mMaxSpanVolume = ds;
             y += dh + 5;
         }
-        
-        int comboW = 40;
-        addLabel(leapSupported ? "OSC/Leap source:" : "OSC source:", x, y, w-comboW, dh, box);
-        //y += dh + 5;
-        
-        {
-            mOscLeapSourceCb = new ComboBox();
-            int index = 1;
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-            {
-                String s; s << i+1;
-                mOscLeapSourceCb->addItem(s, index++);
-            }
-            
-            mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
-            mOscLeapSourceCb->setSize(comboW, dh);
-            mOscLeapSourceCb->setTopLeftPosition(x+w-comboW, y);
-            box->addAndMakeVisible(mOscLeapSourceCb);
-            mComponents.add(mOscLeapSourceCb);
-            y += dh + 5;
-            
-            mOscLeapSourceCb->addListener(this);
-        }
-        
-        
     }
-    
-    //--------------- V & F TAB ---------------- //
-    box = mTabs->getTabContentComponent(1);
-    {
-        int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
-        
-        //-----------------------------
-        // start 1st column
-        
-        {
-            addLabel("Volume center (dB):", x, y, w, dh, box);
-            y += dh + 5;
-            
-            Slider *ds = addParamSlider(kParamVolumeNear, kVolumeNear, mFilter->getParameter(kVolumeNear), x, y, w, dh, box);
-            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-            mVolumeNear = ds;
-            y += dh + 5;
-        }
-        
-        {
-            addLabel("Filter center:", x, y, w, dh, box);
-            y += dh + 5;
-            
-            Slider *ds = addParamSlider(kParamFilterNear, kFilterNear, mFilter->getParameter(kFilterNear), x, y, w, dh, box);
-            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-            mFilterNear = ds;
-            y += dh + 5;
-        }
-        
-        mApplyFilter = addCheckbox("Apply Filter", mFilter->getApplyFilter(),
-                                   x, y, w, dh, box);
-        y += dh + 5;
-        
-        //-----------------------------
-        // start 2nd column
-        y = kMargin;
-        x += w + kMargin;
-        
-        {
-            addLabel("Volume speakers (dB):", x, y, w, dh, box);
-            y += dh + 5;
-            
-            Slider *ds = addParamSlider(kParamVolumeMid, kVolumeMid, mFilter->getParameter(kVolumeMid), x, y, w, dh, box);
-            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-            mVolumeMid = ds;
-            y += dh + 5;
-        }
-        
-        {
-            addLabel("Filter speakers:", x, y, w, dh, box);
-            y += dh + 5;
-            
-            Slider *ds = addParamSlider(kParamFilterMid, kFilterMid, mFilter->getParameter(kFilterMid), x, y, w, dh, box);
-            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-            mFilterMid = ds;
-            y += dh + 5;
-        }
-        
-        //-----------------------------
-        // start 3rd column
-        y = kMargin;
-        x += w + kMargin;
-        
-        {
-            addLabel("Volume far (dB):", x, y, w, dh, box);
-            y += dh + 5;
-            
-            Slider *ds = addParamSlider(kParamVolumeFar, kVolumeFar, mFilter->getParameter(kVolumeFar), x, y, w, dh, box);
-            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-            mVolumeFar = ds;
-            y += dh + 5;
-        }
-        
-        {
-            addLabel("Filter far:", x, y, w, dh, box);
-            y += dh + 5;
-            
-            Slider *ds = addParamSlider(kParamFilterFar, kFilterFar, mFilter->getParameter(kFilterFar), x, y, w, dh, box);
-            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-            mFilterFar = ds;
-            y += dh + 5;
-        }
-    }
-    
-    //--------------- SOURCES TAB ---------------- //
-    box = mTabs->getTabContentComponent(2);
-    {
-        int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
-        int selectw = 50;
-        
-        // column 1
-        addLabel("Source placement:", x, y, w, dh, box);
-        y += dh + 5;
-        
-        mSrcPlacement = new ComboBox();
-        mSrcPlacement->addItem("Left Alternate", kLeftAlternate);
-        mSrcPlacement->addItem("Left Clockwise", kLeftClockwise);
-        mSrcPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
-        mSrcPlacement->addItem("Top Clockwise", kTopClockwise);
-        mSrcPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
-        
-        mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode());
-        box->addAndMakeVisible(mSrcPlacement);
-        mComponents.add(mSrcPlacement);
-        mSrcPlacement->setSize(w, dh);
-        mSrcPlacement->setTopLeftPosition(x, y);
-        mSrcPlacement->setExplicitFocusOrder(5);
-        //mSrcPlacement->addListener(this);
-        y += dh + 5;
-        mApplySrcPlacementButton = addButton("Apply", x, y, iButtonW, dh, box);
-        
-        // column 2
-        y = kMargin;
-        x += w + kMargin;
-        
-        addLabel("Set RA position:", x, y, w - selectw, dh, box);
-        int iasdf = mFilter->getSrcSelected();
-        mSrcSelect->setSelectedId(iasdf);
-        mSrcSelect->setSize(selectw, dh);
-        mSrcSelect->setTopLeftPosition(x + w - selectw, y);
-        mSrcSelect->setExplicitFocusOrder(5);
-        
-        int lw = 30, lwm = lw + kMargin;
-        
-        y += dh + 5;
-        
-        addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
-        y += dh + 5;
-        
-        addLabel("R:", x, y, lw, dh, box);
-        mSrcR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
-        mSrcR->setExplicitFocusOrder(6);
-        mSrcR->addListener(this);
-        y += dh + 5;
-        
-        addLabel("A:", x, y, lw, dh, box);
-        mSrcT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-        mSrcT->setExplicitFocusOrder(7);
-        mSrcT->addListener(this);
-        
-    }
-    //--------------- SPEAKERS TAB ---------------- //
-    box = mTabs->getTabContentComponent(3);
-    {
-        int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
-        int selectw = 50;
-        
-        //-------- column 1 --------
-        addLabel("Speaker placement:", x, y, w, dh, box);
-        y += dh + 5;
-        
-        mSpPlacement = new ComboBox();
-        mSpPlacement->addItem("Left Alternate", kLeftAlternate);
-        mSpPlacement->addItem("Left Clockwise", kLeftClockwise);
-        mSpPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
-        mSpPlacement->addItem("Top Clockwise", kTopClockwise);
-        mSpPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
-        
-        mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
-        
-        box->addAndMakeVisible(mSpPlacement);
-        mComponents.add(mSpPlacement);
-        mSpPlacement->setSize(w, dh);
-        mSpPlacement->setTopLeftPosition(x, y);
-        mSpPlacement->setExplicitFocusOrder(5);
-        //mSpPlacement->addListener(this);
-        y += dh + 5;
-        mApplySpPlacementButton = addButton("Apply", x, y, iButtonW, dh, box);
-        
-        
-        //-------- column 2 --------
-        y = kMargin;
-        x += w + kMargin;
-        
-        addLabel("Set RA position:", x, y, w - selectw, dh, box);
-        mSpSelect->setSelectedId(mFilter->getSpSelected());
-        mSpSelect->setSize(selectw, dh);
-        mSpSelect->setTopLeftPosition(x + w - selectw, y);
-        mSpSelect->setExplicitFocusOrder(5);
-        
-        int lw = 30, lwm = lw + kMargin;
-        
-        
-        y += dh + 5;
-        addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
-        y += dh + 5;
-        addLabel("R:", x, y, lw, dh, box);
-        mSpR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
-        mSpR->setExplicitFocusOrder(6);
-        mSpR->addListener(this);
-        
-        y += dh + 5;
-        addLabel("A:", x, y, lw, dh, box);
-        mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
-        mSpT->setExplicitFocusOrder(7);
-        mSpT->addListener(this);
-		
-		//-------- column 3 --------
-        y = kMargin;
-        x += w + kMargin;
-		
-		addLabel("Routing mode:", x, y, w, dh, box);
-        y += dh + 5;
-		{
-			ComboBox *cb = new ComboBox();
-			int index = 1;
-			cb->addItem("Normal", index++);
-			cb->addItem("Internal write", index++);
-			cb->addItem("Internal read 1-2", index++);
-			cb->addItem("Internal read 3-4", index++);
-			cb->addItem("Internal read 5-6", index++);
-			cb->addItem("Internal read 7-8", index++);
-			cb->addItem("Internal read 9-10", index++);
-			cb->addItem("Internal read 11-12", index++);
-			cb->addItem("Internal read 13-14", index++);
-			cb->addItem("Internal read 15-16", index++);
-			cb->setSelectedId(mFilter->getRoutingMode() + 1);
-			cb->setSize(w, dh);
-			cb->setTopLeftPosition(x, y);
-			box->addAndMakeVisible(cb);
-			mComponents.add(cb);
-			y += dh + 5;
-			
-			cb->addListener(this);
-			mRoutingMode = cb;
-		}
-		
-		addLabel("Routing volume (dB):", x, y, w, dh, box);
-        y += dh + 5;
-		{
-			Slider *ds = addParamSlider(kParamRoutingVolume, kRoutingVolume, mFilter->getParameter(kRoutingVolume), x, y, w, dh, box);
-			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-			mRoutingVolume = ds;
-			y += dh + 5;
-		}
-	}
-    
     
     //--------------- TRAJECTORIES TAB ---------------- //
-    box = mTabs->getTabContentComponent(4);
+    box = mTabs->getTabContentComponent(1);
     {
         int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
         
@@ -939,7 +720,7 @@ AudioProcessorEditor (ownerFilter)
         
         {
             ComboBox *cb = new ComboBox();
-
+            
             cb->setSize(cbw, dh);
             cb->setTopLeftPosition(x+cbw+5, y);
             box->addAndMakeVisible(cb);
@@ -1034,7 +815,7 @@ AudioProcessorEditor (ownerFilter)
         } else {
             mTrProgressBar->setVisible(false);
         }
-
+        
         box->addChildComponent(mTrProgressBar);
         mComponents.add(mTrProgressBar);
         
@@ -1043,8 +824,246 @@ AudioProcessorEditor (ownerFilter)
             mTrWriteButton->setToggleState(true, dontSendNotification);
             mTrWriteButton->setButtonText("Cancel");
         }
-    
+        
     }
+    
+    //--------------- V & F TAB ---------------- //
+    box = mTabs->getTabContentComponent(2);
+    {
+        int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
+        
+        //-----------------------------
+        // start 1st column
+        
+        {
+            addLabel("Volume center (dB):", x, y, w, dh, box);
+            y += dh + 5;
+            
+            Slider *ds = addParamSlider(kParamVolumeNear, kVolumeNear, mFilter->getParameter(kVolumeNear), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mVolumeNear = ds;
+            y += dh + 5;
+        }
+        
+        {
+            addLabel("Filter center:", x, y, w, dh, box);
+            y += dh + 5;
+            
+            Slider *ds = addParamSlider(kParamFilterNear, kFilterNear, mFilter->getParameter(kFilterNear), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mFilterNear = ds;
+            y += dh + 5;
+        }
+        
+        mApplyFilter = addCheckbox("Apply Filter", mFilter->getApplyFilter(),
+                                   x, y, w, dh, box);
+        y += dh + 5;
+        
+        //-----------------------------
+        // start 2nd column
+        y = kMargin;
+        x += w + kMargin;
+        
+        {
+            addLabel("Volume speakers (dB):", x, y, w, dh, box);
+            y += dh + 5;
+            
+            Slider *ds = addParamSlider(kParamVolumeMid, kVolumeMid, mFilter->getParameter(kVolumeMid), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mVolumeMid = ds;
+            y += dh + 5;
+        }
+        
+        {
+            addLabel("Filter speakers:", x, y, w, dh, box);
+            y += dh + 5;
+            
+            Slider *ds = addParamSlider(kParamFilterMid, kFilterMid, mFilter->getParameter(kFilterMid), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mFilterMid = ds;
+            y += dh + 5;
+        }
+        
+        //-----------------------------
+        // start 3rd column
+        y = kMargin;
+        x += w + kMargin;
+        
+        {
+            addLabel("Volume far (dB):", x, y, w, dh, box);
+            y += dh + 5;
+            
+            Slider *ds = addParamSlider(kParamVolumeFar, kVolumeFar, mFilter->getParameter(kVolumeFar), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mVolumeFar = ds;
+            y += dh + 5;
+        }
+        
+        {
+            addLabel("Filter far:", x, y, w, dh, box);
+            y += dh + 5;
+            
+            Slider *ds = addParamSlider(kParamFilterFar, kFilterFar, mFilter->getParameter(kFilterFar), x, y, w, dh, box);
+            ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+            mFilterFar = ds;
+            y += dh + 5;
+        }
+    }
+    
+    //--------------- SOURCES TAB ---------------- //
+    box = mTabs->getTabContentComponent(3);
+    {
+        int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
+        int selectw = 50;
+        
+        // column 1
+        addLabel("Source placement:", x, y, w, dh, box);
+        y += dh + 5;
+        
+        mSrcPlacement = new ComboBox();
+        mSrcPlacement->addItem("Left Alternate", kLeftAlternate);
+        mSrcPlacement->addItem("Left Clockwise", kLeftClockwise);
+        mSrcPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
+        mSrcPlacement->addItem("Top Clockwise", kTopClockwise);
+        mSrcPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
+        
+        mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode());
+        box->addAndMakeVisible(mSrcPlacement);
+        mComponents.add(mSrcPlacement);
+        mSrcPlacement->setSize(w, dh);
+        mSrcPlacement->setTopLeftPosition(x, y);
+        mSrcPlacement->setExplicitFocusOrder(5);
+        //mSrcPlacement->addListener(this);
+        y += dh + 5;
+        mApplySrcPlacementButton = addButton("Apply", x, y, iButtonW, dh, box);
+        
+        // column 2
+        y = kMargin;
+        x += w + kMargin;
+        
+        addLabel("Set RA position:", x, y, w - selectw, dh, box);
+        int iasdf = mFilter->getSrcSelected();
+        mSrcSelect->setSelectedId(iasdf);
+        mSrcSelect->setSize(selectw, dh);
+        mSrcSelect->setTopLeftPosition(x + w - selectw, y);
+        mSrcSelect->setExplicitFocusOrder(5);
+        
+        int lw = 30, lwm = lw + kMargin;
+        
+        y += dh + 5;
+        
+        addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
+        y += dh + 5;
+        
+        addLabel("R:", x, y, lw, dh, box);
+        mSrcR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
+        mSrcR->setExplicitFocusOrder(6);
+        mSrcR->addListener(this);
+        y += dh + 5;
+        
+        addLabel("A:", x, y, lw, dh, box);
+        mSrcT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
+        mSrcT->setExplicitFocusOrder(7);
+        mSrcT->addListener(this);
+        
+    }
+    //--------------- SPEAKERS TAB ---------------- //
+    box = mTabs->getTabContentComponent(4);
+    {
+        int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
+        int selectw = 50;
+        
+        //-------- column 1 --------
+        addLabel("Speaker placement:", x, y, w, dh, box);
+        y += dh + 5;
+        
+        mSpPlacement = new ComboBox();
+        mSpPlacement->addItem("Left Alternate", kLeftAlternate);
+        mSpPlacement->addItem("Left Clockwise", kLeftClockwise);
+        mSpPlacement->addItem("Left Counter Clockwise", kLeftCounterClockWise);
+        mSpPlacement->addItem("Top Clockwise", kTopClockwise);
+        mSpPlacement->addItem("Top Counter Clockwise", kTopCounterClockwise);
+        
+        mSpPlacement->setSelectedId(mFilter->getSpPlacementMode());
+        
+        box->addAndMakeVisible(mSpPlacement);
+        mComponents.add(mSpPlacement);
+        mSpPlacement->setSize(w, dh);
+        mSpPlacement->setTopLeftPosition(x, y);
+        mSpPlacement->setExplicitFocusOrder(5);
+        //mSpPlacement->addListener(this);
+        y += dh + 5;
+        mApplySpPlacementButton = addButton("Apply", x, y, iButtonW, dh, box);
+        
+        
+        //-------- column 2 --------
+        y = kMargin;
+        x += w + kMargin;
+        
+        addLabel("Set RA position:", x, y, w - selectw, dh, box);
+        mSpSelect->setSelectedId(mFilter->getSpSelected());
+        mSpSelect->setSize(selectw, dh);
+        mSpSelect->setTopLeftPosition(x + w - selectw, y);
+        mSpSelect->setExplicitFocusOrder(5);
+        
+        int lw = 30, lwm = lw + kMargin;
+        
+        
+        y += dh + 5;
+        addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
+        y += dh + 5;
+        addLabel("R:", x, y, lw, dh, box);
+        mSpR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
+        mSpR->setExplicitFocusOrder(6);
+        mSpR->addListener(this);
+        
+        y += dh + 5;
+        addLabel("A:", x, y, lw, dh, box);
+        mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
+        mSpT->setExplicitFocusOrder(7);
+        mSpT->addListener(this);
+		
+		//-------- column 3 --------
+//        y = kMargin;
+//        x += w + kMargin;
+//		
+//		addLabel("Routing mode:", x, y, w, dh, box);
+//        y += dh + 5;
+//		{
+//			ComboBox *cb = new ComboBox();
+//			int index = 1;
+//			cb->addItem("Normal", index++);
+//			cb->addItem("Internal write", index++);
+//			cb->addItem("Internal read 1-2", index++);
+//			cb->addItem("Internal read 3-4", index++);
+//			cb->addItem("Internal read 5-6", index++);
+//			cb->addItem("Internal read 7-8", index++);
+//			cb->addItem("Internal read 9-10", index++);
+//			cb->addItem("Internal read 11-12", index++);
+//			cb->addItem("Internal read 13-14", index++);
+//			cb->addItem("Internal read 15-16", index++);
+//			cb->setSelectedId(mFilter->getRoutingMode() + 1);
+//			cb->setSize(w, dh);
+//			cb->setTopLeftPosition(x, y);
+//			box->addAndMakeVisible(cb);
+//			mComponents.add(cb);
+//			y += dh + 5;
+//			
+//			cb->addListener(this);
+//			mRoutingMode = cb;
+//		}
+//		
+//		addLabel("Routing volume (dB):", x, y, w, dh, box);
+//        y += dh + 5;
+//		{
+//			Slider *ds = addParamSlider(kParamRoutingVolume, kRoutingVolume, mFilter->getParameter(kRoutingVolume), x, y, w, dh, box);
+//			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
+//			mRoutingVolume = ds;
+//			y += dh + 5;
+//		}
+	}
+    
+    
 
     //--------------- INTERFACE TAB ---------------- //
 #if WIN32
@@ -1055,6 +1074,27 @@ AudioProcessorEditor (ownerFilter)
     {
         int x = kMargin, y = kMargin;
         const int m = 10, dh = 18, cw = 300;
+        int comboW = 40, w = (box->getWidth() - kMargin) / 3 - kMargin;
+        
+        addLabel(leapSupported ? "OSC/Leap source:" : "OSC source:", x, y, w-comboW, dh, box);
+        {
+            mOscLeapSourceCb = new ComboBox();
+            int index = 1;
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
+            {
+                String s; s << i+1;
+                mOscLeapSourceCb->addItem(s, index++);
+            }
+            
+            mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
+            mOscLeapSourceCb->setSize(comboW, dh);
+            mOscLeapSourceCb->setTopLeftPosition(x+w-comboW, y);
+            box->addAndMakeVisible(mOscLeapSourceCb);
+            mComponents.add(mOscLeapSourceCb);            
+            mOscLeapSourceCb->addListener(this);
+        }
+        
+        y += dh + 5;
         
         mEnableLeap = new ToggleButton();
         mEnableLeap->setButtonText("Enable Leap");
@@ -1064,6 +1104,15 @@ AudioProcessorEditor (ownerFilter)
         mEnableLeap->setToggleState(false, dontSendNotification);
         box->addAndMakeVisible(mEnableLeap);
         mComponents.add(mEnableLeap);
+        
+        mStateLeap = new Label();
+        mStateLeap->setText("", dontSendNotification);
+        mStateLeap->setSize(cw, dh);
+        mStateLeap->setJustificationType(Justification::left);
+        mStateLeap->setMinimumHorizontalScale(1);
+        mStateLeap->setTopLeftPosition(x+cw-150+ m, y);
+        box->addAndMakeVisible(mStateLeap);
+        mComponents.add(mStateLeap);
         
         y += dh + 5;
         
@@ -1076,27 +1125,14 @@ AudioProcessorEditor (ownerFilter)
         box->addAndMakeVisible(mEnableJoystick);
         mComponents.add(mEnableJoystick);
         
-        x += cw-150 + m;
-        
         mStateJoystick = new Label();
         mStateJoystick->setText("", dontSendNotification);
         mStateJoystick->setSize(cw, dh);
         mStateJoystick->setJustificationType(Justification::left);
         mStateJoystick->setMinimumHorizontalScale(1);
-        mStateJoystick->setTopLeftPosition(x, y);
+        mStateJoystick->setTopLeftPosition(x+cw-150+ m, y);
         box->addAndMakeVisible(mStateJoystick);
         mComponents.add(mStateJoystick);
-        
-        y -= dh + 5;
-        
-        mStateLeap = new Label();
-        mStateLeap->setText("", dontSendNotification);
-        mStateLeap->setSize(cw, dh);
-        mStateLeap->setJustificationType(Justification::left);
-        mStateLeap->setMinimumHorizontalScale(1);
-        mStateLeap->setTopLeftPosition(x, y);
-        box->addAndMakeVisible(mStateLeap);
-        mComponents.add(mStateLeap);
         //fin de changements lié a l'ajout de joystick à l'onglet leap
     }
 #endif
@@ -1225,7 +1261,6 @@ void OctogrisAudioProcessorEditor::resized()
     
     mField->setBounds(kMargin, kMargin, fieldSize, fieldSize);
 
-    //m_logoImage.setBounds(15, 15, 80, 80);
     m_logoImage.setBounds(15, 15, (float)fieldSize/7, (float)fieldSize/7);
     
     int iLabelX = 2*(float)fieldSize/3;
@@ -1233,16 +1268,17 @@ void OctogrisAudioProcessorEditor::resized()
     
     int x = kMargin + fieldSize  + kMargin;
     int y = kMargin;
+    int iExtraSpace = 10;
     mSourcesBoxLabel->setTopLeftPosition(x, y);
     
     int lh = mSourcesBoxLabel->getHeight() + 2;
-    mSourcesBox->setBounds(x, y + lh, kCenterColumnWidth, h - (kMargin + kParamBoxHeight + kMargin + y + lh));
+    mSourcesBox->setBounds(x, y + lh, kCenterColumnWidth, h - (kMargin + kParamBoxHeight + kMargin + y + lh + iExtraSpace));
     
-    mTabs->setBounds(x, h - (kParamBoxHeight + kMargin), kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
+    mTabs->setBounds(x, h - (kParamBoxHeight + kMargin + iExtraSpace), kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight + iExtraSpace);
     
     x += kCenterColumnWidth + kMargin;
     mSpeakersBoxLabel->setTopLeftPosition(x, y);
-    mSpeakersBox->setBounds(x, y + lh, kRightColumnWidth, h - (kMargin + kParamBoxHeight + kMargin + y + lh));
+    mSpeakersBox->setBounds(x, y + lh, kRightColumnWidth, h - (kMargin + kParamBoxHeight + kMargin + y + lh + iExtraSpace));
 }
 
 
