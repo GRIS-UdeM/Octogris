@@ -143,8 +143,7 @@ LOGIC:
     * wiggly movements on nicolai, ok at school
 
 REAPER: 
-    * only in touch mode, circle traj makes more than a circle
-    * check if change of constraing is instantaneous (# 51)
+    - only in touch mode, circle traj makes more than a circle. This only happens when sources were not moved before starting trajectory. So perhaps some buffer is not correctly set?
 
 DP: 
     * faders are not behaving... i added a bunch of debug code, but hard to pin down and not  happening often

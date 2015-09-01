@@ -481,7 +481,6 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
         
     }
     
-    
     for (int i = 0; i < mNumberOfSources; i++){
 		mLockedThetas.set(i, getSourceRT(i).y);
     }
