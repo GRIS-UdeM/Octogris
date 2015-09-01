@@ -195,7 +195,6 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
                 {
                     CFIndex ind = CFSetGetCount(deviceSetRef);
                     int nbJoysticks = (int)ind;
-                    std::string nbJoyStr = std::to_string(nbJoysticks);
                     CFTypeRef array[nbJoysticks];
                     CFSetGetValues(deviceSetRef, array);
                     
@@ -210,7 +209,6 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
                         uint32_t usagePage = kHIDPage_GenericDesktop;
                         uint32_t usage = kHIDUsage_GD_Joystick;
                         if (IOHIDDeviceConformsTo(deviceRef, usagePage, usage)) {
-                            //std::cout << "Joystick number 1 " +  nbJoyStr + " joysticks connected \n ";
                             
                             CFArrayRef elementRefTab = IOHIDDeviceCopyMatchingElements(deviceRef, NULL, kIOHIDOptionsTypeNone);
                             //Scheduling each detected device with the running loop to get the Handle_IOHIDDeviceInputValueCallback to be called
@@ -256,7 +254,6 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
                     }
                 }
             }
-            
         }
         // open it
         IOReturn tIOReturn = IOHIDManagerOpen(gIOHIDManagerRef, kIOHIDOptionsTypeNone);
@@ -273,132 +270,96 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
     return (result);
 }
 
-void HIDDelegate::readJoystickValuesAndUsingThem()
-{
-    CFIndex ind = CFSetGetCount(deviceSetRef);
-    int nbJoysticks = (int)ind;
+void HIDDelegate::readJoystickValuesAndUsingThem() {
     
-    
-    std::string nbJoyStr = std::to_string(nbJoysticks);
+    int nbJoysticks = CFSetGetCount(deviceSetRef);
     CFTypeRef array[nbJoysticks];
     CFSetGetValues(deviceSetRef, array);
-    for(int i=0; i< nbJoysticks;i++)
-    {
-        if(CFGetTypeID(array[i])== IOHIDDeviceGetTypeID())
-        {
-            CFIndex nbElement = CFArrayGetCount(gElementCFArrayRef);
-            if (gElementCFArrayRef) {
-                
-                
-                for (CFIndex i = 0; i<nbElement; i++) {
-                    IOHIDElementRef tIOHIDElementRef  = (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef,i);
-                    uint32_t usagePage = IOHIDElementGetUsagePage(tIOHIDElementRef);
-                    uint32_t usage = IOHIDElementGetUsage(tIOHIDElementRef);
-                    double min = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
-                    double max = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
-                    double value =IOHIDElement_GetValue(tIOHIDElementRef,  kIOHIDValueScaleTypePhysical);
-                    if(mEditor->getHIDDel()!=NULL)
-                    {
-                        if(usagePage==1)   //axis
-                        {
-                            if(!std::isnan(value))
-                            {
-                                mEditor->getHIDDel()->JoystickUsed(usage, value,min,max);  //calling Joystick used the function that will modify the source position
-                            }
-                        }
-                        if(usagePage==9)   //buttons
-                        {
-                            if(value==1)  //being pressed
-                            {
-                                if(usage<= mEditor->getNbSources() )
-                                {
-                                    mEditor->getHIDDel()->setButtonPressedTab(usage,1);
-                                    
-                                    mEditor->getMover()->begin(usage-1, kHID);
-                                }
-                            }
-                            if(value==0)  //released
-                            {
-                                if(usage<= mEditor ->getNbSources() )
-                                {
-                                    mEditor->getHIDDel()->setButtonPressedTab(usage,0);
-                                    
-                                }
-                            }
-                            
-                            
-                        }
-                    }
-
+    for(int iCurJoy = 0; iCurJoy < nbJoysticks; iCurJoy++) {
+        
+        if(gElementCFArrayRef == NULL || CFGetTypeID(array[iCurJoy]) != IOHIDDeviceGetTypeID()){
+            continue;
+        }
+        CFIndex nbElement = CFArrayGetCount(gElementCFArrayRef);
+        
+        for (CFIndex iCurElm = 0; iCurElm < nbElement; ++iCurElm) {
+            IOHIDElementRef tIOHIDElementRef  = (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef, iCurElm);
+            uint32_t usagePage = IOHIDElementGetUsagePage(tIOHIDElementRef);
+            uint32_t usage = IOHIDElementGetUsage(tIOHIDElementRef);
+            double min = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
+            double max = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
+            double value =IOHIDElement_GetValue(tIOHIDElementRef,  kIOHIDValueScaleTypePhysical);
+            
+            if(mEditor->getHIDDel() == NULL) {
+                continue;
+            }
+            //axis
+            else if(usagePage == 1 && !std::isnan(value)){
+                //calling Joystick used the function that will modify the source position
+                mEditor->getHIDDel()->JoystickUsed(usage, value,min,max);
+            }
+            //buttons
+            else if(usagePage == 9 && value == 1 && usage <= mEditor->getNbSources()){
+                mEditor->getHIDDel()->setButtonPressedTab(usage,1);
+                mEditor->getMover()->begin(usage-1, kHID);
+                if (value == 0 && usage<= mEditor ->getNbSources()){  //released
+                    mEditor->getHIDDel()->setButtonPressedTab(usage,0);
                 }
             }
-
             
         }
     }
     mEditor->getMover()->end(kHID);
-    
 }
 
 /** JoystickUsed is called, to handle the effect of the use of the axis while pressing a button on the joystick, by Handle_IOHIDDeviceInputValueCallback because as a static method it is quite limited.
  We give JoystickUsed the usage to know which axis is being used, the scaledValue to know how much the joystick is bent. MaxValue is used to know the resolution of the axis. */
-void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValue, double maxValue)
-{
+void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValue, double maxValue) {
     
-    for(int i =0; i< getNbButton(); i++)    //Sweep accross all the joystick button to check which is being pressed
-    {
-        if(this->getButtonPressedTab(i))
-        {
-            
-            FPoint newPoint;
-            //Switch to detect what part of the device is being used
-            switch (usage) {
-                case 48:
-                    //Normalizing the coordinate from every joystick as float between 0 and 1, multiplied by the size of the panel to have the new x coordinate of the new point.
-                    vx = (scaledValue  / maxValue);
-                    newPoint = mFilter->getSourceXY01(i);
-                    //vy = newPoint.getY();
-                    if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5))<=1.26)
-                    {
-                        newPoint.setX(vx);   //modifying the old point into the new one
-                        newPoint.setY(vy);
-                        mEditor->getMover()->move(newPoint, kHID);  //Using de move method from the source mover so the other sources f
-                    }
-                    
-                    break;
-                case 49:
-                    //Normalizing the coordonate from every joystick as float between -1 and 1, multiplied by the size of the panel to have the new x coordinate of the new point.
-                    vy = (1 - (scaledValue  / (maxValue)));
-                    //Converting the scaled value of the Y axis send by te joystick to the type of coordinates used by setSourceXY
-                    newPoint = mFilter->getSourceXY01(i);
-                    //vx = newPoint.getX();
-                    if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5))<=1.26)
-                    {
-                        newPoint.setX(vx);
-                        newPoint.setY(vy);
-                        
-                        mEditor->getMover()->move(newPoint, kHID);
-                    }
-                    break;
-                case 53:
-                    //printf("Axe RZ !!!! \n");
-                    break;
-                case 54:
-                    printf("Slider !!!! \n");
-                    break;
-                case 57:
-                    printf("Hat Switch !!!! \n");
-                    break;
-                default:
-                    break;
-            }
-            mEditor->repaint();
+    for(int iCurBut = 0; iCurBut < getNbButton(); ++iCurBut) {    //Sweep accross all the joystick button to check which is being pressed
+        if(!this->getButtonPressedTab(iCurBut)) {
+            continue;
         }
-        
+        FPoint newPoint;
+        //Switch to detect what part of the device is being used
+        switch (usage) {
+            case 48:
+                //Normalizing the coordinate from every joystick as float between 0 and 1, multiplied by the size of the panel to have the new x coordinate of the new point.
+                vx = (scaledValue  / maxValue);
+                newPoint = mFilter->getSourceXY01(iCurBut);
+                
+                if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5)) <= 1.26) {
+                    newPoint.setX(vx);   //modifying the old point into the new one
+                    newPoint.setY(vy);
+                    mEditor->getMover()->move(newPoint, kHID);  //Using de move method from the source mover so the other sources f
+                }
+                break;
+            case 49:
+                //Normalizing the coordonate from every joystick as float between -1 and 1, multiplied by the size of the panel to have the new x coordinate of the new point.
+                vy = (1 - (scaledValue  / (maxValue)));
+                //Converting the scaled value of the Y axis send by te joystick to the type of coordinates used by setSourceXY
+                newPoint = mFilter->getSourceXY01(iCurBut);
+                //vx = newPoint.getX();
+                if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5))<=1.26) {
+                    newPoint.setX(vx);
+                    newPoint.setY(vy);
+                    mEditor->getMover()->move(newPoint, kHID);
+                }
+                break;
+            case 53:
+                //printf("Axe RZ !!!! \n");
+                break;
+            case 54:
+                //printf("Slider !!!! \n");
+                break;
+            case 57:
+                //printf("Hat Switch !!!! \n");
+                break;
+            default:
+                break;
+        }
+        mEditor->repaint();
     }
-    
-    
-    
 }
 
 void HIDDelegate::setButtonPressedTab(u_int32_t usage, bool state)  //Get and Set to use the button pressed array
