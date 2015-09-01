@@ -1746,7 +1746,7 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
         mBufferSpLocM[i] = mParameters[getParamForSpeakerM(i)];
     }
 }
-
+//p_iLocToRestore == -1 by default, meaning restore all locations
 void OctogrisAudioProcessor::restoreCurrentLocations(int p_iLocToRestore){
     
     if (p_iLocToRestore == -1){
@@ -1758,8 +1758,8 @@ void OctogrisAudioProcessor::restoreCurrentLocations(int p_iLocToRestore){
             mParameters.set(getParamForSourceD(i), fValue);
         }
     } else {
-        //only restore location for selected source, which is source 0 for now
-        int i = 0;
+        //only restore location for selected source
+        int i = p_iLocToRestore;
         mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
         mParameters.set(getParamForSourceY(i), mBufferSrcLocY[i]);
         float fValue = mBufferSrcLocD[i];

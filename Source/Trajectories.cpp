@@ -446,7 +446,7 @@ protected:
 	void spProcess(float duration, float seconds)
 	{
         if (fmodf(mDone, mDuration) < 0.01){
-            mFilter->restoreCurrentLocations(0);
+            mFilter->restoreCurrentLocations(mFilter->getSelectedSource());
         }
         
 		mClock += seconds;
@@ -569,7 +569,7 @@ protected:
 	}
     
     void resetIfRandomTarget(){
-        mFilter->restoreCurrentLocations(0);
+        mFilter->restoreCurrentLocations(mFilter->getSelectedSource());
     }
 	
 private:

@@ -502,12 +502,8 @@ AudioProcessorEditor (ownerFilter)
         mSpSelect->addListener(this);
 
         updateSpeakers(true);
-
     }
-    
-    
-    
-    
+
     int dh = kDefaultLabelHeight;
     int iButtonW = 50;
     
@@ -523,7 +519,6 @@ AudioProcessorEditor (ownerFilter)
         y += dh + 5;
         
         {
-            
             mMovementMode = new ComboBox();
             updateMovementModeCombo();
             
@@ -1583,13 +1578,13 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         //a trajectory exists, so we want to cancel it
         if (t) {
             mFilter->setTrajectory(NULL);
-            mFilter->restoreCurrentLocations(0);
+            mFilter->setIsRecordingAutomation(false); 
+            mFilter->restoreCurrentLocations(mFilter->getSelectedSource());
             mTrWriteButton->setButtonText("Ready");
             mTrProgressBar->setVisible(false);
             mTrStateEditor = kTrReady;
             mFilter->setTrState(mTrStateEditor);
             t->stop();
-            mFilter->setIsRecordingAutomation(false);
             mNeedRepaint = true;
         }
         //a trajectory does not exist, create one
@@ -1937,7 +1932,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			} else {
 				mTrWriteButton->setButtonText("Ready");
                 mTrWriteButton->setToggleState(false, dontSendNotification);
-                mFilter->restoreCurrentLocations(0);
+                mFilter->restoreCurrentLocations(mFilter->getSelectedSource());
 				mTrProgressBar->setVisible(false);
                 mTrStateEditor = kTrReady;
 				mFilter->setTrState(mTrStateEditor);
