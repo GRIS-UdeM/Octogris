@@ -87,19 +87,19 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
         double value = IOHIDValueGetScaledValue(inIOHIDValueRef, kIOHIDValueScaleTypePhysical);
         OctogrisAudioProcessorEditor* tempEditor = (OctogrisAudioProcessorEditor*) inContext;  //we get the editor from the context
         if(tempEditor->getHIDDel() != NULL) {
-            if(usagePage==1){   //axis
+            if(usagePage==1) {   //axis
                 tempEditor->getHIDDel()->JoystickUsed(usage, value,min,max);  //calling Joystick used the function that will modify the source position
             }
-            if(usagePage==9){   //buttons
+            if(usagePage == 9) {   //buttons
                 
                 double state = IOHIDValueGetScaledValue(inIOHIDValueRef, kIOHIDValueScaleTypePhysical);
-                if(state==1){  //being pressed
+                if(state == 1) {  //being pressed
                     if(usage<= tempEditor->getNbSources() ) {
                         tempEditor->getHIDDel()->setButtonPressedTab(usage,1);
                         
                         tempEditor->getMover()->begin(usage-1, kHID);
                     }
-                } else if (state==0){  //released
+                } else if (state == 0) {  //released
                     if(usage<= tempEditor ->getNbSources() ) {
                         tempEditor->getHIDDel()->setButtonPressedTab(usage,0);
                         tempEditor->getMover()->end(kHID);
@@ -155,120 +155,99 @@ CFDictionaryRef HIDDelegate::hu_CreateMatchingDictionary(uint32_t inUsagePage, u
     return (refHIDMatchDictionary);
 }   // hu_CreateMatchingDictionary
 
-/** Initialize_HID has to be used once you have created your HIDDelegate in order for the programme to know all there is to know about your joystick (address, number of buttons, setting the callback etc) */
+/** Initialize_HID has to be used once you have created your HIDDelegate in order for the program to know all there is to know about your joystick (address, number of buttons, setting the callback etc) */
 OSStatus HIDDelegate::Initialize_HID(void *inContext) {
-    printf("(context: %p)", inContext);
     
-    OSStatus result = -1;
-    do {    // TRY / THROW block
-        // create the manager
-        if (!gIOHIDManagerRef) {
-            printf("%s: Could not create IOHIDManager.\n", __PRETTY_FUNCTION__);
-            break;  // THROW
+    // create the manager
+    if (!gIOHIDManagerRef) {
+        printf("%s: Could not create IOHIDManager.\n", __PRETTY_FUNCTION__);
+        return -1;
+    }
+    
+    CFMutableArrayRef matchingCFArrayRef = CFArrayCreateMutable(kCFAllocatorDefault,0, &kCFTypeArrayCallBacks);
+    if(CFGetTypeID(gIOHIDManagerRef)==IOHIDManagerGetTypeID() && matchingCFArrayRef){
+        CFDictionaryRef matchingCFDictJoystickRef = hu_CreateMatchingDictionary(kHIDPage_GenericDesktop,kHIDUsage_GD_Joystick); //we set the matching dictionnary only with joysticks
+        CFDictionaryRef matchingCFDictGamePadRef  = hu_CreateMatchingDictionary(kHIDPage_GenericDesktop,kHIDUsage_GD_GamePad); //we set the matching dictionnary only with gamepads
+        CFArrayAppendValue( matchingCFArrayRef, matchingCFDictJoystickRef );
+        CFArrayAppendValue( matchingCFArrayRef, matchingCFDictGamePadRef );
+        if(matchingCFArrayRef) {
+            IOHIDManagerSetDeviceMatchingMultiple( gIOHIDManagerRef, matchingCFArrayRef );
+            IOHIDManagerRegisterDeviceMatchingCallback(gIOHIDManagerRef, Handle_DeviceMatchingCallback, inContext);
+            IOHIDManagerRegisterDeviceRemovalCallback (gIOHIDManagerRef, Handle_DeviceRemovalCallback, inContext);
+            IOHIDManagerScheduleWithRunLoop(gIOHIDManagerRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+        } else {
+            fprintf(stderr, "%s: hu_CreateDeviceMatchingDictionary failed.", __PRETTY_FUNCTION__);
+            return -1;
         }
         
-        // register our matching & removal callbacks
-        IOHIDManagerRegisterDeviceMatchingCallback(gIOHIDManagerRef, Handle_DeviceMatchingCallback, inContext);
-        IOHIDManagerRegisterDeviceRemovalCallback(gIOHIDManagerRef, Handle_DeviceRemovalCallback, inContext);
-        
-        
-        if(CFGetTypeID(gIOHIDManagerRef)==IOHIDManagerGetTypeID())
-        {
-            CFMutableArrayRef matchingCFArrayRef = CFArrayCreateMutable(kCFAllocatorDefault,0, &kCFTypeArrayCallBacks);
-            if(matchingCFArrayRef)
-            {
-                CFDictionaryRef matchingCFDictJoysticktRef = hu_CreateMatchingDictionary(kHIDPage_GenericDesktop,kHIDUsage_GD_Joystick);
-                CFDictionaryRef matchingCFDictGamePadtRef = hu_CreateMatchingDictionary(kHIDPage_GenericDesktop,kHIDUsage_GD_GamePad);
-                CFArrayAppendValue( matchingCFArrayRef, matchingCFDictJoysticktRef );
-                CFArrayAppendValue( matchingCFArrayRef, matchingCFDictGamePadtRef );
-                if(matchingCFArrayRef)
-                {
-                    // setup matching dictionary
-                    IOHIDManagerSetDeviceMatchingMultiple(gIOHIDManagerRef, matchingCFArrayRef);
-                } else {
-                    fprintf(stderr, "%s: hu_CreateDeviceMatchingDictionary failed.", __PRETTY_FUNCTION__);
-                    break;
+        //we get the list of joystick connected and we go through it to have the address
+        deviceSetRef = IOHIDManagerCopyDevices(gIOHIDManagerRef);
+        if(deviceSetRef != 0x0) {
+            int nbJoysticks = (int)CFSetGetCount(deviceSetRef);
+            CFTypeRef array[nbJoysticks];
+            CFSetGetValues(deviceSetRef, array);
+            
+            for(int i = 0; i < nbJoysticks; ++i) {
+                if(CFGetTypeID(array[i])== IOHIDDeviceGetTypeID()) {
+                    deviceRef = (IOHIDDeviceRef)array[i];
                 }
+                IOHIDDeviceRegisterInputValueCallback(deviceRef, Handle_IOHIDDeviceInputValueCallback, inContext);
+                uint32_t page = kHIDPage_GenericDesktop;
+                uint32_t joystickUsage = kHIDUsage_GD_Joystick;
+                uint32_t gamepadUsage = kHIDUsage_GD_GamePad;
                 
-                deviceSetRef = IOHIDManagerCopyDevices(gIOHIDManagerRef);
-                if(deviceSetRef!=0x0)
-                {
-                    CFIndex ind = CFSetGetCount(deviceSetRef);
-                    int nbJoysticks = (int)ind;
-                    CFTypeRef array[nbJoysticks];
-                    CFSetGetValues(deviceSetRef, array);
+                //if device is not a joystick or a gamepad, continue
+                if (! (IOHIDDeviceConformsTo(deviceRef, page, joystickUsage) || IOHIDDeviceConformsTo(deviceRef, page, gamepadUsage))) {
+                    continue;
+                }
+                //std::cout << "Joystick number 1 " +  std::to_string(nbJoysticks) + " joysticks connected \n ";
+                
+                CFArrayRef elementRefTab = IOHIDDeviceCopyMatchingElements(deviceRef, NULL, kIOHIDOptionsTypeNone);
+                
+                IOHIDDeviceScheduleWithRunLoop(deviceRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+                
+                CFIndex nbElement = CFArrayGetCount(elementRefTab);
+                nbButton = nbElement-13;
+                JUCE_COMPILER_WARNING("this array is just wrong. fix this bullshit")
+                buttonPressedTab = new bool[nbButton]{false};
+                gElementCFArrayRef =  IOHIDDeviceCopyMatchingElements(deviceRef, NULL, kIOHIDOptionsTypeNone);
+                
+                if (!gElementCFArrayRef) {
+                    continue;
+                }
+                for (CFIndex i = 0; i < nbElement; ++i) {
+                    IOHIDElementRef tIOHIDElementRef  = (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef,i);
+                    IOHIDElementType tIOHIDElementType = IOHIDElementGetType(tIOHIDElementRef);
+                    if (tIOHIDElementType > kIOHIDElementTypeInput_ScanCodes) {
+                        continue;
+                    }
                     
-                    for(int i=0; i< nbJoysticks;i++)
-                    {
-                        if(CFGetTypeID(array[i])== IOHIDDeviceGetTypeID())
-                        {
-                            deviceRef = (IOHIDDeviceRef)array[i];
-                            
-                        }
-                        IOHIDDeviceRegisterInputValueCallback(deviceRef, Handle_IOHIDDeviceInputValueCallback, inContext);
-                        uint32_t usagePage = kHIDPage_GenericDesktop;
-                        uint32_t usage = kHIDUsage_GD_Joystick;
-                        if (IOHIDDeviceConformsTo(deviceRef, usagePage, usage)) {
-                            
-                            CFArrayRef elementRefTab = IOHIDDeviceCopyMatchingElements(deviceRef, NULL, kIOHIDOptionsTypeNone);
-                            //Scheduling each detected device with the running loop to get the Handle_IOHIDDeviceInputValueCallback to be called
-                            //IOHIDDeviceScheduleWithRunLoop(deviceRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
-                            CFIndex nbElement = CFArrayGetCount(elementRefTab);
-                            JUCE_COMPILER_WARNING("on the devices i tried! and don't use new")
-                            //There was usually 13 elements which weren't buttons on the devices I tried
-                            nbButton = nbElement-13;
-                            buttonPressedTab = new bool[nbButton]{false};
-                            gElementCFArrayRef =  IOHIDDeviceCopyMatchingElements(deviceRef,
-                                                                                  NULL,
-                                                                                  kIOHIDOptionsTypeNone);
-                            
-                            if (gElementCFArrayRef) {
-                                
-                                //Verifying each elements of the devices to detect any problems.
-                                for (CFIndex i = 0; i<nbElement; i++) {
-                                    IOHIDElementRef tIOHIDElementRef  = (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef,i);
-                                    
-                                    IOHIDElementType tIOHIDElementType = IOHIDElementGetType(tIOHIDElementRef);
-                                    if (tIOHIDElementType > kIOHIDElementTypeInput_ScanCodes) {
-                                        continue;
-                                    }
-                                    
-                                    uint32_t reportSize = IOHIDElementGetReportSize(tIOHIDElementRef);
-                                    uint32_t reportCount = IOHIDElementGetReportCount(tIOHIDElementRef);
-                                    if ((reportSize * reportCount) > 64) {
-                                        continue;
-                                    }
-                                    
-                                    uint32_t usagePage = IOHIDElementGetUsagePage(tIOHIDElementRef);
-                                    uint32_t usage = IOHIDElementGetUsage(tIOHIDElementRef);
-                                    if (!usagePage || !usage) {
-                                        continue;
-                                    }
-                                    if (-1 == usage) {
-                                        continue;
-                                    }
-                                    
-                                }
-                            }
-                        }
+                    uint32_t reportSize = IOHIDElementGetReportSize(tIOHIDElementRef);
+                    uint32_t reportCount = IOHIDElementGetReportCount(tIOHIDElementRef);
+                    if ((reportSize * reportCount) > 64) {
+                        continue;
+                    }
+                    
+                    uint32_t usagePage = IOHIDElementGetUsagePage(tIOHIDElementRef);
+                    uint32_t usage = IOHIDElementGetUsage(tIOHIDElementRef);
+                    if (!usagePage || !usage || usage == -1) {
+                        continue;
                     }
                 }
             }
         }
-        // open it
-        IOReturn tIOReturn = IOHIDManagerOpen(gIOHIDManagerRef, kIOHIDOptionsTypeNone);
-        if (kIOReturnSuccess != tIOReturn) {
-            printf("%s: IOHIDManagerOpen error: 0x%08u (\"%s\" - \"%s\").\n",
-                   __PRETTY_FUNCTION__,
-                   tIOReturn);
-            break;  // THROW
-        }
-        
-        printf("IOHIDManager (%p) creaded and opened!", (void *) gIOHIDManagerRef);
-    } while (false);
+    }
+    // open it
+    IOReturn tIOReturn = IOHIDManagerOpen(gIOHIDManagerRef, kIOHIDOptionsTypeNone);
+    if (kIOReturnSuccess != tIOReturn) {
+        printf("%s: IOHIDManagerOpen error: 0x%08u (\"\" - \"\").\n", __PRETTY_FUNCTION__, tIOReturn);
+        return -1;  // THROW
+    }
     
-    return (result);
+    printf("IOHIDManager (%p) creaded and opened!", (void *) gIOHIDManagerRef);
+    return 0;
 }
+
 
 void HIDDelegate::readJoystickValuesAndUsingThem() {
     
@@ -283,20 +262,22 @@ void HIDDelegate::readJoystickValuesAndUsingThem() {
         CFIndex nbElement = CFArrayGetCount(gElementCFArrayRef);
         
         for (CFIndex iCurElm = 0; iCurElm < nbElement; ++iCurElm) {
-            IOHIDElementRef tIOHIDElementRef  = (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef, iCurElm);
-            uint32_t usagePage = IOHIDElementGetUsagePage(tIOHIDElementRef);
-            uint32_t usage = IOHIDElementGetUsage(tIOHIDElementRef);
-            double min = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
-            double max = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
-            double value =IOHIDElement_GetValue(tIOHIDElementRef,  kIOHIDValueScaleTypePhysical);
-            
             if(mEditor->getHIDDel() == NULL) {
                 continue;
             }
+            
+            IOHIDElementRef tIOHIDElementRef= (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef, iCurElm);
+            uint32_t usagePage              = IOHIDElementGetUsagePage(tIOHIDElementRef);
+            uint32_t usage                  = IOHIDElementGetUsage(tIOHIDElementRef);
+            double value                    = IOHIDElement_GetValue(tIOHIDElementRef,  kIOHIDValueScaleTypePhysical);
+
             //axis
-            else if(usagePage == 1 && !std::isnan(value)){
+            if(usagePage == 1 && !std::isnan(value)){
                 //calling Joystick used the function that will modify the source position
-                mEditor->getHIDDel()->JoystickUsed(usage, value,min,max);
+                double min = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
+                double max = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
+
+                mEditor->getHIDDel()->JoystickUsed(usage, value, min, max);
             }
             //buttons
             else if(usagePage == 9 && value == 1 && usage <= mEditor->getNbSources()){
@@ -312,11 +293,13 @@ void HIDDelegate::readJoystickValuesAndUsingThem() {
     mEditor->getMover()->end(kHID);
 }
 
-/** JoystickUsed is called, to handle the effect of the use of the axis while pressing a button on the joystick, by Handle_IOHIDDeviceInputValueCallback because as a static method it is quite limited.
- We give JoystickUsed the usage to know which axis is being used, the scaledValue to know how much the joystick is bent. MaxValue is used to know the resolution of the axis. */
+/** JoystickUsed is called, to handle the effect of the use of the axis while pressing a button on the joystick, 
+ by Handle_IOHIDDeviceInputValueCallback because as a static method it is quite limited.
+ We give JoystickUsed the usage to know which axis is being used, the scaledValue to know how much the joystick is bent. 
+ MaxValue is used to know the resolution of the axis. */
 void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValue, double maxValue) {
     
-    for(int iCurBut = 0; iCurBut < getNbButton(); ++iCurBut) {    //Sweep accross all the joystick button to check which is being pressed
+    for(int iCurBut = 0; iCurBut < getNbButton(); ++iCurBut) {    //Sweep accross all the joystick buttons to check which is being pressed
         if(!this->getButtonPressedTab(iCurBut)) {
             continue;
         }
@@ -331,7 +314,7 @@ void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValu
                 if(((vx-0.5)*(vx-0.5))+((vy-0.5)*(vy-0.5)) <= 1.26) {
                     newPoint.setX(vx);   //modifying the old point into the new one
                     newPoint.setY(vy);
-                    mEditor->getMover()->move(newPoint, kHID);  //Using de move method from the source mover so the other sources f
+                    mEditor->getMover()->move(newPoint, kHID);
                 }
                 break;
             case 49:
