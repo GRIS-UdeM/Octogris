@@ -211,7 +211,7 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
         
         for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); iCurSrc++) {
             if (iCurSrc == mSelectedSrc) {
-                mFilter->mOldSrcLocRT[iCurSrc] = newSelSrcPosRT  ;
+                mFilter->mOldSrcLocRT[iCurSrc] = newSelSrcPosRT;
                 continue;
             }
             //all x's and y's here are actually r's and t's
@@ -225,10 +225,18 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     FPoint newCurSrcPosRT = oldCurSrcPosRT + delSelSrcPosRT;
                     
                     JUCE_COMPILER_WARNING("this needs to bounce like when we're going off circle, otherwise we lose the delta")
-                    if (newCurSrcPosRT.x < 0) newCurSrcPosRT.x = 0;
-                    if (newCurSrcPosRT.x > kRadiusMax) newCurSrcPosRT.x = kRadiusMax;
-                    if (newCurSrcPosRT.y < 0) newCurSrcPosRT.y += kThetaMax;
-                    if (newCurSrcPosRT.y > kThetaMax) newCurSrcPosRT.y -= kThetaMax;
+                    if (newCurSrcPosRT.x < 0){
+                        newCurSrcPosRT.x = 0;
+                    }
+                    if (newCurSrcPosRT.x > kRadiusMax){
+                        newCurSrcPosRT.x = kRadiusMax;
+                    }
+                    if (newCurSrcPosRT.y < 0){
+                        newCurSrcPosRT.y += kThetaMax;
+                    }
+                    if (newCurSrcPosRT.y > kThetaMax){
+                        newCurSrcPosRT.y -= kThetaMax;
+                    }
                     
                     mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
                     mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
@@ -243,6 +251,8 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     }
                     
                     //calculate new position for curSrc using delta for selected source
+                    JUCE_COMPILER_WARNING("storing the position of the initial mouse click in mSourcesDownXY allows us to bounce back from r < 0 or r > 1 because our position is alwauys" +
+                                          "relative to the initial mouse click. However we lose that history when we release the mouse button. So this is elegant, but sub-ideal. ")
                     FPoint oldCurSrcPosXY = (mMoverType == kSourceThread) ? mFilter->convertRt2Xy(mFilter->mOldSrcLocRT[iCurSrc]) : mSourcesDownXY[iCurSrc];
                     FPoint newCurSrcPosXY = oldCurSrcPosXY + delSelSrcPosXY;
                     
