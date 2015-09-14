@@ -606,10 +606,10 @@ AudioProcessorEditor (ownerFilter)
             mComponents.add(mInputOutputModeCombo);
             
             mApplyInputOutputModeButton = addButton("Apply", x + w - iButtonW, y, iButtonW, dh, box);
-            
+            y += dh + 5;
         }
         
-        y += dh + 5;
+
         
         addLabel("Routing mode:", x, y, w, dh, box);
         y += dh + 5;
@@ -1144,7 +1144,7 @@ AudioProcessorEditor (ownerFilter)
     mFilter->setCalculateLevels(true);
     
     //resizable corner
-    m_oResizeLimits.setSizeLimits (960, 420, 1160, 620);
+    m_oResizeLimits.setSizeLimits (960-150, 420-150, 1560, 1020);
     addAndMakeVisible (m_pResizer = new ResizableCornerComponent (this, &m_oResizeLimits));
     setSize (mFilter->getGuiWidth(), mFilter->getGuiHeight());
     //refreshSize();
