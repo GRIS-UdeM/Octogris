@@ -1956,9 +1956,9 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             if (version >= 6) mApplyFilter = readIntData(data, sizeInBytes, 1);
             
             if (version >= 9){
-                int iInputOutputMode = readIntData(data, sizeInBytes, 1);
-                setInputOutputMode(iInputOutputMode);
-                if (iInputOutputMode >= i2o2 && iInputOutputMode <= i2o16){
+                mInputOutputMode = readIntData(data, sizeInBytes, 1);
+                //setInputOutputMode(iInputOutputMode);
+                if (mInputOutputMode >= i2o2 && mInputOutputMode <= i2o16){
                     if (mMovementMode >= 1 && mMovementMode <= 3){
                         mMovementMode += 5;
                     } else if (mMovementMode >= 4 && mMovementMode < 8){
