@@ -246,6 +246,20 @@ void FieldComponent::paint (Graphics& g)
 					Justification(Justification::centred), false);
 		
 	}
+    
+    // - - - - - - - - - - - -
+    //draw line and circle for selected source
+    // - - - - - - - - - - - -
+    int iSelectedSrc = mFilter->getSelectedSource();
+    float hue = (float)iSelectedSrc / mFilter->getNumberOfSources() + 0.577251;
+    if (hue > 1) hue -= 1;
+    g.setColour(Colour::fromHSV(hue, 1, 1, 0.8f));
+    FPoint sourceXY = mFilter->getSourceXY(iSelectedSrc);
+    float fCenter = fieldWidth/2;
+    float fRadius = (fieldWidth - kSourceDiameter)/4;
+    g.drawLine   (fCenter, fCenter, fCenter + sourceXY.x * fRadius, fCenter - sourceXY.y * fRadius);
+    float radiusZenith = sqrtf(pow(2 * sourceXY.x * fRadius,2) + pow(2 * sourceXY.y * fRadius,2));
+    g.drawEllipse(fCenter - radiusZenith/2 , fCenter - radiusZenith/2, radiusZenith, radiusZenith, 1.0);
 	
 	// - - - - - - - - - - - -
 	// draw sources
@@ -286,29 +300,6 @@ void FieldComponent::paint (Graphics& g)
 		g.drawText(s, p.x - radius, p.y - radius, diameter, diameter,
 					Justification(Justification::centred), false);
 	}
-    
-    // - - - - - - - - - - - -
-    //draw line and circle for selected source
-    // - - - - - - - - - - - -
-    int iSelectedSrc = mFilter->getSelectedSource();
-    float hue = (float)iSelectedSrc / mFilter->getNumberOfSources() + 0.577251;
-    if (hue > 1) hue -= 1;
-    g.setColour(Colour::fromHSV(hue, 1, 1, 0.8f));
-    
-    
-    
-    FPoint sourceXY = mFilter->getSourceXY(iSelectedSrc);
-    //g.drawLine(_ZirkOSC_Center_X, _ZirkOSC_Center_Y, _ZirkOSC_Center_X + fX, _ZirkOSC_Center_Y + fY );
-    g.drawLine(fieldWidth/2, fieldWidth/2, fieldWidth/2 + sourceXY.x*(fieldWidth - kSourceDiameter)/4, fieldWidth/2 -sourceXY.y*(fieldWidth - kSourceDiameter)/4);
-
-    
-    float radiusZenith = sqrtf(sourceXY.x * sourceXY.x + sourceXY.y * sourceXY.y);
-    g.drawEllipse(fieldWidth/2-radiusZenith, fieldWidth/2-radiusZenith, radiusZenith*2, radiusZenith*2, 1.0);
-    
-//    float w = (1 / kRadiusMax) * (fieldWidth - kSourceDiameter);
-//    float x = (fieldWidth - w) / 2;
-//    g.drawEllipse(x, x, w, w, 1);
-
 }
 
 
