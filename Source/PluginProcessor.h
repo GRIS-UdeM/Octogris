@@ -674,6 +674,7 @@ private:
     bool m_bIsRecordingAutomation;
     int m_iSourceLocationChanged;
     
+    JUCE_COMPILER_WARNING("there ALREADY was a mSrcSelected! merge these 2 variables")
     int m_iSelectedSource;
     
     bool m_bPreventSourceLocationUpdate;

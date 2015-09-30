@@ -138,12 +138,14 @@ DP
     * no sound in either my new or old project, probably problem with bundles
 
 ___________________________
-CURRENT PROBLEMS
-LOGIC:
-    * wiggly movements on nicolai, ok at school
-
-REAPER: 
-    - only in touch mode, circle traj makes more than a circle. This only happens when sources were not moved before starting trajectory. So perhaps some buffer is not correctly set?
-
 DP: 
     * faders are not behaving... i added a bunch of debug code, but hard to pin down and not  happening often
+___________________________
+#44: loading presets from 213 doesn't work
+
+* DOWNGRADING opening project with 224 with only 213 installed crashes DP. Hard to test because debugging in xcode will generate 224
+    * but let's assume downgrading is really rare. and let's concentrate ourselves with upgrading
+* UPGRADING
+    * need to load project with 213, save, then reopen with 224
+
+ok i have a hunch that in DP in 213, the inputoutput mode was not correctly saved. need to go back in git and debug.
