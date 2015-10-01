@@ -320,8 +320,7 @@ public:
     int getSpPlacementMode() const {return mSpPlacementMode;}
     void setSpPlacementMode(int i);
     
-    int getSrcSelected() const {return mSrcSelected;}
-    int getSpSelected() const {return mSpSelected;}
+
 
     int getTrType() const {return m_iTrType;}
     void setTrType(int i){m_iTrType = i;}
@@ -556,15 +555,12 @@ public:
     }
     int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
 
-    int getSelectedSource(){
-        return m_iSelectedSource;
-    }
-    void setSelectedSource (int iSrc){
-        m_iSelectedSource = iSrc;
-    }
-
+    int getSrcSelected() const {return mSrcSelected;}
+    int getSpSelected() const {return mSpSelected;}
+    
     void setSrcSelected(int p_i){
     	mSrcSelected = p_i;
+        mHostChangedParameter++;
 	}
 
 	void setSpSelected(int p_i){
@@ -677,9 +673,6 @@ private:
     std::vector<FirFilter> mFilters;
     bool m_bIsRecordingAutomation;
     int m_iSourceLocationChanged;
-    
-    JUCE_COMPILER_WARNING("there ALREADY was a mSrcSelected! merge these 2 variables")
-    int m_iSelectedSource;
     
     bool m_bPreventSourceLocationUpdate;
 	

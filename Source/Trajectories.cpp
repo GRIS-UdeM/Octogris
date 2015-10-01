@@ -32,7 +32,7 @@
 // ==============================================================================
 void Trajectory::start() {
     if (s_bTrajMover){
-        mMover->begin(mFilter->getSelectedSource(), kTrajectory);
+        mMover->begin(mFilter->getSrcSelected(), kTrajectory);
     } else if (s_bUseOneSource){
         int j = 0;
         mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
@@ -234,7 +234,7 @@ protected:
         float da = mDone / mDuration * (2 * M_PI);
         if (!mCCW) da = -da;
         if (s_bTrajMover){
-            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSelectedSource());
+            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
             mMover->move(mFilter->convertRt2Xy01(p.x, p.y+da), kTrajectory);
         } else {
             for (int i = 0; i < mFilter->getNumberOfSources(); i++)
@@ -270,7 +270,7 @@ protected:
         if (!mCCW) da = -da;
         
         if (s_bTrajMover){
-            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSelectedSource());
+            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
             float l = (cos(da)+1)*0.5;
             float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
             float t = p.y + 2*da;
@@ -313,7 +313,7 @@ protected:
         }
         
         if (s_bTrajMover){
-            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSelectedSource());
+            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
             float l = mCross ? cos(da) : (cos(da)+1)*0.5;
             float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
             mMover->move(mFilter->convertRt2Xy01(r, p.y), kTrajectory);
@@ -348,7 +348,7 @@ protected:
         if (!mCCW) da = -da;
         if (s_bTrajMover){
             // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
-            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSelectedSource());
+            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
             float a = 1;
             float b = 0.5;
             float cosDa = cos(da);
@@ -446,7 +446,7 @@ protected:
 	void spProcess(float duration, float seconds)
 	{
         if (fmodf(mDone, mDuration) < 0.01){
-            mFilter->restoreCurrentLocations(mFilter->getSelectedSource());
+            mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
         }
         
 		mClock += seconds;
@@ -458,7 +458,7 @@ protected:
             float r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
             
             if (s_bTrajMover){
-                FPoint p = mFilter->getSourceXY(mFilter->getSelectedSource());
+                FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
                 if (!mUniqueTarget){
                     r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
                     r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
@@ -569,7 +569,7 @@ protected:
 	}
     
     void resetIfRandomTarget(){
-        mFilter->restoreCurrentLocations(mFilter->getSelectedSource());
+        mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
     }
 	
 private:

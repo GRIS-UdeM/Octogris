@@ -937,7 +937,7 @@ AudioProcessorEditor (ownerFilter)
         x += w + kMargin;
         
         addLabel("Set RA position:", x, y, w - selectw, dh, box);
-        mSrcSelect->setSelectedId(mFilter->getSrcSelected());
+        mSrcSelect->setSelectedId(mFilter->getSrcSelected()+1);
         mSrcSelect->setSize(selectw, dh);
         mSrcSelect->setTopLeftPosition(x + w - selectw, y);
         mSrcSelect->setExplicitFocusOrder(5);
@@ -1335,7 +1335,7 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
         String s; s << i+1;
         mSrcSelect->addItem(s, index++);
     }
-    mSrcSelect->setSelectedId(mFilter->getSrcSelected());
+    mSrcSelect->setSelectedId(mFilter->getSrcSelected()+1);
     
     
     //source selection combo in trajectory tab
@@ -1578,7 +1578,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         if (t) {
             mFilter->setTrajectory(NULL);
             mFilter->setIsRecordingAutomation(false); 
-            mFilter->restoreCurrentLocations(mFilter->getSelectedSource());
+            mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
             mTrWriteButton->setButtonText("Ready");
             mTrProgressBar->setVisible(false);
             mTrStateEditor = kTrReady;
@@ -1681,7 +1681,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
                 offset += delta;
             }
         }
-        updateSourceLocationTextEditor();
+        updateSourceLocationTextEditor(false);
         mFilter->setSrcPlacementMode(mSrcPlacement->getSelectedId());
     }
     else if (button == mApplySpPlacementButton) {
@@ -1869,7 +1869,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 	}
 
     else if (comboBox == mSrcSelect){
-        updateSourceLocationTextEditor();
+        updateSourceLocationTextEditor(true);
     }
     else if (comboBox == mSpSelect){
         updateSpeakerLocationTextEditor();
@@ -1906,10 +1906,12 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 }
 
 
-void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
+void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(bool p_bUpdateFilter){
     int iSelectedSrc = mSrcSelect->getSelectedId();
     iSelectedSrc = (iSelectedSrc <= 0) ? 1: iSelectedSrc;
-    mFilter->setSrcSelected(iSelectedSrc);
+    if (p_bUpdateFilter){
+        mFilter->setSrcSelected(iSelectedSrc-1);
+    }
     FPoint curPosition = mFilter->getSourceRT(iSelectedSrc-1);
     mSrcR->setText(String(curPosition.x));
     mSrcT->setText(String(curPosition.y * 180. / M_PI));
@@ -1932,7 +1934,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			} else {
 				mTrWriteButton->setButtonText("Ready");
                 mTrWriteButton->setToggleState(false, dontSendNotification);
-                mFilter->restoreCurrentLocations(mFilter->getSelectedSource());
+                mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
 				mTrProgressBar->setVisible(false);
                 mTrStateEditor = kTrReady;
 				mFilter->setTrState(mTrStateEditor);
@@ -1962,11 +1964,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
             }
         }
         
-        mSrcSelect->setSelectedId(mFilter->getSrcSelected());
+        mSrcSelect->setSelectedId(mFilter->getSrcSelected()+1);
         mSpSelect->setSelectedId(mFilter->getSpSelected());
         
         mSrcPlacement->setSelectedId(mFilter->getSrcPlacementMode(), dontSendNotification);
-        updateSourceLocationTextEditor();
+        updateSourceLocationTextEditor(false);
         mSpPlacement->setSelectedId(mFilter->getSpPlacementMode(), dontSendNotification);
         updateSpeakerLocationTextEditor();
         
@@ -2014,7 +2016,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mFilterMid->setValue(mFilter->getParameter(kFilterMid));
         mFilterFar->setValue(mFilter->getParameter(kFilterFar));
         
-        updateSourceLocationTextEditor();
+        updateSourceLocationTextEditor(false);
         updateSpeakerLocationTextEditor();
         
         for (int i = 0; i < mFilter->getNumberOfSources(); i++) {

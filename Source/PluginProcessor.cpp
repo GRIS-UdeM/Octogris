@@ -142,8 +142,8 @@ mFilters()
     //version 9
     mInputOutputMode = 18;  //by default we have 8 inputs and 16 outputs
     mSrcPlacementMode = 1;
-    mSrcSelected = 1;
-    m_iSelectedSource = 0;
+    mSrcSelected = 0;
+    
     mSpPlacementMode = 1;
     mSpSelected = 1;
     m_iTrType = 0;
@@ -1868,7 +1868,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             
             mSrcPlacementMode   = xmlState->getIntAttribute ("mSrcPlacementMode", 1);
             mSpPlacementMode    = xmlState->getIntAttribute ("mSpPlacementMode", 1);
-            mSrcSelected        = xmlState->getIntAttribute ("mSrcSelected", 1);
+            mSrcSelected        = xmlState->getIntAttribute ("mSrcSelected", 0);
             mSpSelected         = xmlState->getIntAttribute ("mSpSelected", 1);
             
             mTrState            = xmlState->getIntAttribute ("mTrState", 0);
@@ -1963,7 +1963,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
                 
                 mSrcPlacementMode = readIntData(data, sizeInBytes, 1);
                 mSpPlacementMode = readIntData(data, sizeInBytes, 1);
-                mSrcSelected = readIntData(data, sizeInBytes, 1);
+                mSrcSelected = readIntData(data, sizeInBytes, 0);
                 mSpSelected = readIntData(data, sizeInBytes, 1);
                 
                 m_iTrType = readIntData(data, sizeInBytes, 0);

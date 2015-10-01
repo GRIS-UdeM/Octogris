@@ -250,7 +250,7 @@ void FieldComponent::paint (Graphics& g)
     // - - - - - - - - - - - -
     //draw line and circle for selected source
     // - - - - - - - - - - - -
-    int iSelectedSrc = mFilter->getSelectedSource();
+    int iSelectedSrc = mFilter->getSrcSelected();
     float hue = (float)iSelectedSrc / mFilter->getNumberOfSources() + 0.577251;
     if (hue > 1) hue -= 1;
     g.setColour(Colour::fromHSV(hue, 1, 1, 0.8f));

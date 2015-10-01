@@ -222,7 +222,7 @@ private:
 	Box *mSpeakersBox;
     void updateSources(bool p_bCalledFromConstructor);
     void updateSpeakers(bool p_bCalledFromConstructor);
-    void updateSourceLocationTextEditor();
+    void updateSourceLocationTextEditor(bool p_bUpdateFilter);
     void updateSpeakerLocationTextEditor();
     void updateMovementModeCombo();
     void updateTrajectoryComboboxes();
