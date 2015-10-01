@@ -937,26 +937,25 @@ AudioProcessorEditor (ownerFilter)
         x += w + kMargin;
         
         addLabel("Set RA position:", x, y, w - selectw, dh, box);
-        int iasdf = mFilter->getSrcSelected();
-        mSrcSelect->setSelectedId(iasdf);
+        mSrcSelect->setSelectedId(mFilter->getSrcSelected());
         mSrcSelect->setSize(selectw, dh);
         mSrcSelect->setTopLeftPosition(x + w - selectw, y);
         mSrcSelect->setExplicitFocusOrder(5);
         
-        int lw = 30, lwm = lw + kMargin;
+        int lw = 60, lwm = lw + kMargin;
         
         y += dh + 5;
         
         addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
         y += dh + 5;
         
-        addLabel("R:", x, y, lw, dh, box);
+        addLabel("Ray:", x, y, lw, dh, box);
         mSrcR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
         mSrcR->setExplicitFocusOrder(6);
         mSrcR->addListener(this);
         y += dh + 5;
         
-        addLabel("A:", x, y, lw, dh, box);
+        addLabel("Angle:", x, y, lw, dh, box);
         mSrcT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
         mSrcT->setExplicitFocusOrder(7);
         mSrcT->addListener(this);
@@ -1001,19 +1000,19 @@ AudioProcessorEditor (ownerFilter)
         mSpSelect->setTopLeftPosition(x + w - selectw, y);
         mSpSelect->setExplicitFocusOrder(5);
         
-        int lw = 30, lwm = lw + kMargin;
+        int lw = 60, lwm = lw + kMargin;
         
         
         y += dh + 5;
         addLabel("R: 0 to 2, A: 0 to 360", x, y, w, dh, box);
         y += dh + 5;
-        addLabel("R:", x, y, lw, dh, box);
+        addLabel("Ray:", x, y, lw, dh, box);
         mSpR = addTextEditor("1", x + lwm, y, w - lwm, dh, box);
         mSpR->setExplicitFocusOrder(6);
         mSpR->addListener(this);
         
         y += dh + 5;
-        addLabel("A:", x, y, lw, dh, box);
+        addLabel("Angle:", x, y, lw, dh, box);
         mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
         mSpT->setExplicitFocusOrder(7);
         mSpT->addListener(this);
@@ -1908,9 +1907,10 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 
 
 void OctogrisAudioProcessorEditor::updateSourceLocationTextEditor(){
-    int i = mSrcSelect->getSelectedId();
-    i = (i <= 0) ? 1: i;
-    FPoint curPosition = mFilter->getSourceRT(i-1);
+    int iSelectedSrc = mSrcSelect->getSelectedId();
+    iSelectedSrc = (iSelectedSrc <= 0) ? 1: iSelectedSrc;
+    mFilter->setSrcSelected(iSelectedSrc);
+    FPoint curPosition = mFilter->getSourceRT(iSelectedSrc-1);
     mSrcR->setText(String(curPosition.x));
     mSrcT->setText(String(curPosition.y * 180. / M_PI));
 }
