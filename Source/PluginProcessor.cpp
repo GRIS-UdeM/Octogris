@@ -73,7 +73,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor():
 mFilters()
 ,m_bIsRecordingAutomation(false)
 ,m_iSourceLocationChanged(-1)
-,m_iSelectedSource(0)
 ,m_bPreventSourceLocationUpdate(false)
 {
     
@@ -144,6 +143,7 @@ mFilters()
     mInputOutputMode = 18;  //by default we have 8 inputs and 16 outputs
     mSrcPlacementMode = 1;
     mSrcSelected = 1;
+    m_iSelectedSource = 0;
     mSpPlacementMode = 1;
     mSpSelected = 1;
     m_iTrType = 0;
@@ -402,14 +402,6 @@ void OctogrisAudioProcessor::setSrcPlacementMode(int p_i){
 
 void OctogrisAudioProcessor::setSpPlacementMode(int p_i){
     mSpPlacementMode = p_i;
-}
-
-void OctogrisAudioProcessor::setSrcSelected(int p_i){
-    mSrcSelected = p_i;
-}
-
-void OctogrisAudioProcessor::setSpSelected(int p_i){
-    mSpSelected = p_i;
 }
 
 void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool bUseDefaultValues){
@@ -867,7 +859,6 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 #endif
             outputs[o] += numFramesToDo;
         }
-			 
 	}
 	
 	if (mRoutingMode == 1)

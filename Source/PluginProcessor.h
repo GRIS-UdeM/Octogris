@@ -321,10 +321,7 @@ public:
     void setSpPlacementMode(int i);
     
     int getSrcSelected() const {return mSrcSelected;}
-    void setSrcSelected(int i);
-    
     int getSpSelected() const {return mSpSelected;}
-    void setSpSelected(int i);
 
     int getTrType() const {return m_iTrType;}
     void setTrType(int i){m_iTrType = i;}
@@ -558,14 +555,21 @@ public:
         m_iSourceLocationChanged = i;
     }
     int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
-    
+
     int getSelectedSource(){
         return m_iSelectedSource;
     }
-    
     void setSelectedSource (int iSrc){
         m_iSelectedSource = iSrc;
     }
+
+    void setSrcSelected(int p_i){
+    	mSrcSelected = p_i;
+	}
+
+	void setSpSelected(int p_i){
+	    mSpSelected = p_i;
+	}
 
     void setPreventSourceLocationUpdate(bool b){
         m_bPreventSourceLocationUpdate = b;

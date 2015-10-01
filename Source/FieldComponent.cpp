@@ -257,15 +257,14 @@ void FieldComponent::paint (Graphics& g)
     FPoint sourceXY = mFilter->getSourceXY(iSelectedSrc);
     float fCenter = fieldWidth/2;
     float fRadius = (fieldWidth - kSourceDiameter)/4;
-    g.drawLine   (fCenter, fCenter, fCenter + sourceXY.x * fRadius, fCenter - sourceXY.y * fRadius);
+    g.drawLine   (fCenter, fCenter, fCenter + sourceXY.x * fRadius, fCenter - sourceXY.y * fRadius, 1.5);
     float radiusZenith = sqrtf(pow(2 * sourceXY.x * fRadius,2) + pow(2 * sourceXY.y * fRadius,2));
-    g.drawEllipse(fCenter - radiusZenith/2 , fCenter - radiusZenith/2, radiusZenith, radiusZenith, 1.0);
+    g.drawEllipse(fCenter - radiusZenith/2 , fCenter - radiusZenith/2, radiusZenith, radiusZenith, 1.5);
 	
 	// - - - - - - - - - - - -
 	// draw sources
 	// - - - - - - - - - - - -
-	for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-	{
+	for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
 		const float radius = kSourceRadius, diameter = kSourceDiameter;
 		FPoint p = getSourcePoint(i);
 		

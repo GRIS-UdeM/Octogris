@@ -223,8 +223,6 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     //calculate new position for curSrc using delta for selected source
                     FPoint oldCurSrcPosRT = (mMoverType == kSourceThread) ? mFilter->mOldSrcLocRT[iCurSrc] : mSourcesDownRT[iCurSrc];
                     FPoint newCurSrcPosRT = oldCurSrcPosRT + delSelSrcPosRT;
-                    
-                    JUCE_COMPILER_WARNING("this needs to bounce like when we're going off circle, otherwise we lose the delta")
                     if (newCurSrcPosRT.x < 0){
                         newCurSrcPosRT.x = 0;
                     }
