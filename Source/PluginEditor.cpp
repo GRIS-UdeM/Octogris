@@ -74,9 +74,9 @@ public:
     OctTabbedComponent(TabbedButtonBar::Orientation orientation, OctogrisAudioProcessor *filter)
     :
     TabbedComponent(orientation),
-    mFilter(filter),
-    mInited(false)
-    {}
+    mFilter(filter)
+    ,mInited(false)
+    { }
     
     void currentTabChanged (int newCurrentTabIndex, const String& newCurrentTabName)
     {
@@ -521,13 +521,10 @@ AudioProcessorEditor (ownerFilter)
         {
             mMovementMode = new ComboBox();
             updateMovementModeCombo();
-            
-            mMovementMode->setSize(w, dh);
-            mMovementMode->setTopLeftPosition(x, y);
-            box->addAndMakeVisible(mMovementMode);
+            //mMovementMode->setBounds(x, y, w, dh);
+            //box->addAndMakeVisible(mMovementMode);
             mComponents.add(mMovementMode);
             y += dh + 5;
-            
             mMovementMode->addListener(this);
         }
         
@@ -694,15 +691,16 @@ AudioProcessorEditor (ownerFilter)
     //--------------- TRAJECTORIES TAB ---------------- //
     box = mTabs->getTabContentComponent(1);
     {
+
         int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
         
         int cbw = 130;
         {
             ComboBox *cb = new ComboBox();
             int index = 1;
-            for (int i = 1; i < Trajectory::NumberOfTrajectories(); i++)
+            for (int i = 1; i < Trajectory::NumberOfTrajectories(); i++){
                 cb->addItem(Trajectory::GetTrajectoryName(i), index++);
-            
+            }
             cb->setSelectedId(mFilter->getTrType()+1);
             cb->setSize(cbw, dh);
             cb->setTopLeftPosition(x, y);
@@ -819,6 +817,10 @@ AudioProcessorEditor (ownerFilter)
             mTrWriteButton->setToggleState(true, dontSendNotification);
             mTrWriteButton->setButtonText("Cancel");
         }
+        
+        x = 2*cbw + 2*kMargin;
+        y = kMargin;
+        addLabel("Movements:", x, y, w, dh, box);
         
     }
     
@@ -1226,18 +1228,6 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
     getMover()->end(kHID);
 #endif
 }
-
-//==============================================================================
-//void OctogrisAudioProcessorEditor::refreshSize()
-//{
-//    int fieldSize = 500;
-//    
-//    int guiSize = mFilter->getGuiSize();
-//    fieldSize += (guiSize - 1) * 100;
-//    size_t x = kMargin + fieldSize + kMargin + kCenterColumnWidth + kMargin + kRightColumnWidth + kMargin;
-//    size_t y = kMargin + fieldSize + kMargin;
-//    setSize(x, y);
-//}
 
 void OctogrisAudioProcessorEditor::resized()
 {
@@ -2006,6 +1996,20 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mLevels.getUnchecked(i)->refreshIfNeeded();
     
     if (mNeedRepaint){
+        if(mFilter->getGuiTab() == 0){
+            int w = (mTabs->getTabContentComponent(0)->getWidth() - kMargin) / 3 - kMargin;
+            mMovementMode->setBounds(kMargin, kMargin+kDefaultLabelHeight+5, w, kDefaultLabelHeight);
+            mTabs->getTabContentComponent(0)->addAndMakeVisible(mMovementMode);
+        } else if(mFilter->getGuiTab() == 1){
+            
+            int cbw = 130;
+            int x = 2*cbw + 2*kMargin;
+            int y = kMargin + kDefaultLabelHeight + 5;
+            int w = (mTabs->getTabContentComponent(1)->getWidth() - kMargin) / 3 - kMargin;
+            mMovementMode->setBounds(x, y, w, kDefaultLabelHeight);
+            mTabs->getTabContentComponent(1)->addAndMakeVisible(mMovementMode);
+        }
+        
         mSmoothing->setValue(mFilter->getParameter(kSmooth));
         mVolumeFar->setValue(mFilter->getParameter(kVolumeFar));
         mVolumeMid->setValue(mFilter->getParameter(kVolumeMid));

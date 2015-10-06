@@ -347,7 +347,10 @@ public:
     void setTrState(int tr) {mTrState = tr;}
     
 	int getGuiTab() const { return mGuiTab; }
-	void setGuiTab(int s) { mGuiTab = s; }
+	void setGuiTab(int s) {
+        mGuiTab = s;
+        ++mHostChangedParameter;
+    }
     
     int getIsJoystickEnabled() const { return mJoystickEnabled; }
     void setIsJoystickEnabled(int s) { mJoystickEnabled = s; }
