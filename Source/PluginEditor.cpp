@@ -441,7 +441,7 @@ AudioProcessorEditor (ownerFilter)
     mTabs->addTab("Volume & Filters",   tabBg, new Component(), true);
     mTabs->addTab("Sources",            tabBg, new Component(), true);
    	mTabs->addTab("Speakers",           tabBg, new Component(), true);
-        {
+    {
         mOsc = CreateOscComponent(mFilter, this);
         if (mOsc) mTabs->addTab("OSC",  tabBg, mOsc, true);
     }
