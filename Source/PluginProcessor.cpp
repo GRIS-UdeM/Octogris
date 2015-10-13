@@ -110,8 +110,8 @@ mFilters()
 	bIsWindows = false;
 #endif
 
-	if (/*host.isLogic() || */ host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer()) /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
-    //if (host.isLogic() || host.isReaper() || host.isAbletonLive() || host.isDigitalPerformer() /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
+	//if (/*host.isLogic() || */ host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer()) /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
+    if (host.isLogic() || host.isReaper() || host.isAbletonLive() || host.isDigitalPerformer() /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
 		m_bAllowInputOutputModeSelection = true;
 	} else {
 		m_bAllowInputOutputModeSelection = false;

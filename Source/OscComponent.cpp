@@ -47,6 +47,23 @@ static int osc_method_handler(const char *path, const char *types,
                                   lo_arg ** argv, int argc,
                                   lo_message msg, void *user_data);
 
+static String getLocalIPAddress(){
+//    Array<IPAddress> addresses;
+//    IPAddress::findAllAddresses (addresses);
+//    
+//    String addressList;
+//    
+//    for (int i = 0; i < addresses.size(); ++i)
+//        addressList << "   " << addresses[i].toString() << newLine;
+//    
+//    return addressList;
+    
+    Array<IPAddress> addresses;
+    IPAddress::findAllAddresses (addresses);
+    return addresses[1].toString();
+}
+
+
 
 class OscComponent : public HeartbeatComponent, public Button::Listener, public TextEditor::Listener
 {
@@ -59,18 +76,28 @@ public:
 		mAddress(NULL),
 		mNeedToEnd(false)
 	{
+        
 		const int m = 10, dh = 18, cw = 120, iw = 120, pw = 60;
 		int x = m, y = m;
 
 		mReceive = new ToggleButton();
-		mReceive->setButtonText("Receive on port");
+		mReceive->setButtonText("Receive on ip, port");
 		mReceive->setSize(cw, dh);
 		mReceive->setTopLeftPosition(x, y);
 		mReceive->addListener(this);
 		mReceive->setToggleState(mFilter->getOscReceiveEnabled(), dontSendNotification);
 		addAndMakeVisible(mReceive);
 		
-		x += cw + m;
+        x += cw + m;
+        
+        mReceiveIp = new TextEditor();
+        mReceiveIp->setText(getLocalIPAddress());
+        mReceiveIp->setSize(iw, dh);
+        mReceiveIp->setTopLeftPosition(x, y);
+        mReceiveIp->addListener(this);
+        addAndMakeVisible(mReceiveIp);
+        
+        x += cw + m;
 		
 		mReceivePort = new TextEditor();
 		mReceivePort->setText(String(mFilter->getOscReceivePort()));
@@ -95,7 +122,6 @@ public:
 		mSendIp->setText(String(mFilter->getOscSendIp()));
 		mSendIp->setSize(iw, dh);
 		mSendIp->setTopLeftPosition(x, y);
-		mSendIp->addListener(this);
 		addAndMakeVisible(mSendIp);
 		
 		x += iw + m;
@@ -113,6 +139,7 @@ public:
     
     void updateInfo(){
         mReceive->setToggleState(mFilter->getOscReceiveEnabled(), dontSendNotification);
+        mReceiveIp->setText(getLocalIPAddress());
         mReceivePort->setText(String(mFilter->getOscReceivePort()));
         mSend->setToggleState(mFilter->getOscSendEnabled(), dontSendNotification);
         mSendIp->setText(String(mFilter->getOscSendIp()));
@@ -297,7 +324,8 @@ private:
 	OctogrisAudioProcessorEditor *mEditor;
 	
 	ScopedPointer<ToggleButton> mReceive;
-	ScopedPointer<TextEditor> mReceivePort;
+    ScopedPointer<TextEditor>   mReceiveIp;
+	ScopedPointer<TextEditor>   mReceivePort;
 	
 	ScopedPointer<ToggleButton> mSend;
 	ScopedPointer<TextEditor> mSendIp;
