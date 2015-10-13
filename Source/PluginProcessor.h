@@ -123,7 +123,7 @@ static const float kSmoothMin = 1;
 static const float kSmoothMax = 200;
 static const float kSmoothDefault = 10;
 
-static const float kVolumeNearMin = 0;
+static const float kVolumeNearMin = -10;
 static const float kVolumeNearMax = 30;
 static const float kVolumeNearDefault = 0;
 

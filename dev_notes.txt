@@ -150,4 +150,8 @@ ___________________________
 
 ok i have a hunch that in DP in 213, the inputoutput mode was not correctly saved. need to go back in git and debug.
 _________________________________
+#40
+so this is weird. the slider controlling the volume is mVolumeNear, but it is barely used in the code. i think the way this is mostly used is that this slider affects a parameter in the processor's parameter array, params[kVolumeNear].
 
+* mVolumeNear is a paramSlider, and all paramSliders have ranges between 0 and 1. 
+ok, all i had to do was change kVolumeNearMin in processor.h
