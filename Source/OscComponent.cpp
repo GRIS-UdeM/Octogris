@@ -91,10 +91,12 @@ public:
         x += cw + m;
         
         mReceiveIp = new TextEditor();
+        mReceiveIp->setColour(TextEditor::textColourId, juce::Colour::greyLevel(.6));
         mReceiveIp->setText(getLocalIPAddress());
         mReceiveIp->setSize(iw, dh);
         mReceiveIp->setTopLeftPosition(x, y);
-        mReceiveIp->addListener(this);
+        mReceiveIp->setReadOnly(true);
+        mReceiveIp->setCaretVisible(false);
         addAndMakeVisible(mReceiveIp);
         
         x += cw + m;
