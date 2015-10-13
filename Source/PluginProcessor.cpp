@@ -111,6 +111,7 @@ mFilters()
 #endif
 
 	if (/*host.isLogic() || */ host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer()) /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
+    //if (host.isLogic() || host.isReaper() || host.isAbletonLive() || host.isDigitalPerformer() /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
 		m_bAllowInputOutputModeSelection = true;
 	} else {
 		m_bAllowInputOutputModeSelection = false;
@@ -651,7 +652,7 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 //	DBG("iSpeakers = " << iSpeakers);
 
     //set sources and speakers
-
+    JUCE_COMPILER_WARNING("this can become something like if inputOutputmode was saved or not. Actually no, we still need to use track info for the plugin testers.")
     if (m_bAllowInputOutputModeSelection) {
         setNumberOfSources(mNumberOfSources, true);
         setNumberOfSpeakers(mNumberOfSpeakers, true);

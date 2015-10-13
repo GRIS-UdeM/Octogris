@@ -155,3 +155,24 @@ so this is weird. the slider controlling the volume is mVolumeNear, but it is ba
 
 * mVolumeNear is a paramSlider, and all paramSliders have ranges between 0 and 1. 
 ok, all i had to do was change kVolumeNearMin in processor.h
+________________________________
+#45
+need to be in studio to do that one.
+________________________________
+#46
+possible problems:
+* previous versions will not know what mode to load (not in presets)
+* playback crash?
+    *DP: 
+        * in wrong mode, audio is bypassed
+        * opening previous version is messed up
+
+ok. how does the combo box influence the other things?
+if m_bAllowInputOutputModeSelection, we setNumberOfSources to whatever is in mNumberOfSources. In case of old version, we get 8x16, the default. In case of newer versions, we'd get what was saved in presets (mInputOutputMode is saved)
+
+ok. so what we want, is 
+    * when new instance: 8x16
+    * when old instance, no inputOutputMode saved: follow track info
+    * when old instance inputOutputMode saved: use inputOutputMode
+
+so, i think we may have to have a version 3 for this. The problem is that there is no way to know that the mInputMode was not saved. it was saved as the default 8x16 mode. That means that if the user actually wants a 8x16 track on a track that doesn't have 8x16, we'd force it to what the track actually is. I guess that will happen very rarily. In the new mode, we'll have 2x2 tracks... actually i don't know how to use the internal routing mode. So i'll just wait for this issue...        

@@ -472,6 +472,8 @@ AudioProcessorEditor (ownerFilter)
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
         
+        
+        JUCE_COMPILER_WARNING("these are all mFilter operations, why not do them in the filter?")
         if (mFilter->getIsAllowInputOutputModeSelection()){
             mFilter->setInputOutputMode(mFilter->getInputOutputMode());
         }
