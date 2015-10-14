@@ -791,17 +791,6 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		outputs[o] = (mRoutingMode == 1) ? mRoutingTemp.getWritePointer(o) : buffer.getWritePointer(o);
 		params[getParamForSpeakerA(o)] = denormalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, params[getParamForSpeakerA(o)]);
         
-#ifdef JUCE_DEBUG
-        //VB_DEBUG
-        for (unsigned int f = 0; f < oriFramesToProcess; f++) {
-            float s2 = fabsf(outputs[o][f]);
-            if (s2 > 1){
-                cout << "before processing, outputs[" << o << "][" << f <<  "] = " << s2 << newLine;
-                int i= 0;
-            }
-        }
-#endif
-		
 		if (mProcessMode == kFreeVolumeMode)
 		{
 			params[getParamForSpeakerX(o)] = params[getParamForSpeakerX(o)] * (2*kRadiusMax) - kRadiusMax;
@@ -895,16 +884,8 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			float *output = outputs[o];
 			float env = mLevels[o];
 			
-//			for (unsigned int f = 0; f < oriFramesToProcess; f++) {
 			for (unsigned int f = 0; f < numFramesToDo; f++) {
 				float s = fabsf(output[f]);
-#ifdef JUCE_DEBUG
-                //VB_DEBUG
-                if (s > 1){
-                    cout << "after processing, outputs[" << o << "][" << f <<  "] = " << s << newLine;
-                    int i= 0;
-                }
-#endif
 				float g = (s > env) ? ag : rg;
 				env = g * env + (1.f - g) * s;
 			}
@@ -1025,17 +1006,6 @@ void OctogrisAudioProcessor::addToOutput(float s, float **outputs, int o, int f)
 	float output_adj = a * m;
 	float *output = outputs[o];
 	output[f] += s * output_adj;
-    
-
-#ifdef JUCE_DEBUG
-    //VB_DEBUG
-    if (s > 1){
-        cout << "during processing, outputs[" << o << "][" << f <<  "] = " << s << newLine;
-        int i= 0;
-    }
-    
-#endif
-    
 }
 
 void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
