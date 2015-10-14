@@ -498,8 +498,9 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
     mNumberOfSpeakers = p_iNewNumberOfSpeakers;
 
     mLevels.ensureStorageAllocated(mNumberOfSpeakers);
-	if (mRoutingMode == 1) updateRoutingTemp();
-    
+    if (mRoutingMode == 1) {
+        updateRoutingTemp();
+    }
     for (int i = 0; i < mNumberOfSpeakers; i++){
         mLevels.add(0);
 
@@ -702,22 +703,19 @@ void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, Mi
 void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	// sanity check for auval
-	if (buffer.getNumChannels() < ((mRoutingMode == 1) ? mNumberOfSources : jmax(mNumberOfSources, mNumberOfSpeakers)))
-	{
+	if (buffer.getNumChannels() < ((mRoutingMode == 1) ? mNumberOfSources : jmax(mNumberOfSources, mNumberOfSpeakers))) {
 		printf("unexpected channel count %d vs %dx%d rmode: %d\n", buffer.getNumChannels(), mNumberOfSources, mNumberOfSpeakers, mRoutingMode);
 		return;
 	}
 
 	unsigned int oriFramesToProcess = buffer.getNumSamples();
 	
-	if (mRoutingMode > 1)
-	{
+	if (mRoutingMode > 1) {
 		buffer.clear();
 		
 		int outChannels = (mNumberOfSpeakers > 2) ? 2 : mNumberOfSpeakers;
 		int offset = (mRoutingMode - 2) * 2;
-		for (int c = 0; c < outChannels; c++)
-		{
+		for (int c = 0; c < outChannels; c++) {
 			buffer.copyFrom(c, 0, Router::instance().outputBuffers(oriFramesToProcess)[offset + c], oriFramesToProcess);
 			Router::instance().clear(offset + c);
 		}
@@ -753,28 +751,24 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	for (int i = 0; i < kNumberOfParameters; i++)
 		params[i] = mParameters[i];
 		
-	if (mProcessMode != kFreeVolumeMode)
-	{
+	if (mProcessMode != kFreeVolumeMode) {
 		params[kVolumeNear] = denormalize(kVolumeNearMin, kVolumeNearMax, params[kVolumeNear]);
-		params[kVolumeMid] = denormalize(kVolumeMidMin, kVolumeMidMax, params[kVolumeMid]);
-		params[kVolumeFar] = denormalize(kVolumeFarMin, kVolumeFarMax, params[kVolumeFar]);
+		params[kVolumeMid]  = denormalize(kVolumeMidMin,  kVolumeMidMax,  params[kVolumeMid]);
+		params[kVolumeFar]  = denormalize(kVolumeFarMin,  kVolumeFarMax,  params[kVolumeFar]);
 		params[kFilterNear] = denormalize(kFilterNearMin, kFilterNearMax, params[kFilterNear]);
-		params[kFilterMid] = denormalize(kFilterMidMin, kFilterMidMax, params[kFilterMid]);
-		params[kFilterFar] = denormalize(kFilterFarMin, kFilterFarMax, params[kFilterFar]);
+		params[kFilterMid]  = denormalize(kFilterMidMin,  kFilterMidMax,  params[kFilterMid]);
+		params[kFilterFar]  = denormalize(kFilterFarMin,  kFilterFarMax,  params[kFilterFar]);
 	}
-	if (mProcessMode == kPanSpanMode)
-	{
+	if (mProcessMode == kPanSpanMode) {
 		params[kMaxSpanVolume] = denormalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, params[kMaxSpanVolume]);
 	}
-	if (mRoutingMode == 1)
-	{
+	if (mRoutingMode == 1) {
 		params[kRoutingVolume] = denormalize(kRoutingVolumeMin, kRoutingVolumeMax, params[kRoutingVolume]);
 	}
 	
 	//float *inputs[iActualNumberOfSources];
 	float **inputs = new float* [mNumberOfSources];
-	for (int i = 0; i < mNumberOfSources; i++)
-	{
+	for (int i = 0; i < mNumberOfSources; i++) {
 		inputs[i] = buffer.getWritePointer(i);
 
         if (mProcessMode == kFreeVolumeMode){
@@ -785,8 +779,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		params[getParamForSourceY(i)] = params[getParamForSourceY(i)] * (2*kRadiusMax) - kRadiusMax;
 	}
 	
-	if (mRoutingMode == 1)
-	{
+	if (mRoutingMode == 1) {
 		jassert(mRoutingTemp.getNumSamples() >= oriFramesToProcess);
 		jassert(mRoutingTemp.getNumChannels() >= mNumberOfSpeakers);
 	}
@@ -797,6 +790,17 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	{
 		outputs[o] = (mRoutingMode == 1) ? mRoutingTemp.getWritePointer(o) : buffer.getWritePointer(o);
 		params[getParamForSpeakerA(o)] = denormalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, params[getParamForSpeakerA(o)]);
+        
+#ifdef JUCE_DEBUG
+        //VB_DEBUG
+        for (unsigned int f = 0; f < oriFramesToProcess; f++) {
+            float s2 = fabsf(outputs[o][f]);
+            if (s2 > 1){
+                cout << "before processing, outputs[" << o << "][" << f <<  "] = " << s2 << newLine;
+                int i= 0;
+            }
+        }
+#endif
 		
 		if (mProcessMode == kFreeVolumeMode)
 		{
@@ -845,19 +849,13 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
         }
 		
 		inFramesToProcess -= numFramesToDo;
-		if (inFramesToProcess == 0) break;
-		
-		for (int i = 0; i < mNumberOfSources; i++)
+        if (inFramesToProcess == 0) {
+            break;
+        }
+        for (int i = 0; i < mNumberOfSources; i++){
 			inputs[i] += numFramesToDo;
-			
+        }
         for (int o = 0; o < mNumberOfSpeakers; o++){
-
-#ifdef JUCE_DEBUG
-            //VB_DEBUG
-            if (numFramesToDo > 1){
-                int i=0;
-            }
-#endif
             outputs[o] += numFramesToDo;
         }
 	}
@@ -898,30 +896,16 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			
 			for (unsigned int f = 0; f < oriFramesToProcess; f++) {
 				float s = fabsf(output[f]);
+#ifdef JUCE_DEBUG
+                //VB_DEBUG
+                if (s > 1){
+                    cout << "after processing, outputs[" << o << "][" << f <<  "] = " << s << newLine;
+                    int i= 0;
+                }
+#endif
 				float g = (s > env) ? ag : rg;
 				env = g * env + (1.f - g) * s;
 			}
-#ifdef JUCE_DEBUG
-            //VB_DEBUG
-            if (env > 1){
-                for (int iCurSmp = 0; iCurSmp < oriFramesToProcess; ++iCurSmp) {
-                    DBG(output[iCurSmp]);
-                }
-                
-                float env2 = mLevels[o];
-                for (unsigned int f = 0; f < oriFramesToProcess; f++) {
-                    float s2 = fabsf(output[f]);
-                    if (s2 > 1){
-                        int i= 0;
-                    }
-                    float g2 = (s2 > env2) ? ag : rg;
-                    env2 = g2 * env2 + (1.f - g2) * s2;
-                    if (env2 > 1){
-                        int i= 0;
-                    }
-                }
-            }
-#endif
 			mLevels.setUnchecked(o, env);
 		}
 	}
@@ -1039,12 +1023,17 @@ void OctogrisAudioProcessor::addToOutput(float s, float **outputs, int o, int f)
 	float output_adj = a * m;
 	float *output = outputs[o];
 	output[f] += s * output_adj;
+    
+
 #ifdef JUCE_DEBUG
     //VB_DEBUG
-    if(s > 1){
-        int i = 0;
+    if (s > 1){
+        cout << "during processing, outputs[" << o << "][" << f <<  "] = " << s << newLine;
+        int i= 0;
     }
+    
 #endif
+    
 }
 
 void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)

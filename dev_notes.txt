@@ -158,6 +158,7 @@ ok, all i had to do was change kVolumeNearMin in processor.h
 ________________________________
 #45
 need to be in studio to do that one.
+ok, so in studio, the problem is that DP just never calls the juce bypass function. so there's nothing we can do to bypass a 2->8 track, other than implement our own bypass.
 ________________________________
 #46
 possible problems:
@@ -182,4 +183,17 @@ ok so the deal with that is that the components in the osc tab is within an osc 
 
 *updateInfo() is called by updateOscComponent() which is called by the editor timercallback()
 
+_________________________________________
+#58
+i got this code from the juce demo, potentially related to #58? this goes in processBlock()
 
+// In case we have more outputs than inputs, we'll clear any output
+// channels that didn't contain input data, (because these aren't
+// guaranteed to be empty - they may contain garbage).
+for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i){
+        buffer.clear (i, 0, buffer.getNumSamples());
+}
+
+SO FIRST REAL CLUE: processor line 914, AFTER pan processing, the content of output[f], thus of outputs[o][f], start to be invalid at o = 2 and f = 256. we have 2 inputs in this case, What is special about f = 256?
+
+in processDataPan, we add samples to the output bu calling addToOutputs()
