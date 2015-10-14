@@ -828,10 +828,11 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	bool processesInPlaceIsIgnored = (mRoutingMode != 1);
 	
 	// process data
+    unsigned int numFramesToDo;
 	while(1)
 	{
         //we process either kChunkSize frames or whatever is left in inFramesToProcess
-		unsigned int numFramesToDo = (inFramesToProcess > kChunkSize) ? kChunkSize : inFramesToProcess;
+		numFramesToDo = (inFramesToProcess > kChunkSize) ? kChunkSize : inFramesToProcess;
 		
 		if (processesInPlaceIsIgnored) {
 			//float *inputsCopy[iActualNumberOfSources];
@@ -894,7 +895,8 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			float *output = outputs[o];
 			float env = mLevels[o];
 			
-			for (unsigned int f = 0; f < oriFramesToProcess; f++) {
+//			for (unsigned int f = 0; f < oriFramesToProcess; f++) {
+			for (unsigned int f = 0; f < numFramesToDo; f++) {
 				float s = fabsf(output[f]);
 #ifdef JUCE_DEBUG
                 //VB_DEBUG
