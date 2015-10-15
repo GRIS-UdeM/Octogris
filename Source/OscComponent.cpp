@@ -72,7 +72,7 @@ public:
 		mNeedToEnd(false)
 	{
         
-		const int m = 10, dh = 18, cw = 120, iw = 120, pw = 60;
+		const int m = 10, dh = 18, cw = 130, iw = 120, pw = 60;
 		int x = m, y = m;
 
 		mReceive = new ToggleButton();
@@ -94,7 +94,7 @@ public:
         mReceiveIp->setCaretVisible(false);
         addAndMakeVisible(mReceiveIp);
         
-        x += cw + m;
+        x += iw + m;
 		
 		mReceivePort = new TextEditor();
 		mReceivePort->setText(String(mFilter->getOscReceivePort()));
