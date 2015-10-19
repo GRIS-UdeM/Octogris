@@ -59,7 +59,6 @@ static String getLocalIPAddress(){
 }
 
 
-
 class OscComponent : public HeartbeatComponent, public Button::Listener, public TextEditor::Listener
 {
 public:

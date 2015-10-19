@@ -1733,6 +1733,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     XmlElement xml ("OCTOGRIS_SETTINGS");
     
+    xml.setAttribute ("kDataVersion", kDataVersion);
     xml.setAttribute ("mShowGridLines", mShowGridLines);
     xml.setAttribute ("mMovementMode", mMovementMode);
     xml.setAttribute ("mLinkDistances", mLinkDistances);
@@ -1807,6 +1808,8 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
         // make sure that it's actually our type of XML object..˝
         if (xmlState->hasTagName ("OCTOGRIS_SETTINGS") || xmlState->hasTagName ("OCTOGRIS2SETTINGS"))
         {
+            int version         = xmlState->getIntAttribute ("kDataVersion", 13);
+            
             mShowGridLines      = xmlState->getIntAttribute ("mShowGridLines", 0);
             mMovementMode       = xmlState->getIntAttribute ("mMovementMode", 0);
             mLinkDistances      = xmlState->getIntAttribute ("mLinkDistances", 0);
@@ -1949,7 +1952,15 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             {
                 readFloatData(data, sizeInBytes, 0); //this was for kLinkMovement
                 mParameters.set(kSmooth, readFloatData(data, sizeInBytes, normalize(kSmoothMin, kSmoothMax, kSmoothDefault)));
-                mParameters.set(kVolumeNear, readFloatData(data, sizeInBytes, normalize(kVolumeNearMin, kVolumeNearMax, kVolumeNearDefault)));
+                
+                //OLD kVolumeNearMin WAS 0 AND IS NOW -10, REGLE DE 3
+                
+                float fVolumeNear = readFloatData(data, sizeInBytes, kVolumeNearDefault);
+                //starting at version 14, we have a new kVolumeNearMin so we need to renormalize
+                fVolumeNear = normalize(kVolumeNearMin, kVolumeNearMax, fVolumeNear);
+
+                mParameters.set(kVolumeNear, fVolumeNear);
+                
                 if (version >= 5) mParameters.set(kVolumeMid, readFloatData(data, sizeInBytes, normalize(kVolumeMidMin, kVolumeMidMax, kVolumeMidDefault)));
                 mParameters.set(kVolumeFar, readFloatData(data, sizeInBytes, normalize(kVolumeFarMin, kVolumeFarMax, kVolumeFarDefault)));
                 mParameters.set(kFilterNear, readFloatData(data, sizeInBytes, normalize(kFilterNearMin, kFilterNearMax, kFilterNearDefault)));
