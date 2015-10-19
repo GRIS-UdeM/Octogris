@@ -555,7 +555,9 @@ public:
     void setIsSourcesChanged(bool pIsNumberSourcesChanged){ mIsNumberSourcesChanged = pIsNumberSourcesChanged;}
     void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
     
-    void setIsRecordingAutomation(bool b)   { m_bIsRecordingAutomation = b;     }
+    void setIsRecordingAutomation(bool b)   {
+        m_bIsRecordingAutomation = b;
+    }
     bool getIsRecordingAutomation()         { return m_bIsRecordingAutomation;  }
 
     void setSourceLocationChanged(int i)   {

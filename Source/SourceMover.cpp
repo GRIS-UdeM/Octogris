@@ -297,7 +297,7 @@ void SourceMover::end(MoverType mt)
                 }
             }
         }
-        //mFilter->setIsRecordingAutomation(false);
+        mFilter->setIsRecordingAutomation(false);
     }
     
     mMoverType = kVacant;

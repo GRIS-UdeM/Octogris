@@ -349,7 +349,6 @@ public:
     ,m_pEditor(p_pProcessor)
     ,m_bIsPaused(false)
     {
-        
         startThread ();
     }
     
@@ -359,7 +358,6 @@ public:
     }
     
     void run() override {
-        
         // threadShouldExit() returns true when the stopThread() method has been called
         while (! threadShouldExit()) {
             
