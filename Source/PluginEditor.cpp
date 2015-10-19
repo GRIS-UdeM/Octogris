@@ -821,7 +821,7 @@ AudioProcessorEditor (ownerFilter)
         }
         
         x = 2*cbw + 2*kMargin;
-        y = kMargin;
+        y = kMargin + dh + 5;
         addLabel("Movements:", x, y, w, dh, box);
         
     }
@@ -2008,7 +2008,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
             
             int cbw = 130;
             int x = 2*cbw + 2*kMargin;
-            int y = kMargin + kDefaultLabelHeight + 5;
+            int y = kMargin + 2 * (kDefaultLabelHeight + 5);
             int w = (mTabs->getTabContentComponent(1)->getWidth() - kMargin) / 3 - kMargin;
             mMovementMode->setBounds(x, y, w, kDefaultLabelHeight);
             mTabs->getTabContentComponent(1)->addAndMakeVisible(mMovementMode);
