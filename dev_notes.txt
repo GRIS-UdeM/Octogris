@@ -206,4 +206,19 @@ _________________________
 v2.2.5
 should fix #60, #61, and potentially #63, if confirmed that it is a non-issue.
 ________________________
+#41. 
 
+the question is, do i need a new branch for this? i don't think so. bah, surement. si ils me demande une nouvelle version rapido. ouain. calvere ca me coute rien de faire une nouvelle branche. mais en meme temps, ca me prendra pas de temps faire ca
+
+let's see. need to add for 
+* spiral 
+    * missing end point
+    * missing turns 
+* pendulum
+    * missing end point
+    * missing deviation
+    * missing dampening
+
+Zirkosc: spirale avec set end point fait un jump au début
+
+Dampening and deviation are probably the easiest parts. end point needs to interact with the mover part. which is a pain. 

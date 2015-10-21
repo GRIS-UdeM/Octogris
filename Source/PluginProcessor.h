@@ -304,9 +304,6 @@ public:
         }
     }
 	void updateRoutingTemp();
-	
-//	int getGuiSize() const { return mGuiSize; }
-//	void setGuiSize(int s) { mGuiSize = s; }
     
     int getGuiWidth() const{return mGuiWidth;}
     int getGuiHeight() const{return mGuiHeight;}
@@ -605,7 +602,6 @@ private:
 	bool mLinkDistances;
 	int mMovementMode;
 	bool mShowGridLines;
-	//int mGuiSize;
     int mGuiWidth;
     int mGuiHeight;
 

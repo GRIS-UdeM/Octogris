@@ -543,26 +543,7 @@ AudioProcessorEditor (ownerFilter)
         // start 2nd column
         y = kMargin;
         x += w + kMargin;
-        
-//        addLabel("Gui size:", x, y, w, dh, box);
-//        y += dh + 5;
-//        
-//        {
-//            ComboBox *cb = new ComboBox();
-//            int index = 1;
-//            cb->addItem("Small", index++);
-//            cb->addItem("Medium", index++);
-//            cb->addItem("Large", index++);
-//            cb->setSelectedId(mFilter->getGuiSize() + 1);
-//            cb->setSize(w, dh);
-//            cb->setTopLeftPosition(x, y);
-//            box->addAndMakeVisible(cb);
-//            mComponents.add(cb);
-//            y += dh + 5;
-//            
-//            cb->addListener(this);
-//            mGuiSize = cb;
-//        }
+    
         //only using the combo box in reaper, because other hosts set the inputs and outputs automatically
 		if (mFilter->getIsAllowInputOutputModeSelection()) {
             
@@ -1836,10 +1817,6 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     else if (comboBox == mRoutingMode) {
 		mFilter->setRoutingMode(comboBox->getSelectedId() - 1);
 	}
-//    else if (comboBox == mGuiSize) {
-//        mFilter->setGuiSize(comboBox->getSelectedId() - 1);
-//        refreshSize();
-//    }
     else if (comboBox == mProcessModeCombo) {
         int iSelectedMode = comboBox->getSelectedId() - 1;
         mFilter->setProcessMode(iSelectedMode);
@@ -1942,7 +1919,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 
 		mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
 		mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
-//		mGuiSize->setSelectedId(mFilter->getGuiSize() + 1);
         mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
         
 		if (mFilter->getIsAllowInputOutputModeSelection()){

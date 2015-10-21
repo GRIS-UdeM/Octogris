@@ -151,7 +151,6 @@ private:
 	ToggleButton *mLinkDistances;
     ToggleButton *mApplyFilter;
 	ComboBox *mMovementMode;
-//	ComboBox *mGuiSize;
     ComboBox *mInputOutputModeCombo;
     TextButton *mApplyInputOutputModeButton;
 	ComboBox *mProcessModeCombo;

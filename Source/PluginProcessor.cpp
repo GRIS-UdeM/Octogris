@@ -130,7 +130,6 @@ mFilters()
 	mShowGridLines = false;
     mIsNumberSourcesChanged = false;
     mIsNumberSpeakersChanged = false;
-//	mGuiSize = 1;
     mGuiWidth = kDefaultWidth,
     mGuiHeight = kDefaultHeight,
 	mGuiTab = 0;
@@ -1924,7 +1923,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
                         mMovementMode = 4;  //if mMovementMode was symmetric XY, we convert that to circular fully fixed, since that is the same thing
                     }
                 }
-                
                 
                 mSrcPlacementMode = readIntData(data, sizeInBytes, 1);
                 mSpPlacementMode = readIntData(data, sizeInBytes, 1);
