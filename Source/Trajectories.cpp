@@ -115,13 +115,13 @@ Trajectory::Trajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, fl
 	,mStarted(false)
 	,mStopped(false)
 	,mDone(0)
-	,mDuration(duration)
+	,mDurationSingleTraj(duration)
 	,mBeats(beats)
 	,mSource(source)
 {
-	if (mDuration < 0.0001) mDuration = 0.0001;
+	if (mDurationSingleTraj < 0.0001) mDurationSingleTraj = 0.0001;
 	if (times < 0.0001) times = 0.0001;
-	mTotalDuration = mDuration * times;
+	mTotalDuration = mDurationSingleTraj * times;
 }
 
 std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleDirections(int p_iTrajectory){
@@ -231,7 +231,7 @@ public:
     
 protected:
     void spProcess(float duration, float seconds) {
-        float da = mDone / mDuration * (2 * M_PI);
+        float da = mDone / mDurationSingleTraj * (2 * M_PI);
         if (!mCCW) da = -da;
         if (s_bTrajMover){
             FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
@@ -262,9 +262,9 @@ protected:
     {
         float da;
         if (mRT) {
-            da = mDone / mDuration * (2 * M_PI);
+            da = mDone / mDurationSingleTraj * (2 * M_PI);
         } else {
-            if (mDone < mTotalDuration) da = fmodf(mDone / mDuration * M_PI, M_PI);
+            if (mDone < mTotalDuration) da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
             else da = M_PI;
         }
         if (!mCCW) da = -da;
@@ -300,23 +300,32 @@ public:
 	: Trajectory(filter, p_pMover, duration, beats, times, source), mIn(in), mRT(rt), mCross(cross) {}
 	
 protected:
-	void spProcess(float duration, float seconds)
-	{
+	void spProcess(float duration, float seconds){
         float da;
-        
-        if (mRT)
-            da = mDone / mDuration * (2 * M_PI);
-        else
-        {
-            if (mDone < mTotalDuration) da = fmodf(mDone / mDuration * M_PI, M_PI);
-            else da = M_PI;
+        float fCurDampening = .5 * mDone / mTotalDuration;
+        if (mRT){
+            da = mDone / mDurationSingleTraj * (2 * M_PI);
+        } else {
+            if (mDone < mTotalDuration){
+                da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+            } else {
+                da = M_PI;
+            }
         }
         
         if (s_bTrajMover){
             FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
             float l = mCross ? cos(da) : (cos(da)+1)*0.5;
             float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-            mMover->move(mFilter->convertRt2Xy01(r, p.y), kTrajectory);
+            
+            FPoint newposition = mFilter->convertRt2Xy01(r, p.y);
+            JUCE_COMPILER_WARNING("this doesn't work because 0,0 is in bottom corner here...")
+            newposition.x = newposition.x - fCurDampening * newposition.x;
+            newposition.y = newposition.y - fCurDampening * newposition.y;
+            mMover->move(newposition, kTrajectory);
+            
+            
+            
         } else {
             for (int i = 0; i < mFilter->getNumberOfSources(); i++){
                 if (mSource < 0 || mSource == i) {
@@ -344,7 +353,7 @@ public:
 protected:
 	void spProcess(float duration, float seconds)
 	{
-		float da = mDone / mDuration * (2 * M_PI);
+		float da = mDone / mDurationSingleTraj * (2 * M_PI);
         if (!mCCW) da = -da;
         if (s_bTrajMover){
             // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
@@ -445,7 +454,7 @@ public:
 protected:
 	void spProcess(float duration, float seconds)
 	{
-        if (fmodf(mDone, mDuration) < 0.01){
+        if (fmodf(mDone, mDurationSingleTraj) < 0.01){
             mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
         }
         
@@ -504,7 +513,7 @@ protected:
 
 	void spProcess(float duration, float seconds)
 	{
-		float p = mDone / mDuration;
+		float p = mDone / mDurationSingleTraj;
 		
 		int cycle = (int)p;
 		if (mCycle != cycle)

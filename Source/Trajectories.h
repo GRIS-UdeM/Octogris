@@ -95,7 +95,7 @@ protected:
     SourceMover *mMover;
 	bool mStarted, mStopped;
 	float mDone;
-	float mDuration;
+	float mDurationSingleTraj;
 	float mTotalDuration;
 	bool mBeats;
 	int mSource;

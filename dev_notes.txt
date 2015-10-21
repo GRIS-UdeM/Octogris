@@ -219,6 +219,5 @@ let's see. need to add for
     * missing deviation
     * missing dampening
 
-Zirkosc: spirale avec set end point fait un jump au début
 
 Dampening and deviation are probably the easiest parts. end point needs to interact with the mover part. which is a pain. 
