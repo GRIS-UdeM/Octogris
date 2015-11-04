@@ -35,8 +35,8 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "Octogris";
-    const char* const  versionString  = "2.2.5";
-    const int          versionNumber  = 0x20205;
+    const char* const  versionString  = "2.2.6";
+    const int          versionNumber  = 0x20206;
 }
 #endif
 
