@@ -251,6 +251,80 @@ private:
 };
 
 // ==============================================================================
+
+
+
+
+
+
+
+// =================================================== FROM ZIRKOSC =============================================
+//class SpiralTrajectory : public Trajectory
+//{
+//public:
+//    SpiralTrajectory(ZirkOscAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw, bool rt, const std::pair<int, int> &endPoint, float fTurns)
+//    : Trajectory(filter, duration, beats, times, source)
+//    , mCCW(ccw)
+//    , m_bRT(rt)
+//    , m_fEndPair(endPoint)
+//    , m_fTurns(fTurns)
+//    { }
+//    
+//protected:
+//    void spInit(){
+//    }
+//    void spProcess(float duration, float seconds){
+//        float newAzimuth01, theta, integralPart; //integralPart is only a temp buffer
+//        float newElevation01 = mDone / mDurationSingleTrajectory;
+//        theta = modf(newElevation01, &integralPart);                                          //result from this modf is theta [0,1]
+//        float fTranslationFactor = theta;
+//        
+//        //what we need is fCurStartElev01 (and Azim01) to transition from m_fTrajectoryInitialElevation01 to m_fTransposedStartElev01 as we go up the spiral, then back to start values as we go down the spiral
+//        float fCurStartAzim01 = m_fTrajectoryInitialAzimuth01   ;//+ theta * (m_fTransposedStartAzim01 - m_fTrajectoryInitialAzimuth01);
+//        float fCurStartElev01 = m_fTrajectoryInitialElevation01 ;//+ theta * (m_fTransposedStartElev01 - m_fTrajectoryInitialElevation01);
+//        
+//        //UP AND DOWN SPIRAL
+//        if (m_bRT){
+//            if (mIn){
+//                newElevation01 = abs( (1 - fCurStartElev01) * sin(newElevation01 * M_PI) ) + fCurStartElev01;
+//            } else {
+//                JUCE_COMPILER_WARNING("mIn is always true; so either delete this or create another trajectory/mode for it")
+//                newElevation01 = abs( fCurStartElev01 * cos(newElevation01 * M_PI) );  //only positive cos wave with phase _TrajectoriesPhi
+//            }
+//            if (theta > .5){
+//                fTranslationFactor = 1 - theta;
+//            }
+//            theta *= 2;
+//        } else {
+//            //***** kinda like archimedian spiral r = a + b * theta , but azimuth does not reset at the top
+//            newElevation01 = theta * (1 - fCurStartElev01) + fCurStartElev01;                     //newElevation is a mapping of theta[0,1] to [fCurStartElev01, 1]
+//            if (!mIn){
+//                newElevation01 = fCurStartElev01 * (1 - newElevation01) / (1-fCurStartElev01);    //map newElevation from [fCurStartElev01, 1] to [fCurStartElev01, 0]
+//            }
+//        }
+//        
+//        if (!mCCW){
+//            theta = -theta;
+//        }
+//        
+//        newAzimuth01 = modf(fCurStartAzim01 + m_fTurns * theta, &integralPart);                    //this is like adding a to theta
+//        //convert newAzim+Elev to XY
+//        float fNewX, fNewY;
+//        SoundSource::azimElev01toXY(newAzimuth01, newElevation01, fNewX, fNewY);
+//        //when return, theta goes from 0 to -2. otherwise 0 to -1, and cycles for every trajectory (not the sum of trajectories)
+//        fNewX += modf(fTranslationFactor, &integralPart) * 2 * m_fEndPair.first;
+//        fNewY += modf(fTranslationFactor, &integralPart) * 2 * m_fEndPair.second;
+//        moveXY(fNewX, fNewY);
+//    }
+//    
+//private:
+//    bool mCCW, mIn = true;
+//    bool m_bRT = false;
+//    std::pair<float, float> m_fEndPair;
+//    //    float m_fTransposedStartAzim01, m_fTransposedStartElev01;
+//    float m_fTurns;
+//};
+
 class SpiralTrajectory : public Trajectory
 {
 public:
@@ -292,7 +366,72 @@ private:
 	bool mCCW, mIn, mRT;
 };
 
-// ==============================================================================
+// =================================================== FROM ZIRKOSC =============================================
+//class PendulumTrajectory : public Trajectory
+//{
+//public:
+//    PendulumTrajectory(ZirkOscAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw,
+//                       bool rt,  const std::pair<float, float> &endPoint, float fDeviation, float p_fDampening)
+//    :Trajectory(filter, duration, beats, times, source)
+//    ,mCCW(ccw)
+//    ,m_bRT(rt)
+//    ,m_fEndPair(endPoint)
+//    ,m_fDeviation(fDeviation/360)
+//    ,m_fTotalDampening(p_fDampening)
+//    { }
+//    
+//protected:
+//    void spInit() {
+//        if (m_fEndPair.first != m_fStartPair.first){
+//            m_bYisDependent = true;
+//            m_fM = (m_fEndPair.second - m_fStartPair.second) / (m_fEndPair.first - m_fStartPair.first);
+//            m_fB = m_fStartPair.second - m_fM * m_fStartPair.first;
+//        } else {
+//            m_bYisDependent = false;
+//            m_fM = 0;
+//            m_fB = m_fStartPair.first;
+//        }
+//    }
+//    void spProcess(float duration, float seconds) {
+//        
+//        int iReturn = m_bRT ? 2:1;
+//        float fCurDampening = m_fTotalDampening * mDone / (mDurationSingleTrajectory * m_dTrajectoryCount);
+//        //pendulum part
+//        float newX, newY, temp, fCurrentProgress = modf((mDone / mDurationSingleTrajectory), &temp);
+//        
+//        if (m_bYisDependent){
+//            fCurrentProgress = (m_fEndPair.first - m_fStartPair.first) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
+//            newX = m_fStartPair.first + fCurrentProgress;
+//            newY = m_fM * newX + m_fB;
+//        } else {
+//            fCurrentProgress = (m_fEndPair.second - m_fStartPair.second) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
+//            newX = m_fStartPair.first;
+//            newY = m_fStartPair.second + fCurrentProgress;
+//        }
+//        newX = newX - newX*fCurDampening;
+//        newY = newY - newY*fCurDampening;
+//        float fPendulumAzim = SoundSource::XYtoAzim01(newX, newY);
+//        float fPendulumElev = SoundSource::XYtoElev01(newX, newY);
+//        
+//        //circle part
+//        float newAzimuth, integralPart;
+//        newAzimuth = mDone / (mDurationSingleTrajectory * m_dTrajectoryCount);
+//        newAzimuth = modf(newAzimuth, &integralPart);
+//        if (!mCCW) {
+//            newAzimuth = - newAzimuth;
+//        }
+//        
+//        newAzimuth *= m_fDeviation;
+//        move(fPendulumAzim + newAzimuth, fPendulumElev);
+//    }
+//private:
+//    bool mCCW, m_bRT, m_bYisDependent;
+//    std::pair<float, float> m_fEndPair;
+//    float m_fM;
+//    float m_fB;
+//    float m_fDeviation;
+//    float m_fTotalDampening;
+//};
 class PendulumTrajectory : public Trajectory
 {
 public:
