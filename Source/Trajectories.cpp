@@ -367,18 +367,24 @@ private:
 };
 
 // =================================================== FROM ZIRKOSC =============================================
-//class PendulumTrajectory : public Trajectory
+//class PendulumTrajectory2 : public Trajectory
 //{
 //public:
-//    PendulumTrajectory(ZirkOscAudioProcessor *filter, float duration, bool beats, float times, int source, bool ccw,
+//    PendulumTrajectory2(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool ccw,
 //                       bool rt,  const std::pair<float, float> &endPoint, float fDeviation, float p_fDampening)
-//    :Trajectory(filter, duration, beats, times, source)
+//    :Trajectory(filter, p_pMover, duration, beats, times, source)
 //    ,mCCW(ccw)
 //    ,m_bRT(rt)
 //    ,m_fEndPair(endPoint)
 //    ,m_fDeviation(fDeviation/360)
 //    ,m_fTotalDampening(p_fDampening)
-//    { }
+//    {
+//    
+//        m_fStartPair.first = filter->getParameter(ZirkOscAudioProcessor::ZirkOSC_X_ParamId + m_iSelectedSourceForTrajectory*5);
+//        m_fStartPair.first = m_fStartPair.first*2*ZirkOscAudioProcessor::s_iDomeRadius - ZirkOscAudioProcessor::s_iDomeRadius;
+//        m_fStartPair.second = filter->getParameter(ZirkOscAudioProcessor::ZirkOSC_Y_ParamId + m_iSelectedSourceForTrajectory*5);
+//        m_fStartPair.second = m_fStartPair.second*2*ZirkOscAudioProcessor::s_iDomeRadius - ZirkOscAudioProcessor::s_iDomeRadius;
+//    }
 //    
 //protected:
 //    void spInit() {
@@ -426,12 +432,14 @@ private:
 //    }
 //private:
 //    bool mCCW, m_bRT, m_bYisDependent;
+//    std::pair<float, float> m_fStartPair;
 //    std::pair<float, float> m_fEndPair;
 //    float m_fM;
 //    float m_fB;
 //    float m_fDeviation;
 //    float m_fTotalDampening;
 //};
+
 class PendulumTrajectory : public Trajectory
 {
 public:
@@ -457,12 +465,10 @@ protected:
             float l = mCross ? cos(da) : (cos(da)+1)*0.5;
             float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
             
-            FPoint newposition = mFilter->convertRt2Xy01(r, p.y);
-            JUCE_COMPILER_WARNING("this doesn't work because 0,0 is in bottom corner here...")
-            newposition.x = newposition.x - fCurDampening * newposition.x;
-            newposition.y = newposition.y - fCurDampening * newposition.y;
-            mMover->move(newposition, kTrajectory);
+            l -= fCurDampening * l;
+            r -= fCurDampening * r;
             
+            mMover->move(mFilter->convertRt2Xy01(r, p.y), kTrajectory);
             
             
         } else {
