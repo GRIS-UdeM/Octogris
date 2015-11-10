@@ -744,25 +744,6 @@ AudioProcessorEditor (ownerFilter)
         
         x += tew + kMargin;
         
-        if (!s_bTrajMover){
-            ComboBox *cb = new ComboBox();
-            int index = 1;
-            cb->addItem("All sources", index++);
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-            {
-                String s("Source "); s << i+1;
-                cb->addItem(s, index++);
-            }
-            cb->setSelectedId(mFilter->getTrSrcSelect()+2);
-            cb->setSize(100, dh);
-            cb->setTopLeftPosition(x, y);
-            box->addAndMakeVisible(cb);
-            mComponents.add(cb);
-            
-            mTrSrcSelect = cb;
-            mTrSrcSelect->addListener(this);
-        }
-        
         y += dh + 5;
         x = kMargin;
         
@@ -1263,9 +1244,6 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
 
     if (!p_bCalledFromConstructor){
         mSrcSelect->clear(dontSendNotification);
-        if (!s_bTrajMover){
-            mTrSrcSelect->clear(dontSendNotification);
-        }
         mMovementMode->clear(dontSendNotification);
         updateMovementModeCombo();
     }
@@ -1307,19 +1285,6 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
         mSrcSelect->addItem(s, index++);
     }
     mSrcSelect->setSelectedId(mFilter->getSrcSelected()+1);
-    
-    
-    //source selection combo in trajectory tab
-    if (!s_bTrajMover && !p_bCalledFromConstructor){
-        int index = 1;
-        mTrSrcSelect->addItem("All sources", index++);
-        for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-        {
-            String s("Source "); s << i+1;
-            mTrSrcSelect->addItem(s, index++);
-        }
-        mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);
-    }
 }
 
 
@@ -1566,7 +1531,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             float   repeats         = mTrRepeats->getText().getFloatValue();
             int     type            = mTrTypeComboBox->getSelectedId();
             bool    bReturn         = (mTrReturnComboBox->getSelectedId() == 2);
-            int     source          = s_bTrajMover ? -1 :  mTrSrcSelect->getSelectedId()-2;
+            JUCE_COMPILER_WARNING("need to delete everything related to this source")
+            int     source          = -1;
             bool    bUniqueTarget   = !(mFilter->getMovementMode() == 0);
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
 
@@ -1863,11 +1829,6 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
         int iReturn = mTrReturnComboBox->getSelectedId()-1;
         mFilter->setTrReturn(iReturn);
     }
-    else if (!s_bTrajMover && comboBox == mTrSrcSelect)
-    {
-        int source = mTrSrcSelect->getSelectedId()-2;
-        mFilter->setTrSrcSelect(source);
-    }
     else
     {
         printf("unknown combobox clicked...\n");
@@ -1941,9 +1902,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
         updateSpeakerLocationTextEditor();
         
         mTrTypeComboBox->setSelectedId(mFilter->getTrType()+1);
-        if (!s_bTrajMover){
-            mTrSrcSelect->setSelectedId(mFilter->getTrSrcSelect()+2);
-        }
         mTrDuration->setText(String(mFilter->getTrDuration()));
         mTrUnits->setSelectedId(mFilter->getTrUnits());
         mTrRepeats->setText(String(mFilter->getTrRepeats()));

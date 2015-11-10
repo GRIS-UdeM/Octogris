@@ -48,7 +48,6 @@ using namespace std;
 //==============================================================================
 
 static bool s_bUseOneSource = true;
-static bool s_bTrajMover = true;
 
 // x, y, distance
 enum {

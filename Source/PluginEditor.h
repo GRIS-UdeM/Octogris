@@ -199,8 +199,6 @@ private:
 	TextEditor *mTrRepeats;
 	TextButton *mTrWriteButton;
 	MiniProgressBar *mTrProgressBar;
-    JUCE_COMPILER_WARNING("can probably delete this combobox")
-	ComboBox *mTrSrcSelect;
     
 
     int mTrStateEditor;

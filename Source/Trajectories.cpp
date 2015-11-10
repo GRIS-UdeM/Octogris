@@ -31,25 +31,8 @@
 
 // ==============================================================================
 void Trajectory::start() {
-    if (s_bTrajMover){
-        mMover->begin(mFilter->getSrcSelected(), kTrajectory);
-    } else if (s_bUseOneSource){
-        int j = 0;
-        mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
-        mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
-    } else {
-        if (mSource < 0) {
-            //no source selected, so automation on all sources
-            for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
-                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
-                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
-            }
-        } else {
-            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(mSource));
-            mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(mSource));
-        }
-    }
-    
+     mMover->begin(mFilter->getSrcSelected(), kTrajectory);
+
     for (int i = 0; i < mFilter->getNumberOfSources(); i++){
         mSourcesInitRT.add(mFilter->getSourceRT(i));
     }
@@ -87,25 +70,7 @@ float Trajectory::progress()
 void Trajectory::stop()
 {
 	if (!mStarted || mStopped) return;
-
-    if (s_bTrajMover){
-        mMover->end(kTrajectory);
-    } else if (s_bUseOneSource){
-        int j = 0;
-        mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
-        mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
-    } else {
-        if (mSource < 0){
-            //no source selected, so automation on all sources
-            for (int j = 0; j < mFilter->getNumberOfSources(); j++) {
-                mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(j));
-                mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(j));
-            }
-        } else {
-            mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSource));
-            mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSource));
-        }
-    }
+    mMover->end(kTrajectory);
 	mStopped = true;
 }
 
@@ -233,17 +198,9 @@ protected:
     void spProcess(float duration, float seconds) {
         float da = mDone / mDurationSingleTraj * (2 * M_PI);
         if (!mCCW) da = -da;
-        if (s_bTrajMover){
-            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
-            mMover->move(mFilter->convertRt2Xy01(p.x, p.y+da), kTrajectory);
-        } else {
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-                if (mSource < 0 || mSource == i){
-                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                    FPoint p = mSourcesInitRT.getUnchecked(i);
-                    mFilter->setSourceRT(i, FPoint(p.x, p.y + da), bWriteAutomation);
-                }
-        }
+        
+        FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
+        mMover->move(mFilter->convertRt2Xy01(p.x, p.y+da), kTrajectory);
     }
 	
 private:
@@ -343,23 +300,11 @@ protected:
         }
         if (!mCCW) da = -da;
         
-        if (s_bTrajMover){
-            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
-            float l = (cos(da)+1)*0.5;
-            float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-            float t = p.y + 2*da;
-            mMover->move(mFilter->convertRt2Xy01(r, t), kTrajectory);
-        } else {
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-                if (mSource < 0 || mSource == i) {
-                    FPoint p = mSourcesInitRT.getUnchecked(i);
-                    float l = (cos(da)+1)*0.5;
-                    float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-                    float t = p.y + 2*da;
-                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                    mFilter->setSourceRT(i, FPoint(r, t), bWriteAutomation);
-                }
-        }
+        FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
+        float l = (cos(da)+1)*0.5;
+        float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+        float t = p.y + 2*da;
+        mMover->move(mFilter->convertRt2Xy01(r, t), kTrajectory);
     }
 	
 private:
@@ -460,29 +405,15 @@ protected:
             }
         }
         
-        if (s_bTrajMover){
-            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
-            float l = mCross ? cos(da) : (cos(da)+1)*0.5;
-            float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-            
-            l -= fCurDampening * l;
-            r -= fCurDampening * r;
-            
-            mMover->move(mFilter->convertRt2Xy01(r, p.y), kTrajectory);
-            
-            
-        } else {
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++){
-                if (mSource < 0 || mSource == i) {
-                    FPoint p = mSourcesInitRT.getUnchecked(i);
-                    float l = mCross ? cos(da) : (cos(da)+1)*0.5;
-                    float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                    mFilter->setSourceRT(i, FPoint(r, p.y), bWriteAutomation);
-                }
-            }
-        }
-	}
+        FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
+        float l = mCross ? cos(da) : (cos(da)+1)*0.5;
+        float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+        
+        l -= fCurDampening * l;
+        r -= fCurDampening * r;
+        
+        mMover->move(mFilter->convertRt2Xy01(r, p.y), kTrajectory);
+}
 	
 private:
 	bool mIn, mRT, mCross;
@@ -500,39 +431,17 @@ protected:
 	{
 		float da = mDone / mDurationSingleTraj * (2 * M_PI);
         if (!mCCW) da = -da;
-        if (s_bTrajMover){
-            // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
-            FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
-            float a = 1;
-            float b = 0.5;
-            float cosDa = cos(da);
-            float a2 = a*a;
-            float b2 = b*b;
-            float cosDa2 = cosDa*cosDa;
-            float r2 = (a2*b2)/((b2-a2)*cosDa2+a2);
-            float r = sqrt(r2);
-            mMover->move(mFilter->convertRt2Xy01(p.x * r, p.y + da), kTrajectory);
-        } else {
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++){
-                if (mSource < 0 || mSource == i)
-                {
-                    FPoint p = mSourcesInitRT.getUnchecked(i);
-                    
-                    // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
-                    float a = 1;
-                    float b = 0.5;
-                    float cosDa = cos(da);
-                    float a2 = a*a;
-                    float b2 = b*b;
-                    float cosDa2 = cosDa*cosDa;
-                    float r2 = (a2*b2)/((b2-a2)*cosDa2+a2);
-                    float r = sqrt(r2);
-                    
-                    bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                    mFilter->setSourceRT(i, FPoint(p.x * r, p.y + da), bWriteAutomation);
-                }
-            }
-        }
+        // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
+        FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
+        float a = 1;
+        float b = 0.5;
+        float cosDa = cos(da);
+        float a2 = a*a;
+        float b2 = b*b;
+        float cosDa2 = cosDa*cosDa;
+        float r2 = (a2*b2)/((b2-a2)*cosDa2+a2);
+        float r = sqrt(r2);
+        mMover->move(mFilter->convertRt2Xy01(p.x * r, p.y + da), kTrajectory);
     }
 	
 private:
@@ -597,51 +506,36 @@ public:
 	: Trajectory(filter, p_pMover, duration, beats, times, source), mClock(0), mSpeed(speed), mUniqueTarget(bUniqueTarget) {}
 	
 protected:
-	void spProcess(float duration, float seconds)
-	{
+    void spProcess(float duration, float seconds){
         if (fmodf(mDone, mDurationSingleTraj) < 0.01){
             mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
         }
         
-		mClock += seconds;
-		while(mClock > 0.01)
-		{
-			mClock -= 0.01;
+        mClock += seconds;
+        while(mClock > 0.01)
+        {
+            mClock -= 0.01;
             
             float r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
             float r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
             
-            if (s_bTrajMover){
-                FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
-                if (!mUniqueTarget){
-                    r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                    r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                }
-                p.x += (r1 - 0.5) * mSpeed;
-                p.y += (r2 - 0.5) * mSpeed;
-                mMover->move(mFilter->convertRt2Xy01(p.x, p.y), kTrajectory);
-            } else {
-                for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-                    if (mSource < 0 || mSource == i)
-                    {
-                        FPoint p = mFilter->getSourceXY(i);
-                        if (!mUniqueTarget){
-                            r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                            r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                        }
-                        p.x += (r1 - 0.5) * mSpeed;
-                        p.y += (r2 - 0.5) * mSpeed;
-                        bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
-                        mFilter->setSourceXY(i, p, bWriteAutomation);
-                    }
+            
+            FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
+            if (!mUniqueTarget){
+                r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
             }
+            p.x += (r1 - 0.5) * mSpeed;
+            p.y += (r2 - 0.5) * mSpeed;
+            mMover->move(mFilter->convertRt2Xy01(p.x, p.y), kTrajectory);
+            
         }
     }
-	
+    
 private:
-	MTRand_int32 mRNG;
-	float mClock;
-	float mSpeed;
+    MTRand_int32 mRNG;
+    float mClock;
+    float mSpeed;
     bool mUniqueTarget;
 };
 
