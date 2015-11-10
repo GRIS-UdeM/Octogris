@@ -580,7 +580,7 @@ protected:
 			FPoint a = mSourcesOrigins.getUnchecked(i);
 			FPoint b = mSourcesDestinations.getUnchecked(i);
 			FPoint p = a + (b - a) * d;
-            bool bWriteAutomation = (s_bUseOneSource && i == 0) ? true : false;
+            bool bWriteAutomation = (i == 0) ? true : false;
 			mFilter->setSourceXY(i, p, bWriteAutomation);
 		}
 	}

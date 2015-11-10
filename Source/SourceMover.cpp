@@ -74,11 +74,6 @@ void SourceMover::begin(int s, MoverType mt)
 		for (int j = 0; j < iNbrSrc; j++) {
 			mSourcesDownRT.setUnchecked(j, mFilter->getSourceRT(j));
 			mSourcesDownXY.setUnchecked(j, mFilter->getSourceXY(j));
-            if (j == mSelectedSrc) continue;
-            if (mMoverType != kSourceThread && !s_bUseOneSource){
-                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceX(j));
-                mFilter->beginParameterChangeGesture(mFilter->getParamForSourceY(j));
-            }
 		}
     }
 }
@@ -124,7 +119,7 @@ void SourceMover::setEqualRadius(){
         if (curSrcRT.y < 0) curSrcRT.y += kThetaMax;
         if (curSrcRT.y > kThetaMax) curSrcRT.y -= kThetaMax;
         mFilter->setPreventSourceLocationUpdate(true);
-        mFilter->setSourceRT(iCurSrc, curSrcRT, !s_bUseOneSource);  //this call needs to NOT triger a call to processor::setSourceLocationChanged
+        mFilter->setSourceRT(iCurSrc, curSrcRT, false);  //this call needs to NOT triger a call to processor::setSourceLocationChanged
         mFilter->mOldSrcLocRT[iCurSrc] = curSrcRT;
         mFilter->setPreventSourceLocationUpdate(false);
     }
@@ -147,7 +142,7 @@ void SourceMover::setEqualAngles(){
         if (curSrcRT.y < 0) curSrcRT.y += kThetaMax;
         if (curSrcRT.y > kThetaMax) curSrcRT.y -= kThetaMax;
         mFilter->setPreventSourceLocationUpdate(true);
-        mFilter->setSourceRT(iCurSrc, curSrcRT, !s_bUseOneSource);
+        mFilter->setSourceRT(iCurSrc, curSrcRT, false);
         mFilter->mOldSrcLocRT[iCurSrc] = curSrcRT;
         mFilter->setPreventSourceLocationUpdate(false);
 
@@ -171,7 +166,7 @@ void SourceMover::setEqualRadiusAndAngles(){
         if (curSrcRT.y < 0) curSrcRT.y += kThetaMax;
         if (curSrcRT.y > kThetaMax) curSrcRT.y -= kThetaMax;
         mFilter->setPreventSourceLocationUpdate(true);
-        mFilter->setSourceRT(iCurSrc, curSrcRT, !s_bUseOneSource);
+        mFilter->setSourceRT(iCurSrc, curSrcRT, false);
         mFilter->mOldSrcLocRT[iCurSrc] = curSrcRT;
         mFilter->setPreventSourceLocationUpdate(false);
     }
@@ -236,7 +231,7 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                         newCurSrcPosRT.y -= kThetaMax;
                     }
                     
-                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, !s_bUseOneSource);
+                    mFilter->setSourceRT(iCurSrc, newCurSrcPosRT, false);
                     mFilter->mOldSrcLocRT[iCurSrc] = newCurSrcPosRT;
                     break;
                 }
@@ -254,7 +249,7 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     FPoint oldCurSrcPosXY = (mMoverType == kSourceThread) ? mFilter->convertRt2Xy(mFilter->mOldSrcLocRT[iCurSrc]) : mSourcesDownXY[iCurSrc];
                     FPoint newCurSrcPosXY = oldCurSrcPosXY + delSelSrcPosXY;
                     
-                    mFilter->setSourceXY(iCurSrc, newCurSrcPosXY, !s_bUseOneSource);
+                    mFilter->setSourceXY(iCurSrc, newCurSrcPosXY, false);
                     mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy2Rt(newCurSrcPosXY, false);
                     break;
                 }
@@ -287,16 +282,6 @@ void SourceMover::end(MoverType mt)
     if (mMoverType != kSourceThread){
         mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
         mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
-        
-        if (mFilter->getMovementMode() != 0 && mFilter->getNumberOfSources() > 1) {
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
-                if (i == mSelectedSrc) continue;
-                if (!s_bUseOneSource){
-                    mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(i));
-                    mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(i));
-                }
-            }
-        }
         mFilter->setIsRecordingAutomation(false);
     }
     
