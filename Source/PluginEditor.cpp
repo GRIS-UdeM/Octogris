@@ -1564,7 +1564,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         }
     }
     else if (mFilter->getIsAllowInputOutputModeSelection() && button == mApplyInputOutputModeButton) {
-        mFilter->setInputOutputMode(mInputOutputModeCombo->getSelectedItemIndex());
+        int iSelectedMode = mInputOutputModeCombo->getSelectedItemIndex();
+        mFilter->setInputOutputMode(iSelectedMode);
         
 		updateSources(false);
 		updateSpeakers(false);
@@ -1573,7 +1574,9 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             m_bLoadingPreset = false;
         }
         mField->repaint();
-        
+        if (iSelectedMode == i1o2 || iSelectedMode == i1o4 || iSelectedMode == i1o6 || iSelectedMode == i1o8 || iSelectedMode == i1o16){
+            mMovementMode->setSelectedId(1);
+        }
     }
     else if (button == mApplySrcPlacementButton) {
         
@@ -1931,8 +1934,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);
-        
-        //refreshSize();
     }
     
     hcp = mFilter->getHostChangedParameter();
