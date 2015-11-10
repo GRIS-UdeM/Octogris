@@ -388,8 +388,14 @@ private:
 class PendulumTrajectory : public Trajectory
 {
 public:
-	PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool rt, bool cross)
-	: Trajectory(filter, p_pMover, duration, beats, times, source), mIn(in), mRT(rt), mCross(cross) {}
+	PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool rt, bool cross, float p_fDampening)
+	: Trajectory(filter, p_pMover, duration, beats, times, source)
+    , mIn(in)
+    , mRT(rt)
+    , mCross(cross)
+    , m_fTotalDampening(p_fDampening)
+    {
+    }
 	
 protected:
 	void spProcess(float duration, float seconds){
@@ -417,6 +423,7 @@ protected:
 	
 private:
 	bool mIn, mRT, mCross;
+    float m_fTotalDampening;
 };
 
 // ==============================================================================
@@ -555,9 +562,7 @@ protected:
 		float p = mDone / mDurationSingleTraj;
 		
 		int cycle = (int)p;
-		if (mCycle != cycle)
-		{
-            
+		if (mCycle != cycle) {
             resetIfRandomTarget();
 			mCycle = cycle;
 			mSourcesOrigins.clearQuick();
@@ -580,6 +585,7 @@ protected:
 			FPoint a = mSourcesOrigins.getUnchecked(i);
 			FPoint b = mSourcesDestinations.getUnchecked(i);
 			FPoint p = a + (b - a) * d;
+            JUCE_COMPILER_WARNING("i don't understand what this means, how this works, and why we're not using the mover in this trajectory")
             bool bWriteAutomation = (i == 0) ? true : false;
 			mFilter->setSourceXY(i, p, bWriteAutomation);
 		}
@@ -700,7 +706,8 @@ String Trajectory::GetTrajectoryName(int i)
     return "";
 }
 
-Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget)
+Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats,
+                                             AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget, float p_fDampening)
 {
     
     bool ccw, in, cross;
@@ -761,7 +768,7 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
         case Circle:                     return new CircleTrajectory(filter, p_pMover, duration, beats, times, source, ccw);
         case EllipseTr:                  return new EllipseTrajectory(filter, p_pMover, duration, beats, times, source, ccw);
         case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, source, ccw, in, bReturn);
-        case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross);
+        case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross, p_fDampening);
         case AllTrajectoryTypes::Random: return new RandomTrajectory(filter, p_pMover, duration, beats, times, source, speed, bUniqueTarget);
         case RandomTarget:               return new RandomTargetTrajectory(filter, p_pMover, duration, beats, times, source);
         case SymXTarget:                 return new SymXTargetTrajectory(filter, p_pMover, duration, beats, times, source);

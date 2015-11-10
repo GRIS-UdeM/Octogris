@@ -1534,11 +1534,12 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             JUCE_COMPILER_WARNING("need to delete everything related to this source")
             int     source          = -1;
             bool    bUniqueTarget   = !(mFilter->getMovementMode() == 0);
+            float   p_fDampening    = .5;
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
 
             mFilter->setIsRecordingAutomation(true);
             mFilter->storeCurrentLocations();
-            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget));
+            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget, p_fDampening));
             mTrWriteButton->setButtonText("Cancel");
             mTrStateEditor = kTrWriting;
             mFilter->setTrState(mTrStateEditor);
