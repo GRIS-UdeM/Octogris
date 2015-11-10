@@ -400,7 +400,7 @@ public:
 protected:
 	void spProcess(float duration, float seconds){
         float da;
-        float fCurDampening = .5 * mDone / mTotalDuration;
+        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;
         if (mRT){
             da = mDone / mDurationSingleTraj * (2 * M_PI);
         } else {

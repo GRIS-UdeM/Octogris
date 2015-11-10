@@ -672,7 +672,7 @@ AudioProcessorEditor (ownerFilter)
     //--------------- TRAJECTORIES TAB ---------------- //
     box = mTabs->getTabContentComponent(1);
     {
-
+        //---------- ROW 1 -------------
         int x = kMargin, y = kMargin, w = (box->getWidth() - kMargin) / 3 - kMargin;
         
         int cbw = 130;
@@ -694,7 +694,6 @@ AudioProcessorEditor (ownerFilter)
         
         {
             ComboBox *cb = new ComboBox();
-            
             cb->setSize(cbw, dh);
             cb->setTopLeftPosition(x+cbw+5, y);
             box->addAndMakeVisible(cb);
@@ -706,9 +705,8 @@ AudioProcessorEditor (ownerFilter)
         
         {
             ComboBox *cb = new ComboBox();
-            
             cb->setSize(cbw, dh);
-            cb->setTopLeftPosition(x+cbw+cbw+10, y);
+            cb->setTopLeftPosition(x+2*(cbw+5), y);
             box->addAndMakeVisible(cb);
             mComponents.add(cb);
             
@@ -716,9 +714,17 @@ AudioProcessorEditor (ownerFilter)
             mTrReturnComboBox->addListener(this);
         }
         
-        y += dh + 5;
+        int tew = 30;
+        mTrDampeningTextEditor = addTextEditor(String(mFilter->getTrDampening()), x+3*(cbw+5), y, tew, dh, box);
+        mTrDampeningTextEditor->addListener(this);
+        x += tew;
+        mTrDampeningLabel = addLabel("dampening", x+3*(cbw+5), y, w, dh, box);
+
         
-        int tew = 80;
+        //---------- ROW 2 -------------
+        y += dh + 5;
+        x = kMargin;
+        tew = 80;
         
         mTrDuration = addTextEditor(String(mFilter->getTrDuration()), x, y, tew, dh, box);
         mTrDuration->addListener(this);
@@ -739,11 +745,9 @@ AudioProcessorEditor (ownerFilter)
             mTrUnits->addListener(this);
         }
         x += tew + kMargin;
-        
         addLabel("per cycle", x, y, w, dh, box);
         
-        x += tew + kMargin;
-        
+        //---------- ROW 3 -------------
         y += dh + 5;
         x = kMargin;
         
@@ -753,6 +757,7 @@ AudioProcessorEditor (ownerFilter)
         
         addLabel("cycle(s)", x, y, w, dh, box);
         
+        //---------- ROW 4 -------------
         y += dh + 5;
         x = kMargin;
         
@@ -1127,8 +1132,16 @@ void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
     }
 }
 
-void OctogrisAudioProcessorEditor::updateTrajectoryComboboxes(){
+void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
     int iSelectedTrajectory = mFilter->getTrType()+1;
+    //if pendulum is selected
+    if (iSelectedTrajectory == 4){
+        mTrDampeningTextEditor->setVisible(true);
+        mTrDampeningLabel->setVisible(true);
+    } else {
+        mTrDampeningTextEditor->setVisible(false);
+        mTrDampeningLabel->setVisible(false);
+    }
     
     unique_ptr<vector<String>> allDirections = Trajectory::getTrajectoryPossibleDirections(iSelectedTrajectory);
     if (allDirections != nullptr){
@@ -1487,9 +1500,11 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
         float repeats = mTrRepeats->getText().getFloatValue();
         mFilter->setTrRepeats(repeats);
     }
-    
-    else
-    {
+    else if (&textEditor == mTrDampeningTextEditor){
+        float dampening = mTrDampeningTextEditor->getText().getFloatValue();
+        mFilter->setTrDampening(dampening);
+    }
+    else{
         printf("unknown TextEditor clicked...\n");
     }
     
@@ -1531,10 +1546,10 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             float   repeats         = mTrRepeats->getText().getFloatValue();
             int     type            = mTrTypeComboBox->getSelectedId();
             bool    bReturn         = (mTrReturnComboBox->getSelectedId() == 2);
-            JUCE_COMPILER_WARNING("need to delete everything related to this source")
+            JUCE_COMPILER_WARNING("need to delete everything related to this source, when target trajectory is fixed")
             int     source          = -1;
             bool    bUniqueTarget   = !(mFilter->getMovementMode() == 0);
-            float   p_fDampening    = .5;
+            float   p_fDampening    = mTrDampeningTextEditor->getText().getFloatValue();
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
 
             mFilter->setIsRecordingAutomation(true);
@@ -1818,7 +1833,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     {
         int type = mTrTypeComboBox->getSelectedId()-1;
         mFilter->setTrType(type);
-        updateTrajectoryComboboxes();
+        updateTrajectoryComponents();
     }
     else if (comboBox ==  mTrDirectionComboBox)
     {
@@ -1906,6 +1921,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrDuration->setText(String(mFilter->getTrDuration()));
         mTrUnits->setSelectedId(mFilter->getTrUnits());
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
+        mTrDampeningTextEditor->setText(String(mFilter->getTrDampening()));
         
         updateOscComponent(mOsc);
         

@@ -197,6 +197,8 @@ private:
 	TextEditor *mTrDuration;
 	ComboBox *mTrUnits;
 	TextEditor *mTrRepeats;
+    TextEditor *mTrDampeningTextEditor;
+    Component  *mTrDampeningLabel;
 	TextButton *mTrWriteButton;
 	MiniProgressBar *mTrProgressBar;
     
@@ -222,7 +224,7 @@ private:
     void updateSourceLocationTextEditor(bool p_bUpdateFilter);
     void updateSpeakerLocationTextEditor();
     void updateMovementModeCombo();
-    void updateTrajectoryComboboxes();
+    void updateTrajectoryComponents();
 	
 	Component* addLabel(const String &s, int x, int y, int w, int h, Component *into);
 	ToggleButton* addCheckbox(const String &s, bool v, int x, int y, int w, int h, Component *into);

@@ -341,6 +341,10 @@ public:
 
     float getTrRepeats() const {return m_fTrRepeats;}
     void setTrRepeats(float i){m_fTrRepeats = i;}
+
+    float getTrDampening() const {return m_fTrDampening;}
+    void setTrDampening(float i){m_fTrDampening = i;}
+
     
     int getTrState() const {return mTrState;}
     void setTrState(int tr) {mTrState = tr;}
@@ -617,6 +621,7 @@ private:
     float m_fTrDuration;
     int m_iTrUnits; //0 = beats, 1 = seconds
     float m_fTrRepeats;
+    float m_fTrDampening;
     int mTrState;
 
     int mGuiTab;

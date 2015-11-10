@@ -153,6 +153,7 @@ mFilters()
     m_fTrDuration = 5.f;
     m_iTrUnits = 1;     //0 = beats, 1 = seconds
     m_fTrRepeats = 1.f;
+    m_fTrDampening = 0.f;
 	
 	mOscLeapSource = 0;
 	mOscReceiveEnabled = 0;
@@ -1762,6 +1763,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute ("m_fTrDuration", m_fTrDuration);
     xml.setAttribute ("m_iTrUnits", m_iTrUnits);
     xml.setAttribute ("m_fTrRepeats", m_fTrRepeats);
+    xml.setAttribute ("m_fTrDampening", m_fTrDampening);
     xml.setAttribute ("mLeapEnabled", mLeapEnabled);
     
     xml.setAttribute ("kMaxSpanVolume", mParameters[kMaxSpanVolume]);
@@ -1843,6 +1845,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_fTrDuration       = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDuration", 1));
             m_iTrUnits          = xmlState->getIntAttribute ("m_iTrUnits", 0);
             m_fTrRepeats        = static_cast<float>(xmlState->getDoubleAttribute("m_fTrRepeats", 1));
+            m_fTrDampening      = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDampening", m_fTrDampening));
             mLeapEnabled        = xmlState->getIntAttribute ("mLeapEnabled", 0);
             
             
@@ -1924,17 +1927,16 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
                     }
                 }
                 
-                mSrcPlacementMode = readIntData(data, sizeInBytes, 1);
-                mSpPlacementMode = readIntData(data, sizeInBytes, 1);
-                mSrcSelected = readIntData(data, sizeInBytes, 0);
-                mSpSelected = readIntData(data, sizeInBytes, 1);
-                
-                m_iTrType = readIntData(data, sizeInBytes, 0);
-                m_iTrSrcSelect = readIntData(data, sizeInBytes, 1);
-                m_fTrDuration = readFloatData(data, sizeInBytes, 1);
-                m_iTrUnits = readIntData(data, sizeInBytes, 0);
-                m_fTrRepeats = readFloatData(data, sizeInBytes, 1);
-                mLeapEnabled = readIntData(data, sizeInBytes, 0);
+                mSrcPlacementMode   = readIntData(data, sizeInBytes, 1);
+                mSpPlacementMode    = readIntData(data, sizeInBytes, 1);
+                mSrcSelected        = readIntData(data, sizeInBytes, 0);
+                mSpSelected         = readIntData(data, sizeInBytes, 1);
+                m_iTrType           = readIntData(data, sizeInBytes, 0);
+                m_iTrSrcSelect      = readIntData(data, sizeInBytes, 1);
+                m_fTrDuration       = readFloatData(data, sizeInBytes, 1);
+                m_iTrUnits          = readIntData(data, sizeInBytes, 0);
+                m_fTrRepeats        = readFloatData(data, sizeInBytes, 1);
+                mLeapEnabled        = readIntData(data, sizeInBytes, 0);
             }
             
             if (version >= 10){
