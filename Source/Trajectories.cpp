@@ -388,12 +388,13 @@ private:
 class PendulumTrajectory : public Trajectory
 {
 public:
-	PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool rt, bool cross, float p_fDampening)
+	PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool rt, bool cross, float p_fDampening, float p_fDeviation)
 	: Trajectory(filter, p_pMover, duration, beats, times, source)
     , mIn(in)
     , mRT(rt)
     , mCross(cross)
     , m_fTotalDampening(p_fDampening)
+    , m_fTotalDeviation(p_fDeviation)
     {
     }
 	
@@ -421,19 +422,18 @@ protected:
         //circle/deviation part
         float deviationAngle, integralPart;
         deviationAngle = mDone / mTotalDuration;
-        JUCE_COMPILER_WARNING("can change this for fmodf and remove the integralPart argument?")
         deviationAngle = modf(deviationAngle, &integralPart);
         if (!mCCW) {
             deviationAngle = - deviationAngle;
         }
-        deviationAngle *= 2 * M_PI * m_fDeviation;
+        deviationAngle *= 2 * M_PI * m_fTotalDeviation;
         
         mMover->move(mFilter->convertRt2Xy01(r, p.y + deviationAngle), kTrajectory);
 }
 	
 private:
 	bool mIn, mRT, mCross, mCCW = true;
-    float m_fTotalDampening, m_fDeviation = .5;
+    float m_fTotalDampening, m_fTotalDeviation;
 };
 
 // ==============================================================================
@@ -717,7 +717,7 @@ String Trajectory::GetTrajectoryName(int i)
 }
 
 Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats,
-                                             AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget, float p_fDampening)
+                                             AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget, float p_fDampening, float p_fDeviation)
 {
     
     bool ccw, in, cross;
@@ -778,7 +778,7 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
         case Circle:                     return new CircleTrajectory(filter, p_pMover, duration, beats, times, source, ccw);
         case EllipseTr:                  return new EllipseTrajectory(filter, p_pMover, duration, beats, times, source, ccw);
         case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, source, ccw, in, bReturn);
-        case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross, p_fDampening);
+        case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross, p_fDampening, p_fDeviation);
         case AllTrajectoryTypes::Random: return new RandomTrajectory(filter, p_pMover, duration, beats, times, source, speed, bUniqueTarget);
         case RandomTarget:               return new RandomTargetTrajectory(filter, p_pMover, duration, beats, times, source);
         case SymXTarget:                 return new SymXTargetTrajectory(filter, p_pMover, duration, beats, times, source);

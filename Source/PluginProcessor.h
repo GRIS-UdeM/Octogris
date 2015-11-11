@@ -318,8 +318,6 @@ public:
 
     int getSpPlacementMode() const {return mSpPlacementMode;}
     void setSpPlacementMode(int i);
-    
-
 
     int getTrType() const {return m_iTrType;}
     void setTrType(int i){m_iTrType = i;}
@@ -345,6 +343,8 @@ public:
     float getTrDampening() const {return m_fTrDampening;}
     void setTrDampening(float i){m_fTrDampening = i;}
 
+    float getTrDeviation() const {return m_fTrDeviation;}
+    void setTrDeviation(float i){m_fTrDeviation = i;}
     
     int getTrState() const {return mTrState;}
     void setTrState(int tr) {mTrState = tr;}
@@ -622,6 +622,7 @@ private:
     int m_iTrUnits; //0 = beats, 1 = seconds
     float m_fTrRepeats;
     float m_fTrDampening;
+    float m_fTrDeviation;
     int mTrState;
 
     int mGuiTab;

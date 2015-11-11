@@ -198,7 +198,9 @@ private:
 	ComboBox *mTrUnits;
 	TextEditor *mTrRepeats;
     TextEditor *mTrDampeningTextEditor;
+    TextEditor *mTrDeviationTextEditor;
     Component  *mTrDampeningLabel;
+    Component  *mTrDeviationLabel;
 	TextButton *mTrWriteButton;
 	MiniProgressBar *mTrProgressBar;
     

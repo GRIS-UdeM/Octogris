@@ -714,17 +714,17 @@ AudioProcessorEditor (ownerFilter)
             mTrReturnComboBox->addListener(this);
         }
         
-        int tew = 30;
-        mTrDampeningTextEditor = addTextEditor(String(mFilter->getTrDampening()), x+3*(cbw+5), y, tew, dh, box);
+        int tewShort = 30;
+        int x2 = x+3*(cbw+5);
+        mTrDampeningTextEditor = addTextEditor(String(mFilter->getTrDampening()), x2, y, tewShort, dh, box);
         mTrDampeningTextEditor->addListener(this);
-        x += tew;
-        mTrDampeningLabel = addLabel("dampening", x+3*(cbw+5), y, w, dh, box);
+        mTrDampeningLabel = addLabel("dampening", x2 + tewShort, y, w, dh, box);
 
         
         //---------- ROW 2 -------------
         y += dh + 5;
         x = kMargin;
-        tew = 80;
+        int tew = 80;
         
         mTrDuration = addTextEditor(String(mFilter->getTrDuration()), x, y, tew, dh, box);
         mTrDuration->addListener(this);
@@ -746,6 +746,10 @@ AudioProcessorEditor (ownerFilter)
         }
         x += tew + kMargin;
         addLabel("per cycle", x, y, w, dh, box);
+        
+        mTrDeviationTextEditor = addTextEditor(String(mFilter->getTrDeviation()), x2, y, tewShort, dh, box);
+        mTrDeviationTextEditor->addListener(this);
+        mTrDeviationLabel = addLabel("deviation", x2 + tewShort, y, w, dh, box);
         
         //---------- ROW 3 -------------
         y += dh + 5;
@@ -787,7 +791,7 @@ AudioProcessorEditor (ownerFilter)
         
         x = 2*cbw + 2*kMargin;
         y = kMargin + dh + 5;
-        addLabel("Movements:", x, y, w, dh, box);
+        addLabel("Movements:", x, y, w-50, dh, box);
         
     }
     
@@ -1138,9 +1142,13 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
     if (iSelectedTrajectory == 4){
         mTrDampeningTextEditor->setVisible(true);
         mTrDampeningLabel->setVisible(true);
+        mTrDeviationTextEditor->setVisible(true);
+        mTrDeviationLabel->setVisible(true);
     } else {
         mTrDampeningTextEditor->setVisible(false);
         mTrDampeningLabel->setVisible(false);
+        mTrDeviationTextEditor->setVisible(false);
+        mTrDeviationLabel->setVisible(false);
     }
     
     unique_ptr<vector<String>> allDirections = Trajectory::getTrajectoryPossibleDirections(iSelectedTrajectory);
@@ -1502,7 +1510,17 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
     }
     else if (&textEditor == mTrDampeningTextEditor){
         float dampening = mTrDampeningTextEditor->getText().getFloatValue();
-        mFilter->setTrDampening(dampening);
+        if (dampening >= 0 && dampening <= 1){
+            mFilter->setTrDampening(dampening);
+        }
+        mTrDampeningTextEditor->setText(String(mFilter->getTrDampening()));
+    }
+    else if (&textEditor == mTrDeviationTextEditor){
+        float deviation = mTrDeviationTextEditor->getText().getFloatValue()/360;
+        if (deviation >= 0 && deviation <= 1){
+            mFilter->setTrDeviation(deviation);
+        }
+        mTrDeviationTextEditor->setText(String(mFilter->getTrDeviation()*360));
     }
     else{
         printf("unknown TextEditor clicked...\n");
@@ -1550,11 +1568,16 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             int     source          = -1;
             bool    bUniqueTarget   = !(mFilter->getMovementMode() == 0);
             float   p_fDampening    = mTrDampeningTextEditor->getText().getFloatValue();
+            
+            
+            
+            
+            float   p_fDeviation    = mTrDeviationTextEditor->getText().getFloatValue()/360;
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
 
             mFilter->setIsRecordingAutomation(true);
             mFilter->storeCurrentLocations();
-            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget, p_fDampening));
+            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget, p_fDampening, p_fDeviation));
             mTrWriteButton->setButtonText("Cancel");
             mTrStateEditor = kTrWriting;
             mFilter->setTrState(mTrStateEditor);
@@ -1925,6 +1948,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrUnits->setSelectedId(mFilter->getTrUnits());
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
         mTrDampeningTextEditor->setText(String(mFilter->getTrDampening()));
+        mTrDeviationTextEditor->setText(String(mFilter->getTrDeviation()*360));
         
         updateOscComponent(mOsc);
         

@@ -154,7 +154,8 @@ mFilters()
     m_iTrUnits = 1;     //0 = beats, 1 = seconds
     m_fTrRepeats = 1.f;
     m_fTrDampening = 0.f;
-	
+	m_fTrDeviation = 0.f;
+    
 	mOscLeapSource = 0;
 	mOscReceiveEnabled = 0;
 	mOscReceivePort = 8000;
@@ -1764,6 +1765,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute ("m_iTrUnits", m_iTrUnits);
     xml.setAttribute ("m_fTrRepeats", m_fTrRepeats);
     xml.setAttribute ("m_fTrDampening", m_fTrDampening);
+    xml.setAttribute ("m_fTrDeviation", m_fTrDeviation);
     xml.setAttribute ("mLeapEnabled", mLeapEnabled);
     
     xml.setAttribute ("kMaxSpanVolume", mParameters[kMaxSpanVolume]);
@@ -1846,6 +1848,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_iTrUnits          = xmlState->getIntAttribute ("m_iTrUnits", 0);
             m_fTrRepeats        = static_cast<float>(xmlState->getDoubleAttribute("m_fTrRepeats", 1));
             m_fTrDampening      = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDampening", m_fTrDampening));
+            m_fTrDeviation      = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDeviation", m_fTrDeviation));
             mLeapEnabled        = xmlState->getIntAttribute ("mLeapEnabled", 0);
             
             
