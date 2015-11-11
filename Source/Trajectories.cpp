@@ -418,23 +418,22 @@ protected:
         //r is the ray, unclear what l is
         r -= fCurDampening * r;
         
-        
-        //circle part
+        //circle/deviation part
         float deviationAngle, integralPart;
         deviationAngle = mDone / mTotalDuration;
+        JUCE_COMPILER_WARNING("can change this for fmodf and remove the integralPart argument?")
         deviationAngle = modf(deviationAngle, &integralPart);
         if (!mCCW) {
             deviationAngle = - deviationAngle;
         }
-        deviationAngle *= m_fDeviation;
-
+        deviationAngle *= 2 * M_PI * m_fDeviation;
         
         mMover->move(mFilter->convertRt2Xy01(r, p.y + deviationAngle), kTrajectory);
 }
 	
 private:
-	bool mIn, mRT, mCross, mCCW;
-    float m_fTotalDampening, m_fDeviation;
+	bool mIn, mRT, mCross, mCCW = true;
+    float m_fTotalDampening, m_fDeviation = .5;
 };
 
 // ==============================================================================
