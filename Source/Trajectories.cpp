@@ -415,15 +415,26 @@ protected:
         float l = mCross ? cos(da) : (cos(da)+1)*0.5;
         float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
         
-        l -= fCurDampening * l;
+        //r is the ray, unclear what l is
         r -= fCurDampening * r;
         
-        mMover->move(mFilter->convertRt2Xy01(r, p.y), kTrajectory);
+        
+        //circle part
+        float deviationAngle, integralPart;
+        deviationAngle = mDone / mTotalDuration;
+        deviationAngle = modf(deviationAngle, &integralPart);
+        if (!mCCW) {
+            deviationAngle = - deviationAngle;
+        }
+        deviationAngle *= m_fDeviation;
+
+        
+        mMover->move(mFilter->convertRt2Xy01(r, p.y + deviationAngle), kTrajectory);
 }
 	
 private:
-	bool mIn, mRT, mCross;
-    float m_fTotalDampening;
+	bool mIn, mRT, mCross, mCCW;
+    float m_fTotalDampening, m_fDeviation;
 };
 
 // ==============================================================================
