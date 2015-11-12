@@ -83,7 +83,7 @@ public:
 	
 protected:
 	virtual void spProcess(float duration, float seconds) = 0;
-    Array<Point<float>> mSourcesInitRT;
+    Array<Point<float>> mSourcesInitialPositionRT;
 	
 private:
 	void start();

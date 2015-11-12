@@ -1155,7 +1155,7 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
         mTrDeviationLabel->setVisible(false);
     }
     
-    if (iSelectedTrajectory == 1 || iSelectedTrajectory == 3){
+    if (iSelectedTrajectory >= 1 & iSelectedTrajectory <= 3){
         mTrTurnsTextEditor->setVisible(true);
         mTrTurnsLabel->setVisible(true);
     } else {

@@ -34,7 +34,7 @@ void Trajectory::start() {
      mMover->begin(mFilter->getSrcSelected(), kTrajectory);
 
     for (int i = 0; i < mFilter->getNumberOfSources(); i++){
-        mSourcesInitRT.add(mFilter->getSourceRT(i));
+        mSourcesInitialPositionRT.add(mFilter->getSourceRT(i));
     }
     
 	mStarted = true;
@@ -199,11 +199,33 @@ public:
     
 protected:
     void spProcess(float duration, float seconds) {
-        float da = m_fTurns * mDone / mDurationSingleTraj * (2 * M_PI);
+//        float da = m_fTurns * mDone / mDurationSingleTraj * (2 * M_PI);
+//        if (!mCCW) da = -da;
+//        
+//        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+//        mMover->move(mFilter->convertRt2Xy01(p.x, p.y+da), kTrajectory);
+        
+//        float newAzimuth, integralPart;
+//        newAzimuth = mDone / mDurationSingleTraj* (2 * M_PI);
+//        newAzimuth = modf(newAzimuth, &integralPart);
+//        if (!mCCW) newAzimuth = - newAzimuth;
+//
+//        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+//        newAzimuth = modf(p.y + m_fTurns * newAzimuth, &integralPart);
+//        mMover->move(mFilter->convertRt2Xy01(p.x, newAzimuth), kTrajectory);
+        
+        float integralPart;
+        float da = m_fTurns * mDone / mDurationSingleTraj;
+        da = modf(da/m_fTurns, & integralPart) * m_fTurns;
+        cout << "da after: " << da << newLine;
+        
         if (!mCCW) da = -da;
         
-        FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
-        mMover->move(mFilter->convertRt2Xy01(p.x, p.y+da), kTrajectory);
+        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+        float newAngle = p.y+da*2*M_PI;
+//        cout << "newAngle: " << newAngle << newLine;
+        mMover->move(mFilter->convertRt2Xy01(p.x, newAngle), kTrajectory);
+
     }
 	
 private:
@@ -309,7 +331,7 @@ protected:
         }
         if (!mCCW) da = -da;
         
-        FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
+        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
         float l = (cos(da)+1)*0.5;
         float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
         float t = p.y + m_fTurns*2*da;
@@ -422,7 +444,7 @@ protected:
             }
         }
         
-        FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
+        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
         float l = mCross ? cos(da) : (cos(da)+1)*0.5;
         float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
         
@@ -459,7 +481,7 @@ protected:
 		float da = mDone / mDurationSingleTraj * (2 * M_PI);
         if (!mCCW) da = -da;
         // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
-        FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
+        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
         float a = 1;
         float b = 0.5;
         float cosDa = cos(da);
