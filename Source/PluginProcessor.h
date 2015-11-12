@@ -345,6 +345,9 @@ public:
 
     float getTrDeviation() const {return m_fTrDeviation;}
     void setTrDeviation(float i){m_fTrDeviation = i;}
+
+    float getTrTurns() const {return m_fTrTurns;}
+    void setTrTurns(float i){m_fTrTurns = i;}
     
     int getTrState() const {return mTrState;}
     void setTrState(int tr) {mTrState = tr;}
@@ -622,6 +625,7 @@ private:
     int m_iTrUnits; //0 = beats, 1 = seconds
     float m_fTrRepeats;
     float m_fTrDampening;
+    float m_fTrTurns;
     float m_fTrDeviation;
     int mTrState;
 

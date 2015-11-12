@@ -198,9 +198,14 @@ private:
 	ComboBox *mTrUnits;
 	TextEditor *mTrRepeats;
     TextEditor *mTrDampeningTextEditor;
-    TextEditor *mTrDeviationTextEditor;
     Component  *mTrDampeningLabel;
+    
+    TextEditor *mTrDeviationTextEditor;
     Component  *mTrDeviationLabel;
+    
+    TextEditor *mTrTurnsTextEditor;
+    Component  *mTrTurnsLabel;
+    
 	TextButton *mTrWriteButton;
 	MiniProgressBar *mTrProgressBar;
     
