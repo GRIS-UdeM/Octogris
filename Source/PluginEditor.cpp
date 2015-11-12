@@ -1533,14 +1533,14 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
         if (deviation >= 0 && deviation <= 1){
             mFilter->setTrDeviation(deviation);
         }
-        mTrDeviationTextEditor->setText(String(mFilter->getTrDeviation()));
+        mTrDeviationTextEditor->setText(String(mFilter->getTrDeviation()*360));
     }
     else if (&textEditor == mTrTurnsTextEditor){
-        float Turns = mTrTurnsTextEditor->getText().getFloatValue()/360;
+        float Turns = mTrTurnsTextEditor->getText().getFloatValue();
         if (Turns >= 0 && Turns <= 10){
             mFilter->setTrTurns(Turns);
         }
-        mTrTurnsTextEditor->setText(String(mFilter->getTrTurns()*360));
+        mTrTurnsTextEditor->setText(String(mFilter->getTrTurns()));
     }
     else{
         printf("unknown TextEditor clicked...\n");
