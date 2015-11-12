@@ -722,7 +722,7 @@ AudioProcessorEditor (ownerFilter)
         
         mTrTurnsTextEditor = addTextEditor(String(mFilter->getTrTurns()), x2, y, tewShort, dh, box);
         mTrTurnsTextEditor->addListener(this);
-        mTrTurnsLabel = addLabel("Turns", x2 + tewShort, y, w, dh, box);
+        mTrTurnsLabel = addLabel("turn(s)", x2 + tewShort, y, w, dh, box);
 
         
         //---------- ROW 2 -------------

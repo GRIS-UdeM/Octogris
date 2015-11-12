@@ -199,33 +199,13 @@ public:
     
 protected:
     void spProcess(float duration, float seconds) {
-//        float da = m_fTurns * mDone / mDurationSingleTraj * (2 * M_PI);
-//        if (!mCCW) da = -da;
-//        
-//        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
-//        mMover->move(mFilter->convertRt2Xy01(p.x, p.y+da), kTrajectory);
-        
-//        float newAzimuth, integralPart;
-//        newAzimuth = mDone / mDurationSingleTraj* (2 * M_PI);
-//        newAzimuth = modf(newAzimuth, &integralPart);
-//        if (!mCCW) newAzimuth = - newAzimuth;
-//
-//        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
-//        newAzimuth = modf(p.y + m_fTurns * newAzimuth, &integralPart);
-//        mMover->move(mFilter->convertRt2Xy01(p.x, newAzimuth), kTrajectory);
-        
         float integralPart;
         float da = m_fTurns * mDone / mDurationSingleTraj;
-        da = modf(da/m_fTurns, & integralPart) * m_fTurns;
-        cout << "da after: " << da << newLine;
-        
+        da = modf(da/m_fTurns, & integralPart) * m_fTurns;      //the modf makes da cycle back to 0 when it reaches m_fTurn, then we multiply it back by m_fTurn to undo the modification
         if (!mCCW) da = -da;
-        
+    
         FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
-        float newAngle = p.y+da*2*M_PI;
-//        cout << "newAngle: " << newAngle << newLine;
-        mMover->move(mFilter->convertRt2Xy01(p.x, newAngle), kTrajectory);
-
+        mMover->move(mFilter->convertRt2Xy01(p.x, p.y+da*2*M_PI), kTrajectory);
     }
 	
 private:
@@ -472,13 +452,22 @@ private:
 class EllipseTrajectory : public Trajectory
 {
 public:
-	EllipseTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool ccw)
-	: Trajectory(filter, p_pMover, duration, beats, times, source), mCCW(ccw) {}
+	EllipseTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool ccw, float p_fTurns)
+	: Trajectory(filter, p_pMover, duration, beats, times, source)
+    , mCCW(ccw)
+    , m_fTurns(p_fTurns)
+    {}
 	
 protected:
 	void spProcess(float duration, float seconds)
 	{
-		float da = mDone / mDurationSingleTraj * (2 * M_PI);
+        
+        
+        
+        float integralPart;
+        float da = m_fTurns * mDone / mDurationSingleTraj;
+        da = modf(da/m_fTurns, & integralPart) * m_fTurns*2*M_PI;      //the modf makes da cycle back to 0 when it reaches m_fTurn, then we multiply it back by m_fTurn to undo the modification
+
         if (!mCCW) da = -da;
         // http://www.edmath.org/MATtours/ellipses/ellipses1.07.3.html
         FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
@@ -495,6 +484,7 @@ protected:
 	
 private:
 	bool mCCW;
+    float m_fTurns;
 };
 
 // ==============================================================================
@@ -808,7 +798,7 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
     switch(type)
     {
         case Circle:                     return new CircleTrajectory(filter, p_pMover, duration, beats, times, source, ccw, p_fTurns);
-        case EllipseTr:                  return new EllipseTrajectory(filter, p_pMover, duration, beats, times, source, ccw);
+        case EllipseTr:                  return new EllipseTrajectory(filter, p_pMover, duration, beats, times, source, ccw, p_fTurns);
         case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, source, ccw, in, bReturn, p_fTurns);
         case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross, p_fDampening, p_fDeviation);
         case AllTrajectoryTypes::Random: return new RandomTrajectory(filter, p_pMover, duration, beats, times, source, speed, bUniqueTarget);
