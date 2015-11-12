@@ -286,11 +286,12 @@ class SpiralTrajectory : public Trajectory
 {
 public:
 	SpiralTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool ccw, bool in, bool rt)
-	: Trajectory(filter, p_pMover, duration, beats, times, source), mCCW(ccw), mIn(in), mRT(rt) {}
+	: Trajectory(filter, p_pMover, duration, beats, times, source), mCCW(ccw), mIn(in), mRT(rt) {
+    m_fTurns = 2;
+    }
 	
 protected:
-    void spProcess(float duration, float seconds)
-    {
+    void spProcess(float duration, float seconds) {
         float da;
         if (mRT) {
             da = mDone / mDurationSingleTraj * (2 * M_PI);
@@ -303,12 +304,13 @@ protected:
         FPoint p = mSourcesInitRT.getUnchecked(mFilter->getSrcSelected());
         float l = (cos(da)+1)*0.5;
         float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-        float t = p.y + 2*da;
+        float t = p.y + m_fTurns*2*da;
         mMover->move(mFilter->convertRt2Xy01(r, t), kTrajectory);
     }
 	
 private:
 	bool mCCW, mIn, mRT;
+    float m_fTurns;
 };
 
 // =================================================== FROM ZIRKOSC =============================================

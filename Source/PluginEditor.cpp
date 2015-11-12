@@ -1568,10 +1568,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             int     source          = -1;
             bool    bUniqueTarget   = !(mFilter->getMovementMode() == 0);
             float   p_fDampening    = mTrDampeningTextEditor->getText().getFloatValue();
-            
-            
-            
-            
             float   p_fDeviation    = mTrDeviationTextEditor->getText().getFloatValue()/360;
             unique_ptr<AllTrajectoryDirections> direction = Trajectory::getTrajectoryDirection(type, mTrDirectionComboBox->getSelectedId());
 
