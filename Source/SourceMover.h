@@ -52,6 +52,8 @@ public:
     void setEqualRadius();
     void setEqualAngles();
     void setEqualRadiusAndAngles();
+    void setSymmetricX();
+    void setSymmetricY();
 	void move(FPoint p, MoverType mt);
 	void end(MoverType mt);
 	

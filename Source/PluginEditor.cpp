@@ -1502,8 +1502,6 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
         float t = mSrcT->getText().getFloatValue();
         if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
 
-//        mFilter->setSourceRT(src, FPoint(r, t * M_PI / 180.));
-
         mMover.begin(src, kField);
         mMover.move(mFilter->convertRt2Xy01(r, t * M_PI / 180.), kField);
         mMover.end(kField);
@@ -1845,6 +1843,12 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
                     break;
                 case 4:
                     mMover.setEqualRadiusAndAngles();
+                    break;
+                case 6:
+                    mMover.setSymmetricX();
+                    break;
+                case 7:
+                    mMover.setSymmetricY();
                     break;
                 default:
                     break;

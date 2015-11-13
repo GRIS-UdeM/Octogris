@@ -172,6 +172,22 @@ void SourceMover::setEqualRadiusAndAngles(){
     }
 }
 
+void SourceMover::setSymmetricX(){
+    int mSlaveSrc = 1;
+    if (mSelectedSrc == 1){
+        mSlaveSrc = 0;
+    }
+    FPoint pointXY01 = mFilter->getSourceXY01(mSelectedSrc);
+    float vxo = pointXY01.x, vyo = pointXY01.y;
+    vyo = 1 - vyo;
+    mFilter->setSourceXY01(mSlaveSrc, FPoint(vxo, vyo));
+}
+
+void SourceMover::setSymmetricY(){
+    
+}
+
+
 //in kSourceThread, FPoint p is the current location of the selected source, as read on the automation
 void SourceMover::move(FPoint pointXY01, MoverType mt)
 {
