@@ -291,6 +291,106 @@ private:
 //    float m_fTurns;
 //};
 
+//class SpiralTrajectory : public Trajectory
+//{
+//public:
+//    SpiralTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool ccw, bool in, bool rt, float fTurns)//, const std::pair<int, int> &endPoint)
+//    : Trajectory(filter, p_pMover, duration, beats, times, source)
+//    , mCCW(ccw)
+//    , m_bRT(rt)
+//    //, m_fEndPair(endPoint)
+//    , m_fTurns(fTurns)
+//    { }
+//
+//protected:
+//    void spInit(){
+//        m_fEndPair = make_pair(50, 50);
+//    }
+//    void spProcess(float duration, float seconds){
+//        float newTheta01, spiralAngle, integralPart; //integralPart is only a temp buffer
+//        float newR01 = mDone / mDurationSingleTraj;
+//        spiralAngle = modf(newR01, &integralPart);                                          //result from this modf is theta [0,1]
+//        float fTranslationFactor = spiralAngle;
+//
+//        //what we need is fCurStartElev01 (and Azim01) to transition from m_fTrajectoryInitialElevation01 to m_fTransposedStartElev01 as we go up the spiral, then back to start values as we go down the spiral
+//        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+//        float fCurStartAzim01 = p.y;//+ theta * (m_fTransposedStartAzim01 - m_fTrajectoryInitialAzimuth01);
+//        float fCurStartElev01 = p.x;//+ theta * (m_fTransposedStartElev01 - m_fTrajectoryInitialElevation01);
+//
+//        //UP AND DOWN SPIRAL
+//        if (m_bRT){
+//            if (mIn){
+//                newR01 = abs( (1 - fCurStartElev01) * sin(newR01 * M_PI) ) + fCurStartElev01;
+//            } else {
+//                JUCE_COMPILER_WARNING("mIn is always true; so either delete this or create another trajectory/mode for it")
+//                newR01 = abs( fCurStartElev01 * cos(newR01 * M_PI) );  //only positive cos wave with phase _TrajectoriesPhi
+//            }
+//            if (spiralAngle > .5){
+//                fTranslationFactor = 1 - spiralAngle;
+//            }
+//            spiralAngle *= 2;
+//        } else {
+//            //***** kinda like archimedian spiral r = a + b * theta , but azimuth does not reset at the top
+//            newR01 = spiralAngle * (1 - fCurStartElev01) + fCurStartElev01;                     //newElevation is a mapping of theta[0,1] to [fCurStartElev01, 1]
+//            if (!mIn){
+//                newR01 = fCurStartElev01 * (1 - newR01) / (1-fCurStartElev01);    //map newElevation from [fCurStartElev01, 1] to [fCurStartElev01, 0]
+//            }
+//        }
+//        if (!mCCW){
+//            spiralAngle = -spiralAngle;
+//        }
+//        newTheta01 = modf(fCurStartAzim01 + m_fTurns * spiralAngle, &integralPart);                    //this is like adding a to theta
+//        
+//        FPoint pointXY01 = mFilter->convertRt2Xy01(newR01, newTheta01);
+//        //when return, theta goes from 0 to -2. otherwise 0 to -1, and cycles for every trajectory (not the sum of trajectories)
+//        pointXY01.x += modf(fTranslationFactor, &integralPart) * 2 * m_fEndPair.first;
+//        pointXY01.y += modf(fTranslationFactor, &integralPart) * 2 * m_fEndPair.second;
+//        mMover->move(pointXY01, kTrajectory);
+//    }
+//
+//private:
+//    bool mCCW, mIn = true;
+//    bool m_bRT = false;
+//    std::pair<float, float> m_fEndPair;
+//    //    float m_fTransposedStartAzim01, m_fTransposedStartElev01;
+//    float m_fTurns;
+//};
+
+//class SpiralTrajectory : public Trajectory
+//{
+//public:
+//	SpiralTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool ccw, bool in, bool rt, float p_fTurns)
+//	: Trajectory(filter, p_pMover, duration, beats, times, source)
+//    , mCCW(ccw)
+//    , mIn(in)
+//    , mRT(rt)
+//    , m_fTurns(p_fTurns)
+//    {
+//    }
+//	
+//protected:
+//    void spProcess(float duration, float seconds) {
+//        float da;
+//        if (mRT) {
+//            da = mDone / mDurationSingleTraj * (2 * M_PI);
+//        } else {
+//            if (mDone < mTotalDuration) da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+//            else da = M_PI;
+//        }
+//        if (!mCCW) da = -da;
+//        
+//        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+//        float l = (cos(da)+1)*0.5;
+//        float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+//        float t = p.y + m_fTurns*2*da;
+//        mMover->move(mFilter->convertRt2Xy01(r, t), kTrajectory);
+//    }
+//	
+//private:
+//	bool mCCW, mIn, mRT;
+//    float m_fTurns;
+//};
+
 class SpiralTrajectory : public Trajectory
 {
 public:
@@ -301,11 +401,13 @@ public:
     , mRT(rt)
     , m_fTurns(p_fTurns)
     {
+        m_fEndPair = make_pair(.25, .25);
     }
-	
+
 protected:
     void spProcess(float duration, float seconds) {
-        float da;
+        float da, integralPart;
+        float fTranslationFactor = modf(mDone / mDurationSingleTraj, &integralPart);
         if (mRT) {
             da = mDone / mDurationSingleTraj * (2 * M_PI);
         } else {
@@ -313,17 +415,24 @@ protected:
             else da = M_PI;
         }
         if (!mCCW) da = -da;
-        
+
         FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
         float l = (cos(da)+1)*0.5;
         float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
         float t = p.y + m_fTurns*2*da;
-        mMover->move(mFilter->convertRt2Xy01(r, t), kTrajectory);
+        
+        FPoint pointXY01 = mFilter->convertRt2Xy01(r, t);
+        
+        pointXY01.x += modf(fTranslationFactor, &integralPart) * m_fEndPair.first;
+        pointXY01.y += modf(fTranslationFactor, &integralPart) * m_fEndPair.second;
+        
+        mMover->move(pointXY01, kTrajectory);
     }
-	
+
 private:
 	bool mCCW, mIn, mRT;
     float m_fTurns;
+    std::pair<float, float> m_fEndPair;
 };
 
 // =================================================== FROM ZIRKOSC =============================================
