@@ -209,6 +209,7 @@ private:
 	TextButton *mTrWriteButton;
 	MiniProgressBar *mTrProgressBar;
     
+    TextButton *mTrEndPointButton;
 
     int mTrStateEditor;
 	

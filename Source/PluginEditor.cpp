@@ -769,6 +769,11 @@ AudioProcessorEditor (ownerFilter)
         y += dh + 5;
         x = kMargin;
         
+        mTrEndPointButton = addButton("Set end point", x, y, cbw, dh, box);
+        mTrEndPointButton->setClickingTogglesState(true);
+        y += dh + 5;
+
+        
         mTrWriteButton = addButton("Ready", x, y, cbw, dh, box);
         mTrWriteButton->setClickingTogglesState(true);
         y += dh + 5;
