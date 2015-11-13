@@ -1496,44 +1496,54 @@ Slider* OctogrisAudioProcessorEditor::addParamSlider(int paramType, int si, floa
 
 //==============================================================================
 void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textEditor){
-    
     if (&textEditor == mSrcR || &textEditor == mSrcT){
-        int sp = mSrcSelect->getSelectedId() - 1;
+        int src = mSrcSelect->getSelectedId() - 1;
         float r = mSrcR->getText().getFloatValue();
         float t = mSrcT->getText().getFloatValue();
         if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
-        mFilter->setSourceRT(sp, FPoint(r, t * M_PI / 180.));
-    } else if (&textEditor == mSpR || &textEditor == mSpT) {
+
+//        mFilter->setSourceRT(src, FPoint(r, t * M_PI / 180.));
+
+        mMover.begin(src, kField);
+        mMover.move(mFilter->convertRt2Xy01(r, t * M_PI / 180.), kField);
+        mMover.end(kField);
+    }
+    else if (&textEditor == mSpR || &textEditor == mSpT) {
         int sp = mSpSelect->getSelectedId() - 1;
         float r = mSpR->getText().getFloatValue();
         float t = mSpT->getText().getFloatValue();
         if (r < 0) r = 0; else if (r > kRadiusMax) r = kRadiusMax;
         mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
-    } else if (&textEditor == mTrDuration){
+    }
+    else if (&textEditor == mTrDuration){
         float duration = mTrDuration->getText().getFloatValue();
         if (duration >= 0 && duration <= 10000){
             mFilter->setTrDuration(duration);
         }
         mTrDuration->setText(String(mFilter->getTrDuration()));
-    } else if (&textEditor == mTrRepeats){
+    }
+    else if (&textEditor == mTrRepeats){
         float repeats = mTrRepeats->getText().getFloatValue();
         if (repeats >= 0 && repeats <= 10000){
             mFilter->setTrRepeats(repeats);
         }
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
-    } else if (&textEditor == mTrDampeningTextEditor){
+    }
+    else if (&textEditor == mTrDampeningTextEditor){
         float dampening = mTrDampeningTextEditor->getText().getFloatValue();
         if (dampening >= 0 && dampening <= 1){
             mFilter->setTrDampening(dampening);
         }
         mTrDampeningTextEditor->setText(String(mFilter->getTrDampening()));
-    } else if (&textEditor == mTrDeviationTextEditor){
+    }
+    else if (&textEditor == mTrDeviationTextEditor){
         float deviation = mTrDeviationTextEditor->getText().getFloatValue()/360;
         if (deviation >= 0 && deviation <= 1){
             mFilter->setTrDeviation(deviation);
         }
         mTrDeviationTextEditor->setText(String(mFilter->getTrDeviation()*360));
-    } else if (&textEditor == mTrTurnsTextEditor){
+    }
+    else if (&textEditor == mTrTurnsTextEditor){
         float Turns = mTrTurnsTextEditor->getText().getFloatValue();
         int iSelectedTrajectory = mFilter->getTrType()+1;
         int iUpperLimit = 1;
@@ -1544,7 +1554,8 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
             mFilter->setTrTurns(Turns);
         }
         mTrTurnsTextEditor->setText(String(mFilter->getTrTurns()));
-    } else{
+    }
+    else {
         printf("unknown TextEditor clicked...\n");
     }
     
