@@ -73,6 +73,19 @@ enum
     kTrWriting
 };
 
+enum AllTrajectoryTypes {
+    Circle = 1,
+    EllipseTr, //Ellipse was clashing with some random windows class...
+    Spiral,
+    Pendulum,
+    Random,
+    RandomIndependent,
+    RandomTarget,
+    SymXTarget,
+    SymYTarget,
+    ClosestSpeakerTarget,
+    TotalNumberTrajectories
+};
 
 #define kConstantOffset (JucePlugin_MaxNumInputChannels * kParamsPerSource + JucePlugin_MaxNumOutputChannels * kParamsPerSpeakers)
 

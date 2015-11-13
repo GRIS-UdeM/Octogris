@@ -33,18 +33,7 @@
 class OctogrisAudioProcessor;
 class SourceMover;
 
-enum AllTrajectoryTypes {
-    Circle = 1,
-    EllipseTr, //Ellipse was clashing with some random windows class...
-    Spiral,
-    Pendulum,
-    Random,
-    RandomTarget,
-    SymXTarget,
-    SymYTarget,
-    ClosestSpeakerTarget,
-    TotalNumberTrajectories
-};
+
 
 enum AllTrajectoryDirections {
     CW = 1,

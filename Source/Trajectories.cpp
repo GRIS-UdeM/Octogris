@@ -110,6 +110,7 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleDirections(int 
             vDirections->push_back("Crossover");
             break;
         case AllTrajectoryTypes::Random:
+        case RandomIndependent:
             vDirections->push_back("Slow");
             vDirections->push_back("Mid");
             vDirections->push_back("Fast");
@@ -144,6 +145,7 @@ unique_ptr<AllTrajectoryDirections> Trajectory::getTrajectoryDirection(int p_iSe
             *pDirection = static_cast<AllTrajectoryDirections>(p_iSelectedDirection+2);
             break;
         case AllTrajectoryTypes::Random:
+        case RandomIndependent:
             *pDirection = static_cast<AllTrajectoryDirections>(p_iSelectedDirection+9);
             break;
         case RandomTarget:
@@ -167,6 +169,7 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleReturns(int p_i
         case Circle:
         case EllipseTr:
         case AllTrajectoryTypes::Random:
+        case RandomIndependent:
             return nullptr;
         case Spiral:
         case Pendulum:
@@ -547,30 +550,46 @@ public:
 	
 protected:
     void spProcess(float duration, float seconds){
-//        if (fmodf(mDone, mDurationSingleTraj) < 0.01){
-//            mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
-//        }
-//        mClock += seconds;
-//        while(mClock > 0.01){
-//            mClock -= 0.01;
-//            
-//            float rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-//            float rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-//            
-//            FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
-//            JUCE_COMPILER_WARNING("not sure what the point of this was?")
-////            if (!mUniqueTarget){
-////                rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-////                rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-////            }
-//
-//            p.x += (rand1 - 0.5) * mSpeed;
-//            p.y += (rand2 - 0.5) * mSpeed;
-//            //convert ±radius range to 01 range
-//            p.x = (p.x + kRadiusMax) / (2*kRadiusMax);
-//            p.y = (p.y + kRadiusMax) / (2*kRadiusMax);
-//            mMover->move(p, kTrajectory);
-//        }
+        if (fmodf(mDone, mDurationSingleTraj) < 0.01){
+            mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
+        }
+        mClock += seconds;
+        while(mClock > 0.01){
+            mClock -= 0.01;
+            
+            float rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+            float rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+            
+            FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
+
+            p.x += (rand1 - 0.5) * mSpeed;
+            p.y += (rand2 - 0.5) * mSpeed;
+            //convert ±radius range to 01 range
+            p.x = (p.x + kRadiusMax) / (2*kRadiusMax);
+            p.y = (p.y + kRadiusMax) / (2*kRadiusMax);
+            mMover->move(p, kTrajectory);
+        }
+    }
+    
+private:
+    MTRand_int32 mRNG;
+    float mClock;
+    float mSpeed;
+    bool mUniqueTarget;
+};
+
+class RandomIndependentTrajectory : public Trajectory
+{
+public:
+    RandomIndependentTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, float speed)
+    : Trajectory(filter, p_pMover, duration, beats, times, source)
+    , mClock(0)
+    , mSpeed(speed)
+    {}
+    
+protected:
+    void spProcess(float duration, float seconds){
+
         for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); ++iCurSrc){
             if (fmodf(mDone, mDurationSingleTraj) < 0.01){
                 mFilter->restoreCurrentLocations(iCurSrc);
@@ -583,11 +602,6 @@ protected:
                 float rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
                 
                 FPoint p = mFilter->getSourceXY(iCurSrc);
-                JUCE_COMPILER_WARNING("not sure what the point of this was?")
-                //            if (!mUniqueTarget){
-                //                rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                //                rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                //            }
                 
                 p.x += (rand1 - 0.5) * mSpeed;
                 p.y += (rand2 - 0.5) * mSpeed;
@@ -597,7 +611,7 @@ protected:
                 
                 mFilter->setSourceXY01(iCurSrc, p);
                 mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy012Rt(p);
-            }
+            } 
         }
     }
     
@@ -605,7 +619,6 @@ private:
     MTRand_int32 mRNG;
     float mClock;
     float mSpeed;
-    bool mUniqueTarget;
 };
 
 // ==============================================================================
@@ -759,6 +772,7 @@ String Trajectory::GetTrajectoryName(int i)
         case Spiral: return "Spiral";
         case Pendulum: return "Pendulum";
         case AllTrajectoryTypes::Random: return "Random";
+        case RandomIndependent: return "Random(Independent)";
         case RandomTarget: return "Random Target";
         case SymXTarget: return "Sym X Target";
         case SymYTarget: return "Sym Y Target";
@@ -832,6 +846,7 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
         case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, source, ccw, in, bReturn, p_fTurns);
         case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross, p_fDampening, p_fDeviation);
         case AllTrajectoryTypes::Random: return new RandomTrajectory(filter, p_pMover, duration, beats, times, source, speed, bUniqueTarget);
+        case RandomIndependent:          return new RandomIndependentTrajectory(filter, p_pMover, duration, beats, times, source, speed);
         case RandomTarget:               return new RandomTargetTrajectory(filter, p_pMover, duration, beats, times, source);
         case SymXTarget:                 return new SymXTargetTrajectory(filter, p_pMover, duration, beats, times, source);
         case SymYTarget:                 return new SymYTargetTrajectory(filter, p_pMover, duration, beats, times, source);
