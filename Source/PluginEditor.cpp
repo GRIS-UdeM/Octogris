@@ -1570,8 +1570,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         //a trajectory exists, so we want to cancel it
         if (t) {
             mFilter->setTrajectory(NULL);
-            mFilter->setIsRecordingAutomation(false); 
-            mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
+            mFilter->setIsRecordingAutomation(false);
+            mFilter->restoreCurrentLocations();
             mTrWriteButton->setButtonText("Ready");
             mTrProgressBar->setVisible(false);
             mTrStateEditor = kTrReady;
