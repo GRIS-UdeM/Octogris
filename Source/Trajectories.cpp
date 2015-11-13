@@ -339,7 +339,7 @@ private:
 //    
 //        m_fStartPair.first = filter->getParameter(ZirkOscAudioProcessor::ZirkOSC_X_ParamId + m_iSelectedSourceForTrajectory*5);
 //        m_fStartPair.first = m_fStartPair.first*2*ZirkOscAudioProcessor::s_iDomeRadius - ZirkOscAudioProcessor::s_iDomeRadius;
-//        m_fStartPair.second = filter->getParameter(ZirkOscAudioProcessor::ZirkOSC_Y_ParamId + m_iSelectedSourceForTrajectory*5);
+//        m_fStartPair.second = filter->getPa rameter(ZirkOscAudioProcessor::ZirkOSC_Y_ParamId + m_iSelectedSourceForTrajectory*5);
 //        m_fStartPair.second = m_fStartPair.second*2*ZirkOscAudioProcessor::s_iDomeRadius - ZirkOscAudioProcessor::s_iDomeRadius;
 //    }
 //    
@@ -587,22 +587,20 @@ protected:
             
             float rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
             float rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-            JUCE_COMPILER_WARNING("BETWEEN THE CALL TO LINE 605 AND 591, THE POINT COORDINATES ARE DIFFERENT. PROBABLY A CONVERSION PROBLEM, SINCE NO CALLS TO MPARAMETER THAT I CAN TRACE")
+            
             FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
             JUCE_COMPILER_WARNING("not sure what the point of this was?")
 //            if (!mUniqueTarget){
 //                rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
 //                rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
 //            }
-            cout << "before\t(" << p.x << ", (" << p.y << ")\n";
+
             p.x += (rand1 - 0.5) * mSpeed;
             p.y += (rand2 - 0.5) * mSpeed;
-            
-            cout << "after\t(" << p.x << ", (" << p.y << ")\n";
-            FPoint pAfter = mFilter->convertRt2Xy01(p.x, p.y);
-            cout << "after01\t(" << pAfter.x << ", (" << pAfter.y << ")\n";
-            
-            mMover->move(mFilter->convertRt2Xy01(p.x, p.y), kTrajectory);
+            //convert ±radius range to 01 range
+            p.x = (p.x + kRadiusMax) / (2*kRadiusMax);
+            p.y = (p.y + kRadiusMax) / (2*kRadiusMax);
+            mMover->move(p, kTrajectory);
         }
     }
     

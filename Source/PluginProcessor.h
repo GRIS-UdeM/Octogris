@@ -567,7 +567,7 @@ public:
     int  getSourceLocationChanged()        { return m_iSourceLocationChanged;  }
 
     int getSrcSelected() const {return mSrcSelected;}
-    int getSpSelected() const {return mSpSelected;}
+    int getSpSelected() const  {return mSpSelected;}
     
     void setSrcSelected(int p_i){
     	mSrcSelected = p_i;
