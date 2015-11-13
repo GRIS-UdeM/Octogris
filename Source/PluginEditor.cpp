@@ -1148,7 +1148,8 @@ void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
 void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
     int iSelectedTrajectory = mFilter->getTrType()+1;
     //if pendulum is selected
-    if (iSelectedTrajectory == 4){
+
+    if (iSelectedTrajectory == Pendulum){
         mTrDampeningTextEditor->setVisible(true);
         mTrDampeningLabel->setVisible(true);
         mTrDeviationTextEditor->setVisible(true);
@@ -1160,13 +1161,18 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
         mTrDeviationLabel->setVisible(false);
     }
     
-    if (iSelectedTrajectory >= 1 & iSelectedTrajectory <= 3){
+    if (iSelectedTrajectory >= Circle & iSelectedTrajectory <= Spiral){
         mTrTurnsTextEditor->setVisible(true);
         mTrTurnsLabel->setVisible(true);
     } else {
         mTrTurnsTextEditor->setVisible(false);
         mTrTurnsLabel->setVisible(false);
-        
+    }
+    
+    if (iSelectedTrajectory == Spiral || iSelectedTrajectory == Pendulum){
+        mTrEndPointButton->setVisible(true);
+    } else {
+        mTrEndPointButton->setVisible(false);
     }
     
     unique_ptr<vector<String>> allDirections = Trajectory::getTrajectoryPossibleDirections(iSelectedTrajectory);
@@ -1618,6 +1624,9 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             mTrProgressBar->setValue(0);
             mTrProgressBar->setVisible(true);
         }
+    }
+    if (button == mTrEndPointButton) {
+        
     }
     else if (mFilter->getIsAllowInputOutputModeSelection() && button == mApplyInputOutputModeButton) {
         int iSelectedMode = mInputOutputModeCombo->getSelectedItemIndex();
