@@ -1511,10 +1511,16 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
         mFilter->setSpeakerRT(sp, FPoint(r, t * M_PI / 180.));
     } else if (&textEditor == mTrDuration){
         float duration = mTrDuration->getText().getFloatValue();
-        mFilter->setTrDuration(duration);
+        if (duration >= 0 && duration <= 10000){
+            mFilter->setTrDuration(duration);
+        }
+        mTrDuration->setText(String(mFilter->getTrDuration()));
     } else if (&textEditor == mTrRepeats){
         float repeats = mTrRepeats->getText().getFloatValue();
-        mFilter->setTrRepeats(repeats);
+        if (repeats >= 0 && repeats <= 10000){
+            mFilter->setTrRepeats(repeats);
+        }
+        mTrRepeats->setText(String(mFilter->getTrRepeats()));
     } else if (&textEditor == mTrDampeningTextEditor){
         float dampening = mTrDampeningTextEditor->getText().getFloatValue();
         if (dampening >= 0 && dampening <= 1){

@@ -1843,9 +1843,9 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_iTrReturn         = xmlState->getIntAttribute ("m_iTrReturn", 0);
             m_iTrType           = xmlState->getIntAttribute ("m_iTrType", 0);
             m_iTrSrcSelect      = xmlState->getIntAttribute ("m_iTrSrcSelect", 1);
-            m_fTrDuration       = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDuration", 1));
+            m_fTrDuration       = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDuration", m_fTrDuration));
             m_iTrUnits          = xmlState->getIntAttribute ("m_iTrUnits", 0);
-            m_fTrRepeats        = static_cast<float>(xmlState->getDoubleAttribute("m_fTrRepeats", 1));
+            m_fTrRepeats        = static_cast<float>(xmlState->getDoubleAttribute("m_fTrRepeats", m_fTrRepeats));
             m_fTrDampening      = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDampening", m_fTrDampening));
             m_fTrDeviation      = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDeviation", m_fTrDeviation));
             m_fTrTurns          = static_cast<float>(xmlState->getDoubleAttribute("m_fTrTurns", m_fTrTurns));
