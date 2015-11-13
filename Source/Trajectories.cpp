@@ -546,61 +546,58 @@ public:
     {}
 	
 protected:
-    
-        //ORIGINAL
-//    void spProcess(float duration, float seconds){
+    void spProcess(float duration, float seconds){
 //        if (fmodf(mDone, mDurationSingleTraj) < 0.01){
 //            mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
 //        }
-//        
 //        mClock += seconds;
-//        while(mClock > 0.01)
-//        {
+//        while(mClock > 0.01){
 //            mClock -= 0.01;
 //            
-//            float r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-//            float r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-//            
+//            float rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+//            float rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
 //            
 //            FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
-//            if (!mUniqueTarget){
-//                r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-//                r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-//            }
-//            p.x += (r1 - 0.5) * mSpeed;
-//            p.y += (r2 - 0.5) * mSpeed;
-//            mMover->move(mFilter->convertRt2Xy01(p.x, p.y), kTrajectory);
-//            
+//            JUCE_COMPILER_WARNING("not sure what the point of this was?")
+////            if (!mUniqueTarget){
+////                rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+////                rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+////            }
+//
+//            p.x += (rand1 - 0.5) * mSpeed;
+//            p.y += (rand2 - 0.5) * mSpeed;
+//            //convert ±radius range to 01 range
+//            p.x = (p.x + kRadiusMax) / (2*kRadiusMax);
+//            p.y = (p.y + kRadiusMax) / (2*kRadiusMax);
+//            mMover->move(p, kTrajectory);
 //        }
-//    }
-    
-    
-    
-    
-    void spProcess(float duration, float seconds){
-        if (fmodf(mDone, mDurationSingleTraj) < 0.01){
-            mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
-        }
-        mClock += seconds;
-        while(mClock > 0.01){
-            mClock -= 0.01;
-            
-            float rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-            float rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-            
-            FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
-            JUCE_COMPILER_WARNING("not sure what the point of this was?")
-//            if (!mUniqueTarget){
-//                rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-//                rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-//            }
-
-            p.x += (rand1 - 0.5) * mSpeed;
-            p.y += (rand2 - 0.5) * mSpeed;
-            //convert ±radius range to 01 range
-            p.x = (p.x + kRadiusMax) / (2*kRadiusMax);
-            p.y = (p.y + kRadiusMax) / (2*kRadiusMax);
-            mMover->move(p, kTrajectory);
+        for (int iCurSrc = 0; iCurSrc < mFilter->getNumberOfSources(); ++iCurSrc){
+            if (fmodf(mDone, mDurationSingleTraj) < 0.01){
+                mFilter->restoreCurrentLocations(iCurSrc);
+            }
+            mClock += seconds;
+            while(mClock > 0.01){
+                mClock -= 0.01;
+                
+                float rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                float rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                
+                FPoint p = mFilter->getSourceXY(iCurSrc);
+                JUCE_COMPILER_WARNING("not sure what the point of this was?")
+                //            if (!mUniqueTarget){
+                //                rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                //                rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+                //            }
+                
+                p.x += (rand1 - 0.5) * mSpeed;
+                p.y += (rand2 - 0.5) * mSpeed;
+                //convert ±radius range to 01 range
+                p.x = (p.x + kRadiusMax) / (2*kRadiusMax);
+                p.y = (p.y + kRadiusMax) / (2*kRadiusMax);
+                
+                mFilter->setSourceXY01(iCurSrc, p);
+                mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy012Rt(p);
+            }
         }
     }
     
