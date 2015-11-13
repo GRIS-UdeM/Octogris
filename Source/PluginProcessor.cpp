@@ -157,6 +157,8 @@ mFilters()
     m_fTrDampening = 1.f;
 	m_fTrDeviation = 0.f;
     
+    m_bIsSettingEndPoint = false;
+    
 	mOscLeapSource = 0;
 	mOscReceiveEnabled = 0;
 	mOscReceivePort = 8000;

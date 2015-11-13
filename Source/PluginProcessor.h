@@ -595,6 +595,20 @@ public:
         m_bPreventSourceLocationUpdate = b;
     }
     
+    void setIsSettingEndPoint(bool isSetting){
+        m_bIsSettingEndPoint = isSetting;
+    }
+    
+    bool isSettingEndPoint(){
+        return m_bIsSettingEndPoint;
+    }
+    
+    std::pair<float, float> getEndLocationXY(){
+        return m_fEndLocationXY;
+    }
+    void setEndLocationXY(std::pair<float, float> pair){
+        m_fEndLocationXY = pair;
+    }
     
     void storeCurrentLocations();
     void restoreCurrentLocations(int p_iLocToRestore = -1);
@@ -701,7 +715,8 @@ private:
     int m_iSourceLocationChanged;
     
     bool m_bPreventSourceLocationUpdate;
-	
+    bool m_bIsSettingEndPoint;
+    std::pair <float, float> m_fEndLocationXY;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)
 };

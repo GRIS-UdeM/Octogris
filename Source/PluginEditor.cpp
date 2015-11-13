@@ -1616,7 +1616,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
 
             mFilter->setIsRecordingAutomation(true);
             mFilter->storeCurrentLocations();
-            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget, p_fDampening, p_fDeviation, p_fTurns));
+            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget, p_fDampening, p_fDeviation, p_fTurns, mFilter->getEndLocationXY()));
             mTrWriteButton->setButtonText("Cancel");
             mTrStateEditor = kTrWriting;
             mFilter->setTrState(mTrStateEditor);
@@ -1626,7 +1626,19 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         }
     }
     if (button == mTrEndPointButton) {
-        
+        if (mTrEndPointButton->getToggleState()){
+            mTrEndPointButton->setButtonText("Cancel");
+            mFilter->setIsSettingEndPoint(true);
+//            m_oEndPointLabel.setVisible(true);
+            
+//            m_pEndAzimTextEditor->setText("");
+//            m_pEndElevTextEditor->setText("");
+        } else {
+            mTrEndPointButton->setButtonText("Set end point");
+            mFilter->setIsSettingEndPoint(false);
+//            m_oEndPointLabel.setVisible(false);
+//            updateEndLocationTextEditors();
+        }
     }
     else if (mFilter->getIsAllowInputOutputModeSelection() && button == mApplyInputOutputModeButton) {
         int iSelectedMode = mInputOutputModeCombo->getSelectedItemIndex();

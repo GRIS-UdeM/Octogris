@@ -394,14 +394,14 @@ private:
 class SpiralTrajectory : public Trajectory
 {
 public:
-	SpiralTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool ccw, bool in, bool rt, float p_fTurns)
+	SpiralTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool ccw, bool in, bool rt, float p_fTurns, const std::pair<float, float> &endPair)
 	: Trajectory(filter, p_pMover, duration, beats, times, source)
     , mCCW(ccw)
     , mIn(in)
     , mRT(rt)
     , m_fTurns(p_fTurns)
+    , m_fEndPair(endPair)
     {
-        m_fEndPair = make_pair(.25, .25);
     }
 
 protected:
@@ -423,8 +423,8 @@ protected:
         
         FPoint pointXY01 = mFilter->convertRt2Xy01(r, t);
         
-        pointXY01.x += modf(fTranslationFactor, &integralPart) * m_fEndPair.first;
-        pointXY01.y += modf(fTranslationFactor, &integralPart) * m_fEndPair.second;
+        pointXY01.x += modf(fTranslationFactor, &integralPart) * (m_fEndPair.first-.5);
+        pointXY01.y -= modf(fTranslationFactor, &integralPart) * (m_fEndPair.second-.5);
         
         mMover->move(pointXY01, kTrajectory);
     }
@@ -512,7 +512,7 @@ private:
 class PendulumTrajectory : public Trajectory
 {
 public:
-	PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool rt, bool cross, float p_fDampening, float p_fDeviation)
+	PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool rt, bool cross, float p_fDampening, float p_fDeviation, const std::pair<float, float> &endPair)
 	: Trajectory(filter, p_pMover, duration, beats, times, source)
     , mIn(in)
     , mRT(rt)
@@ -892,7 +892,7 @@ String Trajectory::GetTrajectoryName(int i)
 }
 
 Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats,
-                                             AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget, float p_fDampening, float p_fDeviation, float p_fTurns)
+                                             AllTrajectoryDirections direction, bool bReturn, float times, int source, bool bUniqueTarget, float p_fDampening, float p_fDeviation, float p_fTurns, const std::pair<float, float> &endPair)
 {
     
     bool ccw, in, cross;
@@ -952,8 +952,8 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
     {
         case Circle:                     return new CircleTrajectory(filter, p_pMover, duration, beats, times, source, ccw, p_fTurns);
         case EllipseTr:                  return new EllipseTrajectory(filter, p_pMover, duration, beats, times, source, ccw, p_fTurns);
-        case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, source, ccw, in, bReturn, p_fTurns);
-        case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross, p_fDampening, p_fDeviation);
+        case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, source, ccw, in, bReturn, p_fTurns, endPair);
+        case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross, p_fDampening, p_fDeviation, endPair);
         case AllTrajectoryTypes::Random: return new RandomTrajectory(filter, p_pMover, duration, beats, times, source, speed, bUniqueTarget);
         case RandomIndependent:          return new RandomIndependentTrajectory(filter, p_pMover, duration, beats, times, source, speed);
         case RandomTarget:               return new RandomTargetTrajectory(filter, p_pMover, duration, beats, times, source);

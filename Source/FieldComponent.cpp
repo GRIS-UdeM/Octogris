@@ -310,22 +310,32 @@ void FieldComponent::mouseDown(const MouseEvent &event)
     }
     
 	int fieldWidth = getWidth();
-	
 	int fieldHeight = getHeight();
-
 	mSelectionType = kNoSelection;
-	
+
+    //check if point inside circle
 	Point<int> ml(event.x, event.y);
 	if (ml.x < 0 || ml.x >= fieldWidth || ml.y < 0 || ml.y >= fieldHeight) return;
+    
+    //if assigning end location
+    if (mFilter->isSettingEndPoint()) {
+        //get point of current event
+        float fCenteredX = (float)event.x/fieldWidth;//-_ZirkOSC_Center_X;
+        float fCenteredY = (float)event.y/fieldHeight;//-_ZirkOSC_Center_Y;
+        mFilter->setEndLocationXY(make_pair (fCenteredX, fCenteredY));
+//        updateEndLocationTextEditors();
+//        m_pSetEndTrajectoryButton->setToggleState(false, dontSendNotification);
+//        m_pSetEndTrajectoryButton->setButtonText("Set end point");
+//        m_oEndPointLabel.setVisible(false);
+    }
+
 	
-	for (int i = mFilter->getNumberOfSources() - 1; i >= 0; i--)
-	{
+	for (int i = mFilter->getNumberOfSources() - 1; i >= 0; i--){
 		FPoint p = getSourcePoint(i);
 		float dx = ml.x - p.x;
 		float dy = ml.y - p.y;
 		float distanceSquared = dx*dx + dy*dy;
-		if (distanceSquared < kSourceRadius*kSourceRadius)
-		{
+		if (distanceSquared < kSourceRadius*kSourceRadius) {
 			mSelectionType = kSelectedSource;
 			mSelectedItem = i;
 
@@ -340,20 +350,17 @@ void FieldComponent::mouseDown(const MouseEvent &event)
 		}
 	}
 	
-	for (int i = mFilter->getNumberOfSpeakers() - 1; i >= 0; i--)
-	{
+	for (int i = mFilter->getNumberOfSpeakers() - 1; i >= 0; i--){
 		FPoint p = getSpeakerPoint(i);
 		float dx = ml.x - p.x;
 		float dy = ml.y - p.y;
 		float distanceSquared = dx*dx + dy*dy;
-		if (distanceSquared < kSpeakerRadius*kSpeakerRadius)
-		{
+		if (distanceSquared < kSpeakerRadius*kSpeakerRadius){
 			mSelectionType = kSelectedSpeaker;
 			mSelectedItem = i;
 			return;
 		}
 	}
-
 }
 
 void FieldComponent::mouseDrag(const MouseEvent &event)
@@ -422,8 +429,7 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 
 void FieldComponent::mouseUp(const MouseEvent &event)
 {
-	switch(mSelectionType)
-	{
+	switch(mSelectionType) {
 		case kNoSelection:
 			return;
 			
