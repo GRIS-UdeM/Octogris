@@ -184,7 +184,14 @@ void SourceMover::setSymmetricX(){
 }
 
 void SourceMover::setSymmetricY(){
-    
+    int mSlaveSrc = 1;
+    if (mSelectedSrc == 1){
+        mSlaveSrc = 0;
+    }
+    FPoint pointXY01 = mFilter->getSourceXY01(mSelectedSrc);
+    float vxo = pointXY01.x, vyo = pointXY01.y;
+    vxo = 1 - vxo;
+    mFilter->setSourceXY01(mSlaveSrc, FPoint(vxo, vyo));
 }
 
 
