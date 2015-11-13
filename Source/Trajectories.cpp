@@ -461,9 +461,6 @@ public:
 protected:
 	void spProcess(float duration, float seconds)
 	{
-        
-        
-        
         float integralPart;
         float da = m_fTurns * mDone / mDurationSingleTraj;
         da = modf(da/m_fTurns, & integralPart) * m_fTurns*2*M_PI;      //the modf makes da cycle back to 0 when it reaches m_fTurn, then we multiply it back by m_fTurn to undo the modification
@@ -542,32 +539,70 @@ class RandomTrajectory : public Trajectory
 {
 public:
 	RandomTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, float speed, bool bUniqueTarget)
-	: Trajectory(filter, p_pMover, duration, beats, times, source), mClock(0), mSpeed(speed), mUniqueTarget(bUniqueTarget) {}
+	: Trajectory(filter, p_pMover, duration, beats, times, source)
+    , mClock(0)
+    , mSpeed(speed)
+    , mUniqueTarget(bUniqueTarget)
+    {}
 	
 protected:
+    
+        //ORIGINAL
+//    void spProcess(float duration, float seconds){
+//        if (fmodf(mDone, mDurationSingleTraj) < 0.01){
+//            mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
+//        }
+//        
+//        mClock += seconds;
+//        while(mClock > 0.01)
+//        {
+//            mClock -= 0.01;
+//            
+//            float r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+//            float r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+//            
+//            
+//            FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
+//            if (!mUniqueTarget){
+//                r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+//                r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+//            }
+//            p.x += (r1 - 0.5) * mSpeed;
+//            p.y += (r2 - 0.5) * mSpeed;
+//            mMover->move(mFilter->convertRt2Xy01(p.x, p.y), kTrajectory);
+//            
+//        }
+//    }
+    
+    
+    
+    
     void spProcess(float duration, float seconds){
         if (fmodf(mDone, mDurationSingleTraj) < 0.01){
             mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
         }
-        
         mClock += seconds;
-        while(mClock > 0.01)
-        {
+        while(mClock > 0.01){
             mClock -= 0.01;
             
-            float r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-            float r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-            
-            
+            float rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+            float rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+            JUCE_COMPILER_WARNING("BETWEEN THE CALL TO LINE 605 AND 591, THE POINT COORDINATES ARE DIFFERENT. PROBABLY A CONVERSION PROBLEM, SINCE NO CALLS TO MPARAMETER THAT I CAN TRACE")
             FPoint p = mFilter->getSourceXY(mFilter->getSrcSelected());
-            if (!mUniqueTarget){
-                r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-                r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
-            }
-            p.x += (r1 - 0.5) * mSpeed;
-            p.y += (r2 - 0.5) * mSpeed;
-            mMover->move(mFilter->convertRt2Xy01(p.x, p.y), kTrajectory);
+            JUCE_COMPILER_WARNING("not sure what the point of this was?")
+//            if (!mUniqueTarget){
+//                rand1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+//                rand2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
+//            }
+            cout << "before\t(" << p.x << ", (" << p.y << ")\n";
+            p.x += (rand1 - 0.5) * mSpeed;
+            p.y += (rand2 - 0.5) * mSpeed;
             
+            cout << "after\t(" << p.x << ", (" << p.y << ")\n";
+            FPoint pAfter = mFilter->convertRt2Xy01(p.x, p.y);
+            cout << "after01\t(" << pAfter.x << ", (" << pAfter.y << ")\n";
+            
+            mMover->move(mFilter->convertRt2Xy01(p.x, p.y), kTrajectory);
         }
     }
     
