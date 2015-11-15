@@ -25,6 +25,7 @@
  */
 
 #include "SourceMover.h"
+#include "FieldComponent.h"
 
 
 SourceMover::SourceMover(OctogrisAudioProcessor *filter)
@@ -44,15 +45,12 @@ void SourceMover::updateNumberOfSources(){
     mSourcesDownRT.ensureStorageAllocated(mFilter->getNumberOfSources());
     mSourcesAngularOrder.ensureStorageAllocated(mFilter->getNumberOfSources());
     
-    for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-    {
+    for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
         mSourcesDownXY.add(FPoint(0,0));
         mSourcesDownRT.add(FPoint(0,0));
         mSourcesAngularOrder.add(0);
     }
 }
-
-
 
 void SourceMover::begin(int s, MoverType mt)
 {
@@ -206,6 +204,7 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
     if (mMoverType != kSourceThread){
         mFilter->setSourceXY01(mSelectedSrc, pointXY01);
         mFilter->mOldSrcLocRT[mSelectedSrc] = mFilter->convertXy012Rt(pointXY01);
+        mField->updatePositionTrace(pointXY01.x, pointXY01.y);
     }
     
     int iMovementMode = mFilter->getMovementMode();

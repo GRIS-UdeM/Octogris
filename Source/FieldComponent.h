@@ -52,7 +52,9 @@ public:
 	FPoint getSourcePoint(int i);
 	FPoint getSpeakerPoint(int i);
 	float getDistance(int source, int speaker);
- 
+    
+    void clearTrajectoryPath();
+    void updatePositionTrace(float p_fX, float p_fY);
 private:
 	OctogrisAudioProcessor *mFilter;
 	SourceMover *mMover;
@@ -64,7 +66,13 @@ private:
 	float mSavedValue;
 
 	FPoint convertSourceRT(float r, float t);
+    Path m_oTrajectoryPath;
+    float fStartPathX;
+    float fStartPathY;
+    float fEndPathX;
+    float fEndPathY;
 
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FieldComponent)
 };
 

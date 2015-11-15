@@ -30,6 +30,8 @@
 
 #include "PluginProcessor.h"
 
+class FieldComponent;
+
 typedef enum
 {
 	kVacant,
@@ -56,6 +58,10 @@ public:
     void setSymmetricY();
 	void move(FPoint p, MoverType mt);
 	void end(MoverType mt);
+    
+    void setFieldComponent(FieldComponent* field){
+        mField = field;
+    }
 	
 private:
 	OctogrisAudioProcessor *mFilter;
@@ -65,6 +71,7 @@ private:
 	Array<FPoint> mSourcesDownXY;
 	Array<FPoint> mSourcesDownRT;
 	Array<float> mSourcesAngularOrder;
+    FieldComponent* mField;
 };
 
 

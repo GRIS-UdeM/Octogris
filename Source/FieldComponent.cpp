@@ -36,15 +36,39 @@ static const float kSpeakerDiameter = kSpeakerRadius * 2;
 
 //==============================================================================
 FieldComponent::FieldComponent(OctogrisAudioProcessor* filter, SourceMover *mover)
-:
-	mFilter(filter),
-	mMover(mover)
+: mFilter(filter)
+, mMover(mover)
+, fStartPathX(-1)
+, fStartPathY(-1)
+, fEndPathX(-1)
+, fEndPathY(-1)
 {
-
+    
 }
 
 FieldComponent::~FieldComponent()
 {
+}
+
+void FieldComponent::clearTrajectoryPath(){
+    fStartPathX = -1, fEndPathX = -1, fStartPathY = -1, fEndPathY = -1;
+    m_oTrajectoryPath.clear();
+}
+
+void FieldComponent::updatePositionTrace(float p_fX, float p_fY){
+    float fAbsoluteX = p_fX ;//+ _ZirkOSC_Center_X;
+    float fAbsoluteY = p_fY ;//+ _ZirkOSC_Center_Y;
+    //draw drag path
+    if (fEndPathX == -1){
+        fStartPathX = fAbsoluteX;
+        fStartPathY = fAbsoluteY;
+    } else {
+        fStartPathX = fEndPathX;
+        fStartPathY = fEndPathY;
+    }
+    fEndPathX = fAbsoluteX;
+    fEndPathY = fAbsoluteY;
+    //repaint();
 }
 
 FPoint FieldComponent::getSourcePoint(int i)
@@ -90,23 +114,16 @@ void FieldComponent::paint (Graphics& g)
 	uint8 grey = 80;
 	g.setColour(Colour(grey, grey, grey));
 	g.fillRect(0, 0, fieldWidth, fieldHeight);
-	
-	//g.setColour(Colours::white);
-	//g.fillRect(0, 0, 5, 5);
-	
 	// - - - - - - - - - - - -
 	// draw back circles
 	// - - - - - - - - - - - -
 	g.setColour(Colours::white);
-	for (float i = 1; i <= kRadiusMax; i += 1)
-	{
+	for (float i = 1; i <= kRadiusMax; i += 1) {
 		float w = (i / kRadiusMax) * (fieldWidth - kSourceDiameter);
 		float x = (fieldWidth - w) / 2;
 		g.drawEllipse(x, x, w, w, 1);
 	}
-	
-	if (processMode != kFreeVolumeMode)
-	{
+	if (processMode != kFreeVolumeMode) {
 		g.setColour(Colour::fromFloatRGBA(0.5f, 0.5f, 0.5f, 1));
 		float w = (kThetaLockRadius / kRadiusMax) * (fieldWidth - kSourceDiameter);
 		float x = (fieldWidth - w) / 2;
@@ -117,29 +134,24 @@ void FieldComponent::paint (Graphics& g)
 		x = (fieldWidth - w) / 2;
 		g.drawEllipse(x, x, w, w, 1);
 	}
-	
 	// - - - - - - - - - - - -
 	// draw the grid
 	// - - - - - - - - - - - -
-	if (mFilter->getShowGridLines())
-	{
+	if (mFilter->getShowGridLines()) {
 		g.setColour(Colour::fromFloatRGBA(0, 0, 0.3f, 1));
 		const int gridCount = 8;
-		for (int i = 1; i < gridCount; i++)
-		{
+		for (int i = 1; i < gridCount; i++) {
 			g.drawLine(fieldWidth * i / gridCount, 0, fieldHeight * i / gridCount, fieldHeight);
 			g.drawLine(0, fieldHeight * i / gridCount, fieldWidth, fieldHeight * i / gridCount);
 		}
 	}
-	
 	const float adj_factor = 1 / sqrtf(2);
 	
 	// - - - - - - - - - - - -
 	// draw translucid circles
 	// - - - - - - - - - - - -
 	if (processMode == kFreeVolumeMode)
-	for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-	{
+	for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
 		float sourceDist = mFilter->getDenormedSourceD(i);
 		float reachDist = 1 / (adj_factor * sourceDist);
 		
@@ -157,78 +169,55 @@ void FieldComponent::paint (Graphics& g)
 		g.drawEllipse(p.x - radius, p.y - radius, diameter, diameter, 1);
 	}
 	
-	if (processMode == kPanSpanMode)
-	for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-	{
-		float hue = (float)i / mFilter->getNumberOfSources() + 0.577251;
-		if (hue > 1) hue -= 1;
-		
-		
-	
-		FPoint rt = mFilter->getSourceRT(i);
-		float r = rt.x;
-	
-		float angle = mFilter->getSourceD(i) * M_PI;
-		
-		float t[2] = { rt.y + angle, rt.y - angle };
-		//for (int j = 0; j < 2; j++)
-		{
-			//FPoint p1 = convertSourceRT(1, t[j]);
-			//FPoint p2 = convertSourceRT((r >= 1) ? 2 : -1, t[j]);
-			//g.drawLine(Line<float>(p1, p2));
-			
-			float fs = fieldWidth - kSourceDiameter;
-			//float x = (r >= 1) ? 0 : fs*0.25 + kSourceRadius;
-			//float y = (r >= 1) ? 0 : fs*0.25 + kSourceRadius;
-			float x = fs*0.25 + kSourceRadius;
-			float y = fs*0.25 + kSourceRadius;
-			//float w = (r >= 1) ? fs : fs*0.5;
-			//float h = (r >= 1) ? fs : fs*0.5;
-			float w = fs*0.5;
-			float h = fs*0.5;
-			float r1 = 0.5*M_PI-t[0];
-			float r2 = 0.5*M_PI-t[1];
-			float ir = (r >= .999) ? 2 : 0;
-			
-			if (r >= .999)
-			{
-				g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f));
-				Path p;
-				p.addPieSegment(x, y, w, h, r1, r2, ir);
-				g.fillPath(p);
-			}
-			else
-			{
-				float front = r * 0.5f + 0.5f;
-				float back = 1 - front;
-				{
-					g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f * front));
-					Path p;
-					p.addPieSegment(x, y, w, h, r1, r2, ir);
-					g.fillPath(p);
-				}
-				{
-					g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f * back));
-					Path p;
-					p.addPieSegment(x, y, w, h, r1 + M_PI, r2 + M_PI, ir);
-					g.fillPath(p);
-				}
-			}
-			
-			
-		}
-	}
-	
+    if (processMode == kPanSpanMode){
+        for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
+            float hue = (float)i / mFilter->getNumberOfSources() + 0.577251;
+            if (hue > 1){
+                hue -= 1;
+            }
+            FPoint rt = mFilter->getSourceRT(i);
+            float r = rt.x;
+            float angle = mFilter->getSourceD(i) * M_PI;
+            float t[2] = { rt.y + angle, rt.y - angle };
+            
+            float fs = fieldWidth - kSourceDiameter;
+            float x = fs*0.25 + kSourceRadius;
+            float y = fs*0.25 + kSourceRadius;
+            float w = fs*0.5;
+            float h = fs*0.5;
+            float r1 = 0.5*M_PI-t[0];
+            float r2 = 0.5*M_PI-t[1];
+            float ir = (r >= .999) ? 2 : 0;
+            
+            if (r >= .999) {
+                g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f));
+                Path p;
+                p.addPieSegment(x, y, w, h, r1, r2, ir);
+                g.fillPath(p);
+            } else {
+                float front = r * 0.5f + 0.5f;
+                float back = 1 - front;
+                {
+                    g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f * front));
+                    Path p;
+                    p.addPieSegment(x, y, w, h, r1, r2, ir);
+                    g.fillPath(p);
+                }
+                {
+                    g.setColour(Colour::fromHSV(hue, 1, 1, 0.4f * back));
+                    Path p;
+                    p.addPieSegment(x, y, w, h, r1 + M_PI, r2 + M_PI, ir);
+                    g.fillPath(p);
+                }
+            }
+        }
+    }
 	// - - - - - - - - - - - -
 	// draw speakers
 	// - - - - - - - - - - - -
-	for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-	{
+	for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++) {
 		const float radius = kSpeakerRadius, diameter = kSpeakerDiameter;
 		FPoint p = getSpeakerPoint(i);
-
-		//DBG("x = " << p.x << ", y = " << p.y);
-		
 		g.setColour(Colour::fromHSV(2.f/3.f, 0, 0.5, 1));
 		g.fillEllipse(p.x - radius, p.y - radius, diameter, diameter);
 		
@@ -236,15 +225,10 @@ void FieldComponent::paint (Graphics& g)
 		g.drawEllipse(p.x - radius, p.y - radius, diameter, diameter, 1);
 		
 		String s; s << i+1;
-		
 		g.setColour(Colours::black);
-		g.drawText(s, p.x - radius + 1, p.y - radius + 1, diameter, diameter,
-					Justification(Justification::centred), false);
-					
+		g.drawText(s, p.x - radius + 1, p.y - radius + 1, diameter, diameter, Justification(Justification::centred), false);
 		g.setColour(Colours::white);
-		g.drawText(s, p.x - radius, p.y - radius, diameter, diameter,
-					Justification(Justification::centred), false);
-		
+		g.drawText(s, p.x - radius, p.y - radius, diameter, diameter, Justification(Justification::centred), false);
 	}
     
     // - - - - - - - - - - - -
@@ -272,8 +256,7 @@ void FieldComponent::paint (Graphics& g)
 		if (hue > 1) hue -= 1;
 		
 		g.setColour(Colour::fromHSV(hue, 1, 1, 0.5f));
-		if (processMode != kFreeVolumeMode)
-		{
+		if (processMode != kFreeVolumeMode) {
 			FPoint rt = mFilter->getSourceRT(i);
 			float r = rt.x;
 			float t = rt.y;
@@ -299,6 +282,12 @@ void FieldComponent::paint (Graphics& g)
 		g.drawText(s, p.x - radius, p.y - radius, diameter, diameter,
 					Justification(Justification::centred), false);
 	}
+    // TRAJECTORY PATH
+    if (fStartPathX != -1 && fEndPathX != -1){
+        m_oTrajectoryPath.startNewSubPath (fStartPathX, fStartPathY);
+        m_oTrajectoryPath.lineTo (fEndPathX, fEndPathY);
+        g.strokePath (m_oTrajectoryPath, PathStrokeType (2.0f));
+    }
 }
 
 
