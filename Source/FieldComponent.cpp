@@ -43,7 +43,7 @@ FieldComponent::FieldComponent(OctogrisAudioProcessor* filter, SourceMover *move
 , fEndPathX(-1)
 , fEndPathY(-1)
 {
-    
+    mMover->setFieldComponent(this);
 }
 
 FieldComponent::~FieldComponent()
