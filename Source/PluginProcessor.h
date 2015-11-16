@@ -306,6 +306,10 @@ public:
 	int getProcessMode() const { return mProcessMode; }
 	void setProcessMode(int s) { mProcessMode = s; jassert(mProcessMode >= 0 && mProcessMode < kNumberOfModes); }
 	
+    
+    void setJustSelectedEndPoint(bool selected){ m_bJustSelectedEndPoint = selected;}
+    bool justSelectedEndPoint(){ return m_bJustSelectedEndPoint;}
+    
 	int getRoutingMode() const { return mRoutingMode; }
 	void setRoutingMode(int s) {
         mRoutingMode = s;
@@ -332,8 +336,8 @@ public:
     int getSpPlacementMode() const {return mSpPlacementMode;}
     void setSpPlacementMode(int i);
 
-    int getTrType() const {return m_iTrType;}
-    void setTrType(int i){m_iTrType = i;}
+    int getTrType() const {return m_iTrType+1;}
+    void setTrType(int i){m_iTrType = i-1;}
     
     int getTrDirection() const {return m_iTrDirection;}
     void setTrDirection(int i){m_iTrDirection = i;}
@@ -492,8 +496,8 @@ public:
         return FPoint(r, t);
     }
     
-    FPoint convertXy012Rt(FPoint p) {
-        return convertXy2Rt(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax));
+    FPoint convertXy012Rt(FPoint p, bool p_bLimitR = true) {
+        return convertXy2Rt(FPoint(p.x * (kRadiusMax*2) - kRadiusMax, p.y * (kRadiusMax*2) - kRadiusMax), p_bLimitR);
     }
 
 	FPoint clampRadius01(FPoint p) {
@@ -587,28 +591,15 @@ public:
         mHostChangedParameter++;
 	}
 
-	void setSpSelected(int p_i){
-	    mSpSelected = p_i;
-	}
+	void setSpSelected(int p_i){ mSpSelected = p_i; }
 
-    void setPreventSourceLocationUpdate(bool b){
-        m_bPreventSourceLocationUpdate = b;
-    }
+    void setPreventSourceLocationUpdate(bool b){ m_bPreventSourceLocationUpdate = b; }
     
-    void setIsSettingEndPoint(bool isSetting){
-        m_bIsSettingEndPoint = isSetting;
-    }
+    void setIsSettingEndPoint(bool isSetting){ m_bIsSettingEndPoint = isSetting; }
+    bool isSettingEndPoint(){ return m_bIsSettingEndPoint; }
     
-    bool isSettingEndPoint(){
-        return m_bIsSettingEndPoint;
-    }
-    
-    std::pair<float, float> getEndLocationXY(){
-        return m_fEndLocationXY;
-    }
-    void setEndLocationXY(std::pair<float, float> pair){
-        m_fEndLocationXY = pair;
-    }
+    std::pair<float, float> getEndLocationXY(){ return m_fEndLocationXY; }
+    void setEndLocationXY(std::pair<float, float> pair){ m_fEndLocationXY = pair; }
     
     void storeCurrentLocations();
     void restoreCurrentLocations(int p_iLocToRestore = -1);
@@ -717,6 +708,7 @@ private:
     bool m_bPreventSourceLocationUpdate;
     bool m_bIsSettingEndPoint;
     std::pair <float, float> m_fEndLocationXY;
+    bool m_bJustSelectedEndPoint;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)
 };

@@ -102,9 +102,7 @@ public:
     //! Called every 50ms;
 	void timerCallback();
 	void audioProcessorChanged (AudioProcessor* processor);
-	void audioProcessorParameterChanged (AudioProcessor* processor,
-                                                 int parameterIndex,
-                                                 float newValue);
+	void audioProcessorParameterChanged (AudioProcessor* processor, int parameterIndex, float newValue);
 				
 	//void refreshSize();
 	void fieldChanged() { mFieldNeedRepaint = true; }
@@ -125,6 +123,8 @@ public:
     int getNbSources();
     
     void updateNonSelectedSourcePositions();
+    
+    void setDefaultPendulumEndpoint();
 	
 private:
 	OctogrisAudioProcessor *mFilter;
@@ -210,6 +210,10 @@ private:
 	MiniProgressBar *mTrProgressBar;
     
     TextButton *mTrEndPointButton;
+    TextEditor* m_pTrEndRayTextEditor;
+    TextEditor* m_pTrEndAngleTextEditor;
+    TextButton* m_pTrResetEndButton;
+    Component  *mTrEndPointLabel;
 
     int mTrStateEditor;
 	
@@ -233,6 +237,7 @@ private:
     void updateSpeakerLocationTextEditor();
     void updateMovementModeCombo();
     void updateTrajectoryComponents();
+    void updateEndLocationTextEditors();
 	
 	Component* addLabel(const String &s, int x, int y, int w, int h, Component *into);
 	ToggleButton* addCheckbox(const String &s, bool v, int x, int y, int w, int h, Component *into);

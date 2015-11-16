@@ -427,12 +427,9 @@ protected:
         float t = p.y + m_fTurns*2*da;
         
         FPoint pointXY01 = mFilter->convertRt2Xy01(r, t);
-        
-//        pointXY01.x += modf(fTranslationFactor, &integralPart) * (m_fEndPair.first-.5);
-//        pointXY01.y -= modf(fTranslationFactor, &integralPart) * (m_fEndPair.second-.5);
+        JUCE_COMPILER_WARNING("i suspect that some of the weirdness in some of the spiral movements can be tweaked by modifying fTranslationFactor, perhaps by making it vary along the trajectory")
         pointXY01.x += fTranslationFactor * (m_fEndPair.first-.5);
         pointXY01.y -= fTranslationFactor * (m_fEndPair.second-.5);
-        cout << "fTranslationFactor: " << fTranslationFactor << newLine;
         mMover->move(pointXY01, kTrajectory);
     }
 

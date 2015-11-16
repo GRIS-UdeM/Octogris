@@ -158,6 +158,7 @@ mFilters()
 	m_fTrDeviation = 0.f;
     
     m_bIsSettingEndPoint = false;
+    m_bJustSelectedEndPoint = false;
     
 	mOscLeapSource = 0;
 	mOscReceiveEnabled = 0;
@@ -251,8 +252,6 @@ void OctogrisAudioProcessor::setParameter (int index, float newValue){
         mHostChangedParameter++;
     }
 }
-
-
 
 
 void OctogrisAudioProcessor::setParameterNotifyingHost (int index, float newValue)
@@ -741,7 +740,6 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			float beats = seconds * bps;
 			
 			bool done = trajectory->process(seconds, beats);
-            JUCE_COMPILER_WARNING("souldn't we delete mTrajectory instead of just setting to NULL?")
             if (done) mTrajectory = NULL;
 		}
 	}

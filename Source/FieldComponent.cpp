@@ -313,10 +313,9 @@ void FieldComponent::mouseDown(const MouseEvent &event)
         float fCenteredX = (float)event.x/fieldWidth;//-_ZirkOSC_Center_X;
         float fCenteredY = (float)event.y/fieldHeight;//-_ZirkOSC_Center_Y;
         mFilter->setEndLocationXY(make_pair (fCenteredX, fCenteredY));
-//        updateEndLocationTextEditors();
-//        m_pSetEndTrajectoryButton->setToggleState(false, dontSendNotification);
-//        m_pSetEndTrajectoryButton->setButtonText("Set end point");
-//        m_oEndPointLabel.setVisible(false);
+        
+        mFilter->setIsSettingEndPoint(false);
+        mFilter->setJustSelectedEndPoint(true);
     }
 
 	

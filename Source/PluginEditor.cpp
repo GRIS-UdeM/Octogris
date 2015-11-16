@@ -29,6 +29,7 @@
 #include "Trajectories.h"
 #include "OctoLeap.h"
 #include "OscComponent.h"
+#include <iomanip>
 
 #if WIN32
 
@@ -682,7 +683,7 @@ AudioProcessorEditor (ownerFilter)
             for (int i = 1; i < Trajectory::NumberOfTrajectories(); i++){
                 cb->addItem(Trajectory::GetTrajectoryName(i), index++);
             }
-            cb->setSelectedId(mFilter->getTrType()+1);
+            cb->setSelectedId(mFilter->getTrType());
             cb->setSize(cbw, dh);
             cb->setTopLeftPosition(x, y);
             box->addAndMakeVisible(cb);
@@ -771,8 +772,27 @@ AudioProcessorEditor (ownerFilter)
         
         mTrEndPointButton = addButton("Set end point", x, y, cbw, dh, box);
         mTrEndPointButton->setClickingTogglesState(true);
-        y += dh + 5;
+        
+        x += cbw + kMargin;
+        m_pTrEndRayTextEditor = addTextEditor("", x, y, cbw/2, dh, box);
+        m_pTrEndRayTextEditor->setTextToShowWhenEmpty("Ray", juce::Colour::greyLevel(.6));
+        m_pTrEndRayTextEditor->setColour(TextEditor::textColourId, juce::Colour::greyLevel(.6));
+        m_pTrEndRayTextEditor->setReadOnly(true);
+        m_pTrEndRayTextEditor->setCaretVisible(false);
+        
+        x += cbw/2 + kMargin;
+        m_pTrEndAngleTextEditor = addTextEditor("", x, y, cbw/2, dh, box);
+        m_pTrEndAngleTextEditor->setTextToShowWhenEmpty("Angle", juce::Colour::greyLevel(.6));
+        m_pTrEndAngleTextEditor->setColour(TextEditor::textColourId, juce::Colour::greyLevel(.6));
+        m_pTrEndAngleTextEditor->setReadOnly(true);
+        m_pTrEndAngleTextEditor->setCaretVisible(false);
+        updateEndLocationTextEditors();
 
+        x += cbw/2 + kMargin;
+        m_pTrResetEndButton = addButton("Reset end point", x, y, cbw, dh, box);
+        
+        x = kMargin;
+        y += dh + 5;
         
         mTrWriteButton = addButton("Ready", x, y, cbw, dh, box);
         mTrWriteButton->setClickingTogglesState(true);
@@ -998,45 +1018,6 @@ AudioProcessorEditor (ownerFilter)
         mSpT = addTextEditor("0", x + lwm, y, w - lwm, dh, box);
         mSpT->setExplicitFocusOrder(7);
         mSpT->addListener(this);
-		
-		//-------- column 3 --------
-//        y = kMargin;
-//        x += w + kMargin;
-//		
-//		addLabel("Routing mode:", x, y, w, dh, box);
-//        y += dh + 5;
-//		{
-//			ComboBox *cb = new ComboBox();
-//			int index = 1;
-//			cb->addItem("Normal", index++);
-//			cb->addItem("Internal write", index++);
-//			cb->addItem("Internal read 1-2", index++);
-//			cb->addItem("Internal read 3-4", index++);
-//			cb->addItem("Internal read 5-6", index++);
-//			cb->addItem("Internal read 7-8", index++);
-//			cb->addItem("Internal read 9-10", index++);
-//			cb->addItem("Internal read 11-12", index++);
-//			cb->addItem("Internal read 13-14", index++);
-//			cb->addItem("Internal read 15-16", index++);
-//			cb->setSelectedId(mFilter->getRoutingMode() + 1);
-//			cb->setSize(w, dh);
-//			cb->setTopLeftPosition(x, y);
-//			box->addAndMakeVisible(cb);
-//			mComponents.add(cb);
-//			y += dh + 5;
-//			
-//			cb->addListener(this);
-//			mRoutingMode = cb;
-//		}
-//		
-//		addLabel("Routing volume (dB):", x, y, w, dh, box);
-//        y += dh + 5;
-//		{
-//			Slider *ds = addParamSlider(kParamRoutingVolume, kRoutingVolume, mFilter->getParameter(kRoutingVolume), x, y, w, dh, box);
-//			ds->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
-//			mRoutingVolume = ds;
-//			y += dh + 5;
-//		}
 	}
     
     
@@ -1131,6 +1112,22 @@ AudioProcessorEditor (ownerFilter)
     //refreshSize();
 }
 
+void OctogrisAudioProcessorEditor::updateEndLocationTextEditors(){
+    std::pair<float, float> endLocation = mFilter->getEndLocationXY();
+    FPoint pointRT = mFilter->convertXy012Rt(FPoint(endLocation.first, 1-endLocation.second), false);
+    pointRT.y *= 360/(2*M_PI);
+    {
+        ostringstream oss;
+        oss << std::fixed << std::right << std::setw( 4 ) << setprecision(2) << std::setfill( ' ' ) << "" <<  pointRT.x;
+        m_pTrEndRayTextEditor->setText(oss.str());
+    }
+    {
+        ostringstream oss;
+        oss << std::fixed << std::right << std::setw( 4 ) << setprecision(2) << std::setfill( ' ' ) << "" << pointRT.y;
+        m_pTrEndAngleTextEditor->setText(oss.str());
+    }
+}
+
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
     int iSourceChanged = mFilter->getSourceLocationChanged();
     if (!mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && iSourceChanged != -1) {
@@ -1146,7 +1143,7 @@ void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
 }
 
 void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
-    int iSelectedTrajectory = mFilter->getTrType()+1;
+    int iSelectedTrajectory = mFilter->getTrType();
     //if pendulum is selected
 
     if (iSelectedTrajectory == Pendulum){
@@ -1171,8 +1168,14 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
     
     if (iSelectedTrajectory == Spiral || iSelectedTrajectory == Pendulum){
         mTrEndPointButton->setVisible(true);
+        m_pTrEndRayTextEditor->setVisible(true);
+        m_pTrEndAngleTextEditor->setVisible(true);
+        m_pTrResetEndButton->setVisible(true);
     } else {
         mTrEndPointButton->setVisible(false);
+        m_pTrEndRayTextEditor->setVisible(false);
+        m_pTrEndAngleTextEditor->setVisible(false);
+        m_pTrResetEndButton->setVisible(false);
     }
     
     unique_ptr<vector<String>> allDirections = Trajectory::getTrajectoryPossibleDirections(iSelectedTrajectory);
@@ -1554,7 +1557,7 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
     }
     else if (&textEditor == mTrTurnsTextEditor){
         float Turns = mTrTurnsTextEditor->getText().getFloatValue();
-        int iSelectedTrajectory = mFilter->getTrType()+1;
+        int iSelectedTrajectory = mFilter->getTrType();
         int iUpperLimit = 1;
         if (iSelectedTrajectory == 3){
             iUpperLimit = 10;
@@ -1625,20 +1628,28 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             mTrProgressBar->setVisible(true);
         }
     }
-    if (button == mTrEndPointButton) {
+    else if (button == mTrEndPointButton) {
         if (mTrEndPointButton->getToggleState()){
             mTrEndPointButton->setButtonText("Cancel");
             mFilter->setIsSettingEndPoint(true);
 //            m_oEndPointLabel.setVisible(true);
-            
-//            m_pEndAzimTextEditor->setText("");
-//            m_pEndElevTextEditor->setText("");
+            m_pTrEndRayTextEditor->setText("");
+            m_pTrEndAngleTextEditor->setText("");
         } else {
             mTrEndPointButton->setButtonText("Set end point");
             mFilter->setIsSettingEndPoint(false);
 //            m_oEndPointLabel.setVisible(false);
-//            updateEndLocationTextEditors();
+            updateEndLocationTextEditors();
         }
+    }
+    else if (button == m_pTrResetEndButton) {
+        if (mFilter->getTrType() == Pendulum){
+            setDefaultPendulumEndpoint();
+        } else {
+            pair<float, float> pair = make_pair(0, 0);
+            mFilter->setEndLocationXY(pair);
+        }
+        updateEndLocationTextEditors();
     }
     else if (mFilter->getIsAllowInputOutputModeSelection() && button == mApplyInputOutputModeButton) {
         int iSelectedMode = mInputOutputModeCombo->getSelectedItemIndex();
@@ -1847,6 +1858,22 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
 	}
 }
 
+void OctogrisAudioProcessorEditor::setDefaultPendulumEndpoint(){
+    int iSelectedSrc = mFilter->getSrcSelected();
+//    float fCurAzim01 = mFilter->getSources()[iSelectedSrc].getAzimuth01();
+//    float fCurElev01 = mFilter->getSources()[iSelectedSrc].getElevation01();
+//    
+//    float fCurAzim = 180 + PercentToHR(fCurAzim01, ZirkOSC_Azim_Min, ZirkOSC_Azim_Max);
+//    if (fCurAzim > 180){
+//        fCurAzim -= 360;
+//    }
+//    fCurAzim01 = HRToPercent(fCurAzim, ZirkOSC_Azim_Min, ZirkOSC_Azim_Max);
+//    float fEndX, fEndY;
+//    SoundSource::azimElev01toXY(fCurAzim01, fCurElev01, fEndX, fEndY);
+//    mFilter->setEndLocationXY(make_pair(fEndX, fEndY));
+}
+
+
 void OctogrisAudioProcessorEditor::textEditorFocusLost (TextEditor &textEditor){
     m_bIsReturnKeyPressedCalledFromFocusLost = true;
     textEditorReturnKeyPressed(textEditor);
@@ -1917,7 +1944,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
     }
     else if (comboBox == mTrTypeComboBox)
     {
-        int type = mTrTypeComboBox->getSelectedId()-1;
+        int type = mTrTypeComboBox->getSelectedId();
         mFilter->setTrType(type);
         updateTrajectoryComponents();
     }
@@ -1955,6 +1982,7 @@ void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
     mSpT->setText(String(curPosition.y * 180. / M_PI));
 }
 
+
 //==============================================================================
 void OctogrisAudioProcessorEditor::timerCallback()
 {
@@ -1972,11 +2000,19 @@ void OctogrisAudioProcessorEditor::timerCallback()
 				mFilter->setTrState(mTrStateEditor);
                 mFilter->setIsRecordingAutomation(false);
                 //this is to erase the trajectory path
-                mFieldNeedRepaint = true;
+                fieldChanged();
 			}
 		}
 		break;
 	}
+    
+    if (mFilter->justSelectedEndPoint()){
+        updateEndLocationTextEditors();
+        mTrEndPointButton->setToggleState(false, dontSendNotification);
+        mTrEndPointButton->setButtonText("Set end point");
+//        m_oEndPointLabel.setVisible(false);
+        mFilter->setJustSelectedEndPoint(false);
+    }
 		
 	uint64_t hcp = mFilter->getHostChangedProperty();
 	if (hcp != mHostChangedProperty) {
@@ -2005,7 +2041,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mSpPlacement->setSelectedId(mFilter->getSpPlacementMode(), dontSendNotification);
         updateSpeakerLocationTextEditor();
         
-        mTrTypeComboBox->setSelectedId(mFilter->getTrType()+1);
+        mTrTypeComboBox->setSelectedId(mFilter->getTrType());
         mTrDuration->setText(String(mFilter->getTrDuration()));
         mTrUnits->setSelectedId(mFilter->getTrUnits());
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
