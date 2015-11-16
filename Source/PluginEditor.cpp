@@ -1862,8 +1862,9 @@ void OctogrisAudioProcessorEditor::setDefaultPendulumEndpoint(){
     int iSelectedSrc    = mFilter->getSrcSelected();
     FPoint pointRT      = mFilter->getSourceRT(iSelectedSrc);
     pointRT.y += M_PI;
-    FPoint pointXY = mFilter->convertRt2Xy(pointRT);
-    mFilter->setEndLocationXY(make_pair(pointXY.x, pointXY.y));
+    JUCE_COMPILER_WARNING("throughout the code, need to check conversions, especially pertaining to the end location of trajectories. Also need to make the y consistent so that we don't revert it in only some cases")
+    FPoint pointXY = mFilter->convertRt2Xy01(pointRT.x, pointRT.y);
+    mFilter->setEndLocationXY(make_pair(pointXY.x, 1-pointXY.y));
 }
 
 
