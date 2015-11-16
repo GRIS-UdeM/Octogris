@@ -413,6 +413,7 @@ protected:
             if (da > .5){
                 fTranslationFactor = 1 - da;
             }
+            fTranslationFactor *=2;
             da *= 2 * M_PI;
         } else {
             if (mDone < mTotalDuration) da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
@@ -427,10 +428,11 @@ protected:
         
         FPoint pointXY01 = mFilter->convertRt2Xy01(r, t);
         
-        pointXY01.x += modf(fTranslationFactor, &integralPart) * (m_fEndPair.first-.5);
-        pointXY01.y -= modf(fTranslationFactor, &integralPart) * (m_fEndPair.second-.5);
-//        pointXY01.x += fTranslationFactor * (m_fEndPair.first-.5);
-//        pointXY01.y -= fTranslationFactor * (m_fEndPair.second-.5);
+//        pointXY01.x += modf(fTranslationFactor, &integralPart) * (m_fEndPair.first-.5);
+//        pointXY01.y -= modf(fTranslationFactor, &integralPart) * (m_fEndPair.second-.5);
+        pointXY01.x += fTranslationFactor * (m_fEndPair.first-.5);
+        pointXY01.y -= fTranslationFactor * (m_fEndPair.second-.5);
+        cout << "fTranslationFactor: " << fTranslationFactor << newLine;
         mMover->move(pointXY01, kTrajectory);
     }
 
