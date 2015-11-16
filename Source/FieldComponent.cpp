@@ -53,6 +53,7 @@ FieldComponent::~FieldComponent()
 void FieldComponent::clearTrajectoryPath(){
     fStartPathX = -1, fEndPathX = -1, fStartPathY = -1, fEndPathY = -1;
     m_oTrajectoryPath.clear();
+    repaint();
 }
 
 void FieldComponent::updatePositionTrace(float p_fX, float p_fY){
@@ -416,25 +417,16 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 	repaint();
 }
 
-void FieldComponent::mouseUp(const MouseEvent &event)
-{
+void FieldComponent::mouseUp(const MouseEvent &event) {
+    clearTrajectoryPath();
 	switch(mSelectionType) {
 		case kNoSelection:
 			return;
-			
 		case kSelectedSource:
-//			fprintf(stderr, "ending x (%d), y (%d) for index %d\n",
-//						mFilter->getParamForSourceX(mSelectedItem),
-//						mFilter->getParamForSourceY(mSelectedItem),
-//						mSelectedItem);
 			mMover->end(kField);
 			break;
-			
 		case kSelectedSpeaker:
-			//mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerX(mSelectedItem));
-			//mFilter->endParameterChangeGesture(mFilter->getParamForSpeakerY(mSelectedItem));
 			break;
 	}
-	
 	mSelectionType = kNoSelection;
 }
