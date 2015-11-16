@@ -56,8 +56,8 @@ void FieldComponent::clearTrajectoryPath(){
 }
 
 void FieldComponent::updatePositionTrace(float p_fX, float p_fY){
-    float fAbsoluteX = p_fX ;//+ _ZirkOSC_Center_X;
-    float fAbsoluteY = p_fY ;//+ _ZirkOSC_Center_Y;
+    float fAbsoluteX = p_fX * getWidth();
+    float fAbsoluteY = (1-p_fY) * getHeight();
     //draw drag path
     if (fEndPathX == -1){
         fStartPathX = fAbsoluteX;
