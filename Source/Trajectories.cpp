@@ -31,12 +31,11 @@
 
 // ==============================================================================
 void Trajectory::start() {
-     mMover->begin(mFilter->getSrcSelected(), kTrajectory);
-
+    mMover->begin(mFilter->getSrcSelected(), kTrajectory);
     for (int i = 0; i < mFilter->getNumberOfSources(); i++){
         mSourcesInitialPositionRT.add(mFilter->getSourceRT(i));
     }
-    
+    spInit();
 	mStarted = true;
 }
 
@@ -516,59 +515,135 @@ private:
 class PendulumTrajectory : public Trajectory
 {
 public:
-	PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool rt, bool cross, float p_fDampening, float p_fDeviation, const std::pair<float, float> &endPair)
-	: Trajectory(filter, p_pMover, duration, beats, times, source)
-    , mIn(in)
-    , mRT(rt)
-    , mCross(cross)
-    , m_fTotalDampening(p_fDampening)
-    , m_fTotalDeviation(p_fDeviation)
-    , m_fEndPair(endPair)
+//                                              (filter,             p_pMover,         duration, beats,            times, source,         in, bReturn, cross, p_fDampening, p_fDeviation, endPair);
+    PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool ccw, bool rt, float p_fDampening, float fDeviation, const std::pair<float, float> &endPoint)
+    :Trajectory(filter, p_pMover, duration, beats, times, source)
+    ,mCCW(ccw)
+    ,m_bRT(rt)
+    ,m_fEndPair(endPoint)
+    ,m_fDeviation(fDeviation/360)
+    ,m_fTotalDampening(p_fDampening)
     {
     }
-	
+
 protected:
-	void spProcess(float duration, float seconds){
-        float da, integralPart;
-        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;
-        float fTranslationFactor = modf(mDone / mDurationSingleTraj, &integralPart);
-        if (mRT){
-            da = mDone / mDurationSingleTraj * (2 * M_PI);
+    void spInit() {
+        int src = mFilter->getSrcSelected();
+        FPoint pointXY = mFilter->convertRt2Xy(mSourcesInitialPositionRT[src]);
+        m_fStartPair.first  = pointXY.x;
+        m_fStartPair.second = pointXY.y;
+        
+        if (m_fEndPair.first != m_fStartPair.first){
+            m_bYisDependent = true;
+            m_fM = (m_fEndPair.second - m_fStartPair.second) / (m_fEndPair.first - m_fStartPair.first);
+            m_fB = m_fStartPair.second - m_fM * m_fStartPair.first;
         } else {
-            if (mDone < mTotalDuration){
-                da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
-            } else {
-                da = M_PI;
-            }
+            m_bYisDependent = false;
+            m_fM = 0;
+            m_fB = m_fStartPair.first;
         }
+    }
+    void spProcess(float duration, float seconds) {
+
+        int iReturn = m_bRT ? 2:1;
+        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;
+        //pendulum part
+        float newX, newY, temp, fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);
+
+        if (m_bYisDependent){
+            fCurrentProgress = (m_fEndPair.first - m_fStartPair.first) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
+            newX = m_fStartPair.first + fCurrentProgress;
+            newY = m_fM * newX + m_fB;
+        } else {
+            fCurrentProgress = (m_fEndPair.second - m_fStartPair.second) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
+            newX = m_fStartPair.first;
+            newY = m_fStartPair.second + fCurrentProgress;
+        }
+        newX = newX - newX*fCurDampening;
+        newY = newY - newY*fCurDampening;
         
-        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
-        float l = mCross ? cos(da) : (cos(da)+1)*0.5;
-        float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-        
-        //r is the ray, unclear what l is
-        r -= fCurDampening * r;
-        
+        FPoint pointRT = mFilter->convertXy2Rt(FPoint(newX, newY), false);
+
         //circle/deviation part
-        float deviationAngle;
+        float deviationAngle, integralPart;
         deviationAngle = mDone / mTotalDuration;
         deviationAngle = modf(deviationAngle, &integralPart);
         if (!mCCW) {
             deviationAngle = - deviationAngle;
         }
-        deviationAngle *= 2 * M_PI * m_fTotalDeviation;
+        deviationAngle *= 2 * M_PI * m_fDeviation;
         
+        FPoint pointXY01 = mFilter->convertRt2Xy01(pointRT.x, pointRT.y + deviationAngle);
         
-        
-        
-        mMover->move(mFilter->convertRt2Xy01(r, p.y + deviationAngle), kTrajectory);
-}
-	
+        mMover->move(pointXY01, kTrajectory);
+    }
 private:
-	bool mIn, mRT, mCross, mCCW = true;
-    float m_fTotalDampening, m_fTotalDeviation;
+    bool mCCW, m_bRT, m_bYisDependent;
+    std::pair<float, float> m_fStartPair;
     std::pair<float, float> m_fEndPair;
+    float m_fM;
+    float m_fB;
+    float m_fDeviation;
+    float m_fTotalDampening;
 };
+
+//class PendulumTrajectory : public Trajectory
+//{
+//public:
+//	PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, int source, bool in, bool rt, bool cross, float p_fDampening, float p_fDeviation, const std::pair<float, float> &endPair)
+//	: Trajectory(filter, p_pMover, duration, beats, times, source)
+//    , mIn(in)
+//    , mRT(rt)
+//    , mCross(cross)
+//    , m_fTotalDampening(p_fDampening)
+//    , m_fTotalDeviation(p_fDeviation)
+//    , m_fEndPair(endPair)
+//    {
+//    }
+//	
+//protected:
+//	void spProcess(float duration, float seconds){
+//        float da, integralPart;
+//        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;
+//        float fTranslationFactor = modf(mDone / mDurationSingleTraj, &integralPart);
+//        if (mRT){
+//            da = mDone / mDurationSingleTraj * (2 * M_PI);
+//        } else {
+//            if (mDone < mTotalDuration){
+//                da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+//            } else {
+//                da = M_PI;
+//            }
+//        }
+//        
+//        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+//        float l = mCross ? cos(da) : (cos(da)+1)*0.5;
+//        float r = (mCross || mIn) ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+//        
+//        //r is the ray, unclear what l is
+//        r -= fCurDampening * r;
+//        
+//        //circle/deviation part
+//        float deviationAngle;
+//        deviationAngle = mDone / mTotalDuration;
+//        deviationAngle = modf(deviationAngle, &integralPart);
+//        if (!mCCW) {
+//            deviationAngle = - deviationAngle;
+//        }
+//        deviationAngle *= 2 * M_PI * m_fTotalDeviation;
+//        
+//        FPoint pointXY01 = mFilter->convertRt2Xy01(r, p.y + deviationAngle);
+////        pointXY01.x += fTranslationFactor * (m_fEndPair.first-.5);
+////        pointXY01.y -= fTranslationFactor * (m_fEndPair.second-.5);
+//
+//        mMover->move(pointXY01, kTrajectory);
+//}
+//	
+//private:
+//	bool mIn, mRT, mCross, mCCW = true;
+//    float m_fTotalDampening, m_fTotalDeviation;
+//    std::pair<float, float> m_fEndPair;
+//};
 
 // ==============================================================================
 class EllipseTrajectory : public Trajectory
@@ -963,7 +1038,7 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
         case Circle:                     return new CircleTrajectory(filter, p_pMover, duration, beats, times, source, ccw, p_fTurns);
         case EllipseTr:                  return new EllipseTrajectory(filter, p_pMover, duration, beats, times, source, ccw, p_fTurns);
         case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, source, ccw, in, bReturn, p_fTurns, endPair);
-        case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, bReturn, cross, p_fDampening, p_fDeviation, endPair);
+        case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, source, in, ccw, bReturn, p_fDampening, p_fDeviation, endPair);
         case AllTrajectoryTypes::Random: return new RandomTrajectory(filter, p_pMover, duration, beats, times, source, speed, bUniqueTarget);
         case RandomIndependent:          return new RandomIndependentTrajectory(filter, p_pMover, duration, beats, times, source, speed);
         case RandomTarget:               return new RandomTargetTrajectory(filter, p_pMover, duration, beats, times, source);

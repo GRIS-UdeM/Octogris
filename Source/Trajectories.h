@@ -72,6 +72,7 @@ public:
 	
 protected:
 	virtual void spProcess(float duration, float seconds) = 0;
+    virtual void spInit() {}
     Array<Point<float>> mSourcesInitialPositionRT;
 	
 private:

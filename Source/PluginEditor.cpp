@@ -1861,7 +1861,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
 void OctogrisAudioProcessorEditor::setDefaultPendulumEndpoint(){
     int iSelectedSrc    = mFilter->getSrcSelected();
     FPoint pointRT      = mFilter->getSourceRT(iSelectedSrc);
-    
     pointRT.y += M_PI;
     FPoint pointXY = mFilter->convertRt2Xy(pointRT);
     mFilter->setEndLocationXY(make_pair(pointXY.x, pointXY.y));
