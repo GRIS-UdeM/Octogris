@@ -1646,7 +1646,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         if (mFilter->getTrType() == Pendulum){
             setDefaultPendulumEndpoint();
         } else {
-            pair<float, float> pair = make_pair(0, 0);
+            pair<float, float> pair = make_pair(.5, .5);
             mFilter->setEndLocationXY(pair);
         }
         updateEndLocationTextEditors();
@@ -1859,18 +1859,12 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
 }
 
 void OctogrisAudioProcessorEditor::setDefaultPendulumEndpoint(){
-    int iSelectedSrc = mFilter->getSrcSelected();
-//    float fCurAzim01 = mFilter->getSources()[iSelectedSrc].getAzimuth01();
-//    float fCurElev01 = mFilter->getSources()[iSelectedSrc].getElevation01();
-//    
-//    float fCurAzim = 180 + PercentToHR(fCurAzim01, ZirkOSC_Azim_Min, ZirkOSC_Azim_Max);
-//    if (fCurAzim > 180){
-//        fCurAzim -= 360;
-//    }
-//    fCurAzim01 = HRToPercent(fCurAzim, ZirkOSC_Azim_Min, ZirkOSC_Azim_Max);
-//    float fEndX, fEndY;
-//    SoundSource::azimElev01toXY(fCurAzim01, fCurElev01, fEndX, fEndY);
-//    mFilter->setEndLocationXY(make_pair(fEndX, fEndY));
+    int iSelectedSrc    = mFilter->getSrcSelected();
+    FPoint pointRT      = mFilter->getSourceRT(iSelectedSrc);
+    
+    pointRT.y += M_PI;
+    FPoint pointXY = mFilter->convertRt2Xy(pointRT);
+    mFilter->setEndLocationXY(make_pair(pointXY.x, pointXY.y));
 }
 
 

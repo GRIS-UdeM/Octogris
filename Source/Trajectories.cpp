@@ -523,13 +523,15 @@ public:
     , mCross(cross)
     , m_fTotalDampening(p_fDampening)
     , m_fTotalDeviation(p_fDeviation)
+    , m_fEndPair(endPair)
     {
     }
 	
 protected:
 	void spProcess(float duration, float seconds){
-        float da;
+        float da, integralPart;
         float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;
+        float fTranslationFactor = modf(mDone / mDurationSingleTraj, &integralPart);
         if (mRT){
             da = mDone / mDurationSingleTraj * (2 * M_PI);
         } else {
@@ -548,7 +550,7 @@ protected:
         r -= fCurDampening * r;
         
         //circle/deviation part
-        float deviationAngle, integralPart;
+        float deviationAngle;
         deviationAngle = mDone / mTotalDuration;
         deviationAngle = modf(deviationAngle, &integralPart);
         if (!mCCW) {
@@ -556,12 +558,16 @@ protected:
         }
         deviationAngle *= 2 * M_PI * m_fTotalDeviation;
         
+        
+        
+        
         mMover->move(mFilter->convertRt2Xy01(r, p.y + deviationAngle), kTrajectory);
 }
 	
 private:
 	bool mIn, mRT, mCross, mCCW = true;
     float m_fTotalDampening, m_fTotalDeviation;
+    std::pair<float, float> m_fEndPair;
 };
 
 // ==============================================================================
