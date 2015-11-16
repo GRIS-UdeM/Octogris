@@ -1971,6 +1971,8 @@ void OctogrisAudioProcessorEditor::timerCallback()
                 mTrStateEditor = kTrReady;
 				mFilter->setTrState(mTrStateEditor);
                 mFilter->setIsRecordingAutomation(false);
+                //this is to erase the trajectory path
+                mFieldNeedRepaint = true;
 			}
 		}
 		break;

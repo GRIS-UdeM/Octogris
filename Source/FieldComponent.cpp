@@ -53,7 +53,7 @@ FieldComponent::~FieldComponent()
 void FieldComponent::clearTrajectoryPath(){
     fStartPathX = -1, fEndPathX = -1, fStartPathY = -1, fEndPathY = -1;
     m_oTrajectoryPath.clear();
-    repaint();
+//    repaint();
 }
 
 void FieldComponent::updatePositionTrace(float p_fX, float p_fY){
@@ -419,6 +419,7 @@ void FieldComponent::mouseDrag(const MouseEvent &event)
 
 void FieldComponent::mouseUp(const MouseEvent &event) {
     clearTrajectoryPath();
+    repaint();
 	switch(mSelectionType) {
 		case kNoSelection:
 			return;

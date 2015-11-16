@@ -305,6 +305,7 @@ void SourceMover::end(MoverType mt)
         mFilter->endParameterChangeGesture(mFilter->getParamForSourceX(mSelectedSrc));
         mFilter->endParameterChangeGesture(mFilter->getParamForSourceY(mSelectedSrc));
         mFilter->setIsRecordingAutomation(false);
+        mField->clearTrajectoryPath();
     }
     
     mMoverType = kVacant;
