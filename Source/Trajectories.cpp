@@ -520,16 +520,16 @@ public:
     :Trajectory(filter, p_pMover, duration, beats, times, source)
     ,mCCW(ccw)
     ,m_bRT(rt)
-    ,m_fEndPair(endPoint)
     ,m_fDeviation(fDeviation/360)
     ,m_fTotalDampening(p_fDampening)
     {
+        m_fEndPair = make_pair(endPoint.first, 1-endPoint.second);
     }
 
 protected:
     void spInit() {
         int src = mFilter->getSrcSelected();
-        FPoint pointXY = mFilter->convertRt2Xy(mSourcesInitialPositionRT[src]);
+        FPoint pointXY = mFilter->convertRt2Xy01(mSourcesInitialPositionRT[src].x, mSourcesInitialPositionRT[src].y);
         m_fStartPair.first  = pointXY.x;
         m_fStartPair.second = pointXY.y;
         
@@ -562,7 +562,7 @@ protected:
         newX = newX - newX*fCurDampening;
         newY = newY - newY*fCurDampening;
         
-        FPoint pointRT = mFilter->convertXy2Rt(FPoint(newX, newY), false);
+        FPoint pointRT = mFilter->convertXy012Rt(FPoint(newX, newY), false);
 
         //circle/deviation part
         float deviationAngle, integralPart;
