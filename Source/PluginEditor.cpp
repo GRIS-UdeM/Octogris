@@ -677,6 +677,8 @@ AudioProcessorEditor (ownerFilter)
             mTrDirectionComboBox->addListener(this);
         }
         
+        mTrContinuousMode = addCheckbox("Continuous transition", mFilter->getShowGridLines(), x+cbw+5, y, cbw, dh, box);
+        
         {
             ComboBox *cb = new ComboBox();
             cb->setSize(cbw, dh);
@@ -1158,6 +1160,13 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
     } else {
         mTrIndependentMode->setVisible(false);
     }
+    
+    if (iSelectedTrajectory == RandomTarget){
+        mTrContinuousMode->setVisible(true);
+    } else {
+        mTrContinuousMode->setVisible(false);
+    }
+
     
     unique_ptr<vector<String>> allDirections = Trajectory::getTrajectoryPossibleDirections(iSelectedTrajectory);
     if (allDirections != nullptr){
@@ -1744,6 +1753,9 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
     else if (button == mTrIndependentMode) {
         mFilter->setIndependentMode(button->getToggleState());
     }
+    else if (button == mTrContinuousMode) {
+        mFilter->setContinuousMode(button->getToggleState());
+    }
     else if (button == mLinkDistances) {
         mFilter->setLinkDistances(button->getToggleState());
     }
@@ -2028,6 +2040,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 #endif*/
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
         mTrIndependentMode->setToggleState(mFilter->getIndependentMode(), dontSendNotification);
+        mTrContinuousMode->setToggleState(mFilter->getContinuousMode(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);
     }

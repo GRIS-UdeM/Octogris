@@ -298,7 +298,10 @@ public:
     
     bool getIndependentMode() const { return mTrIndependentMode; }
     void setIndependentMode(bool b) { mTrIndependentMode = b; }
-	
+
+    bool getContinuousMode() const { return mTrContinuousMode; }
+    void setContinuousMode(bool b) { mTrContinuousMode = b; }
+    
 	int getMovementMode() const { return mMovementMode; }
 	void setMovementMode(int s) { mMovementMode = s; }
 	
@@ -634,6 +637,7 @@ private:
 	int mMovementMode;
 	bool mShowGridLines;
     bool mTrIndependentMode;
+    bool mTrContinuousMode;
     int mGuiWidth;
     int mGuiHeight;
 

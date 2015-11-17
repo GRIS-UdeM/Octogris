@@ -810,7 +810,6 @@ protected:
 	void spProcess(float duration, float seconds) {
 
         bool bWriteAutomationForAllSources = mFilter->getIndependentMode();
-        bool bResetBetweenRandomTargetCycles = true;
         
         float p = mDone / mDurationSingleTraj;
         int iSelectedSrc = mFilter->getSrcSelected();
@@ -819,7 +818,7 @@ protected:
 
         //reset stuff when we start a new cycle
 		if (mCycle != cycle) {
-            if (bResetBetweenRandomTargetCycles){
+            if (!mFilter->getContinuousMode()){
                 resetIfRandomTarget();
             }
 			mCycle = cycle;
