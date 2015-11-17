@@ -861,7 +861,15 @@ protected:
                 FPoint b = mSourcesDestinations.getUnchecked(i);
                 FPoint p = a + (b - a) * d;
                 bool bWriteAutomation = (bWriteAutomationForAllSources || iSelectedSrc == i);
-                mFilter->setSourceXY(i, p, bWriteAutomation);
+                if (bWriteAutomationForAllSources){
+                    mFilter->setSourceXY(i, p, bWriteAutomation);
+                    mFilter->setOldSrcLocRT(i, mFilter->convertXy012Rt(p));
+                } else {
+                    //convert ±radius range to 01 range
+                    p.x = (p.x + kRadiusMax) / (2*kRadiusMax);
+                    p.y = (p.y + kRadiusMax) / (2*kRadiusMax);
+                    mMover->move(p, kTrajectory);
+                }
             }
         }
         //this should only be done the last time this function is called for a given trajectory
