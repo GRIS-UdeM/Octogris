@@ -804,7 +804,7 @@ protected:
                 p.y = (p.y + kRadiusMax) / (2*kRadiusMax);
                 
                 mFilter->setSourceXY01(iCurSrc, p);
-                mFilter->mOldSrcLocRT[iCurSrc] = mFilter->convertXy012Rt(p);
+                mFilter->setOldSrcLocRT(iCurSrc, mFilter->convertXy012Rt(p));
             } 
         }
     }
