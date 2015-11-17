@@ -828,9 +828,11 @@ protected:
     virtual void resetIfRandomTarget(){};
 
 	void spProcess(float duration, float seconds) {
-		float p = mDone / mDurationSingleTraj;
-        JUCE_COMPILER_WARNING("if iSelectedSrc == -1, we move all sources, otherwise only move the selected source")
-        int iSelectedSrc = -1;//mFilter->getSrcSelected();
+
+        bool bWriteAutomationForAllSources = true;
+        
+        float p = mDone / mDurationSingleTraj;
+        int iSelectedSrc = mFilter->getSrcSelected();
 		int cycle = (int)p;
 
         //reset stuff when we start a new cycle
@@ -839,26 +841,24 @@ protected:
 			mCycle = cycle;
 			mSourcesOrigins.clearQuick();
 			mSourcesDestinations.clearQuick();
-            
-            for (int i = 0; i < mFilter->getNumberOfSources(); i++){
-                if (iSelectedSrc < 0 || iSelectedSrc == i) {
+            //get destinations for all sources
+            for (int i = 0; i < mFilter->getNumberOfSources(); ++i){
+                if (bWriteAutomationForAllSources || iSelectedSrc == i) {
                     FPoint o = mFilter->getSourceXY(i);
                     mSourcesOrigins.add(o);
                     mSourcesDestinations.add(destinationForSource(i, o));
-                    //mSourcesDestinations.add(uniqueDestination);
                 }
             }
 		}
 
         //do the trajectory
 		float d = fmodf(p, 1);
-        for (int i = 0; i < mFilter->getNumberOfSources(); i++){
-            if (iSelectedSrc < 0 || iSelectedSrc == i) {
+        for (int i = 0; i < mFilter->getNumberOfSources(); ++i){
+            if (bWriteAutomationForAllSources || iSelectedSrc == i) {
                 FPoint a = mSourcesOrigins.getUnchecked(i);
                 FPoint b = mSourcesDestinations.getUnchecked(i);
                 FPoint p = a + (b - a) * d;
-                JUCE_COMPILER_WARNING("i don't understand what this means, how this works, and why we're not using the mover in this trajectory")
-                bool bWriteAutomation = (i == 0) ? true : false;
+                bool bWriteAutomation = (bWriteAutomationForAllSources || iSelectedSrc == i) ? true : false;
                 mFilter->setSourceXY(i, p, bWriteAutomation);
             }
         }
