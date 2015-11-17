@@ -819,46 +819,50 @@ class TargetTrajectory : public Trajectory
 {
 public:
 	TargetTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times)
-	: Trajectory(filter, p_pMover, duration, beats, times), mCycle(-1) {}
+	: Trajectory(filter, p_pMover, duration, beats, times)
+    , mCycle(-1)
+    {}
 	
 protected:
 	virtual FPoint destinationForSource(int s, FPoint o) = 0;
     virtual void resetIfRandomTarget(){};
 
-	void spProcess(float duration, float seconds)
-	{
+	void spProcess(float duration, float seconds) {
 		float p = mDone / mDurationSingleTraj;
-        int mSource = mFilter->getSrcSelected();
+        JUCE_COMPILER_WARNING("if iSelectedSrc == -1, we move all sources, otherwise only move the selected source")
+        int iSelectedSrc = -1;//mFilter->getSrcSelected();
 		int cycle = (int)p;
+
+        //reset stuff when we start a new cycle
 		if (mCycle != cycle) {
             resetIfRandomTarget();
 			mCycle = cycle;
 			mSourcesOrigins.clearQuick();
 			mSourcesDestinations.clearQuick();
             
-			for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-			if (mSource < 0 || mSource == i)
-			{
-                FPoint o = mFilter->getSourceXY(i);
-				mSourcesOrigins.add(o);
-                mSourcesDestinations.add(destinationForSource(i, o));
-                //mSourcesDestinations.add(uniqueDestination);
-			}
+            for (int i = 0; i < mFilter->getNumberOfSources(); i++){
+                if (iSelectedSrc < 0 || iSelectedSrc == i) {
+                    FPoint o = mFilter->getSourceXY(i);
+                    mSourcesOrigins.add(o);
+                    mSourcesDestinations.add(destinationForSource(i, o));
+                    //mSourcesDestinations.add(uniqueDestination);
+                }
+            }
 		}
 
+        //do the trajectory
 		float d = fmodf(p, 1);
-		for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-		if (mSource < 0 || mSource == i)
-		{
-			FPoint a = mSourcesOrigins.getUnchecked(i);
-			FPoint b = mSourcesDestinations.getUnchecked(i);
-			FPoint p = a + (b - a) * d;
-            JUCE_COMPILER_WARNING("i don't understand what this means, how this works, and why we're not using the mover in this trajectory")
-            bool bWriteAutomation = (i == 0) ? true : false;
-			mFilter->setSourceXY(i, p, bWriteAutomation);
-		}
+        for (int i = 0; i < mFilter->getNumberOfSources(); i++){
+            if (iSelectedSrc < 0 || iSelectedSrc == i) {
+                FPoint a = mSourcesOrigins.getUnchecked(i);
+                FPoint b = mSourcesDestinations.getUnchecked(i);
+                FPoint p = a + (b - a) * d;
+                JUCE_COMPILER_WARNING("i don't understand what this means, how this works, and why we're not using the mover in this trajectory")
+                bool bWriteAutomation = (i == 0) ? true : false;
+                mFilter->setSourceXY(i, p, bWriteAutomation);
+            }
+        }
 	}
-	
 private:
 	Array<FPoint> mSourcesOrigins;
 	Array<FPoint> mSourcesDestinations;
@@ -874,15 +878,13 @@ public:
 	: TargetTrajectory(filter, p_pMover, duration, beats, times) {}
 	
 protected:
-	FPoint destinationForSource(int s, FPoint o)
-	{
+	FPoint destinationForSource(int s, FPoint o) {
 		float r1 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
 		float r2 = mRNG.rand_uint32() / (float)0xFFFFFFFF;
 		float x = r1 * (kRadiusMax*2) - kRadiusMax;
 		float y = r2 * (kRadiusMax*2) - kRadiusMax;
 		float r = hypotf(x, y);
-		if (r > kRadiusMax)
-		{
+		if (r > kRadiusMax) {
 			float c = kRadiusMax/r;
 			x *= c;
 			y *= c;
