@@ -829,7 +829,7 @@ protected:
 
 	void spProcess(float duration, float seconds) {
 
-        bool bWriteAutomationForAllSources = true;
+        bool bWriteAutomationForAllSources = false;
         
         float p = mDone / mDurationSingleTraj;
         int iSelectedSrc = mFilter->getSrcSelected();
@@ -843,11 +843,11 @@ protected:
 			mSourcesDestinations.clearQuick();
             //get destinations for all sources
             for (int i = 0; i < mFilter->getNumberOfSources(); ++i){
-                if (bWriteAutomationForAllSources || iSelectedSrc == i) {
-                    FPoint o = mFilter->getSourceXY(i);
-                    mSourcesOrigins.add(o);
-                    mSourcesDestinations.add(destinationForSource(i, o));
-                }
+
+                FPoint o = mFilter->getSourceXY(i);
+                mSourcesOrigins.add(o);
+                mSourcesDestinations.add(destinationForSource(i, o));
+
             }
 		}
 
@@ -858,7 +858,7 @@ protected:
                 FPoint a = mSourcesOrigins.getUnchecked(i);
                 FPoint b = mSourcesDestinations.getUnchecked(i);
                 FPoint p = a + (b - a) * d;
-                bool bWriteAutomation = (bWriteAutomationForAllSources || iSelectedSrc == i) ? true : false;
+                bool bWriteAutomation = (bWriteAutomationForAllSources || iSelectedSrc == i);
                 mFilter->setSourceXY(i, p, bWriteAutomation);
             }
         }
