@@ -1657,22 +1657,17 @@ static inline float readFloatData(const void* &data, int &dataLength, float defa
 	}
 	return r;
 }
-static inline void appendStringData(MemoryBlock& destData, const char *d, int length)
-{
+static inline void appendStringData(MemoryBlock& destData, const char *d, int length) {
 	destData.append(d, length);
 }
-static inline void readStringData(const void* &data, int &dataLength, const char *defaultValue, char *d, int length)
-{
-	if (dataLength >= length)
-	{
+static inline void readStringData(const void* &data, int &dataLength, const char *defaultValue, char *d, int length) {
+	if (dataLength >= length) {
 		const char *pv = static_cast<const char*>(data);
 		memcpy(d, pv, length);
 		d[length-1] = 0;
 		data = static_cast<const void*>(pv + length);
 		dataLength -= length;
-	}
-	else
-	{
+	} else {
 		fprintf(stderr, "readStringData failed: not enough data...\n");
 		strlcpy(d, defaultValue, length);
 		dataLength = 0;
@@ -1680,16 +1675,14 @@ static inline void readStringData(const void* &data, int &dataLength, const char
 }
 
 void OctogrisAudioProcessor::storeCurrentLocations(){
-    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
-    {
+    for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++) {
         mBufferSrcLocX[i] = mParameters[getParamForSourceX(i)];
         mBufferSrcLocY[i] = mParameters[getParamForSourceY(i)];
         float fValye = mParameters[getParamForSourceD(i)];
         mBufferSrcLocD[i] = fValye;
 
     }
-    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
-    {
+    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++) {
         mBufferSpLocX[i] =  mParameters[getParamForSpeakerX(i)];
         mBufferSpLocY[i] = mParameters[getParamForSpeakerY(i)];
         mBufferSpLocA[i] = mParameters[getParamForSpeakerA(i)];
@@ -1700,8 +1693,7 @@ void OctogrisAudioProcessor::storeCurrentLocations(){
 void OctogrisAudioProcessor::restoreCurrentLocations(int p_iLocToRestore){
     
     if (p_iLocToRestore == -1){
-        for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++)//for (int i = 0; i < mNumberOfSources; i++)
-        {
+        for (int i = 0; i < JucePlugin_MaxNumInputChannels; i++) {
             mParameters.set(getParamForSourceX(i), mBufferSrcLocX[i]);
             mParameters.set(getParamForSourceY(i), mBufferSrcLocY[i]);
             float fValue = mBufferSrcLocD[i];
@@ -1716,9 +1708,7 @@ void OctogrisAudioProcessor::restoreCurrentLocations(int p_iLocToRestore){
         mParameters.set(getParamForSourceD(i), fValue);
     }
     
-    
-    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++)//for (int i = 0; i < mNumberOfSpeakers; i++)
-    {
+    for (int i = 0; i < JucePlugin_MaxNumOutputChannels; i++) {
         mParameters.set(getParamForSpeakerX(i), mBufferSpLocX[i]);
         mParameters.set(getParamForSpeakerY(i), mBufferSpLocY[i]);
         mParameters.set(getParamForSpeakerA(i), mBufferSpLocA[i]);

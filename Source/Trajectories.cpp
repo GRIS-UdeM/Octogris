@@ -830,7 +830,7 @@ protected:
 	void spProcess(float duration, float seconds) {
 
         bool bWriteAutomationForAllSources = true;
-        bool bResetBetweenRandomTargetCycles = false;
+        bool bResetBetweenRandomTargetCycles = true;
         
         float p = mDone / mDurationSingleTraj;
         int iSelectedSrc = mFilter->getSrcSelected();
