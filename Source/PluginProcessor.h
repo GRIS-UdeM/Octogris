@@ -78,8 +78,7 @@ enum AllTrajectoryTypes {
     EllipseTr, //Ellipse was clashing with some random windows class...
     Spiral,
     Pendulum,
-    Random,
-    RandomIndependent,
+    RandomTrajectory,
     RandomTarget,
     SymXTarget,
     SymYTarget,

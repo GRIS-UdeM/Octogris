@@ -1152,6 +1152,12 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
         m_pTrEndAngleTextEditor->setVisible(false);
         m_pTrResetEndButton->setVisible(false);
     }
+
+    if (iSelectedTrajectory == RandomTarget || iSelectedTrajectory == RandomTrajectory){
+        mTrIndependentMode->setVisible(true);
+    } else {
+        mTrIndependentMode->setVisible(false);
+    }
     
     unique_ptr<vector<String>> allDirections = Trajectory::getTrajectoryPossibleDirections(iSelectedTrajectory);
     if (allDirections != nullptr){
@@ -1584,7 +1590,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             float   repeats         = mTrRepeats->getText().getFloatValue();
             int     type            = mTrTypeComboBox->getSelectedId();
             bool    bReturn         = (mTrReturnComboBox->getSelectedId() == 2);
-            bool    bUniqueTarget   = !(mFilter->getMovementMode() == 0);
             float   p_fDampening    = mTrDampeningTextEditor->getText().getFloatValue();
             float   p_fDeviation    = mTrDeviationTextEditor->getText().getFloatValue()/360;
             float   p_fTurns        = mTrTurnsTextEditor->getText().getFloatValue();
@@ -1592,7 +1597,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
 
             mFilter->setIsRecordingAutomation(true);
             mFilter->storeCurrentLocations();
-            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, bUniqueTarget, p_fDampening, p_fDeviation, p_fTurns, mFilter->getEndLocationXY()));
+            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, p_fDampening, p_fDeviation, p_fTurns, mFilter->getEndLocationXY()));
             mTrWriteButton->setButtonText("Cancel");
             mTrStateEditor = kTrWriting;
             mFilter->setTrState(mTrStateEditor);
