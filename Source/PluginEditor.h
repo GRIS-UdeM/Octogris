@@ -148,6 +148,7 @@ private:
     ToggleButton *mEnableJoystick;
     ToggleButton *mEnableLeap;
 	ToggleButton *mShowGridLines;
+    ToggleButton *mTrIndependentMode;
 	ToggleButton *mLinkDistances;
     ToggleButton *mApplyFilter;
 	ComboBox *mMovementMode;

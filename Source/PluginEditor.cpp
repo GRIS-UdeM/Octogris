@@ -574,9 +574,6 @@ AudioProcessorEditor (ownerFilter)
             mApplyInputOutputModeButton = addButton("Apply", x + w - iButtonW, y, iButtonW, dh, box);
             y += dh + 5;
         }
-        
-
-        
         addLabel("Routing mode:", x, y, w, dh, box);
         y += dh + 5;
         {
@@ -611,17 +608,6 @@ AudioProcessorEditor (ownerFilter)
             mRoutingVolume = ds;
             y += dh + 5;
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
         //-----------------------------
         // start 3rd column
         y = kMargin;
@@ -701,6 +687,8 @@ AudioProcessorEditor (ownerFilter)
             mTrReturnComboBox = cb;
             mTrReturnComboBox->addListener(this);
         }
+        
+        mTrIndependentMode = addCheckbox("Independent mode", mFilter->getShowGridLines(), x+2*(cbw+5), y, cbw, dh, box);
         
         int tewShort = 30;
         int x2 = x+3*(cbw+5);
@@ -1744,17 +1732,17 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         updateSpeakerLocationTextEditor();
         mFilter->setSpPlacementMode(mSpPlacement->getSelectedId());
     }
-    
     else if (button == mShowGridLines) {
         mFilter->setShowGridLines(button->getToggleState());
         mField->repaint();
     }
-    else if (button == mLinkDistances)
-    {
+    else if (button == mTrIndependentMode) {
+        mFilter->setIndependentMode(button->getToggleState());
+    }
+    else if (button == mLinkDistances) {
         mFilter->setLinkDistances(button->getToggleState());
     }
-    else if (button == mApplyFilter)
-    {
+    else if (button == mApplyFilter) {
         mFilter->setApplyFilter(button->getToggleState());
     }
 #if WIN32
@@ -2034,6 +2022,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         updateLeapComponent(mleap);
 #endif*/
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
+        mTrIndependentMode->setToggleState(mFilter->getIndependentMode(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);
     }

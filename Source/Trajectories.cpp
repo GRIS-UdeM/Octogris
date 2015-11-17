@@ -829,7 +829,7 @@ protected:
 
 	void spProcess(float duration, float seconds) {
 
-        bool bWriteAutomationForAllSources = true;
+        bool bWriteAutomationForAllSources = mFilter->getIndependentMode();
         bool bResetBetweenRandomTargetCycles = true;
         
         float p = mDone / mDurationSingleTraj;
