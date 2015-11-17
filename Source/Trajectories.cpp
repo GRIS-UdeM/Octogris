@@ -829,25 +829,27 @@ protected:
 
 	void spProcess(float duration, float seconds) {
 
-        bool bWriteAutomationForAllSources = false;
+        bool bWriteAutomationForAllSources = true;
+        bool bResetBetweenRandomTargetCycles = false;
         
         float p = mDone / mDurationSingleTraj;
         int iSelectedSrc = mFilter->getSrcSelected();
 		int cycle = (int)p;
+    
 
         //reset stuff when we start a new cycle
 		if (mCycle != cycle) {
-            resetIfRandomTarget();
+            if (bResetBetweenRandomTargetCycles){
+                resetIfRandomTarget();
+            }
 			mCycle = cycle;
 			mSourcesOrigins.clearQuick();
 			mSourcesDestinations.clearQuick();
             //get destinations for all sources
             for (int i = 0; i < mFilter->getNumberOfSources(); ++i){
-
                 FPoint o = mFilter->getSourceXY(i);
                 mSourcesOrigins.add(o);
                 mSourcesDestinations.add(destinationForSource(i, o));
-
             }
 		}
 
@@ -862,6 +864,11 @@ protected:
                 mFilter->setSourceXY(i, p, bWriteAutomation);
             }
         }
+        //this should only be done the last time this function is called for a given trajectory
+        if (abs(mDone - mTotalDuration) < 0.01){
+            mFilter->restoreCurrentLocations();
+        }
+
 	}
 private:
 	Array<FPoint> mSourcesOrigins;
@@ -893,7 +900,9 @@ protected:
 	}
     
     void resetIfRandomTarget(){
-        mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
+        bool bUsingSourceUnique = false;
+        int iSrc = bUsingSourceUnique ? mFilter->getSrcSelected() : -1;
+        mFilter->restoreCurrentLocations(iSrc);
     }
 	
 private:
