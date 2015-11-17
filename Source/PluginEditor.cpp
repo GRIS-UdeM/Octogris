@@ -258,32 +258,21 @@ public:
             mBeganGesture = true;
         }
         
-        if (mParamType == kParamSource)
-        {
+        if (mParamType == kParamSource) {
             const float newVal = 1.f - (float)getValue();
             
-            if (mLink->getToggleState())
-            {
-                for (int i = 0; i < mFilter->getNumberOfSources(); i++)
-                {
+            if (mLink->getToggleState()) {
+                for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
                     int paramIndex = mFilter->getParamForSourceD(i);
                     if (mFilter->getParameter(paramIndex) != newVal)
                         mFilter->setParameterNotifyingHost(paramIndex, newVal);
                 }
-            }
-            else
-            {
+            } else {
                 if (mFilter->getParameter(mParamIndex) != newVal){
-                    JUCE_COMPILER_WARNING("had to comment this for panspan to work... does this break other things?")
-                    
-                    //mFilter->beginParameterChangeGesture(mParamIndex);
                     mFilter->setParameterNotifyingHost(mParamIndex, newVal);
-                    //mFilter->endParameterChangeGesture(mParamIndex);
                 }
             }
-        }
-        else
-        {
+        } else {
             const float newVal = (float)getValue();
             if (mFilter->getParameter(mParamIndex) != newVal)
                 mFilter->setParameterNotifyingHost(mParamIndex, newVal);
@@ -471,8 +460,6 @@ AudioProcessorEditor (ownerFilter)
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
         
-        
-        JUCE_COMPILER_WARNING("these are all mFilter operations, why not do them in the filter?")
         if (mFilter->getIsAllowInputOutputModeSelection()){
             mFilter->setInputOutputMode(mFilter->getInputOutputMode());
         }
@@ -1609,8 +1596,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             float   repeats         = mTrRepeats->getText().getFloatValue();
             int     type            = mTrTypeComboBox->getSelectedId();
             bool    bReturn         = (mTrReturnComboBox->getSelectedId() == 2);
-            JUCE_COMPILER_WARNING("need to delete everything related to this source, when target trajectory is fixed")
-            int     source          = -1;
             bool    bUniqueTarget   = !(mFilter->getMovementMode() == 0);
             float   p_fDampening    = mTrDampeningTextEditor->getText().getFloatValue();
             float   p_fDeviation    = mTrDeviationTextEditor->getText().getFloatValue()/360;
@@ -1619,7 +1604,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
 
             mFilter->setIsRecordingAutomation(true);
             mFilter->storeCurrentLocations();
-            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, source, bUniqueTarget, p_fDampening, p_fDeviation, p_fTurns, mFilter->getEndLocationXY()));
+            mFilter->setTrajectory(Trajectory::CreateTrajectory(type, mFilter, &mMover, duration, beats, *direction, bReturn, repeats, bUniqueTarget, p_fDampening, p_fDeviation, p_fTurns, mFilter->getEndLocationXY()));
             mTrWriteButton->setButtonText("Cancel");
             mTrStateEditor = kTrWriting;
             mFilter->setTrState(mTrStateEditor);

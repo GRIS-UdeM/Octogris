@@ -1831,7 +1831,6 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mApplyFilter        = xmlState->getIntAttribute ("mApplyFilter", 1);
             
             mInputOutputMode    = xmlState->getIntAttribute ("mInputOutputMode", 1);
-            //setInputOutputMode(iIOMode);
             
             mSrcPlacementMode   = xmlState->getIntAttribute ("mSrcPlacementMode", 1);
             mSpPlacementMode    = xmlState->getIntAttribute ("mSpPlacementMode", 1);
@@ -1918,14 +1917,12 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             
             if (version >= 9){
                 mInputOutputMode = readIntData(data, sizeInBytes, 1);
-                //setInputOutputMode(iInputOutputMode);
                 if (mInputOutputMode >= i2o2 && mInputOutputMode <= i2o16){
                     if (mMovementMode >= 1 && mMovementMode <= 3){
                         mMovementMode += 5;
                     } else if (mMovementMode >= 4 && mMovementMode < 8){
                         mMovementMode -= 3;
                     } else if (mMovementMode == 8){
-                        JUCE_COMPILER_WARNING("need to test this")
                         mMovementMode = 4;  //if mMovementMode was symmetric XY, we convert that to circular fully fixed, since that is the same thing
                     }
                 }
