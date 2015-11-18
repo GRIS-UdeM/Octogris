@@ -290,26 +290,37 @@ protected:
             m_fM = 0;
             m_fB = m_fStartPair.first;
         }
+        
+        m_fInitialLength = m_fEndPair.first - m_fStartPair.first;
     }
     void spProcess(float duration, float seconds) {
 
         int iReturn = m_bRT ? 2:1;
-        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;
-        float fCurAdujstment = m_fTotalDampening/2 * mDone / mTotalDuration;
+        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;   //fCurDampening goes 0->m_fTotalDampening during the whole duration of the trajectory
+
         //pendulum part
-        float newX01, newY01, temp, fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);
+        float newX01, newY01, temp, fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);  //currentProgress goes 0->1 for every cycle
 
         if (m_bYisDependent){
-            fCurrentProgress = (m_fEndPair.first - m_fStartPair.first) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
-            newX01 = m_fStartPair.first + fCurrentProgress;
+            
+            float fCurStartX01 = m_fStartPair.first + fCurDampening * cos(M_PI_4) * m_fInitialLength * mDone / mTotalDuration;
+//            cout << "fCurStartX01:\t" << fCurStartX01 << ", m_fStartPair.first:\t" << m_fStartPair.first << "fCurDampening * cos(M_PI_4) * m_fInitialLength" << fCurDampening * cos(M_PI_4) * m_fInitialLength * mDone / mTotalDuration << newLine;
+            float fCurLength = m_fInitialLength - fCurDampening * m_fInitialLength;
+            fCurrentProgress = fCurLength * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
+            newX01 = fCurStartX01 + fCurrentProgress;
             newY01 = m_fM * newX01 + m_fB;
+            
+            
+            
         } else {
             fCurrentProgress = (m_fEndPair.second - m_fStartPair.second) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
             newX01 = m_fStartPair.first;
             newY01 = m_fStartPair.second + fCurrentProgress;
         }
-        newX01 = newX01 - newX01*fCurDampening + fCurAdujstment;
-        newY01 = newY01 - newY01*fCurDampening + fCurAdujstment;
+//        cout << "newX01 before: " << newX01;
+//        newX01 = newX01 - newX01*fCurDampening;
+//        newY01 = newY01 - newY01*fCurDampening;
+//        cout << "(" << newX01 << ", " << newY01 << ")" << newLine;
         
         FPoint pointRT = mFilter->convertXy012Rt(FPoint(newX01, newY01), false);
 
@@ -334,6 +345,7 @@ private:
     float m_fB;
     float m_fDeviation;
     float m_fTotalDampening;
+    float m_fInitialLength;
 };
 
 // ==============================================================================
