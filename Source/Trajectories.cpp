@@ -268,7 +268,7 @@ public:
     :Trajectory(filter, p_pMover, duration, beats, times)
     ,mCCW(ccw)
     ,m_bRT(rt)
-    ,m_fDeviation(fDeviation/360)
+    ,m_fDeviation(fDeviation)
     ,m_fTotalDampening(p_fDampening)
     {
         m_fEndPair = make_pair(endPoint.first, 1-endPoint.second);
@@ -309,8 +309,6 @@ protected:
             fCurrentProgress = fCurLength * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
             newX01 = fCurStartX01 + fCurrentProgress;
             newY01 = m_fM * newX01 + m_fB;
-            
-            
             
         } else {
             fCurrentProgress = (m_fEndPair.second - m_fStartPair.second) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
