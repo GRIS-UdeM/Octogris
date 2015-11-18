@@ -291,21 +291,19 @@ protected:
             m_fB = m_fStartPair.first;
         }
         m_fAngle = atan((m_fEndPair.second - m_fStartPair.second) / (m_fEndPair.first - m_fStartPair.first));
-        cout << "angle: " << m_fAngle * 180/M_PI << ", cos angle: " << cos(m_fAngle) << newLine;
         m_fInitialLength = m_fEndPair.first - m_fStartPair.first;
     }
     void spProcess(float duration, float seconds) {
 
         int iReturn = m_bRT ? 2:1;
-        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;   //fCurDampening goes 0->m_fTotalDampening during the whole duration of the trajectory
+
 
         //pendulum part
+        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;   //fCurDampening goes 0->m_fTotalDampening during the whole duration of the trajectory
         float newX01, newY01, temp, fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);  //currentProgress goes 0->1 for every cycle
 
         if (m_bYisDependent){
-            
             float fCurStartX01 = m_fStartPair.first + fCurDampening * cos(m_fAngle) * m_fInitialLength * mDone / mTotalDuration;
-//            cout << "fCurStartX01:\t" << fCurStartX01 << ", m_fStartPair.first:\t" << m_fStartPair.first << "fCurDampening * cos(M_PI_4) * m_fInitialLength" << fCurDampening * cos(M_PI_4) * m_fInitialLength * mDone / mTotalDuration << newLine;
             float fCurLength = m_fInitialLength - fCurDampening * m_fInitialLength;
             fCurrentProgress = fCurLength * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
             newX01 = fCurStartX01 + fCurrentProgress;
@@ -316,10 +314,6 @@ protected:
             newX01 = m_fStartPair.first;
             newY01 = m_fStartPair.second + fCurrentProgress;
         }
-//        cout << "newX01 before: " << newX01;
-//        newX01 = newX01 - newX01*fCurDampening;
-//        newY01 = newY01 - newY01*fCurDampening;
-//        cout << "(" << newX01 << ", " << newY01 << ")" << newLine;
         
         FPoint pointRT = mFilter->convertXy012Rt(FPoint(newX01, newY01), false);
 
