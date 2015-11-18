@@ -290,7 +290,8 @@ protected:
             m_fM = 0;
             m_fB = m_fStartPair.first;
         }
-        
+        m_fAngle = atan((m_fEndPair.second - m_fStartPair.second) / (m_fEndPair.first - m_fStartPair.first));
+        cout << "angle: " << m_fAngle * 180/M_PI << ", cos angle: " << cos(m_fAngle) << newLine;
         m_fInitialLength = m_fEndPair.first - m_fStartPair.first;
     }
     void spProcess(float duration, float seconds) {
@@ -303,7 +304,7 @@ protected:
 
         if (m_bYisDependent){
             
-            float fCurStartX01 = m_fStartPair.first + fCurDampening * cos(M_PI_4) * m_fInitialLength * mDone / mTotalDuration;
+            float fCurStartX01 = m_fStartPair.first + fCurDampening * cos(m_fAngle) * m_fInitialLength * mDone / mTotalDuration;
 //            cout << "fCurStartX01:\t" << fCurStartX01 << ", m_fStartPair.first:\t" << m_fStartPair.first << "fCurDampening * cos(M_PI_4) * m_fInitialLength" << fCurDampening * cos(M_PI_4) * m_fInitialLength * mDone / mTotalDuration << newLine;
             float fCurLength = m_fInitialLength - fCurDampening * m_fInitialLength;
             fCurrentProgress = fCurLength * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
@@ -344,6 +345,7 @@ private:
     float m_fDeviation;
     float m_fTotalDampening;
     float m_fInitialLength;
+    float m_fAngle;
 };
 
 // ==============================================================================
