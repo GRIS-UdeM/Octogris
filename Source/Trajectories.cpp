@@ -295,7 +295,7 @@ protected:
 
         int iReturn = m_bRT ? 2:1;
         float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;
-        float fCurAdujstment = .25 * mDone / mTotalDuration;
+        float fCurAdujstment = m_fTotalDampening/2 * mDone / mTotalDuration;
         //pendulum part
         float newX01, newY01, temp, fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);
 
