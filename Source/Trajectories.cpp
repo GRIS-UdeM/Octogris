@@ -264,7 +264,6 @@ private:
 class PendulumTrajectory : public Trajectory
 {
 public:
-//                                              (filter,             p_pMover,         duration, beats,            times,         in, bReturn, cross, p_fDampening, p_fDeviation, endPair);
     PendulumTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, bool in, bool ccw, bool rt, float p_fDampening, float fDeviation, const std::pair<float, float> &endPoint)
     :Trajectory(filter, p_pMover, duration, beats, times)
     ,mCCW(ccw)
@@ -296,22 +295,23 @@ protected:
 
         int iReturn = m_bRT ? 2:1;
         float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;
+        float fCurAdujstment = .25 * mDone / mTotalDuration;
         //pendulum part
-        float newX, newY, temp, fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);
+        float newX01, newY01, temp, fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);
 
         if (m_bYisDependent){
             fCurrentProgress = (m_fEndPair.first - m_fStartPair.first) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
-            newX = m_fStartPair.first + fCurrentProgress;
-            newY = m_fM * newX + m_fB;
+            newX01 = m_fStartPair.first + fCurrentProgress;
+            newY01 = m_fM * newX01 + m_fB;
         } else {
             fCurrentProgress = (m_fEndPair.second - m_fStartPair.second) * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
-            newX = m_fStartPair.first;
-            newY = m_fStartPair.second + fCurrentProgress;
+            newX01 = m_fStartPair.first;
+            newY01 = m_fStartPair.second + fCurrentProgress;
         }
-        newX = newX - newX*fCurDampening;
-        newY = newY - newY*fCurDampening;
+        newX01 = newX01 - newX01*fCurDampening + fCurAdujstment;
+        newY01 = newY01 - newY01*fCurDampening + fCurAdujstment;
         
-        FPoint pointRT = mFilter->convertXy012Rt(FPoint(newX, newY), false);
+        FPoint pointRT = mFilter->convertXy012Rt(FPoint(newX01, newY01), false);
 
         //circle/deviation part
         float deviationAngle, integralPart;
