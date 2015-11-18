@@ -1124,6 +1124,9 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
     //if pendulum is selected
 
     if (iSelectedTrajectory == Pendulum){
+        setDefaultPendulumEndpoint();
+        updateEndLocationTextEditors();
+        
         mTrDampeningTextEditor->setVisible(true);
         mTrDampeningLabel->setVisible(true);
         mTrDeviationTextEditor->setVisible(true);

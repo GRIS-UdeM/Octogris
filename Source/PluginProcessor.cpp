@@ -149,16 +149,17 @@ mFilters()
     mSpPlacementMode = 1;
     mSpSelected = 1;
     m_iTrType = 0;
-    m_iTrDirection = 0,
-    m_iTrReturn = 0,
+    m_iTrDirection = 0;
+
+    m_iTrReturn = 0;
     m_iTrSrcSelect = -1;//0;
     m_fTrDuration = 5.f;
     m_iTrUnits = 1;     //0 = beats, 1 = seconds
     m_fTrRepeats = 1.f;
     m_fTrDampening = 0.f;
-    m_fTrDampening = 1.f;
-	m_fTrDeviation = 0.f;
-    
+    m_fTrTurns = 1.f;
+    m_fTrDeviation = 0.f;
+    m_fEndLocationXY = make_pair(.5, .5);
     m_bIsSettingEndPoint = false;
     m_bJustSelectedEndPoint = false;
     
@@ -1718,7 +1719,7 @@ void OctogrisAudioProcessor::restoreCurrentLocations(int p_iLocToRestore){
     }
 }
 
-static const int kDataVersion = 14;
+static const int kDataVersion = 15;
 void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     XmlElement xml ("OCTOGRIS_SETTINGS");
@@ -1759,10 +1760,10 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute ("m_fTrTurns", m_fTrTurns);
     xml.setAttribute ("m_fTrDeviation", m_fTrDeviation);
     xml.setAttribute ("m_fTrTurns", m_fTrTurns);
+    xml.setAttribute ("m_fEndLocationX", m_fEndLocationXY.first);
+    xml.setAttribute ("m_fEndLocationY", m_fEndLocationXY.second);
     xml.setAttribute ("mLeapEnabled", mLeapEnabled);
-    
     xml.setAttribute ("kMaxSpanVolume", mParameters[kMaxSpanVolume]);
-    
     xml.setAttribute ("kRoutingVolume", mParameters[kRoutingVolume]);
     xml.setAttribute ("mRoutingMode", mRoutingMode);
     xml.setAttribute ("kSmooth", mParameters[kSmooth]);
@@ -1844,9 +1845,10 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             m_fTrDampening      = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDampening", m_fTrDampening));
             m_fTrDeviation      = static_cast<float>(xmlState->getDoubleAttribute("m_fTrDeviation", m_fTrDeviation));
             m_fTrTurns          = static_cast<float>(xmlState->getDoubleAttribute("m_fTrTurns", m_fTrTurns));
+            m_fEndLocationXY.first  = static_cast<float>(xmlState->getDoubleAttribute("m_fEndLocationX", m_fEndLocationXY.first));
+            m_fEndLocationXY.second = static_cast<float>(xmlState->getDoubleAttribute("m_fEndLocationY", m_fEndLocationXY.second));
+            
             mLeapEnabled        = xmlState->getIntAttribute ("mLeapEnabled", 0);
-            
-            
             mParameters.set(kMaxSpanVolume, static_cast<float>(xmlState->getDoubleAttribute("kMaxSpanVolume", normalize(kMaxSpanVolumeMin, kMaxSpanVolumeMax, kMaxSpanVolumeDefault))));
             
             mParameters.set(kRoutingVolume, static_cast<float>(xmlState->getDoubleAttribute("kRoutingVolume", normalize(kRoutingVolumeMin, kRoutingVolumeMax, kRoutingVolumeDefault))));
