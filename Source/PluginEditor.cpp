@@ -429,10 +429,10 @@ AudioProcessorEditor (ownerFilter)
     mTabs->addTab("Volume & Filters",   tabBg, new Component(), true);
     mTabs->addTab("Sources",            tabBg, new Component(), true);
    	mTabs->addTab("Speakers",           tabBg, new Component(), true);
-    {
-        mOsc = CreateOscComponent(mFilter, this);
-        if (mOsc) mTabs->addTab("OSC",  tabBg, mOsc, true);
-    }
+//    {
+//        mOsc = CreateOscComponent(mFilter, this);
+//        if (mOsc) mTabs->addTab("OSC",  tabBg, mOsc, true);
+//    }
     mTabs->addTab("Interfaces",         tabBg, new Component(), true);
 
     mTabs->setSize(kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
@@ -1003,8 +1003,7 @@ AudioProcessorEditor (ownerFilter)
 #if WIN32
     
 #else
-    //changements lié a l'ajout de joystick à l'onglet leap
-    box = mTabs->getTabContentComponent(6);
+    box = mTabs->getTabContentComponent(5);
     {
         int x = kMargin, y = kMargin;
         const int m = 10, dh = 18, cw = 300;
@@ -1048,7 +1047,7 @@ AudioProcessorEditor (ownerFilter)
         box->addAndMakeVisible(mStateLeap);
         mComponents.add(mStateLeap);
         
-        y += dh + 5;
+        y += dh + 10;
         
         mEnableJoystick = new ToggleButton();
         mEnableJoystick->setButtonText("Enable Joystick");
@@ -1067,7 +1066,20 @@ AudioProcessorEditor (ownerFilter)
         mStateJoystick->setTopLeftPosition(x+cw-150+ m, y);
         box->addAndMakeVisible(mStateJoystick);
         mComponents.add(mStateJoystick);
-        //fin de changements lié a l'ajout de joystick à l'onglet leap
+        
+        y += dh;
+        
+        mOsc = CreateOscComponent(mFilter, this);
+        if (mOsc) {
+            mOsc->setTopLeftPosition(0, y);
+            mOsc->setSize(box->getWidth(), box->getHeight()-y);
+            box->addAndMakeVisible(mOsc);
+            mComponents.add(mOsc);
+
+            
+            
+//            mTabs->addTab("OSC",  tabBg, mOsc, true);
+        }
     }
 #endif
     
