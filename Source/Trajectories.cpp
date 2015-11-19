@@ -290,8 +290,7 @@ protected:
             m_fM = 0;
             m_fB = m_fStartPair.first;
         }
-        m_fAngle = atan((m_fEndPair.second - m_fStartPair.second) / (m_fEndPair.first - m_fStartPair.first));
-        m_fInitialLength = sqrt(pow((m_fEndPair.first - m_fStartPair.first), 2) + pow((m_fEndPair.second - m_fStartPair.second), 2));
+        m_fInitialLength = m_fEndPair.first - m_fStartPair.first;
     }
     void spProcess(float duration, float seconds) {
 
@@ -303,8 +302,7 @@ protected:
         float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;       //fCurDampening goes 0->m_fTotalDampening during the whole duration of the trajectory
 
         if (m_bYisDependent){
-//            float fCurStartX01 = m_fStartPair.first + fCurDampening * cos(m_fAngle) * m_fInitialLength * mDone / mTotalDuration;
-            float fCurStartX01  = m_fStartPair.first - fCurDampening * m_fInitialLength * cos(m_fAngle) /2;
+            float fCurStartX01  = m_fStartPair.first + fCurDampening * m_fInitialLength /2;
             float fCurLength    = m_fInitialLength - fCurDampening * m_fInitialLength;
             fCurrentProgress    = fCurLength * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
             newX01 = fCurStartX01 + fCurrentProgress;
@@ -340,7 +338,6 @@ private:
     float m_fDeviation;
     float m_fTotalDampening;
     float m_fInitialLength;
-    float m_fAngle;
 };
 
 // ==============================================================================
