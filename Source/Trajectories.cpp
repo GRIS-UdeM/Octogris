@@ -102,16 +102,12 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleDirections(int 
             vDirections->push_back("Out, Clockwise");
             vDirections->push_back("Out, Counter Clockwise");
             break;
-        case Pendulum:
-            vDirections->push_back("In");
-            vDirections->push_back("Out");
-            vDirections->push_back("Crossover");
-            break;
         case RandomTrajectory:
             vDirections->push_back("Slow");
             vDirections->push_back("Mid");
             vDirections->push_back("Fast");
             break;
+        case Pendulum:
         case RandomTarget:
         case SymXTarget:
         case SymYTarget:
