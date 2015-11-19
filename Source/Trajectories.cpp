@@ -291,7 +291,7 @@ protected:
             m_fB = m_fStartPair.first;
         }
         m_fAngle = atan((m_fEndPair.second - m_fStartPair.second) / (m_fEndPair.first - m_fStartPair.first));
-        m_fInitialLength = m_fEndPair.first - m_fStartPair.first;
+        m_fInitialLength = sqrt(pow((m_fEndPair.first - m_fStartPair.first), 2) + pow((m_fEndPair.second - m_fStartPair.second), 2));
     }
     void spProcess(float duration, float seconds) {
 
@@ -304,7 +304,7 @@ protected:
 
         if (m_bYisDependent){
 //            float fCurStartX01 = m_fStartPair.first + fCurDampening * cos(m_fAngle) * m_fInitialLength * mDone / mTotalDuration;
-            float fCurStartX01  = m_fStartPair.first + fCurDampening * m_fInitialLength * cos(m_fAngle) /2;
+            float fCurStartX01  = m_fStartPair.first - fCurDampening * m_fInitialLength * cos(m_fAngle) /2;
             float fCurLength    = m_fInitialLength - fCurDampening * m_fInitialLength;
             fCurrentProgress    = fCurLength * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
             newX01 = fCurStartX01 + fCurrentProgress;
