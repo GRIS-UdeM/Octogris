@@ -187,6 +187,7 @@ ok so the deal with that is that the components in the osc tab is within an osc 
 
 *updateInfo() is called by updateOscComponent() which is called by the editor timercallback()
 
+* perhaps the easiest thing would be to make a few functions that return the gui elements from the osccomponent, and display them in the editor. leaving as much stuff as possible in it? 
 _________________________________________
 #58
 i got this code from the juce demo, potentially related to #58? this goes in processBlock()
@@ -226,3 +227,4 @@ _________________
 #68: robert dit qu'en mode independent, toutes les sources devraient bouger de facon independente
 -i had added bUniqueTarget to force the random trajectories to have a unique random target with non-independent constraints. This is false when independent, so good. 
 -the problem is having all sources move then independent and random trajectory. this needs to be done at the mover level, i think. I tried stuff but it didn't work quickly so i undid it and left. 
+
