@@ -297,15 +297,16 @@ protected:
 
         int iReturn = m_bRT ? 2:1;
 
-
         //pendulum part
-        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;   //fCurDampening goes 0->m_fTotalDampening during the whole duration of the trajectory
-        float newX01, newY01, temp, fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);  //currentProgress goes 0->1 for every cycle
+        float newX01, newY01, temp;
+        float fCurrentProgress = modf((mDone / mDurationSingleTraj), &temp);    //currentProgress goes 0->1 for every cycle
+        float fCurDampening = m_fTotalDampening * mDone / mTotalDuration;       //fCurDampening goes 0->m_fTotalDampening during the whole duration of the trajectory
 
         if (m_bYisDependent){
-            float fCurStartX01 = m_fStartPair.first + fCurDampening * cos(m_fAngle) * m_fInitialLength * mDone / mTotalDuration;
-            float fCurLength = m_fInitialLength - fCurDampening * m_fInitialLength;
-            fCurrentProgress = fCurLength * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
+//            float fCurStartX01 = m_fStartPair.first + fCurDampening * cos(m_fAngle) * m_fInitialLength * mDone / mTotalDuration;
+            float fCurStartX01  = m_fStartPair.first + fCurDampening * m_fInitialLength * cos(m_fAngle) /2;
+            float fCurLength    = m_fInitialLength - fCurDampening * m_fInitialLength;
+            fCurrentProgress    = fCurLength * (1-cos(fCurrentProgress * iReturn * M_PI)) / 2;
             newX01 = fCurStartX01 + fCurrentProgress;
             newY01 = m_fM * newX01 + m_fB;
             
