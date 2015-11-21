@@ -294,7 +294,7 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 		{
 			case kSourceX: s << " - X"; break;
 			case kSourceY: s << " - Y"; break;
-			case kSourceD: s << " - D"; break;
+			case kSourceD: s << " - S"; break;
             default: return String::empty;
 
 		}
