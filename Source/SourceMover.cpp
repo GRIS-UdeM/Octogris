@@ -285,6 +285,7 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     break;
                     
                 case 8: // sym x/y
+                    JUCE_COMPILER_WARNING("this should never be executed, since that mode was replaced by move circular fully fixed?")
                     vxo = 1 - vxo;
                     vyo = 1 - vyo;
                     mFilter->setSourceXY01(iCurSrc, FPoint(vxo, vyo));
