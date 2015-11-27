@@ -535,37 +535,39 @@ AudioProcessorEditor (ownerFilter)
         //only using the combo box in reaper, because other hosts set the inputs and outputs automatically
 		if (mFilter->getIsAllowInputOutputModeSelection()) {
             
+            
+            int iMaxSources = mFilter->getNumInputChannels();
+            int iMaxSpeakers = mFilter->getNumOutputChannels();
+
             addLabel("Input/Output mode:", x, y, w, dh, box);
             y += dh + 5;
             
             mInputOutputModeCombo = new ComboBox();
-            int index = 1;
+            if (iMaxSpeakers >=2)  { mInputOutputModeCombo->addItem("1x2",  i1o2);  }
+            if (iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("1x4",  i1o4);  }
+            if (iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("1x6",  i1o6);  }
+            if (iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("1x8",  i1o8);  }
+            if (iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("1x16", i1o16); }
             
-            mInputOutputModeCombo->addItem("1x2", index++);
-            mInputOutputModeCombo->addItem("1x4", index++);
-            mInputOutputModeCombo->addItem("1x6", index++);
-            mInputOutputModeCombo->addItem("1x8", index++);
-            mInputOutputModeCombo->addItem("1x16", index++);
+            if (iMaxSources >=2 && iMaxSpeakers >=2)  { mInputOutputModeCombo->addItem("2x2",  i2o2);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("2x4",  i2o4);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("2x6",  i2o6);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("2x8",  i2o8);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("2x16", i2o16); }
+
+            if (iMaxSources >=4 && iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("4x4",  i4o4);  }
+            if (iMaxSources >=4 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("4x6",  i4o6);  }
+            if (iMaxSources >=4 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("4x8",  i4o8);  }
+            if (iMaxSources >=4 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("4x16", i4o16); }
+
+            if (iMaxSources >=6 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("6x6",  i6o6);  }
+            if (iMaxSources >=6 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("6x8",  i6o8);  }
+            if (iMaxSources >=6 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("6x16", i6o16); }
+
+            if (iMaxSources >=8 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("8x8",  i8o8);  }
+            if (iMaxSources >=8 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("8x16", i8o16); }
             
-            mInputOutputModeCombo->addItem("2x2", index++);
-            mInputOutputModeCombo->addItem("2x4", index++);
-            mInputOutputModeCombo->addItem("2x6", index++);
-            mInputOutputModeCombo->addItem("2x8", index++);
-            mInputOutputModeCombo->addItem("2x16", index++);
-            
-            mInputOutputModeCombo->addItem("4x4", index++);
-            mInputOutputModeCombo->addItem("4x6", index++);
-            mInputOutputModeCombo->addItem("4x8", index++);
-            mInputOutputModeCombo->addItem("4x16", index++);
-            
-            mInputOutputModeCombo->addItem("6x6", index++);
-            mInputOutputModeCombo->addItem("6x8", index++);
-            mInputOutputModeCombo->addItem("6x16", index++);
-            
-            mInputOutputModeCombo->addItem("8x8", index++);
-            mInputOutputModeCombo->addItem("8x16", index++);
-            
-            mInputOutputModeCombo->setSelectedId(mFilter->getInputOutputMode() + 1);
+            mInputOutputModeCombo->setSelectedId(mFilter->getInputOutputMode());
             mInputOutputModeCombo->setSize(w - iButtonW, dh);
             mInputOutputModeCombo->setTopLeftPosition(x, y);
             box->addAndMakeVisible(mInputOutputModeCombo);
@@ -1654,7 +1656,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         updateEndLocationTextEditors();
     }
     else if (mFilter->getIsAllowInputOutputModeSelection() && button == mApplyInputOutputModeButton) {
-        int iSelectedMode = mInputOutputModeCombo->getSelectedItemIndex();
+        int iSelectedMode = mInputOutputModeCombo->getSelectedId();
         mFilter->setInputOutputMode(iSelectedMode);
         
 		updateSources(false);
@@ -2023,7 +2025,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         
 		if (mFilter->getIsAllowInputOutputModeSelection()){
             int iCurMode = mInputOutputModeCombo->getSelectedId();
-            int iNewMode = mFilter->getInputOutputMode()+1;
+            int iNewMode = mFilter->getInputOutputMode();
             if (iNewMode != iCurMode){
                 mFilter->storeCurrentLocations();
                 m_bLoadingPreset = true;

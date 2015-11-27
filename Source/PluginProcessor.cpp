@@ -110,8 +110,8 @@ mFilters()
 	bIsWindows = false;
 #endif
 
-	if (/*host.isLogic() || */ host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer()) /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
-    //if (host.isLogic() || host.isReaper() || host.isAbletonLive() || host.isDigitalPerformer() /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
+//	if (/*host.isLogic() || */ host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer()) /*|| !strcmp(host.getHostDescription(),"Unknown")*/){
+    if (host.isLogic() || host.isReaper() || host.isAbletonLive() || host.isDigitalPerformer()){
 		m_bAllowInputOutputModeSelection = true;
 	} else {
 		m_bAllowInputOutputModeSelection = false;
@@ -142,7 +142,7 @@ mFilters()
 	mProcessMode = kPanVolumeMode;
 	mRoutingMode = 0;
     //version 9
-    mInputOutputMode = 18;  //by default we have 8 inputs and 16 outputs
+    mInputOutputMode = i1o2;//i8o16;  //by default we have 8 inputs and 16 outputs
     mSrcPlacementMode = 1;
     mSrcSelected = 0;
     
@@ -1827,7 +1827,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mProcessMode        = xmlState->getIntAttribute ("mProcessMode", kPanVolumeMode);
             mApplyFilter        = xmlState->getIntAttribute ("mApplyFilter", 1);
             
-            mInputOutputMode    = xmlState->getIntAttribute ("mInputOutputMode", 1);
+            mInputOutputMode    = xmlState->getIntAttribute ("mInputOutputMode", mInputOutputMode);
             
             mSrcPlacementMode   = xmlState->getIntAttribute ("mSrcPlacementMode", 1);
             mSpPlacementMode    = xmlState->getIntAttribute ("mSpPlacementMode", 1);
