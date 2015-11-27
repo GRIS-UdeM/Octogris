@@ -37,8 +37,12 @@ AudioProcessor::AudioProcessor()
       numInputChannels (0),
       numOutputChannels (0),
       latencySamples (0),
+     #if JUCE_DEBUG
+      textRecursionCheck (false),
+     #endif
       suspended (false),
-      nonRealtime (false)
+      nonRealtime (false),
+      processingPrecision (singlePrecision)
 {
 }
 
@@ -238,6 +242,13 @@ String AudioProcessor::getParameterName (int index, int maximumStringLength)
 
 const String AudioProcessor::getParameterText (int index)
 {
+   #if JUCE_DEBUG
+    // if you hit this, then you're probably using the old parameter control methods,
+    // but have forgotten to implement either of the getParameterText() methods.
+    jassert (! textRecursionCheck);
+    ScopedValueSetter<bool> sv (textRecursionCheck, true, false);
+   #endif
+
     return getParameterText (index, 1024);
 }
 
@@ -310,6 +321,10 @@ void AudioProcessor::addParameter (AudioProcessorParameter* p)
     p->processor = this;
     p->parameterIndex = managedParameters.size();
     managedParameters.add (p);
+
+    // if you're using parameter objects, then you must not override the
+    // deprecated getNumParameters() method!
+    jassert (getNumParameters() == AudioProcessor::getNumParameters());
 }
 
 void AudioProcessor::suspendProcessing (const bool shouldBeSuspended)
@@ -319,7 +334,33 @@ void AudioProcessor::suspendProcessing (const bool shouldBeSuspended)
 }
 
 void AudioProcessor::reset() {}
-void AudioProcessor::processBlockBypassed (AudioSampleBuffer&, MidiBuffer&) {}
+void AudioProcessor::processBlockBypassed (AudioBuffer<float>&, MidiBuffer&) {}
+void AudioProcessor::processBlockBypassed (AudioBuffer<double>&, MidiBuffer&) {}
+
+void AudioProcessor::processBlock (AudioBuffer<double>& buffer, MidiBuffer& midiMessages)
+{
+    ignoreUnused (buffer, midiMessages);
+
+    // If you hit this assertion then either the caller called the double
+    // precision version of processBlock on a processor which does not support it
+    // (i.e. supportsDoublePrecisionProcessing() returns false), or the implementation
+    // of the AudioProcessor forgot to override the double precision version of this method
+    jassertfalse;
+}
+
+void AudioProcessor::setProcessingPrecision (ProcessingPrecision precision) noexcept
+{
+    // If you hit this assertion then you're trying to use double precision
+    // processing on a processor which does not support it!
+    jassert (precision != doublePrecision || supportsDoublePrecisionProcessing());
+
+    processingPrecision = precision;
+}
+
+bool AudioProcessor::supportsDoublePrecisionProcessing() const
+{
+    return false;
+}
 
 //==============================================================================
 void AudioProcessor::editorBeingDeleted (AudioProcessorEditor* const editor) noexcept
