@@ -1796,33 +1796,6 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     copyXmlToBinary (xml, destData);
 }
 
-static void DisplayPresetError(){
-    String m;
-    
-    m << "You are attempting to load Octogris with a preset from a newer version." << newLine << newLine
-    << "Default values will be used for all parameters.";
-    
-    DialogWindow::LaunchOptions options;
-    Label* label = new Label();
-    label->setText (m, dontSendNotification);
-    //label->setColour (Label::textColourId, Colours::whitesmoke);
-    options.content.setOwned (label);
-    
-    Rectangle<int> area (0, 0, 300, 100);
-    options.content->setSize (area.getWidth(), area.getHeight());
-    
-    options.dialogTitle                   = "Octogris";
-    //options.dialogBackgroundColour        = Colour (0xff0e345a);
-    options.escapeKeyTriggersCloseButton  = true;
-    options.useNativeTitleBar             = true;
-    options.resizable                     = false;
-    
-    const RectanglePlacement placement (RectanglePlacement::xRight + RectanglePlacement::yBottom + RectanglePlacement::doNotResize);
-    
-    DialogWindow* dw = options.launchAsync();
-    dw->centreWithSize (300, 100);
-}
-
 void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // This getXmlFromBinary() helper function retrieves our XML from the binary blob..
@@ -1835,7 +1808,10 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             int version         = xmlState->getIntAttribute ("kDataVersion", 13);
             
             if (version > kDataVersion){
-                DisplayPresetError();
+                AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon,
+                                                  "Octogris - Loading preset/state from newer version",
+                                                  "You are attempting to load Octogris with a preset from a newer version.\nDefault values will be used for all parameters.",
+                                                  "OK");
                 return;
             }
             
