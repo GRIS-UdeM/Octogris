@@ -414,6 +414,7 @@ AudioProcessorEditor (ownerFilter)
 #endif
     
     m_VersionLabel->setText("Octogris" + version,  dontSendNotification);
+    m_VersionLabel->setFont (Font (Font::getDefaultMonospacedFontName(), 12.0f, Font::plain));
     m_VersionLabel->setJustificationType(Justification(Justification::right));
     m_VersionLabel->setColour(Label::textColourId, Colours::whitesmoke);
     addAndMakeVisible(m_VersionLabel);
