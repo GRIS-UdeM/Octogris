@@ -73,9 +73,8 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
                                                        void *          inContext,      // context from IOHIDDeviceRegisterInputValueCallback
                                                        IOReturn        inResult,       // completion result for the input value operation
                                                        void *          inSender,       // IOHIDDeviceRef of the device this element is from
-                                                       IOHIDValueRef   inIOHIDValueRef // the new element value
-//static function called when the joystick is used
-) {
+                                                       IOHIDValueRef   inIOHIDValueRef) // the new element value
+{
     do {
         IOHIDElementRef tIOHIDElementRef = IOHIDValueGetElement(inIOHIDValueRef);
         //We get the informations we need from inIOHIDValueRef
@@ -249,8 +248,7 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
 }
 
 
-void HIDDelegate::readJoystickValuesAndUsingThem() {
-    
+void HIDDelegate::readAndUseJoystickValues() {
     int nbJoysticks = CFSetGetCount(deviceSetRef);
     CFTypeRef array[nbJoysticks];
     CFSetGetValues(deviceSetRef, array);

@@ -2115,7 +2115,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
     }
     if(mEnableJoystick->getToggleState())
     {
-        mHIDDel->readJoystickValuesAndUsingThem();
+        mHIDDel->readAndUseJoystickValues();
     }
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
