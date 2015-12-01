@@ -54,8 +54,8 @@ void HIDDelegate::Handle_DeviceMatchingCallback(void *inContext, IOReturn inResu
         //what to do when a joystick get plugged
     }
 }
-/** Handle_DeviceRemovalCallback is called whenever a HID Device matching the Matching Dictionnary is physically disconnected. In our case we call the uncheckJoystickButton method which will uncheck the joystick checkbox and reinitialize the IOHIDManager as NULL  */
 
+/** Handle_DeviceRemovalCallback is called whenever a HID Device matching the Matching Dictionnary is physically disconnected. In our case we call the uncheckJoystickButton method which will uncheck the joystick checkbox and reinitialize the IOHIDManager as NULL  */
 void HIDDelegate::Handle_DeviceRemovalCallback(void *inContext, IOReturn inResult, void *inSender, IOHIDDeviceRef inIOHIDDeviceRef) {
 #pragma unused (  inContext, inResult, inSender )
     
@@ -97,6 +97,7 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
                         tempEditor->getHIDDel()->setButtonPressedTab(usage,1);
                         
                         tempEditor->getMover()->begin(usage-1, kHID);
+                        cout << "begin Handle_IOHIDDeviceInputValueCallback\n";
                     }
                 } else if (state == 0) {  //released
                     if(usage<= tempEditor ->getNbSources() ) {
@@ -280,7 +281,8 @@ void HIDDelegate::readAndUseJoystickValues() {
             //buttons
             else if(usagePage == 9 && value == 1 && usage <= mEditor->getNbSources()){
                 mEditor->getHIDDel()->setButtonPressedTab(usage,1);
-                mEditor->getMover()->begin(usage-1, kHID);
+//                mEditor->getMover()->begin(usage-1, kHID);
+//                cout << "begin other \n";
                 if (value == 0 && usage<= mEditor ->getNbSources()){  //released
                     mEditor->getHIDDel()->setButtonPressedTab(usage,0);
                 }
@@ -288,7 +290,7 @@ void HIDDelegate::readAndUseJoystickValues() {
             
         }
     }
-    mEditor->getMover()->end(kHID);
+//    mEditor->getMover()->end(kHID);
 }
 
 /** JoystickUsed is called, to handle the effect of the use of the axis while pressing a button on the joystick, 
@@ -339,7 +341,6 @@ void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValu
             default:
                 break;
         }
-//        mEditor->repaint();
     }
 }
 
