@@ -129,7 +129,7 @@ mFilters()
 	mLinkDistances = false;
 	mMovementMode = 0;
 	mShowGridLines = false;
-	mTrIndependentMode = false;
+	mTrSeparateAutomationMode = false;
 	mTrContinuousMode = false;
     mIsNumberSourcesChanged = false;
     mIsNumberSpeakersChanged = false;
@@ -1726,7 +1726,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     
     xml.setAttribute ("kDataVersion", kDataVersion);
     xml.setAttribute ("mShowGridLines", mShowGridLines);
-    xml.setAttribute ("mTrIndependentMode", mTrIndependentMode);
+    xml.setAttribute ("mTrIndependentMode", mTrSeparateAutomationMode);
     xml.setAttribute ("mTrContinuousMode", mTrContinuousMode);
     xml.setAttribute ("mMovementMode", mMovementMode);
     xml.setAttribute ("mLinkDistances", mLinkDistances);
@@ -1816,7 +1816,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             }
             
             mShowGridLines      = xmlState->getIntAttribute ("mShowGridLines", 0);
-            mTrIndependentMode  = xmlState->getIntAttribute ("mTrIndependentMode", mTrIndependentMode);
+            mTrSeparateAutomationMode  = xmlState->getIntAttribute ("mTrIndependentMode", mTrSeparateAutomationMode);
             mTrContinuousMode   = xmlState->getIntAttribute ("mTrContinuousMode", mTrContinuousMode);
             mMovementMode       = xmlState->getIntAttribute ("mMovementMode", 0);
             mLinkDistances      = xmlState->getIntAttribute ("mLinkDistances", 0);

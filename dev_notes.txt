@@ -227,4 +227,7 @@ _________________
 #68: robert dit qu'en mode independent, toutes les sources devraient bouger de facon independente
 -i had added bUniqueTarget to force the random trajectories to have a unique random target with non-independent constraints. This is false when independent, so good. 
 -the problem is having all sources move then independent and random trajectory. this needs to be done at the mover level, i think. I tried stuff but it didn't work quickly so i undid it and left. 
+_______________________
+#91
+
 

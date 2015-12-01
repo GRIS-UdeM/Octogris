@@ -148,7 +148,7 @@ private:
     ToggleButton *mEnableJoystick;
     ToggleButton *mEnableLeap;
 	ToggleButton *mShowGridLines;
-    ToggleButton *mTrIndependentMode;
+    ToggleButton *mTrSeparateAutomationMode;
     ToggleButton *mTrContinuousMode;
 	ToggleButton *mLinkDistances;
     ToggleButton *mApplyFilter;

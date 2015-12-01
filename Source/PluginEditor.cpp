@@ -692,8 +692,8 @@ AudioProcessorEditor (ownerFilter)
             mTrReturnComboBox = cb;
             mTrReturnComboBox->addListener(this);
         }
-        
-        mTrIndependentMode = addCheckbox("Independent mode", mFilter->getShowGridLines(), x+2*(cbw+5), y, cbw, dh, box);
+        int w2 = w = (box->getWidth() - kMargin) / 3 - kMargin;
+        mTrSeparateAutomationMode = addCheckbox("Force separate automation", mFilter->getShowGridLines(), x+2*(cbw+5), y, w2, dh, box);
         
         int tewShort = 30;
         int x2 = x+3*(cbw+5);
@@ -1174,9 +1174,9 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
     }
 
     if (iSelectedTrajectory == RandomTarget || iSelectedTrajectory == RandomTrajectory){
-        mTrIndependentMode->setVisible(true);
+        mTrSeparateAutomationMode->setVisible(true);
     } else {
-        mTrIndependentMode->setVisible(false);
+        mTrSeparateAutomationMode->setVisible(false);
     }
     
     if (iSelectedTrajectory == RandomTarget){
@@ -1768,7 +1768,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         mFilter->setShowGridLines(button->getToggleState());
         mField->repaint();
     }
-    else if (button == mTrIndependentMode) {
+    else if (button == mTrSeparateAutomationMode) {
         mFilter->setIndependentMode(button->getToggleState());
     }
     else if (button == mTrContinuousMode) {
@@ -2057,7 +2057,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         updateLeapComponent(mleap);
 #endif*/
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
-        mTrIndependentMode->setToggleState(mFilter->getIndependentMode(), dontSendNotification);
+        mTrSeparateAutomationMode->setToggleState(mFilter->getIndependentMode(), dontSendNotification);
         mTrContinuousMode->setToggleState(mFilter->getContinuousMode(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);

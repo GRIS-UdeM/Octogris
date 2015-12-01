@@ -296,8 +296,8 @@ public:
 	bool getShowGridLines() const { return mShowGridLines; }
 	void setShowGridLines(bool s) { mShowGridLines = s; }
     
-    bool getIndependentMode() const { return mTrIndependentMode; }
-    void setIndependentMode(bool b) { mTrIndependentMode = b; }
+    bool getIndependentMode() const { return mTrSeparateAutomationMode; }
+    void setIndependentMode(bool b) { mTrSeparateAutomationMode = b; }
 
     bool getContinuousMode() const { return mTrContinuousMode; }
     void setContinuousMode(bool b) { mTrContinuousMode = b; }
@@ -636,7 +636,7 @@ private:
 	bool mLinkDistances;
 	int mMovementMode;
 	bool mShowGridLines;
-    bool mTrIndependentMode;
+    bool mTrSeparateAutomationMode;
     bool mTrContinuousMode;
     int mGuiWidth;
     int mGuiHeight;
