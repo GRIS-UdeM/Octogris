@@ -43,11 +43,8 @@
 #define STRING(x) STRING2(x)
 //==============================================================================
 static const int kDefaultLabelHeight = 18;
-
-
 static const int kParamBoxHeight = 165;
 static const int kTimerDelay = 1000 / 20; // 20 fps
-
 
 //==============================================================================
 
@@ -337,39 +334,26 @@ private:
 class SourceUpdateThread : public Thread, public Component
 {
 public:
-    SourceUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)
+    SourceUpdateThread(OctogrisAudioProcessorEditor* p_pEditor)
     : Thread ("SourceUpdateThread")
     ,m_iInterval(50)
-    ,m_pEditor(p_pProcessor)
-    ,m_bIsPaused(false)
-    {
-        //startThread ();
-    }
+    ,m_pEditor(p_pEditor)
+    { }
     
     ~SourceUpdateThread() {
-        // allow the thread 1 second to stop cleanly - should be plenty of time.
-        stopThread (2 * m_iInterval);
+        stopThread (500);
     }
     
     void run() override {
-        // threadShouldExit() returns true when the stopThread() method has been called
         while (! threadShouldExit()) {
-            
-            // sleep a bit so the threads don't all grind the CPU to a halt..
             wait (m_iInterval);
-            if (!m_bIsPaused){
-                m_pEditor->updateNonSelectedSourcePositions();
-            }
+            m_pEditor->updateNonSelectedSourcePositions();
         }
     }
     
-    void setIsPaused(bool b){
-        m_bIsPaused = b;
-    }
 private:
     int m_iInterval;
     OctogrisAudioProcessorEditor* m_pEditor;
-    bool m_bIsPaused;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SourceUpdateThread)
 };
@@ -377,10 +361,10 @@ private:
 class JoystickUpdateThread : public Thread, public Component
 {
 public:
-    JoystickUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)
+    JoystickUpdateThread(OctogrisAudioProcessorEditor* p_pEditor)
     : Thread ("JoystickUpdateThread")
     ,m_iInterval(25)
-    ,m_pEditor(p_pProcessor)
+    ,m_pEditor(p_pEditor)
     ,m_bIsPaused(false)
     {
         startThread ();
@@ -1927,7 +1911,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
         int iSelectedMode = comboBox->getSelectedId() - 1;
         mFilter->setMovementMode(iSelectedMode);
         if(mFilter->getNumberOfSources() > 1){
-            m_pSourceUpdateThread->setIsPaused(true);
+            m_pSourceUpdateThread->stopThread(500);
             switch (iSelectedMode) {
                 case 2:
                     mMover.setEqualRadius();
@@ -1947,7 +1931,7 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
                 default:
                     break;
             }
-            m_pSourceUpdateThread->setIsPaused(false);
+            m_pSourceUpdateThread->startThread();
         }
     }
     else if (comboBox == mRoutingMode) {
