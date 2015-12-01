@@ -115,7 +115,7 @@ public:
     Label * getmStateLeap() {return mStateLeap;}
     
     //! Return the HIDDelegate which managed the HID devices
-    HIDDelegate * getHIDDel() {return mHIDDel;};
+    HIDDelegate * getHIDDel() {return mJoystick;};
     
     //! Method unchecking the joystick check box
     void uncheckJoystickButton();
@@ -225,7 +225,7 @@ private:
 	HeartbeatComponent *mOsc;
     
     //joystick
-    ReferenceCountedObjectPtr<HIDDelegate>  mHIDDel;
+    ReferenceCountedObjectPtr<HIDDelegate>  mJoystick;
 	
 	// for resizing/repaint:
 	Component *mField;

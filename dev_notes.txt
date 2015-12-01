@@ -229,5 +229,9 @@ _________________
 -the problem is having all sources move then independent and random trajectory. this needs to be done at the mover level, i think. I tried stuff but it didn't work quickly so i undid it and left. 
 _______________________
 #91
-
+ok, so let's try and understand how the joystick works
+* mJoystick is a member of editor
+* Missout avait mis le leap aussi dans the editor, but landrieux commented his update in timer callback, editor line 2056. In fact, updateLeapComponent seems to not exist anymore... 
+* ok, so nevermind the leap for now (it has its own callback methods, although it is instantiated or somehting in the editor callback, which is probably wrong)
+* what I think should happen, or the simplest thing at least, would be to create a thread for the joystick, that calls whatever is in the timer callback. 
 

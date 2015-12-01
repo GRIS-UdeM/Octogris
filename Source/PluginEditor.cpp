@@ -38,6 +38,9 @@
 #include "HIDDelegate.h"
 #include "HID_Utilities_External.h"
 #endif
+
+#define STRING2(x) #x
+#define STRING(x) STRING2(x)
 //==============================================================================
 static const int kDefaultLabelHeight = 18;
 
@@ -147,6 +150,7 @@ private:
 
 
 //================================================== PARAMSLIDER ======================================================
+JUCE_COMPILER_WARNING("this class should be in its own file")
 class ParamSlider : public Slider
 {
 public:
@@ -339,7 +343,7 @@ public:
     ,m_pEditor(p_pProcessor)
     ,m_bIsPaused(false)
     {
-        startThread ();
+        //startThread ();
     }
     
     ~SourceUpdateThread() {
@@ -369,9 +373,48 @@ private:
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SourceUpdateThread)
 };
+//==================================== JoystickUpdateThread ===================================================================
+class JoystickUpdateThread : public Thread, public Component
+{
+public:
+    JoystickUpdateThread(OctogrisAudioProcessorEditor* p_pProcessor)
+    : Thread ("JoystickUpdateThread")
+    ,m_iInterval(25)
+    ,m_pEditor(p_pProcessor)
+    ,m_bIsPaused(false)
+    {
+        startThread ();
+    }
+    
+    ~JoystickUpdateThread() {
+        // allow the thread 1 second to stop cleanly - should be plenty of time.
+        stopThread (2 * m_iInterval);
+    }
+    
+    void run() override {
+        // threadShouldExit() returns true when the stopThread() method has been called
+        while (! threadShouldExit()) {
+            
+            // sleep a bit so the threads don't all grind the CPU to a halt..
+            wait (m_iInterval);
+            if (!m_bIsPaused){
+                m_pEditor->updateNonSelectedSourcePositions();
+            }
+        }
+    }
+    
+    void setIsPaused(bool b){
+        m_bIsPaused = b;
+    }
+private:
+    int m_iInterval;
+    OctogrisAudioProcessorEditor* m_pEditor;
+    bool m_bIsPaused;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JoystickUpdateThread)
+};
 
-#define STRING2(x) #x
-#define STRING(x) STRING2(x)
+
 
 //==================================== EDITOR ===================================================================
 
@@ -1122,14 +1165,11 @@ void OctogrisAudioProcessorEditor::updateEndLocationTextEditors(){
 
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
     int iSourceChanged = mFilter->getSourceLocationChanged();
-    if (!mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && iSourceChanged != -1) {
-        
-        //cout << "THREAD: " << !mFilter->getIsRecordingAutomation() << ", " << mFilter->getMovementMode() << ", " << iSourceChanged << "----------";
-        
+//    if (!mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && iSourceChanged != -1) {
+    if (iSourceChanged != -1){
         mMover.begin(iSourceChanged, kSourceThread);
         mMover.move(mFilter->getSourceXY01(iSourceChanged), kSourceThread);
         mMover.end(kSourceThread);
-        
         mFilter->setSourceLocationChanged(-1);
     }
 }
@@ -1235,7 +1275,7 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
         gDeviceCFArrayRef = NULL;
         gElementCFArrayRef = NULL;
     }
-    mHIDDel = NULL;
+    mJoystick = NULL;
     if(mController)
     {
         mController->enableGesture(Leap::Gesture::TYPE_INVALID);
@@ -1783,22 +1823,21 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
 #if WIN32
     
 #else
-    //Changements lié a l'ajout de joystick à l'onglet leap qui est devenu interface
-    else if(button == mEnableJoystick)
-    {
+    //Changements lié a l'ajout de joystick à l'onglet interface
+    else if(button == mEnableJoystick) {
 
-        bool state = mEnableJoystick->getToggleState();
-        mFilter->setIsJoystickEnabled(state);
-        if (state) {
+        bool bJoystickEnabled = mEnableJoystick->getToggleState();
+        mFilter->setIsJoystickEnabled(bJoystickEnabled);
+        if (bJoystickEnabled) {
             if (!gIOHIDManagerRef) {
                 mStateJoystick->setText("Joystick not connected", dontSendNotification);
                 gIOHIDManagerRef = IOHIDManagerCreate(CFAllocatorGetDefault(),kIOHIDOptionsTypeNone);
                 if(!gIOHIDManagerRef) {
                     printf("Could not create IOHIDManager");
                 } else {
-                    mHIDDel = HIDDelegate::CreateHIDDelegate(mFilter, this);
-                    mHIDDel->Initialize_HID(this);
-                    if(mHIDDel->getDeviceSetRef()) {
+                    mJoystick = HIDDelegate::CreateHIDDelegate(mFilter, this);
+                    mJoystick->Initialize_HID(this);
+                    if(mJoystick->getDeviceSetRef()) {
                         mStateJoystick->setText("Joystick connected", dontSendNotification);
                     } else {
                         mStateJoystick->setText("Joystick not connected", dontSendNotification);
@@ -1818,7 +1857,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
                 gIOHIDManagerRef = NULL;
                 gDeviceCFArrayRef = NULL;
                 gElementCFArrayRef = NULL;
-                mHIDDel = NULL;
+                mJoystick = NULL;
                 mStateJoystick->setText("", dontSendNotification);
             }
         }
@@ -2113,9 +2152,19 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
         }
     }
+
+    if (!mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && mFilter->getSourceLocationChanged() != -1) {
+        if(!m_pSourceUpdateThread->isThreadRunning()){
+            m_pSourceUpdateThread->startThread();
+        }
+    } else if (m_pSourceUpdateThread->isThreadRunning()){
+            m_pSourceUpdateThread->stopThread(500);
+    }
+    
+    
     if(mEnableJoystick->getToggleState())
     {
-        mHIDDel->readAndUseJoystickValues();
+        mJoystick->readAndUseJoystickValues();
     }
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
