@@ -78,10 +78,10 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
     do {
         IOHIDElementRef tIOHIDElementRef = IOHIDValueGetElement(inIOHIDValueRef);
         //We get the informations we need from inIOHIDValueRef
-        uint32_t usagePage = IOHIDElementGetUsagePage(tIOHIDElementRef);
-        uint32_t usage = IOHIDElementGetUsage(tIOHIDElementRef);
-        double min = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
-        double max = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
+        uint32_t usagePage  = IOHIDElementGetUsagePage(tIOHIDElementRef);
+        uint32_t usage      = IOHIDElementGetUsage(tIOHIDElementRef);
+        double min          = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
+        double max          = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
         
         double value = IOHIDValueGetScaledValue(inIOHIDValueRef, kIOHIDValueScaleTypePhysical);
         OctogrisAudioProcessorEditor* tempEditor = (OctogrisAudioProcessorEditor*) inContext;  //we get the editor from the context
@@ -120,8 +120,8 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
     while (false);
 }
 
-/**hu_CreateMatchingDictionary method creates a matching dictionnary that allow you to only look for one type of HID devices, in our case the joysticks. As this method is also used as a static method in the HID_Utilities there probably is a better way to use it but this is the way it was explained to me on the website I used to create my hid communications. */
-JUCE_COMPILER_WARNING("hu_CreateMatchingDictionary method creates a matching dictionnary that allow you to only look for one type of HID devices, in our case the joysticks. As this method is also used as a static method in the HID_Utilities there probably is a better way to use it but this is the way it was explained to me on the website I used to create my hid communications")
+/**create a matching dictionnary that allow you to only look for one type of HID devices, in our case the joysticks.
+ As this method is also used as a static method in the HID_Utilities there probably is a better way to use it but this is the way it was explained to me on the website I used to create my hid communications. */
 CFDictionaryRef HIDDelegate::hu_CreateMatchingDictionary(uint32_t inUsagePage, uint32_t inUsage) {
     // create a dictionary to add usage page/usages to
     CFMutableDictionaryRef refHIDMatchDictionary = CFDictionaryCreateMutable(kCFAllocatorDefault,0,&kCFTypeDictionaryKeyCallBacks,&kCFTypeDictionaryValueCallBacks);
@@ -130,15 +130,13 @@ CFDictionaryRef HIDDelegate::hu_CreateMatchingDictionary(uint32_t inUsagePage, u
             // Add key for device type to refine the matching dictionary.
             CFNumberRef pageCFNumberRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &inUsagePage);
             if (pageCFNumberRef) {
-                CFDictionarySetValue(refHIDMatchDictionary,
-                                     CFSTR(kIOHIDPrimaryUsagePageKey), pageCFNumberRef);
+                CFDictionarySetValue(refHIDMatchDictionary, CFSTR(kIOHIDPrimaryUsagePageKey), pageCFNumberRef);
                 CFRelease(pageCFNumberRef);
                 // note: the usage is only valid if the usage page is also defined
                 if (inUsage) {
                     CFNumberRef usageCFNumberRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &inUsage);
                     if (usageCFNumberRef) {
-                        CFDictionarySetValue(refHIDMatchDictionary,
-                                             CFSTR(kIOHIDPrimaryUsageKey), usageCFNumberRef);
+                        CFDictionarySetValue(refHIDMatchDictionary, CFSTR(kIOHIDPrimaryUsageKey), usageCFNumberRef);
                         CFRelease(usageCFNumberRef);
                     } else {
                         fprintf(stderr, "%s: CFNumberCreate(usage) failed.", __PRETTY_FUNCTION__);
@@ -153,7 +151,7 @@ CFDictionaryRef HIDDelegate::hu_CreateMatchingDictionary(uint32_t inUsagePage, u
     }
     
     return (refHIDMatchDictionary);
-}   // hu_CreateMatchingDictionary
+}
 
 /** Initialize_HID has to be used once you have created your HIDDelegate in order for the program to know all there is to know about your joystick (address, number of buttons, setting the callback etc) */
 OSStatus HIDDelegate::Initialize_HID(void *inContext) {
