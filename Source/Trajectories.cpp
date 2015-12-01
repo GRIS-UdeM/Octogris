@@ -93,21 +93,22 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleDirections(int 
     switch(p_iTrajectory) {
         case Circle:
         case EllipseTr:
+        case Pendulum:
+        case Spiral:
             vDirections->push_back("Clockwise");
             vDirections->push_back("Counter Clockwise");
             break;
-        case Spiral:
-            vDirections->push_back("In, Clockwise");
-            vDirections->push_back("In, Counter Clockwise");
-            vDirections->push_back("Out, Clockwise");
-            vDirections->push_back("Out, Counter Clockwise");
-            break;
+//        case Spiral:
+//            vDirections->push_back("In, Clockwise");
+//            vDirections->push_back("In, Counter Clockwise");
+//            vDirections->push_back("Out, Clockwise");
+//            vDirections->push_back("Out, Counter Clockwise");
+//            break;
         case RandomTrajectory:
             vDirections->push_back("Slow");
             vDirections->push_back("Mid");
             vDirections->push_back("Fast");
             break;
-        case Pendulum:
         case RandomTarget:
         case SymXTarget:
         case SymYTarget:
@@ -729,7 +730,8 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
     {
         case Circle:                     return new CircleTrajectory(filter, p_pMover, duration, beats, times, ccw, p_fTurns);
         case EllipseTr:                  return new EllipseTrajectory(filter, p_pMover, duration, beats, times, ccw, p_fTurns);
-        case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, ccw, in, bReturn, p_fTurns, endPair);
+//        case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, ccw, in, bReturn, p_fTurns, endPair);
+        case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, ccw, true, bReturn, p_fTurns, endPair);
         case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, in, ccw, bReturn, p_fDampening, p_fDeviation, endPair);
         case RandomTrajectory:           return new RandomTrajectoryClass(filter, p_pMover, duration, beats, times, speed);
         case RandomTarget:               return new RandomTargetTrajectory(filter, p_pMover, duration, beats, times, bReturn);
