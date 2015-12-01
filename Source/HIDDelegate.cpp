@@ -339,7 +339,7 @@ void HIDDelegate::JoystickUsed(uint32_t usage, float scaledValue, double minValu
             default:
                 break;
         }
-        mEditor->repaint();
+//        mEditor->repaint();
     }
 }
 

@@ -38,6 +38,7 @@
 
 class FieldComponent;
 class SourceUpdateThread;
+class JoystickUpdateThread;
 class Box;
 
 enum
@@ -125,6 +126,8 @@ public:
     void updateNonSelectedSourcePositions();
     
     void setDefaultPendulumEndpoint();
+    
+    void readAndUseJoystickValues();
 	
 private:
 	OctogrisAudioProcessor *mFilter;
@@ -247,7 +250,8 @@ private:
     TextEditor* addTextEditor(const String &s, int x, int y, int w, int h, Component *into);
 	Slider* addParamSlider(int paramType, int si, float v, int x, int y, int w, int h, Component *into);
     
-    SourceUpdateThread* m_pSourceUpdateThread;
+    SourceUpdateThread*     m_pSourceUpdateThread;
+    JoystickUpdateThread*   m_pJoystickUpdateThread;
     
     //! Bounds of the resizable window
     ComponentBoundsConstrainer m_oResizeLimits;
