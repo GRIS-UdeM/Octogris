@@ -694,11 +694,9 @@ AudioProcessorEditor (ownerFilter)
             mTrDirectionComboBox->addListener(this);
         }
         
-        mTrContinuousMode = addCheckbox("Continuous transition", mFilter->getShowGridLines(), x+cbw+5, y, cbw, dh, box);
-        
         {
             ComboBox *cb = new ComboBox();
-            cb->setSize(cbw, dh);
+            cb->setSize(cbw-40, dh);
             cb->setTopLeftPosition(x+2*(cbw+5), y);
             box->addAndMakeVisible(cb);
             mComponents.add(cb);
@@ -706,8 +704,9 @@ AudioProcessorEditor (ownerFilter)
             mTrReturnComboBox = cb;
             mTrReturnComboBox->addListener(this);
         }
-        int w2 = w = (box->getWidth() - kMargin) / 3 - kMargin;
-        mTrSeparateAutomationMode = addCheckbox("Force separate automation", mFilter->getShowGridLines(), x+2*(cbw+5), y, w2, dh, box);
+        
+        
+        mTrSeparateAutomationMode = addCheckbox("Force separate automation", mFilter->getShowGridLines(), x+3*(cbw+5)-40, y, cbw+20, dh, box);
         
         int tewShort = 30;
         int x2 = x+3*(cbw+5);
@@ -1189,13 +1188,6 @@ void OctogrisAudioProcessorEditor::updateTrajectoryComponents(){
     } else {
         mTrSeparateAutomationMode->setVisible(false);
     }
-    
-    if (iSelectedTrajectory == RandomTarget){
-        mTrContinuousMode->setVisible(true);
-    } else {
-        mTrContinuousMode->setVisible(false);
-    }
-
     
     unique_ptr<vector<String>> allDirections = Trajectory::getTrajectoryPossibleDirections(iSelectedTrajectory);
     if (allDirections != nullptr){
@@ -1782,9 +1774,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
     else if (button == mTrSeparateAutomationMode) {
         mFilter->setIndependentMode(button->getToggleState());
     }
-    else if (button == mTrContinuousMode) {
-        mFilter->setContinuousMode(button->getToggleState());
-    }
     else if (button == mLinkDistances) {
         mFilter->setLinkDistances(button->getToggleState());
     }
@@ -2068,7 +2057,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
 #endif*/
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
         mTrSeparateAutomationMode->setToggleState(mFilter->getIndependentMode(), dontSendNotification);
-        mTrContinuousMode->setToggleState(mFilter->getContinuousMode(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);
     }

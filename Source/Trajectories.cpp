@@ -158,16 +158,15 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleReturns(int p_i
     unique_ptr<vector<String>> vReturns (new vector<String>);
     
     switch(p_iTrajectory) {
-        case Circle:
-        case EllipseTr:
-        case RandomTrajectory:
-            return nullptr;
         case Spiral:
         case Pendulum:
+        case RandomTarget:
             vReturns->push_back("One Way");
             vReturns->push_back("Return");
             break;
-        case RandomTarget:
+        case Circle:
+        case EllipseTr:
+        case RandomTrajectory:
         case SymXTarget:
         case SymYTarget:
         case ClosestSpeakerTarget:
@@ -493,9 +492,10 @@ private:
 class TargetTrajectory : public Trajectory
 {
 public:
-	TargetTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times)
+	TargetTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, bool p_bReturn = false)
 	: Trajectory(filter, p_pMover, duration, beats, times)
     , mCycle(-1)
+    , m_bReturn(p_bReturn)
     {}
 	
 protected:
@@ -513,7 +513,7 @@ protected:
 
         //reset stuff when we start a new cycle
 		if (mCycle != cycle) {
-            if (!mFilter->getContinuousMode()){
+            if (m_bReturn){
                 resetIfRandomTarget();
             }
 			mCycle = cycle;
@@ -556,6 +556,7 @@ private:
 	Array<FPoint> mSourcesOrigins;
 	Array<FPoint> mSourcesDestinations;
 	int mCycle;
+    bool m_bReturn;
 };
 
 
@@ -563,8 +564,8 @@ private:
 class RandomTargetTrajectory : public TargetTrajectory
 {
 public:
-	RandomTargetTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times)
-	: TargetTrajectory(filter, p_pMover, duration, beats, times) {}
+	RandomTargetTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, bool p_bReturn)
+	: TargetTrajectory(filter, p_pMover, duration, beats, times, p_bReturn) {}
 	
 protected:
 	FPoint destinationForSource(int s, FPoint o) {
@@ -731,7 +732,7 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
         case Spiral:                     return new SpiralTrajectory(filter, p_pMover, duration, beats, times, ccw, in, bReturn, p_fTurns, endPair);
         case Pendulum:                   return new PendulumTrajectory(filter, p_pMover, duration, beats, times, in, ccw, bReturn, p_fDampening, p_fDeviation, endPair);
         case RandomTrajectory:           return new RandomTrajectoryClass(filter, p_pMover, duration, beats, times, speed);
-        case RandomTarget:               return new RandomTargetTrajectory(filter, p_pMover, duration, beats, times);
+        case RandomTarget:               return new RandomTargetTrajectory(filter, p_pMover, duration, beats, times, bReturn);
         case SymXTarget:                 return new SymXTargetTrajectory(filter, p_pMover, duration, beats, times);
         case SymYTarget:                 return new SymYTargetTrajectory(filter, p_pMover, duration, beats, times);
         case ClosestSpeakerTarget:       return new ClosestSpeakerTargetTrajectory(filter, p_pMover, duration, beats, times);

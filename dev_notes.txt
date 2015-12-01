@@ -234,4 +234,11 @@ ok, so let's try and understand how the joystick works
 * Missout avait mis le leap aussi dans the editor, but landrieux commented his update in timer callback, editor line 2056. In fact, updateLeapComponent seems to not exist anymore... 
 * ok, so nevermind the leap for now (it has its own callback methods, although it is instantiated or somehting in the editor callback, which is probably wrong)
 * what I think should happen, or the simplest thing at least, would be to create a thread for the joystick, that calls whatever is in the timer callback. 
+__________________________
+display things
+* add direction to pendulum in position 1
+* remove continuous in random target pos 1, and slide for-sep-auto from pos 2 to 1
+* add return in random target pos 1
+so pendulum will have direction return
+and rand tar will have force-sep-auto return
 

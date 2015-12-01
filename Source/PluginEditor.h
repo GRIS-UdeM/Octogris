@@ -152,7 +152,6 @@ private:
     ToggleButton *mEnableLeap;
 	ToggleButton *mShowGridLines;
     ToggleButton *mTrSeparateAutomationMode;
-    ToggleButton *mTrContinuousMode;
 	ToggleButton *mLinkDistances;
     ToggleButton *mApplyFilter;
 	ComboBox *mMovementMode;
