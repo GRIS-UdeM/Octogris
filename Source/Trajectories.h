@@ -40,7 +40,6 @@ enum AllTrajectoryDirections {
     CCW,
     In,
     Out,
-    Crossover,
     InCW,
     InCCW,
     OutCW,

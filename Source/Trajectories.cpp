@@ -136,7 +136,7 @@ unique_ptr<AllTrajectoryDirections> Trajectory::getTrajectoryDirection(int p_iSe
             *pDirection = static_cast<AllTrajectoryDirections>(p_iSelectedDirection+5);
             break;
         case Pendulum:
-            *pDirection = static_cast<AllTrajectoryDirections>(p_iSelectedDirection+2);
+            *pDirection = static_cast<AllTrajectoryDirections>(p_iSelectedDirection);
             break;
         case RandomTrajectory:
             *pDirection = static_cast<AllTrajectoryDirections>(p_iSelectedDirection+9);
@@ -673,7 +673,7 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
                                              AllTrajectoryDirections direction, bool bReturn, float times, float p_fDampening, float p_fDeviation, float p_fTurns, const std::pair<float, float> &endPair)
 {
     
-    bool ccw, in, cross;
+    bool ccw, in;
     float speed;
     
     if (direction != None)
@@ -686,15 +686,9 @@ Trajectory::Ptr Trajectory::CreateTrajectory(int type, OctogrisAudioProcessor *f
             break;
         case In:
             in = true;
-            cross = false;
             break;
         case Out:
             in = false;
-            cross = false;
-            break;
-        case Crossover:
-            in = true;
-            cross = true;
             break;
         case InCW:
             in = true;
