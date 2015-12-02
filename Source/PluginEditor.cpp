@@ -474,10 +474,10 @@ AudioProcessorEditor (ownerFilter)
         mTabs->getTabContentComponent(3)->addAndMakeVisible(mSrcSelect);
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
-        
-        if (mFilter->getIsAllowInputOutputModeSelection()){
-            mFilter->setInputOutputMode(mFilter->getInputOutputMode());
-        }
+//        JUCE_COMPILER_WARNING("this is for sure useless")
+//        if (mFilter->getIsAllowInputOutputModeSelection()){
+//            mFilter->setInputOutputMode(mFilter->getInputOutputMode());
+//        }
         updateSources(true);
     }
     

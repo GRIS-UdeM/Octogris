@@ -318,9 +318,9 @@ const String OctogrisAudioProcessor::getParameterName (int index)
 
 void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
     
-    mInputOutputMode = p_iInputOutputMode;
+    mInputOutputMode = p_iInputOutputMode-1;
     
-    switch (p_iInputOutputMode){
+    switch (mInputOutputMode){
             
         case i1o2:
             setNumberOfSources(1, false);
@@ -401,6 +401,70 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
 		default:
 			jassert(0);
     }
+}
+
+void OctogrisAudioProcessor::updateInputOutputMode (){
+    if (mNumberOfSources == 1 && mNumberOfSpeakers == 2){
+        mInputOutputMode =  i1o2;
+        return;
+    } else if (mNumberOfSources == 1 && mNumberOfSpeakers == 4){
+        mInputOutputMode =  i1o4;
+        return;
+    } else if (mNumberOfSources == 1 && mNumberOfSpeakers == 6){
+        mInputOutputMode =  i1o6;
+        return;
+    } else if (mNumberOfSources == 1 && mNumberOfSpeakers == 8){
+        mInputOutputMode =  i1o8;
+        return;
+    } else if (mNumberOfSources == 1 && mNumberOfSpeakers == 16){
+        mInputOutputMode =  i1o16;
+        return;
+    } else if (mNumberOfSources == 2 && mNumberOfSpeakers == 2){
+        mInputOutputMode =  i2o2;
+        return;
+    } else if (mNumberOfSources == 2 && mNumberOfSpeakers == 4){
+        mInputOutputMode =  i2o4;
+        return;
+    } else if (mNumberOfSources == 2 && mNumberOfSpeakers == 6){
+        mInputOutputMode =  i2o6;
+        return;
+    } else if (mNumberOfSources == 2 && mNumberOfSpeakers == 8){
+        mInputOutputMode =  i2o8;
+        return;
+    }  else if (mNumberOfSources == 2 && mNumberOfSpeakers == 16){
+        mInputOutputMode =  i2o16;
+        return;
+    } else if (mNumberOfSources == 4 && mNumberOfSpeakers == 4){
+        mInputOutputMode =  i4o4;
+        return;
+    } else if (mNumberOfSources == 4 && mNumberOfSpeakers == 6){
+        mInputOutputMode =  i4o6;
+        return;
+    } else if (mNumberOfSources == 4 && mNumberOfSpeakers == 8){
+        mInputOutputMode =  i4o8;
+        return;
+    } else if (mNumberOfSources == 4 && mNumberOfSpeakers == 16){
+        mInputOutputMode =  i4o16;
+        return;
+    } else if (mNumberOfSources == 6 && mNumberOfSpeakers == 6){
+        mInputOutputMode =  i6o6;
+        return;
+    } else if (mNumberOfSources == 6 && mNumberOfSpeakers == 8){
+        mInputOutputMode =  i6o8;
+        return;
+    } else if (mNumberOfSources == 6 && mNumberOfSpeakers == 16){
+        mInputOutputMode =  i6o16;
+        return;
+    } else if (mNumberOfSources == 8 && mNumberOfSpeakers == 8){
+        mInputOutputMode =  i8o8;
+        return;
+    } else if (mNumberOfSources == 8 && mNumberOfSpeakers == 16){
+        mInputOutputMode =  i8o16;
+        return;
+    }
+    
+    jassert(0);
+    
 }
 
 void OctogrisAudioProcessor::setSrcPlacementMode(int p_i){
@@ -658,6 +722,7 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     if (m_bAllowInputOutputModeSelection) {
         setNumberOfSources(mNumberOfSources, true);
         setNumberOfSpeakers(mNumberOfSpeakers, true);
+        updateInputOutputMode();
     } else {
         int sources = getNumInputChannels();
         int speakers = getNumOutputChannels();
