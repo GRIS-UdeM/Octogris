@@ -106,6 +106,7 @@ enum
 
 static const int s_iMaxAreas = 3; //this number is used as a multiplicator of mNumberOfSpeakers
 
+//these have to start at 0 because of backwards-compatibility
 enum InputOutputModes {
     i1o2 = 0, i1o4, i1o6, i1o8, i1o16, i2o2, i2o4, i2o6, i2o8, i2o16, i4o4, i4o6, i4o8, i4o16, i6o6, i6o8, i6o16, i8o8, i8o16
 };

@@ -474,10 +474,10 @@ AudioProcessorEditor (ownerFilter)
         mTabs->getTabContentComponent(3)->addAndMakeVisible(mSrcSelect);
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
-//        JUCE_COMPILER_WARNING("this is for sure useless")
-//        if (mFilter->getIsAllowInputOutputModeSelection()){
-//            mFilter->setInputOutputMode(mFilter->getInputOutputMode());
-//        }
+        //believe it or not, this actually does something useful...! Not quite sure what, but removing it messes up the number of sources and speakers when loading some presets
+        if (mFilter->getIsAllowInputOutputModeSelection()){
+            mFilter->setInputOutputMode(mFilter->getInputOutputMode());
+        }
         updateSources(true);
     }
     
@@ -558,29 +558,29 @@ AudioProcessorEditor (ownerFilter)
             y += dh + 5;
             
             mInputOutputModeCombo = new ComboBox();
-            if (iMaxSpeakers >=2)  { mInputOutputModeCombo->addItem("1x2",  i1o2);  }
-            if (iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("1x4",  i1o4);  }
-            if (iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("1x6",  i1o6);  }
-            if (iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("1x8",  i1o8);  }
-            if (iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("1x16", i1o16); }
+            if (iMaxSpeakers >=2)  { mInputOutputModeCombo->addItem("1x2",  i1o2+1);  }
+            if (iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("1x4",  i1o4+1);  }
+            if (iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("1x6",  i1o6+1);  }
+            if (iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("1x8",  i1o8+1);  }
+            if (iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("1x16", i1o16+1); }
             
-            if (iMaxSources >=2 && iMaxSpeakers >=2)  { mInputOutputModeCombo->addItem("2x2",  i2o2);  }
-            if (iMaxSources >=2 && iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("2x4",  i2o4);  }
-            if (iMaxSources >=2 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("2x6",  i2o6);  }
-            if (iMaxSources >=2 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("2x8",  i2o8);  }
-            if (iMaxSources >=2 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("2x16", i2o16); }
+            if (iMaxSources >=2 && iMaxSpeakers >=2)  { mInputOutputModeCombo->addItem("2x2",  i2o2+1);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("2x4",  i2o4+1);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("2x6",  i2o6+1);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("2x8",  i2o8+1);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("2x16", i2o16+1); }
 
-            if (iMaxSources >=4 && iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("4x4",  i4o4);  }
-            if (iMaxSources >=4 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("4x6",  i4o6);  }
-            if (iMaxSources >=4 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("4x8",  i4o8);  }
-            if (iMaxSources >=4 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("4x16", i4o16); }
+            if (iMaxSources >=4 && iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("4x4",  i4o4+1);  }
+            if (iMaxSources >=4 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("4x6",  i4o6+1);  }
+            if (iMaxSources >=4 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("4x8",  i4o8+1);  }
+            if (iMaxSources >=4 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("4x16", i4o16+1); }
 
-            if (iMaxSources >=6 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("6x6",  i6o6);  }
-            if (iMaxSources >=6 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("6x8",  i6o8);  }
-            if (iMaxSources >=6 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("6x16", i6o16); }
+            if (iMaxSources >=6 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("6x6",  i6o6+1);  }
+            if (iMaxSources >=6 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("6x8",  i6o8+1);  }
+            if (iMaxSources >=6 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("6x16", i6o16+1); }
 
-            if (iMaxSources >=8 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("8x8",  i8o8);  }
-            if (iMaxSources >=8 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("8x16", i8o16); }
+            if (iMaxSources >=8 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("8x8",  i8o8+1);  }
+            if (iMaxSources >=8 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("8x16", i8o16+1); }
             
             mInputOutputModeCombo->setSelectedId(mFilter->getInputOutputMode());
             mInputOutputModeCombo->setSize(w - iButtonW, dh);
