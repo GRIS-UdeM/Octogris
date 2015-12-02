@@ -111,8 +111,8 @@ mFilters()
 #endif
     
     JUCE_COMPILER_WARNING("switch these lines to fix #46. will need to update to 3.0.0")
-	if (host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer())){
-//    if (host.isLogic() || host.isReaper() || host.isAbletonLive() || host.isDigitalPerformer()){
+//	if (host.isReaper() || host.isAbletonLive() || (bIsWindows && host.isDigitalPerformer())){
+    if (host.isLogic() || host.isReaper() || host.isAbletonLive() || host.isDigitalPerformer()){
 		m_bAllowInputOutputModeSelection = true;
 	} else {
 		m_bAllowInputOutputModeSelection = false;

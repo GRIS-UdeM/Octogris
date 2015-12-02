@@ -181,6 +181,7 @@ so, i think we may have to have a version 3 for this. The problem is that there 
 trying internal routing mode in studio
 i don't know how to put plugins on output busses!
 
+2015-12-2, Alright, so I tested the audio for this fix in the lab and it works. The only problem is that the combo box initial state is blank when it wasn't saved in a preset.  
 ________________________
 #56
 ok so the deal with that is that the components in the osc tab is within an osc component, while the stuff in the interface tab (and all other tabs) is in the editor. So I think i should grab all the gui stuff from the osc component and put them in the editor...? That seems like a lot of work for not that great a reason...What are the fucntions related to GUI?
@@ -241,4 +242,5 @@ display things
 * add return in random target pos 1
 so pendulum will have direction return
 and rand tar will have force-sep-auto return
+_________________________
 
