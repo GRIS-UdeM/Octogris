@@ -1576,7 +1576,7 @@ void OctogrisAudioProcessorEditor::textEditorReturnKeyPressed(TextEditor & textE
         if (iSelectedTrajectory == 3){
             iUpperLimit = 10;
         }
-        if (Turns >= 0 && Turns <= iUpperLimit){
+        if (Turns > 0 && Turns <= iUpperLimit){
             mFilter->setTrTurns(Turns);
         }
         mTrTurnsTextEditor->setText(String(mFilter->getTrTurns()));
@@ -2051,7 +2051,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrRepeats->setText(String(mFilter->getTrRepeats()));
         mTrDampeningTextEditor->setText(String(mFilter->getTrDampening()));
         mTrDeviationTextEditor->setText(String(mFilter->getTrDeviation()*360));
-        mTrTurnsTextEditor->setText(String(mFilter->getTrDampening()));
+        mTrTurnsTextEditor->setText(String(mFilter->getTrTurns()));
         
         updateOscComponent(mOsc);
         

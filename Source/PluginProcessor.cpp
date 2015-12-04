@@ -1829,7 +1829,6 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute ("m_fTrDampening", m_fTrDampening);
     xml.setAttribute ("m_fTrTurns", m_fTrTurns);
     xml.setAttribute ("m_fTrDeviation", m_fTrDeviation);
-    xml.setAttribute ("m_fTrTurns", m_fTrTurns);
     xml.setAttribute ("m_fEndLocationX", m_fEndLocationXY.first);
     xml.setAttribute ("m_fEndLocationY", m_fEndLocationXY.second);
     xml.setAttribute ("mLeapEnabled", mLeapEnabled);
