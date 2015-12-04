@@ -184,6 +184,9 @@ so, i think we may have to have a version 3 for this. The problem is that there 
 preset was saved as 1, which is 1x4, and is what we're seeing 
 but both the movement constraint combo and the input/ouput mode combo are blank, why?
 
+* the movement constraint was due to a bug, which i fixed.
+* but the input/output mode problem really will require an upgrate to version 3. The problem really is that in previous versions, we saved the default mode in the presets (which, depending on the version is 1 or 18), so when opening an old preset with a new version, the input/output mode will always be 1 or 18. 
+
 ________________________
 #56
 ok so the deal with that is that the components in the osc tab is within an osc component, while the stuff in the interface tab (and all other tabs) is in the editor. So I think i should grab all the gui stuff from the osc component and put them in the editor...? That seems like a lot of work for not that great a reason...What are the fucntions related to GUI?
