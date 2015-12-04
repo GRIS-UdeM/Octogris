@@ -7,16 +7,16 @@
 #include <windows.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION  2,2,6,0
+FILEVERSION  2,2,7,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
     BLOCK "040904E4"
     BEGIN
       VALUE "FileDescription",  "Octogris\0"
-      VALUE "FileVersion",  "2.2.6\0"
+      VALUE "FileVersion",  "2.2.7\0"
       VALUE "ProductName",  "Octogris\0"
-      VALUE "ProductVersion",  "2.2.6\0"
+      VALUE "ProductVersion",  "2.2.7\0"
     END
   END
 
