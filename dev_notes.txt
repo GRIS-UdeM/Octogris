@@ -177,11 +177,13 @@ ok. so what we want, is
     * when old instance inputOutputMode saved: use inputOutputMode
 
 so, i think we may have to have a version 3 for this. The problem is that there is no way to know that the mInputMode was not saved. it was saved as the default 8x16 mode. That means that if the user actually wants a 8x16 track on a track that doesn't have 8x16, we'd force it to what the track actually is. I guess that will happen very rarily. In the new mode, we'll have 2x2 tracks... actually i don't know how to use the internal routing mode. So i'll just wait for this issue...        
+**** Continuing the thought here... actually this issue has nothing to do with the internal routing. We just want to be able to have less sources than the track says, e.g., in logic.  
 
-trying internal routing mode in studio
-i don't know how to put plugins on output busses!
+2015-12-2, Alright, so I tested the audio for this fix in the lab and it works. The only problem is that the combo box initial state is blank when it wasn't saved in a preset. I think the reason it is blank is because it was saved as a random value in the presets. It used to be 
 
-2015-12-2, Alright, so I tested the audio for this fix in the lab and it works. The only problem is that the combo box initial state is blank when it wasn't saved in a preset.  
+preset was saved as 1, which is 1x4, and is what we're seeing 
+but both the movement constraint combo and the input/ouput mode combo are blank, why?
+
 ________________________
 #56
 ok so the deal with that is that the components in the osc tab is within an osc component, while the stuff in the interface tab (and all other tabs) is in the editor. So I think i should grab all the gui stuff from the osc component and put them in the editor...? That seems like a lot of work for not that great a reason...What are the fucntions related to GUI?

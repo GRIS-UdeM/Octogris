@@ -154,7 +154,7 @@ private:
     ToggleButton *mTrSeparateAutomationMode;
 	ToggleButton *mLinkDistances;
     ToggleButton *mApplyFilter;
-	ComboBox *mMovementMode;
+	ComboBox *mMovementModeCombo;
     ComboBox *mInputOutputModeCombo;
     TextButton *mApplyInputOutputModeButton;
 	ComboBox *mProcessModeCombo;

@@ -522,13 +522,11 @@ AudioProcessorEditor (ownerFilter)
         y += dh + 5;
         
         {
-            mMovementMode = new ComboBox();
+            mMovementModeCombo = new ComboBox();
             updateMovementModeCombo();
-            //mMovementMode->setBounds(x, y, w, dh);
-            //box->addAndMakeVisible(mMovementMode);
-            mComponents.add(mMovementMode);
+            mComponents.add(mMovementModeCombo);
             y += dh + 5;
-            mMovementMode->addListener(this);
+            mMovementModeCombo->addListener(this);
         }
         
         {
@@ -564,7 +562,7 @@ AudioProcessorEditor (ownerFilter)
             if (iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("1x8",  i1o8+1);  }
             if (iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("1x16", i1o16+1); }
             
-            if (iMaxSources >=2 && iMaxSpeakers >=2)  { mInputOutputModeCombo->addItem("2x2",  i2o2+1);  }
+            if (iMaxSources >=2 && iMaxSpeakers >=2)  { mInputOutputModeCombo->addItem("2x2",  i2o2+1);  }  //the id here cannot be 0
             if (iMaxSources >=2 && iMaxSpeakers >=4)  { mInputOutputModeCombo->addItem("2x4",  i2o4+1);  }
             if (iMaxSources >=2 && iMaxSpeakers >=6)  { mInputOutputModeCombo->addItem("2x6",  i2o6+1);  }
             if (iMaxSources >=2 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("2x8",  i2o8+1);  }
@@ -582,7 +580,8 @@ AudioProcessorEditor (ownerFilter)
             if (iMaxSources >=8 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("8x8",  i8o8+1);  }
             if (iMaxSources >=8 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("8x16", i8o16+1); }
             
-            mInputOutputModeCombo->setSelectedId(mFilter->getInputOutputMode());
+            int mode = mFilter->getInputOutputMode();
+            mInputOutputModeCombo->setSelectedId(mode);
             mInputOutputModeCombo->setSize(w - iButtonW, dh);
             mInputOutputModeCombo->setTopLeftPosition(x, y);
             box->addAndMakeVisible(mInputOutputModeCombo);
@@ -1303,7 +1302,7 @@ void OctogrisAudioProcessorEditor::updateSources(bool p_bCalledFromConstructor){
 
     if (!p_bCalledFromConstructor){
         mSrcSelect->clear(dontSendNotification);
-        mMovementMode->clear(dontSendNotification);
+        mMovementModeCombo->clear(dontSendNotification);
         updateMovementModeCombo();
     }
 
@@ -1414,23 +1413,27 @@ void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor)
 
 void OctogrisAudioProcessorEditor::updateMovementModeCombo(){
     int index = 1;
-    mMovementMode->addItem("Independent", index++);
+    mMovementModeCombo->addItem("Independent", index++);
     if (mFilter->getNumberOfSources() > 1){
-        mMovementMode->addItem("Circular", index++);
-        mMovementMode->addItem("Circular Fixed Radius", index++);
-        mMovementMode->addItem("Circular Fixed Angle", index++);
-        mMovementMode->addItem("Circular Fully Fixed", index++);
-        mMovementMode->addItem("Delta Lock", index++);
+        mMovementModeCombo->addItem("Circular", index++);
+        mMovementModeCombo->addItem("Circular Fixed Radius", index++);
+        mMovementModeCombo->addItem("Circular Fixed Angle", index++);
+        mMovementModeCombo->addItem("Circular Fully Fixed", index++);
+        mMovementModeCombo->addItem("Delta Lock", index++);
         if (mFilter->getNumberOfSources() == 2){
-            mMovementMode->addItem("Symmetric X", index++);
-            mMovementMode->addItem("Symmetric Y", index++);
+            mMovementModeCombo->addItem("Symmetric X", index++);
+            mMovementModeCombo->addItem("Symmetric Y", index++);
             //mMovementMode->addItem("Symmetric X & Y", index++);
         }
     }
     int iCurMode = mFilter->getMovementMode() + 1;
-    //iCurMode > mMovementMode->getNumItems() ? mMovementMode->setSelectedId(1) : mMovementMode->setSelectedId(iCurMode);
-    mMovementMode->setSelectedId(iCurMode);
-    
+    //iCurMode > mMovementModeCombo->getNumItems() ? mMovementModeCombo->setSelectedId(1) : mMovementModeCombo->setSelectedId(iCurMode);
+    if (mMovementModeCombo->getItemText(iCurMode) == ""){
+        mMovementModeCombo->setSelectedId(1);
+        mFilter->setMovementMode(0);
+    } else {
+        mMovementModeCombo->setSelectedId(iCurMode);
+    }
 }
 
 
@@ -1671,7 +1674,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         }
         mField->repaint();
         if (iSelectedMode == i1o2 || iSelectedMode == i1o4 || iSelectedMode == i1o6 || iSelectedMode == i1o8 || iSelectedMode == i1o16){
-            mMovementMode->setSelectedId(1);
+            mMovementModeCombo->setSelectedId(1);
         }
     }
     else if (button == mApplySrcPlacementButton) {
@@ -1883,7 +1886,7 @@ void OctogrisAudioProcessorEditor::textEditorFocusLost (TextEditor &textEditor){
 
 void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 {
-    if (comboBox == mMovementMode) {
+    if (comboBox == mMovementModeCombo) {
         int iSelectedMode = comboBox->getSelectedId() - 1;
         mFilter->setMovementMode(iSelectedMode);
         if(mFilter->getNumberOfSources() > 1){
@@ -2019,7 +2022,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 	if (hcp != mHostChangedProperty) {
 		mHostChangedProperty = hcp;
 
-		mMovementMode->setSelectedId(mFilter->getMovementMode() + 1);
+		mMovementModeCombo->setSelectedId(mFilter->getMovementMode() + 1);
 		mProcessModeCombo->setSelectedId(mFilter->getProcessMode() + 1);
         mOscLeapSourceCb->setSelectedId(mFilter->getOscLeapSource() + 1);
         
@@ -2077,16 +2080,16 @@ void OctogrisAudioProcessorEditor::timerCallback()
     if (mNeedRepaint){
         if(mFilter->getGuiTab() == 0){
             int w = (mTabs->getTabContentComponent(0)->getWidth() - kMargin) / 3 - kMargin;
-            mMovementMode->setBounds(kMargin, kMargin+kDefaultLabelHeight+5, w, kDefaultLabelHeight);
-            mTabs->getTabContentComponent(0)->addAndMakeVisible(mMovementMode);
+            mMovementModeCombo->setBounds(kMargin, kMargin+kDefaultLabelHeight+5, w, kDefaultLabelHeight);
+            mTabs->getTabContentComponent(0)->addAndMakeVisible(mMovementModeCombo);
         } else if(mFilter->getGuiTab() == 1){
             
             int cbw = 130;
             int x = 2*cbw + 2*kMargin;
             int y = kMargin + 2 * (kDefaultLabelHeight + 5);
             int w = (mTabs->getTabContentComponent(1)->getWidth() - kMargin) / 3 - kMargin;
-            mMovementMode->setBounds(x, y, w, kDefaultLabelHeight);
-            mTabs->getTabContentComponent(1)->addAndMakeVisible(mMovementMode);
+            mMovementModeCombo->setBounds(x, y, w, kDefaultLabelHeight);
+            mTabs->getTabContentComponent(1)->addAndMakeVisible(mMovementModeCombo);
         }
         
         mSmoothing->setValue(mFilter->getParameter(kSmooth));

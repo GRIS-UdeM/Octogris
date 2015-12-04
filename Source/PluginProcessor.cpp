@@ -142,7 +142,7 @@ mFilters()
 	mProcessMode = kPanVolumeMode;
 	mRoutingMode = 0;
     //version 9
-    mInputOutputMode = i1o2;//i8o16;  //by default we have 8 inputs and 16 outputs
+    mInputOutputMode = i8o16;  //by default we have 8 inputs and 16 outputs
     mSrcPlacementMode = 1;
     mSrcSelected = 0;
     
