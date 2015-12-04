@@ -1228,8 +1228,8 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 #if WIN32
     
 #else
-    if(mEnableJoystick->getToggleState())
-    {
+    if(mEnableJoystick->getToggleState()) {
+        m_pJoystickUpdateThread->stopThread(100);
         IOHIDManagerUnscheduleFromRunLoop(gIOHIDManagerRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
         IOHIDManagerRegisterInputValueCallback(gIOHIDManagerRef, NULL,this);
         IOHIDManagerClose(gIOHIDManagerRef, kIOHIDOptionsTypeNone);
@@ -1238,8 +1238,7 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
         gElementCFArrayRef = NULL;
     }
     mJoystick = NULL;
-    if(mController)
-    {
+    if(mController) {
         mController->enableGesture(Leap::Gesture::TYPE_INVALID);
         mController=NULL;
         gIsLeapConnected = 0;
@@ -1820,6 +1819,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
                 gIOHIDManagerRef = NULL;
                 gDeviceCFArrayRef = NULL;
                 gElementCFArrayRef = NULL;
+                m_pJoystickUpdateThread->stopThread(100);
                 mJoystick = NULL;
                 mStateJoystick->setText("", dontSendNotification);
             }

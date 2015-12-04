@@ -43,8 +43,8 @@ deviceRef(NULL)
 void HIDDelegate::Handle_DeviceMatchingCallback(void *inContext, IOReturn inResult, void *inSender, IOHIDDeviceRef inIOHIDDeviceRef) {
 #pragma unused (  inContext, inSender )
     
-    printf("(context: %p, result: 0x%08X, sender: %p, device: %p)",
-           inContext, inResult, inSender, (void *) inIOHIDDeviceRef);
+//    printf("(context: %p, result: 0x%08X, sender: %p, device: %p)",
+//           inContext, inResult, inSender, (void *) inIOHIDDeviceRef);
 #ifdef DEBUG
     HIDDumpDeviceInfo(inIOHIDDeviceRef);
 #endif // def DEBUG
@@ -59,8 +59,7 @@ void HIDDelegate::Handle_DeviceMatchingCallback(void *inContext, IOReturn inResu
 void HIDDelegate::Handle_DeviceRemovalCallback(void *inContext, IOReturn inResult, void *inSender, IOHIDDeviceRef inIOHIDDeviceRef) {
 #pragma unused (  inContext, inResult, inSender )
     
-    printf("(context: %p, result: 0x%08X, sender: %p, device: %p).\n",
-           inContext, inResult, inSender, (void *) inIOHIDDeviceRef);
+//    printf("(context: %p, result: 0x%08X, sender: %p, device: %p).\n", inContext, inResult, inSender, (void *) inIOHIDDeviceRef);
     OctogrisAudioProcessorEditor * tempEditor = (OctogrisAudioProcessorEditor*) inContext;
     tempEditor->uncheckJoystickButton();
     
@@ -97,7 +96,6 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
                         tempEditor->getHIDDel()->setButtonPressedTab(usage,1);
                         
                         tempEditor->getMover()->begin(usage-1, kHID);
-                        cout << "begin Handle_IOHIDDeviceInputValueCallback\n";
                     }
                 } else if (state == 0) {  //released
                     if(usage<= tempEditor ->getNbSources() ) {
@@ -107,7 +105,7 @@ void HIDDelegate::Handle_IOHIDDeviceInputValueCallback(
                 }
             }
             if (!tIOHIDElementRef) {
-                printf("tIOHIDElementRef == NULL\n");
+//                printf("tIOHIDElementRef == NULL\n");
                 break;                                                              // (no)
             }
             // length ok?
@@ -242,7 +240,7 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
         return -1;  // THROW
     }
     
-    printf("IOHIDManager (%p) creaded and opened!", (void *) gIOHIDManagerRef);
+//    printf("IOHIDManager (%p) creaded and opened!", (void *) gIOHIDManagerRef);
     return 0;
 }
 

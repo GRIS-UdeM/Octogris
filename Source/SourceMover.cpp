@@ -93,7 +93,7 @@ void SourceMover::sortAngles(){
     for (b = 0; b < iNbrSrc && ia[b].i != mSelectedSrc; b++) ;
     
     if (b == iNbrSrc) {
-        printf("error!\n");
+        printf("sort angle error!\n");
         b = 0;
     }
     
