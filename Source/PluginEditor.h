@@ -220,6 +220,7 @@ private:
     Component  *mTrEndPointLabel;
 
     int mTrStateEditor;
+    int mTrCycleCount;
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
@@ -230,7 +231,8 @@ private:
     ReferenceCountedObjectPtr<HIDDelegate>  mJoystick;
 	
 	// for resizing/repaint:
-	Component *mField;
+	//Component *mField;
+    FieldComponent *mField;
     Component *mSourcesBoxLabel;
 	Box *mSourcesBox;
 	Component *mSpeakersBoxLabel;

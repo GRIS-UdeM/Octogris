@@ -388,9 +388,10 @@ private:
 
 OctogrisAudioProcessorEditor::OctogrisAudioProcessorEditor (OctogrisAudioProcessor* ownerFilter):
 AudioProcessorEditor (ownerFilter)
-,mFilter(ownerFilter)
-,mMover(ownerFilter)
-,m_logoImage()
+, mFilter(ownerFilter)
+, mMover(ownerFilter)
+, m_logoImage()
+, mTrCycleCount(-1)
 {
     
     m_pSourceUpdateThread = new SourceUpdateThread(this);
@@ -1995,6 +1996,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			Trajectory::Ptr t = mFilter->getTrajectory();
 			if (t) {
 				mTrProgressBar->setValue(t->progress());
+                int iCurCycle = t->progressCycle();
+                if (mTrCycleCount != iCurCycle){
+                    mField->clearTrajectoryPath();
+                    mTrCycleCount = iCurCycle;
+                }
 			} else {
 				mTrWriteButton->setButtonText("Ready");
                 mTrWriteButton->setToggleState(false, dontSendNotification);

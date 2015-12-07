@@ -67,6 +67,7 @@ public:
 	
 	bool process(float seconds, float beats);
 	float progress();
+    float progressCycle();
 	void stop();
 	
 protected:
