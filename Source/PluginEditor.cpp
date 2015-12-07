@@ -789,6 +789,10 @@ AudioProcessorEditor (ownerFilter)
         
         mTrWriteButton = addButton("Ready", x, y, cbw, dh, box);
         mTrWriteButton->setClickingTogglesState(true);
+        
+        mTrEndPointLabel = addLabel("Click anywhere on circle to set end point", x+cbw+kMargin, y, 300, dh, box);
+        mTrEndPointLabel->setVisible(false);
+        
         y += dh + 5;
         
         mTrProgressBar = new MiniProgressBar();
@@ -1115,6 +1119,38 @@ AudioProcessorEditor (ownerFilter)
     addAndMakeVisible (m_pResizer = new ResizableCornerComponent (this, &m_oResizeLimits));
     setSize (mFilter->getGuiWidth(), mFilter->getGuiHeight());
     //refreshSize();
+
+
+    //SETTING LOOK AND FEEL
+//    LookAndFeel_V2 mLookAndFeel;
+//    for (int i = 0; i < mComponents.size(); ++i){
+//        if (Component* c = mComponents[i]){
+//            c->setLookAndFeel (&mLookAndFeel);
+//        }
+//    }
+    
+ 
+
+    
+    //SETTING LOOK AND FEEL
+//    lookAndFeels.add (new LookAndFeel_V2());
+//    for (int i = 0; i < getNumChildComponents(); ++i){
+//        if (Component* c = getChildComponent(i)){
+//            c->setLookAndFeel (lookAndFeels[0]);
+//        }
+//    }
+    
+    
+//    SETTING LOOK AND FEEL
+    mLookAndFeel = new LookAndFeel_V2();
+    for (int i = 0; i < getNumChildComponents(); ++i){
+        if (Component* c = getChildComponent(i)){
+            c->setLookAndFeel (mLookAndFeel);
+        }
+    }
+    
+    
+    
 }
 
 void OctogrisAudioProcessorEditor::updateEndLocationTextEditors(){
@@ -1226,6 +1262,7 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 {
     mFilter->setCalculateLevels(false);
     mFilter->removeListener(this);
+
 #if WIN32
     
 #else
@@ -1643,14 +1680,16 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         if (mTrEndPointButton->getToggleState()){
             mTrEndPointButton->setButtonText("Cancel");
             mFilter->setIsSettingEndPoint(true);
-//            m_oEndPointLabel.setVisible(true);
+            mTrEndPointLabel->setVisible(true);
             m_pTrEndRayTextEditor->setText("");
             m_pTrEndAngleTextEditor->setText("");
+            mTrEndPointLabel->setVisible(true);
         } else {
             mTrEndPointButton->setButtonText("Set end point");
             mFilter->setIsSettingEndPoint(false);
-//            m_oEndPointLabel.setVisible(false);
+            mTrEndPointLabel->setVisible(false);
             updateEndLocationTextEditors();
+            mTrEndPointLabel->setVisible(false);
         }
     }
     else if (button == m_pTrResetEndButton) {
@@ -2020,7 +2059,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
         updateEndLocationTextEditors();
         mTrEndPointButton->setToggleState(false, dontSendNotification);
         mTrEndPointButton->setButtonText("Set end point");
-//        m_oEndPointLabel.setVisible(false);
+        mTrEndPointLabel->setVisible(false);
         mFilter->setJustSelectedEndPoint(false);
     }
 		

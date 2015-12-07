@@ -135,6 +135,7 @@ private:
 	
 	// for memory management:
 	OwnedArray<Component> mComponents;
+//    OwnedArray<LookAndFeel> lookAndFeels;
 	
 	// for interactions:
 	bool mNeedRepaint;
@@ -217,7 +218,7 @@ private:
     TextEditor* m_pTrEndRayTextEditor;
     TextEditor* m_pTrEndAngleTextEditor;
     TextButton* m_pTrResetEndButton;
-    Component  *mTrEndPointLabel;
+    Component*  mTrEndPointLabel;
 
     int mTrStateEditor;
     int mTrCycleCount;
@@ -258,7 +259,8 @@ private:
     ComponentBoundsConstrainer m_oResizeLimits;
     
     ScopedPointer<ResizableCornerComponent> m_pResizer;
-    
+    ScopedPointer<LookAndFeel> mLookAndFeel;
+
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED
