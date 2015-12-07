@@ -38,10 +38,11 @@ static const float kSpeakerDiameter = kSpeakerRadius * 2;
 FieldComponent::FieldComponent(OctogrisAudioProcessor* filter, SourceMover *mover)
 : mFilter(filter)
 , mMover(mover)
-, fStartPathX(-1)
-, fStartPathY(-1)
-, fEndPathX(-1)
-, fEndPathY(-1)
+, m_fStartPathX(-1)
+, m_fStartPathY(-1)
+, m_fEndPathX(-1)
+, m_fEndPathY(-1)
+, m_bPathJustStarted(false)
 {
     mMover->setFieldComponent(this);
 }
@@ -51,25 +52,23 @@ FieldComponent::~FieldComponent()
 }
 
 void FieldComponent::clearTrajectoryPath(){
-    fStartPathX = -1, fEndPathX = -1, fStartPathY = -1, fEndPathY = -1;
+    m_fStartPathX = -1, m_fEndPathX = -1, m_fStartPathY = -1, m_fEndPathY = -1;
     m_oTrajectoryPath.clear();
-//    repaint();
 }
 
 void FieldComponent::updatePositionTrace(float p_fX, float p_fY){
     float fAbsoluteX = p_fX * getWidth();
     float fAbsoluteY = (1-p_fY) * getHeight();
-    //draw drag path
-    if (fEndPathX == -1){
-        fStartPathX = fAbsoluteX;
-        fStartPathY = fAbsoluteY;
-    } else {
-        fStartPathX = fEndPathX;
-        fStartPathY = fEndPathY;
+    if (m_fEndPathX == -1){         //we have not started the path yet, so start at absolute point
+        m_bPathJustStarted = true;
+        m_fStartPathX = fAbsoluteX;
+        m_fStartPathY = fAbsoluteY;
+    } else {                        //we've already started, so start from previous point
+        m_fStartPathX = m_fEndPathX;
+        m_fStartPathY = m_fEndPathY;
     }
-    fEndPathX = fAbsoluteX;
-    fEndPathY = fAbsoluteY;
-    //repaint();
+    m_fEndPathX = fAbsoluteX;
+    m_fEndPathY = fAbsoluteY;
 }
 
 FPoint FieldComponent::getSourcePoint(int i)
@@ -284,9 +283,12 @@ void FieldComponent::paint (Graphics& g)
 					Justification(Justification::centred), false);
 	}
     // TRAJECTORY PATH
-    if (fStartPathX != -1 && fEndPathX != -1){
-        m_oTrajectoryPath.startNewSubPath (fStartPathX, fStartPathY);
-        m_oTrajectoryPath.lineTo (fEndPathX, fEndPathY);
+    if (m_fStartPathX != -1 && m_fEndPathX != -1){
+        if (m_bPathJustStarted){
+            m_oTrajectoryPath.startNewSubPath (m_fStartPathX, m_fStartPathY);
+            m_bPathJustStarted = false;
+        }
+        m_oTrajectoryPath.lineTo (m_fEndPathX, m_fEndPathY);
         g.strokePath (m_oTrajectoryPath, PathStrokeType (2.0f));
     }
 }

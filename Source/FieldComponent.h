@@ -67,10 +67,11 @@ private:
 
 	FPoint convertSourceRT(float r, float t);
     Path m_oTrajectoryPath;
-    float fStartPathX;
-    float fStartPathY;
-    float fEndPathX;
-    float fEndPathY;
+    float m_fStartPathX;
+    float m_fStartPathY;
+    float m_fEndPathX;
+    float m_fEndPathY;
+    bool m_bPathJustStarted;
 
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FieldComponent)
