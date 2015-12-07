@@ -289,7 +289,8 @@ void FieldComponent::paint (Graphics& g)
             m_bPathJustStarted = false;
         }
         m_oTrajectoryPath.lineTo (m_fEndPathX, m_fEndPathY);
-        g.strokePath (m_oTrajectoryPath, PathStrokeType (2.0f));
+        g.setColour(Colour(0, 102, 255));
+        g.strokePath (m_oTrajectoryPath, PathStrokeType (2.0f, PathStrokeType::JointStyle::curved));
     }
 }
 

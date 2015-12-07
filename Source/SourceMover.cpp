@@ -266,7 +266,7 @@ void SourceMover::move(FPoint pointXY01, MoverType mt)
                     }
                     
                     //calculate new position for curSrc using delta for selected source
-                    JUCE_COMPILER_WARNING("storing the position of the initial mouse click in mSourcesDownXY allows us to bounce back from r < 0 or r > 1 because our position is alwauys" +
+                    JUCE_COMPILER_WARNING("storing the position of the initial mouse click in mSourcesDownXY allows us to bounce back from r < 0 or r > 1 because our position is always" +
                                           "relative to the initial mouse click. However we lose that history when we release the mouse button. So this is elegant, but sub-ideal. ")
                     FPoint oldCurSrcPosXY = (mMoverType == kSourceThread) ? mFilter->convertRt2Xy(mFilter->getOldSrcLocRT(iCurSrc)) : mSourcesDownXY[iCurSrc];
                     FPoint newCurSrcPosXY = oldCurSrcPosXY + delSelSrcPosXY;
