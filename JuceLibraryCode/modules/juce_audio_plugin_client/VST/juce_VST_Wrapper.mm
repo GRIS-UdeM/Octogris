@@ -27,7 +27,6 @@
 #include "AppConfig.h"
 
 #include "../utility/juce_CheckSettingMacros.h"
-#include "../../juce_core/native/juce_mac_ClangBugWorkaround.h"
 
 #if JucePlugin_Build_VST || JucePlugin_Build_VST3
 

@@ -178,9 +178,6 @@ void ImageButton::paintButton (Graphics& g,
 
 bool ImageButton::hitTest (int x, int y)
 {
-    if (! Component::hitTest (x, y)) // handle setInterceptsMouseClicks
-        return false;
-
     if (alphaThreshold == 0)
         return true;
 
