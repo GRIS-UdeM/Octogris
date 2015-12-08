@@ -358,29 +358,29 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SourceUpdateThread)
 };
 //==================================== JoystickUpdateThread ===================================================================
-class JoystickUpdateThread : public Thread, public Component {
-public:
-    JoystickUpdateThread(OctogrisAudioProcessorEditor* p_pEditor)
-    : Thread ("JoystickUpdateThread")
-    ,m_iInterval(25)
-    ,m_pEditor(p_pEditor)
-    {  }
-    
-    ~JoystickUpdateThread() {
-        stopThread (500);
-    }
-    
-    void run() override {
-        while (! threadShouldExit()) {
-            wait (m_iInterval);
-            m_pEditor->readAndUseJoystickValues();
-        }
-    }
-private:
-    int m_iInterval;
-    OctogrisAudioProcessorEditor* m_pEditor;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JoystickUpdateThread)
-};
+//class JoystickUpdateThread : public Thread, public Component {
+//public:
+//    JoystickUpdateThread(OctogrisAudioProcessorEditor* p_pEditor)
+//    : Thread ("JoystickUpdateThread")
+//    ,m_iInterval(25)
+//    ,m_pEditor(p_pEditor)
+//    {  }
+//    
+//    ~JoystickUpdateThread() {
+//        stopThread (500);
+//    }
+//    
+//    void run() override {
+//        while (! threadShouldExit()) {
+//            wait (m_iInterval);
+////            m_pEditor->readAndUseJoystickValues();
+//        }
+//    }
+//private:
+//    int m_iInterval;
+//    OctogrisAudioProcessorEditor* m_pEditor;
+//    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JoystickUpdateThread)
+//};
 
 
 
@@ -398,8 +398,8 @@ AudioProcessorEditor (ownerFilter)
     m_pSourceUpdateThread = new SourceUpdateThread(this);
     mComponents.add(m_pSourceUpdateThread);
 
-    m_pJoystickUpdateThread = new JoystickUpdateThread(this);
-    mComponents.add(m_pJoystickUpdateThread);
+//    m_pJoystickUpdateThread = new JoystickUpdateThread(this);
+//    mComponents.add(m_pJoystickUpdateThread);
     
     mHostChangedParameter = mFilter->getHostChangedParameter();
     mHostChangedProperty = mFilter->getHostChangedProperty();
@@ -1268,7 +1268,7 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
     
 #else
     if(mEnableJoystick->getToggleState()) {
-        m_pJoystickUpdateThread->stopThread(100);
+//        m_pJoystickUpdateThread->stopThread(100);
         IOHIDManagerUnscheduleFromRunLoop(gIOHIDManagerRef, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
         IOHIDManagerRegisterInputValueCallback(gIOHIDManagerRef, NULL,this);
         IOHIDManagerClose(gIOHIDManagerRef, kIOHIDOptionsTypeNone);
@@ -1860,7 +1860,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
                 gIOHIDManagerRef = NULL;
                 gDeviceCFArrayRef = NULL;
                 gElementCFArrayRef = NULL;
-                m_pJoystickUpdateThread->stopThread(100);
+//                m_pJoystickUpdateThread->stopThread(100);
                 mJoystick = NULL;
                 mStateJoystick->setText("", dontSendNotification);
             }
@@ -2169,14 +2169,14 @@ void OctogrisAudioProcessorEditor::timerCallback()
             m_pSourceUpdateThread->stopThread(500);
     }
     
-    if(mEnableJoystick->getToggleState()) {
-        if(!m_pJoystickUpdateThread->isThreadRunning()){
-            m_pJoystickUpdateThread->startThread();
-        }
-    } else if (m_pJoystickUpdateThread->isThreadRunning()){
-        m_pJoystickUpdateThread->stopThread(500);
-
-    }
+//    if(mEnableJoystick->getToggleState()) {
+//        if(!m_pJoystickUpdateThread->isThreadRunning()){
+//            m_pJoystickUpdateThread->startThread();
+//        }
+//    } else if (m_pJoystickUpdateThread->isThreadRunning()){
+//        m_pJoystickUpdateThread->stopThread(500);
+//
+//    }
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
     

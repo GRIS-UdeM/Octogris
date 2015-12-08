@@ -36,7 +36,7 @@ public:
     OSStatus Initialize_HID(void *inContext);
     
     //! Handling the data sent by the joystick
-    static void Handle_IOHIDDeviceInputValueCallback(void * inContext,IOReturn inResult,void * inSender, IOHIDValueRef   inIOHIDValueRef);
+    static void joystickPositionCallback(void * inContext,IOReturn inResult,void * inSender, IOHIDValueRef   inIOHIDValueRef);
     //! Event called when there is a match of device
     static void Handle_DeviceMatchingCallback(void *inContext, IOReturn inResult, void *inSender, IOHIDDeviceRef inIOHIDDeviceRef);
     //! Event called when a matched device is disconnected

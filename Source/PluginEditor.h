@@ -38,7 +38,7 @@
 
 class FieldComponent;
 class SourceUpdateThread;
-class JoystickUpdateThread;
+//class JoystickUpdateThread;
 class Box;
 
 enum
@@ -253,7 +253,7 @@ private:
 	Slider* addParamSlider(int paramType, int si, float v, int x, int y, int w, int h, Component *into);
     
     SourceUpdateThread*     m_pSourceUpdateThread;
-    JoystickUpdateThread*   m_pJoystickUpdateThread;
+//    JoystickUpdateThread*   m_pJoystickUpdateThread;
     
     //! Bounds of the resizable window
     ComponentBoundsConstrainer m_oResizeLimits;
