@@ -257,10 +257,9 @@ private:
     
     //! Bounds of the resizable window
     ComponentBoundsConstrainer m_oResizeLimits;
-    
     ScopedPointer<ResizableCornerComponent> m_pResizer;
-    ScopedPointer<LookAndFeel> mLookAndFeel;
-
+    
+    LookAndFeel_V2 mFeel;
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED

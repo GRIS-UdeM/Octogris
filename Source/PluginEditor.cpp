@@ -393,6 +393,7 @@ AudioProcessorEditor (ownerFilter)
 , m_logoImage()
 , mTrCycleCount(-1)
 {
+    LookAndFeel::setDefaultLookAndFeel(&mFeel);
     
     m_pSourceUpdateThread = new SourceUpdateThread(this);
     mComponents.add(m_pSourceUpdateThread);
@@ -1142,15 +1143,15 @@ AudioProcessorEditor (ownerFilter)
     
     
 //    SETTING LOOK AND FEEL
-    mLookAndFeel = new LookAndFeel_V2();
-    for (int i = 0; i < getNumChildComponents(); ++i){
-        if (Component* c = getChildComponent(i)){
-            c->setLookAndFeel (mLookAndFeel);
-        }
-    }
+//    mLookAndFeel = new LookAndFeel_V2();
+//    for (int i = 0; i < getNumChildComponents(); ++i){
+//        if (Component* c = getChildComponent(i)){
+//            c->setLookAndFeel (mLookAndFeel);
+//        }
+//    }
     
-    
-    
+
+
 }
 
 void OctogrisAudioProcessorEditor::updateEndLocationTextEditors(){
