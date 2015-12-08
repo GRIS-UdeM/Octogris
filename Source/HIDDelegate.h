@@ -56,7 +56,7 @@ public:
     //! Return the address of the set of devices
     CFSetRef getDeviceSetRef(){return deviceSetRef;}
     
-    void readAndUseJoystickValues();
+//    void readAndUseJoystickValues();
     
     //! Destroyer
     virtual ~HIDDelegate() {};

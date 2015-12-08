@@ -87,7 +87,6 @@ void HIDDelegate::joystickPositionCallback(
         if(tempEditor->getHIDDel() != NULL) {
             if(usagePage==1) {   //axis
                 tempEditor->getHIDDel()->JoystickUsed(usage, value,min,max);  //calling Joystick used the function that will modify the source position
-                cout << "joystickPositionCallback\n";
             }
             if(usagePage == 9) {   //buttons
                 
@@ -245,47 +244,46 @@ OSStatus HIDDelegate::Initialize_HID(void *inContext) {
 }
 
 
-void HIDDelegate::readAndUseJoystickValues() {
-    int nbJoysticks = CFSetGetCount(deviceSetRef);
-    CFTypeRef array[nbJoysticks];
-    CFSetGetValues(deviceSetRef, array);
-    for(int iCurJoy = 0; iCurJoy < nbJoysticks; iCurJoy++) {
-        
-        if(gElementCFArrayRef == NULL || CFGetTypeID(array[iCurJoy]) != IOHIDDeviceGetTypeID()){
-            continue;
-        }
-        CFIndex nbElement = CFArrayGetCount(gElementCFArrayRef);
-        
-        for (CFIndex iCurElm = 0; iCurElm < nbElement; ++iCurElm) {
-            if(mEditor->getHIDDel() == NULL) {
-                continue;
-            }
-            
-            IOHIDElementRef tIOHIDElementRef= (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef, iCurElm);
-            uint32_t usagePage              = IOHIDElementGetUsagePage(tIOHIDElementRef);
-            uint32_t usage                  = IOHIDElementGetUsage(tIOHIDElementRef);
-            double value                    = IOHIDElement_GetValue(tIOHIDElementRef,  kIOHIDValueScaleTypePhysical);
-
-            //axis
-            if(usagePage == 1 && !std::isnan(value)){
-                //calling Joystick used the function that will modify the source position
-                double min = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
-                double max = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
-
-                mEditor->getHIDDel()->JoystickUsed(usage, value, min, max);
-                cout << "readAndUseJoystickValues\n";
-            }
-            //buttons
-            else if(usagePage == 9 && value == 1 && usage <= mEditor->getNbSources()){
-                mEditor->getHIDDel()->setButtonPressedTab(usage,1);
-                if (value == 0 && usage<= mEditor ->getNbSources()){  //released
-                    mEditor->getHIDDel()->setButtonPressedTab(usage,0);
-                }
-            }
-            
-        }
-    }
-}
+//void HIDDelegate::readAndUseJoystickValues() {
+//    int nbJoysticks = CFSetGetCount(deviceSetRef);
+//    CFTypeRef array[nbJoysticks];
+//    CFSetGetValues(deviceSetRef, array);
+//    for(int iCurJoy = 0; iCurJoy < nbJoysticks; iCurJoy++) {
+//        
+//        if(gElementCFArrayRef == NULL || CFGetTypeID(array[iCurJoy]) != IOHIDDeviceGetTypeID()){
+//            continue;
+//        }
+//        CFIndex nbElement = CFArrayGetCount(gElementCFArrayRef);
+//        
+//        for (CFIndex iCurElm = 0; iCurElm < nbElement; ++iCurElm) {
+//            if(mEditor->getHIDDel() == NULL) {
+//                continue;
+//            }
+//            
+//            IOHIDElementRef tIOHIDElementRef= (IOHIDElementRef) CFArrayGetValueAtIndex(gElementCFArrayRef, iCurElm);
+//            uint32_t usagePage              = IOHIDElementGetUsagePage(tIOHIDElementRef);
+//            uint32_t usage                  = IOHIDElementGetUsage(tIOHIDElementRef);
+//            double value                    = IOHIDElement_GetValue(tIOHIDElementRef,  kIOHIDValueScaleTypePhysical);
+//
+//            //axis
+//            if(usagePage == 1 && !std::isnan(value)){
+//                //calling Joystick used the function that will modify the source position
+//                double min = IOHIDElementGetPhysicalMin(tIOHIDElementRef);
+//                double max = IOHIDElementGetPhysicalMax(tIOHIDElementRef);
+//
+//                mEditor->getHIDDel()->JoystickUsed(usage, value, min, max);
+//            }
+//            //buttons
+//            else if(usagePage == 9 && value == 1 && usage <= mEditor->getNbSources()){
+//                mEditor->getHIDDel()->setButtonPressedTab(usage,1);
+//                if (value == 0 && usage<= mEditor ->getNbSources()){  //released
+//                    mEditor->getHIDDel()->setButtonPressedTab(usage,0);
+//                }
+//            }
+//            
+//        }
+//    }
+//}
 
 /** this is called, to handle the effect of the use of the axis while pressing a button on the joystick,
  by joystickPositionCallback because as a static method it is quite limited.

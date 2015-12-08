@@ -2189,9 +2189,9 @@ void OctogrisAudioProcessorEditor::audioProcessorChanged (AudioProcessor* proces
     mNeedRepaint = true;
 }
 
-void OctogrisAudioProcessorEditor::readAndUseJoystickValues(){
-    mJoystick->readAndUseJoystickValues();
-}
+//void OctogrisAudioProcessorEditor::readAndUseJoystickValues(){
+//    mJoystick->readAndUseJoystickValues();
+//}
 
 void OctogrisAudioProcessorEditor::audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue){
     mNeedRepaint = true;

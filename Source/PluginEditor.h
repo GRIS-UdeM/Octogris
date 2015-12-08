@@ -127,7 +127,7 @@ public:
     
     void setDefaultPendulumEndpoint();
     
-    void readAndUseJoystickValues();
+//    void readAndUseJoystickValues();
 	
 private:
 	OctogrisAudioProcessor *mFilter;
