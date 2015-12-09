@@ -248,4 +248,7 @@ display things
 so pendulum will have direction return
 and rand tar will have force-sep-auto return
 _________________________
+enregistrer plusieurs automations en meme temps
 
+-2.2.8 2 spirales en meme temps chie ben raide, drette au debut
+ok, robert dit d'oublier ça pour l'instant...
