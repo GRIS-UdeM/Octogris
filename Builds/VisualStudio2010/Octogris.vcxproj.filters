@@ -5,6 +5,9 @@
     <Filter Include="Octogris">
       <UniqueIdentifier>{F2BBDB65-D4F8-7D74-2DF6-4698FB11323A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Octogris\GrisCommonFiles">
+      <UniqueIdentifier>{63E59617-BBFB-EE2E-FF91-3C28E38AFEA4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Octogris\Resources">
       <UniqueIdentifier>{5A610E2C-C3B9-7CCC-AE65-2ED51185DAED}</UniqueIdentifier>
     </Filter>
@@ -1413,6 +1416,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\GrisCommonFiles\GrisLookAndFeel.h">
+      <Filter>Octogris\GrisCommonFiles</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\HIDManager\HID_Config_Utilities.h">
       <Filter>Octogris\HIDManager</Filter>
     </ClInclude>
@@ -2023,9 +2029,6 @@
       <Filter>Juce Modules\juce_core\native</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_BasicNativeHeaders.h">
-      <Filter>Juce Modules\juce_core\native</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_mac_ClangBugWorkaround.h">
       <Filter>Juce Modules\juce_core\native</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\native\juce_osx_ObjCHelpers.h">

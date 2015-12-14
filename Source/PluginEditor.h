@@ -30,6 +30,7 @@
 #include "PluginProcessor.h"
 #include "LevelComponent.h"
 #include "SourceMover.h"
+#include "../../GrisCommonFiles/GrisLookAndFeel.h"
 #if WIN32
 
 #else
@@ -259,7 +260,8 @@ private:
     ComponentBoundsConstrainer m_oResizeLimits;
     ScopedPointer<ResizableCornerComponent> m_pResizer;
     
-    LookAndFeel_V2 mFeel;
+//    LookAndFeel_V2 mFeel;
+    GrisLookAndFeel mFeel;
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED

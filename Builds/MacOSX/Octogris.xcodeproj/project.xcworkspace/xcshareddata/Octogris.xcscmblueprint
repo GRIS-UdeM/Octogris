@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "4C5334256ADE7BE6B8B0CF3B0BDFC04203B98A7F",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "EB5060301A45D5D6F316FE343F475AA86D669BAF" : 0,
+    "4C5334256ADE7BE6B8B0CF3B0BDFC04203B98A7F" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "61FDCBA1-CE22-48F1-A416-8BCDE91CC7D2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "EB5060301A45D5D6F316FE343F475AA86D669BAF" : "GrisCommonFiles\/",
+    "4C5334256ADE7BE6B8B0CF3B0BDFC04203B98A7F" : "Octogris"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Octogris",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Builds\/MacOSX\/Octogris.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/GRIS-UdeM\/Octogris.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4C5334256ADE7BE6B8B0CF3B0BDFC04203B98A7F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/GRIS-UdeM\/GrisCommonFiles.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "EB5060301A45D5D6F316FE343F475AA86D669BAF"
+    }
+  ]
+}

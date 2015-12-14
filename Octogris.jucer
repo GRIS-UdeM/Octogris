@@ -10,6 +10,10 @@
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
               pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="4.0.2">
   <MAINGROUP id="rRl79u" name="Octogris">
+    <GROUP id="{48A026D6-2EE7-E714-8C68-003BA85B16C8}" name="GrisCommonFiles">
+      <FILE id="jDkaGa" name="GrisLookAndFeel.h" compile="1" resource="0"
+            file="../GrisCommonFiles/GrisLookAndFeel.h"/>
+    </GROUP>
     <GROUP id="{B76B0FE8-BBC6-AA42-5E09-44DABB7BB441}" name="Resources">
       <FILE id="NATXje" name="logoGris.png" compile="0" resource="1" file="logoGris.png"/>
     </GROUP>
