@@ -98,11 +98,8 @@ private:
 class Box : public Component
 {
 public:
-    Box(bool useViewport)
-    {
-        if (useViewport)
-        {
-            
+    Box(bool useViewport) {
+        if (useViewport) {
             mContent = new Component();
             mViewport = new Viewport();
             mViewport->setViewedComponent(mContent, false);
@@ -110,37 +107,37 @@ public:
             mViewport->setScrollBarThickness(5);
             addAndMakeVisible(mViewport);
         }
+        mBgColour = Colour::fromRGB(200,200,200);
     }
     
     ~Box()
-    {
-        
-    }
+    { }
     
-    Component * getContent()
-    {
+    Component * getContent() {
         return mContent.get() ? mContent.get() : this;
     }
     
-    void paint(Graphics &g)
-    {
+    void paint(Graphics &g) {
         const Rectangle<int> &box = getLocalBounds();
-        
-        g.setColour(Colour::fromRGB(200,200,200));
+        g.setColour(mBgColour);
         g.fillRect(box);
         g.setColour(Colours::black);
         g.drawRect(box);
     }
     
-    void resized()
-    {
+    void resized() {
         if (mViewport)
             mViewport->setSize(getWidth(), getHeight());
+    }
+    
+    void setBackgroundColor(Colour pColour) {
+        mBgColour = pColour;
     }
     
 private:
     ScopedPointer<Component> mContent;
     ScopedPointer<Viewport> mViewport;
+    Colour mBgColour;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Box)
 };
@@ -444,7 +441,13 @@ AudioProcessorEditor (ownerFilter)
 
     
     // param box
-    Colour tabBg = Colour::fromRGB(200,200,200);
+    Colour tabBg;
+    if (s_bUseNewGui){
+        tabBg = Colours::lightblue;
+    } else {
+        tabBg = Colour::fromRGB(200,200,200);
+    }
+
     mTabs = new OctTabbedComponent(TabbedButtonBar::TabsAtTop, mFilter);
     mTabs->addTab("Settings",           tabBg, new Component(), true);
     mTabs->addTab("Trajectories",       tabBg, new Component(), true);
@@ -461,6 +464,7 @@ AudioProcessorEditor (ownerFilter)
     // sources
     {
         mSourcesBox = new Box(true);
+        mSourcesBox->setBackgroundColor(tabBg);
         addAndMakeVisible(mSourcesBox);
         mComponents.add(mSourcesBox);
         
@@ -487,6 +491,7 @@ AudioProcessorEditor (ownerFilter)
     // speakers
     {
         mSpeakersBox = new Box(true);
+        mSpeakersBox->setBackgroundColor(tabBg);
         addAndMakeVisible(mSpeakersBox);
         mComponents.add(mSpeakersBox);
         
@@ -1116,39 +1121,6 @@ AudioProcessorEditor (ownerFilter)
     m_oResizeLimits.setSizeLimits (960-150, 420-150, 1560, 1020);
     addAndMakeVisible (m_pResizer = new ResizableCornerComponent (this, &m_oResizeLimits));
     setSize (mFilter->getGuiWidth(), mFilter->getGuiHeight());
-    //refreshSize();
-
-
-    //SETTING LOOK AND FEEL
-//    LookAndFeel_V2 mLookAndFeel;
-//    for (int i = 0; i < mComponents.size(); ++i){
-//        if (Component* c = mComponents[i]){
-//            c->setLookAndFeel (&mLookAndFeel);
-//        }
-//    }
-    
- 
-
-    
-    //SETTING LOOK AND FEEL
-//    lookAndFeels.add (new LookAndFeel_V2());
-//    for (int i = 0; i < getNumChildComponents(); ++i){
-//        if (Component* c = getChildComponent(i)){
-//            c->setLookAndFeel (lookAndFeels[0]);
-//        }
-//    }
-    
-    
-//    SETTING LOOK AND FEEL
-//    mLookAndFeel = new LookAndFeel_V2();
-//    for (int i = 0; i < getNumChildComponents(); ++i){
-//        if (Component* c = getChildComponent(i)){
-//            c->setLookAndFeel (mLookAndFeel);
-//        }
-//    }
-    
-
-
 }
 
 void OctogrisAudioProcessorEditor::updateEndLocationTextEditors(){
