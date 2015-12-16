@@ -436,7 +436,6 @@ AudioProcessorEditor (ownerFilter)
 #endif
     
     m_VersionLabel->setText("Octogris" + version,  dontSendNotification);
-//    m_VersionLabel->setFont (Font (Font::getDefaultMonospacedFontName(), 12.0f, Font::plain));
     m_VersionLabel->setJustificationType(Justification(Justification::right));
     m_VersionLabel->setColour(Label::textColourId, Colours::whitesmoke);
     addAndMakeVisible(m_VersionLabel);
@@ -452,10 +451,6 @@ AudioProcessorEditor (ownerFilter)
     mTabs->addTab("Volume & Filters",   tabBg, new Component(), true);
     mTabs->addTab("Sources",            tabBg, new Component(), true);
    	mTabs->addTab("Speakers",           tabBg, new Component(), true);
-//    {
-//        mOsc = CreateOscComponent(mFilter, this);
-//        if (mOsc) mTabs->addTab("OSC",  tabBg, mOsc, true);
-//    }
     mTabs->addTab("Interfaces",         tabBg, new Component(), true);
 
     mTabs->setSize(kCenterColumnWidth + kMargin + kRightColumnWidth, kParamBoxHeight);
@@ -1102,10 +1097,6 @@ AudioProcessorEditor (ownerFilter)
             mOsc->setSize(box->getWidth(), box->getHeight()-y);
             box->addAndMakeVisible(mOsc);
             mComponents.add(mOsc);
-
-            
-            
-//            mTabs->addTab("OSC",  tabBg, mOsc, true);
         }
     }
 #endif
