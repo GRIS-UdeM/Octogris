@@ -393,7 +393,13 @@ AudioProcessorEditor (ownerFilter)
 , m_logoImage()
 , mTrCycleCount(-1)
 {
-    LookAndFeel::setDefaultLookAndFeel(&mFeel);
+    if (s_bUseNewGui){
+        //this works, but everything is too small
+        mGrisFeel.setDefaultSansSerifTypefaceName("Shree Devanagari 714");
+        LookAndFeel::setDefaultLookAndFeel(&mGrisFeel);
+    } else {
+        LookAndFeel::setDefaultLookAndFeel(&mV2Feel);
+    }
     
     m_pSourceUpdateThread = new SourceUpdateThread(this);
     mComponents.add(m_pSourceUpdateThread);

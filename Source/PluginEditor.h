@@ -260,8 +260,8 @@ private:
     ComponentBoundsConstrainer m_oResizeLimits;
     ScopedPointer<ResizableCornerComponent> m_pResizer;
     
-//    LookAndFeel_V2 mFeel;
-    GrisLookAndFeel mFeel;
+    LookAndFeel_V2 mV2Feel;
+    GrisLookAndFeel mGrisFeel;
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED
