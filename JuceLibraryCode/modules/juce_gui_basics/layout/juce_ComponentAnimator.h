@@ -152,7 +152,7 @@ private:
     uint32 lastTime;
 
     AnimationTask* findTaskFor (Component*) const noexcept;
-    void timerCallback() override;
+    void timerCallback();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ComponentAnimator)
 };

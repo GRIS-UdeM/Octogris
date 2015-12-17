@@ -38,16 +38,15 @@ namespace WindowsMessageHelpers
 
     void dispatchMessageFromLParam (LPARAM lParam)
     {
-        if (MessageManager::MessageBase* const message = reinterpret_cast<MessageManager::MessageBase*> (lParam))
-        {
-            JUCE_TRY
-            {
-                message->messageCallback();
-            }
-            JUCE_CATCH_EXCEPTION
+        MessageManager::MessageBase* const message = reinterpret_cast<MessageManager::MessageBase*> (lParam);
 
-            message->decReferenceCount();
+        JUCE_TRY
+        {
+            message->messageCallback();
         }
+        JUCE_CATCH_EXCEPTION
+
+        message->decReferenceCount();
     }
 
     //==============================================================================
@@ -65,27 +64,22 @@ namespace WindowsMessageHelpers
 
             if (message == broadcastId)
             {
-                if (String* const m = reinterpret_cast<String*> (lParam))
-                {
-                    const ScopedPointer<String> messageString (m);
-                    MessageManager::getInstance()->deliverBroadcastMessage (*m);
-                }
-
+                const ScopedPointer<String> messageString ((String*) lParam);
+                MessageManager::getInstance()->deliverBroadcastMessage (*messageString);
                 return 0;
             }
 
             if (message == WM_COPYDATA)
             {
-                if (const COPYDATASTRUCT* const data = reinterpret_cast<const COPYDATASTRUCT*> (lParam))
-                {
-                    if (data->dwData == broadcastId)
-                    {
-                        const String messageString (CharPointer_UTF32 ((const CharPointer_UTF32::CharType*) data->lpData),
-                                                    data->cbData / sizeof (CharPointer_UTF32::CharType));
+                const COPYDATASTRUCT* const data = reinterpret_cast<const COPYDATASTRUCT*> (lParam);
 
-                        PostMessage (juce_messageWindowHandle, broadcastId, 0, (LPARAM) new String (messageString));
-                        return 0;
-                    }
+                if (data->dwData == broadcastId)
+                {
+                    const String messageString (CharPointer_UTF32 ((const CharPointer_UTF32::CharType*) data->lpData),
+                                                data->cbData / sizeof (CharPointer_UTF32::CharType));
+
+                    PostMessage (juce_messageWindowHandle, broadcastId, 0, (LPARAM) new String (messageString));
+                    return 0;
                 }
             }
         }

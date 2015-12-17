@@ -37,9 +37,6 @@ AudioProcessor::AudioProcessor()
       numInputChannels (0),
       numOutputChannels (0),
       latencySamples (0),
-     #if JUCE_DEBUG
-      textRecursionCheck (false),
-     #endif
       suspended (false),
       nonRealtime (false),
       processingPrecision (singlePrecision)
@@ -242,13 +239,6 @@ String AudioProcessor::getParameterName (int index, int maximumStringLength)
 
 const String AudioProcessor::getParameterText (int index)
 {
-   #if JUCE_DEBUG
-    // if you hit this, then you're probably using the old parameter control methods,
-    // but have forgotten to implement either of the getParameterText() methods.
-    jassert (! textRecursionCheck);
-    ScopedValueSetter<bool> sv (textRecursionCheck, true, false);
-   #endif
-
     return getParameterText (index, 1024);
 }
 

@@ -120,7 +120,6 @@ namespace WindowsFileHelpers
 const juce_wchar File::separator = '\\';
 const String File::separatorString ("\\");
 
-void* getUser32Function (const char*);
 
 //==============================================================================
 bool File::exists() const
@@ -644,13 +643,6 @@ bool File::isShortcut() const
 
 File File::getLinkedTarget() const
 {
-   #if JUCE_WINDOWS
-    typedef DWORD (WINAPI* GetFinalPathNameByHandleFunc) (HANDLE, LPTSTR, DWORD, DWORD);
-
-    static GetFinalPathNameByHandleFunc getFinalPathNameByHandle
-             = (GetFinalPathNameByHandleFunc) getUser32Function ("GetFinalPathNameByHandle");
-
-    if (getFinalPathNameByHandle != nullptr)
     {
         HANDLE h = CreateFile (getFullPathName().toWideCharPointer(),
                                GENERIC_READ, FILE_SHARE_READ, nullptr,
@@ -658,11 +650,16 @@ File File::getLinkedTarget() const
 
         if (h != INVALID_HANDLE_VALUE)
         {
-            if (DWORD requiredSize = getFinalPathNameByHandle (h, nullptr, 0, 0 /* FILE_NAME_NORMALIZED */))
-            {
-                HeapBlock<WCHAR> buffer (requiredSize + 2, true);
+            DWORD requiredSize = ::GetFinalPathNameByHandleW (h, nullptr, 0, FILE_NAME_NORMALIZED);
 
-                if (getFinalPathNameByHandle (h, buffer, requiredSize, 0 /* FILE_NAME_NORMALIZED */) > 0)
+            if (requiredSize > 0)
+            {
+                HeapBlock<WCHAR> buffer (requiredSize + 2);
+                buffer.clear (requiredSize + 2);
+
+                requiredSize = ::GetFinalPathNameByHandleW (h, buffer, requiredSize, FILE_NAME_NORMALIZED);
+
+                if (requiredSize > 0)
                 {
                     CloseHandle (h);
 
@@ -679,7 +676,6 @@ File File::getLinkedTarget() const
             CloseHandle (h);
         }
     }
-   #endif
 
     File result (*this);
     String p (getFullPathName());

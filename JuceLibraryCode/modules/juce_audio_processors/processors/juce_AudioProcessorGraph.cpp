@@ -1410,8 +1410,6 @@ void AudioProcessorGraph::setNonRealtime (bool isProcessingNonRealtime) noexcept
 {
     const ScopedLock sl (getCallbackLock());
 
-    AudioProcessor::setNonRealtime (isProcessingNonRealtime);
-
     for (int i = 0; i < nodes.size(); ++i)
         nodes.getUnchecked(i)->getProcessor()->setNonRealtime (isProcessingNonRealtime);
 }

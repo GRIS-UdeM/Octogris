@@ -8,7 +8,7 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
-              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="4.0.2">
+              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="4.0.1">
   <MAINGROUP id="rRl79u" name="Octogris">
     <GROUP id="{48A026D6-2EE7-E714-8C68-003BA85B16C8}" name="GrisCommonFiles">
       <FILE id="jDkaGa" name="GrisLookAndFeel.h" compile="1" resource="0"
@@ -163,7 +163,7 @@
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
       </MODULEPATHS>
     </VS2010>
-    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="c:\SDKs\vstsdk2.4"
+    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK"
             aaxFolder="C:\SDKs\AAX_SDK_2p1p1" externalLibraries="" vst3Folder="C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
