@@ -7,6 +7,8 @@
  
  ==============================================================================
  */
+#if WIN32
+#else
 
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
@@ -349,3 +351,4 @@ HIDDelegate::Ptr HIDDelegate::CreateHIDDelegate(OctogrisAudioProcessor *filter, 
     return new HIDDelegate(filter, editor);
 }
 
+#endif

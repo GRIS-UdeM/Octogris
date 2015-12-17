@@ -33,6 +33,16 @@
 
 #if WIN32
 
+#include <sstream>
+#include <string>
+
+template<class T>
+string toString(const T &value) {
+	ostringstream os;
+	os << value;
+	return os.str();
+}
+
 #else
 
 #include "HIDDelegate.h"
@@ -1127,6 +1137,10 @@ void OctogrisAudioProcessorEditor::updateEndLocationTextEditors(){
     std::pair<float, float> endLocation = mFilter->getEndLocationXY();
     FPoint pointRT = mFilter->convertXy012Rt(FPoint(endLocation.first, 1-endLocation.second), false);
     pointRT.y *= 360/(2*M_PI);
+#if WIN32
+	m_pTrEndRayTextEditor->setText(toString(pointRT.x));
+	m_pTrEndAngleTextEditor->setText(toString(pointRT.y));
+#else
     {
         ostringstream oss;
         oss << std::fixed << std::right << std::setw( 4 ) << setprecision(2) << std::setfill( ' ' ) << "" <<  pointRT.x;
@@ -1137,6 +1151,7 @@ void OctogrisAudioProcessorEditor::updateEndLocationTextEditors(){
         oss << std::fixed << std::right << std::setw( 4 ) << setprecision(2) << std::setfill( ' ' ) << "" << pointRT.y;
         m_pTrEndAngleTextEditor->setText(oss.str());
     }
+#endif
 }
 
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
@@ -2069,10 +2084,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mTrTurnsTextEditor->setText(String(mFilter->getTrTurns()));
         
         updateOscComponent(mOsc);
-        
-/*#if JUCE_MAC
-        updateLeapComponent(mleap);
-#endif*/
         mShowGridLines->setToggleState(mFilter->getShowGridLines(), dontSendNotification);
         mTrSeparateAutomationMode->setToggleState(mFilter->getIndependentMode(), dontSendNotification);
         mLinkDistances->setToggleState(mFilter->getLinkDistances(), dontSendNotification);

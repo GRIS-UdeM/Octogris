@@ -17,6 +17,9 @@
 #ifndef __Octogris2__HIDDelegate__
 #define __Octogris2__HIDDelegate__
 
+#if WIN32
+#else
+
 #include <stdio.h>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginEditor.h"
@@ -80,5 +83,5 @@ private:
 };
 
 
-
+#endif  //not win32
 #endif  // OCTOLEAP_H_INCLUDED

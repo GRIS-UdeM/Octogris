@@ -116,9 +116,10 @@ public:
 	SourceMover * getMover() { return &mMover; }
     Label * getmStateLeap() {return mStateLeap;}
     
-    //! Return the HIDDelegate which managed the HID devices
+#if WIN32
+#else
     HIDDelegate * getHIDDel() {return mJoystick;};
-    
+#endif    
     //! Method unchecking the joystick check box
     void uncheckJoystickButton();
     //! Return the number of sources form the processor
@@ -226,12 +227,17 @@ private:
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
+#if WIN32
+#else
     ReferenceCountedObjectPtr<OctoLeap> mleap;
+#endif
 	HeartbeatComponent *mOsc;
     
     //joystick
+#if WIN32
+#else
     ReferenceCountedObjectPtr<HIDDelegate>  mJoystick;
-	
+#endif
 	// for resizing/repaint:
 	//Component *mField;
     FieldComponent *mField;

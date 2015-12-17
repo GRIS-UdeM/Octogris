@@ -57,6 +57,16 @@ size_t strlcpy(char * dst, const char * src, size_t dstsize)
         return src_len;
     }
 }
+
+#include <sstream>
+#include <string>
+
+	template<class T>
+	string toString(const T &value) {
+		ostringstream os;
+		os << value;
+		return os.str();
+	}
 #endif
 
 
@@ -106,6 +116,8 @@ mFilters()
 
 #if WIN32
 	bIsWindows = true;
+
+
 #else
 	bIsWindows = false;
 #endif
@@ -1844,7 +1856,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute ("kFilterFar", mParameters[kFilterFar]);
     
     for (int i = 0; i < JucePlugin_MaxNumInputChannels; ++i) {
-        String srcX = "src" + to_string(i) + "x";
+		String srcX = "src" + toString(i) + "x";
         xml.setAttribute (srcX, mParameters[getParamForSourceX(i)]);
         String srcY = "src" + to_string(i) + "y";
         xml.setAttribute (srcY, mParameters[getParamForSourceY(i)]);
@@ -1861,7 +1873,6 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
         String spkM = "spk" + to_string(i) + "m";
         xml.setAttribute (spkM, mParameters[getParamForSpeakerM(i)]);
     }
-    
     copyXmlToBinary (xml, destData);
 }
 
