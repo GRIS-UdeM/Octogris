@@ -391,8 +391,8 @@ AudioProcessorEditor (ownerFilter)
 , mTrCycleCount(-1)
 {
     if (s_bUseNewGui){
-        //this works, but everything is too small
-        mGrisFeel.setDefaultSansSerifTypefaceName("Shree Devanagari 714");
+        //this works, but everything is too small. This appears to be the only way that I found to change the
+        mGrisFeel.setDefaultSansSerifTypefaceName(mGrisFeel.getFontName());
         LookAndFeel::setDefaultLookAndFeel(&mGrisFeel);
     } else {
         LookAndFeel::setDefaultLookAndFeel(&mV2Feel);
