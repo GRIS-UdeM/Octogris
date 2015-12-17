@@ -475,7 +475,7 @@ AudioProcessorEditor (ownerFilter)
         int dh = kDefaultLabelHeight, x = 0, y = 0, w = kCenterColumnWidth;
         
         mLinkDistances = addCheckbox("Link", mFilter->getLinkDistances(), x, y, w/3, dh, ct);
-        addLabel("Distance/Span", x+w/3, y, w*2/3, dh, ct);
+        addLabel("Surface/Span", x+w/3, y, w*2/3, dh, ct);
         
         mSrcSelect = new ComboBox();
         mTabs->getTabContentComponent(3)->addAndMakeVisible(mSrcSelect);
