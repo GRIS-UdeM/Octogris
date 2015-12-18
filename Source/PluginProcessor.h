@@ -105,7 +105,7 @@ enum
 #define kNumberOfParameters (kConstantParameters + kConstantOffset)
 
 static const int s_iMaxAreas = 3; //this number is used as a multiplicator of mNumberOfSpeakers
-static const bool s_bUseNewGui = true;
+static const bool s_bUseNewGui = false;
 
 //these have to start at 0 because of backwards-compatibility
 enum InputOutputModes {
