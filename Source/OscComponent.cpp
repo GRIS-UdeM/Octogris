@@ -27,8 +27,10 @@
 #include "OscComponent.h"
 //LIBLO
 //#include "lo.h"
-const char *kSourceXYPath = "/Octo/SourceXY";
-const char *kSelectSourcePath = "/Octo/Source";
+//const char *kSourceXYPath = "/Octo/SourceXY";
+//const char *kSelectSourcePath = "/Octo/Source";
+const string kSourceXYPath = "/Octo/SourceXY";
+const string kSelectSourcePath = "/Octo/Source";
 
 static void osc_err_handler(int num, const char *msg, const char *path){
 	fprintf(stderr, "osc_err_handler num: %d msg: %s path: %s\n",
@@ -191,7 +193,6 @@ public:
 				} else {
 					DBG("lo_server_thread_new failed (port in use ?)");
 				}
-
 			//not connected, so we connect
 			} else {
 				int p = mReceivePort->getText().getIntValue();
@@ -268,9 +269,11 @@ public:
 	//	return 0;
 	//}
 	void oscMessageReceived(const OSCMessage& message) override {
-		if (!strcmp(path, kSourceXYPath) && !strcmp(types, "ff") && argc == 2) {
-			float y = argv[0]->f;
-			float x = argv[1]->f;
+		string address = message.getAddressPattern().toString().toStdString();
+		//set position for current source
+		if (address == kSourceXYPath && message.size() == 2 && message[0].isFloat32() && message[1].isFloat32()){
+			float y = message[0].getFloat32();
+			float x = message[1].getFloat32();
 
 			mEditor->getMover()->begin(mEditor->getOscLeapSource(), kOsc);
 			mEditor->getMover()->move(FPoint(x, y), kOsc);
@@ -278,12 +281,10 @@ public:
 
 			mNeedToEnd = true;
 			mLastXYTime = Time::getCurrentTime(); 
-		}
-		else if (!strncmp(path, kSelectSourcePath, strlen(kSelectSourcePath))
-			&& strlen(path) == strlen(kSelectSourcePath) + 1
-			&& !strcmp(types, "f") && argc == 1
-			&& argv[0]->f < 0.5) {
-			int src = path[strlen(kSelectSourcePath)] - '1';
+		//set current source
+		} else if (address.substr(0, address.size()-1) == kSelectSourcePath && address.size() == kSelectSourcePath.size() + 1
+			&& message.size() == 1 && message[0].isFloat32() && message[0].getFloat32() < .5) {
+			int src = stoi(address.substr(address.size() - 1);
 			mEditor->setOscLeapSource(src);
 		}
 	}
@@ -349,6 +350,7 @@ void updateOscComponent(HeartbeatComponent* oscComponent){
     dynamic_cast<OscComponent*>(oscComponent)->updateInfo();
 }
 
-static int osc_method_handler(const char *path, const char *types, lo_arg ** argv, int argc, lo_message msg, void *user_data){
-    return ((OscComponent*)user_data)->method_handler(path, types, argv, argc, msg, user_data);
-}
+//LIBLO
+//static int osc_method_handler(const char *path, const char *types, lo_arg ** argv, int argc, lo_message msg, void *user_data){
+//    return ((OscComponent*)user_data)->method_handler(path, types, argv, argc, msg, user_data);
+//}
