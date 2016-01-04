@@ -67,12 +67,14 @@ class OscComponent : public HeartbeatComponent, public Button::Listener, public 
 public:
     OscComponent(OctogrisAudioProcessor* filter, OctogrisAudioProcessorEditor *editor)
 	:
-		mFilter(filter),
-		mEditor(editor),
+		mFilter(filter)
+		,mEditor(editor)
 		//LIBLO
 		//mServer(NULL),
 		//mAddress(NULL),
-		mNeedToEnd(false)
+		,mNeedToEnd(false)
+		,mOscAddress(NULL)
+
 	{
         
 		const int m = 10, dh = 18, cw = 130, iw = 120, pw = 60;
@@ -210,10 +212,16 @@ public:
 			//mAddress = NULL;
 			
 			if (mSend->getToggleState()) {
-				String i = mSendIp->getText();
-				String p = mSendPort->getText();
-				mAddress = lo_address_new(i.toRawUTF8(), p.toRawUTF8());
-				if (!mAddress) {
+				//LIBLO
+				//String i = mSendIp->getText();
+				//String p = mSendPort->getText();
+				//mAddress = lo_address_new(i.toRawUTF8(), p.toRawUTF8());
+
+				mOscAddress = mSendIp->getText();
+				int p = mSendPort->getText().getIntValue();
+				//LIBLO
+				//if (!mAddress) {
+				if(!mOscSender.connect(mOscAddress, p)){
 					fprintf(stderr, "lo_address_new failed (port in use ?)\n");
 					mSend->setToggleState(false, dontSendNotification);
 					mSendIp->setEnabled(true);
@@ -284,8 +292,10 @@ public:
 		//set current source
 		} else if (address.substr(0, address.size()-1) == kSelectSourcePath && address.size() == kSelectSourcePath.size() + 1
 			&& message.size() == 1 && message[0].isFloat32() && message[0].getFloat32() < .5) {
-			int src = stoi(address.substr(address.size() - 1);
-			mEditor->setOscLeapSource(src);
+			string src_str = address.substr(address.size() - 1);
+			String src_jstr(src_str);
+			int iSrc = src_jstr.getIntValue();
+			mEditor->setOscLeapSource(iSrc);
 		}
 	}
 	
@@ -299,19 +309,35 @@ public:
 			}
 		}
 	
-		if (!mAddress) return;
+		//LIBLO
+		//if (!mAddress) return;
+		if (!mSend->getToggleState()) return;
 		
 		int src = mEditor->getOscLeapSource();
 		if (src != mSource) {
-			String s = "Source "; s << (src+1);
-			lo_send(mAddress, kSelectSourcePath, "s", s.toRawUTF8());
+			String s = "Source "; 
+			s << (src+1);
+			//LIBLO
+			//lo_send(mAddress, kSelectSourcePath, "s", s.toRawUTF8());
+			if (!mOscSender.send(mOscAddress, s)) {
+				DBG("Error: could not send OSC message.");
+			}
 			mSource = src;
 		}
 		
 		FPoint p = mFilter->getSourceXY01(src);
 		if (mSourceXY != p) {
 			//fprintf(stderr, "sent new pos to %s\n", kSourceXYPath);
-			lo_send(mAddress, kSourceXYPath, "ff", p.y, p.x);
+			//LIBLO
+			//lo_send(mAddress, kSourceXYPath, "ff", p.y, p.x);
+
+			OSCMessage message(mOscAddress);
+			message.addFloat32(p.y);
+			message.addFloat32(p.x);
+
+			if (!mOscSender.send(message)) {
+				DBG("Error: could not send OSC message.");
+			}
 			mSourceXY = p;
 		}
 	}
@@ -332,6 +358,8 @@ private:
 	//LIBLO
 	//lo_server_thread mServer;
 	//lo_address mAddress;
+	OSCSender mOscSender;
+	String mOscAddress;
 	
 	bool mNeedToEnd;
 	Time mLastXYTime;
