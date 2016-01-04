@@ -193,6 +193,27 @@
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
       </MODULEPATHS>
     </VS2013>
+    <VS2015 targetFolder="Builds/VisualStudio2015" vstFolder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK"
+            vst3Folder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="Octogris" headerPath="C:\Users\barth\Documents\sdks\liblo-0.28&#10;C:\Users\barth\Documents\sdks\liblo-0.28\lo"
+                       libraryPath="C:\Users\barth\Documents\sdks\liblo-0.28\lib\ReleaseLib"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="3" targetName="Octogris"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+      </MODULEPATHS>
+    </VS2015>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="1"/>
