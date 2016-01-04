@@ -25,8 +25,8 @@
  */
 
 #include "OscComponent.h"
-#include "lo.h"
-
+//LIBLO
+//#include "lo.h"
 const char *kSourceXYPath = "/Octo/SourceXY";
 const char *kSelectSourcePath = "/Octo/Source";
 
@@ -38,9 +38,9 @@ static void osc_err_handler(int num, const char *msg, const char *path){
 
 }
 
-static int osc_method_handler(const char *path, const char *types,
-                                  lo_arg ** argv, int argc,
-                                  lo_message msg, void *user_data);
+//static int osc_method_handler(const char *path, const char *types,
+//                                  lo_arg ** argv, int argc,
+//                                  lo_message msg, void *user_data);
 
 static String getLocalIPAddress(){
 //    Array<IPAddress> addresses;
@@ -59,7 +59,8 @@ static String getLocalIPAddress(){
 }
 
 
-class OscComponent : public HeartbeatComponent, public Button::Listener, public TextEditor::Listener
+class OscComponent : public HeartbeatComponent, public Button::Listener, public TextEditor::Listener, private OSCReceiver,
+	private OSCReceiver::ListenerWithOSCAddress<OSCReceiver::MessageLoopCallback>
 {
 public:
     OscComponent(OctogrisAudioProcessor* filter, OctogrisAudioProcessorEditor *editor)
@@ -162,7 +163,9 @@ public:
 	
 	void buttonClicked (Button *button) {
 		if (button == mReceive){
-			lo_server_thread_free(mServer);
+			//LIBLO
+			//free memory used by server
+			//lo_server_thread_free(mServer);
 			mServer = NULL;
 			
 			if (mReceive->getToggleState()) {
@@ -284,8 +287,9 @@ private:
 	ScopedPointer<TextEditor> mSendIp;
 	ScopedPointer<TextEditor> mSendPort;
 	
-	lo_server_thread mServer;
-	lo_address mAddress;
+	//LIBLO
+	//lo_server_thread mServer;
+	//lo_address mAddress;
 	
 	bool mNeedToEnd;
 	Time mLastXYTime;

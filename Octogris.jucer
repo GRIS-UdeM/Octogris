@@ -52,35 +52,6 @@
       <FILE id="SsW75f" name="IOHIDElement_.h" compile="0" resource="1" file="HIDManager/IOHIDElement_.h"/>
       <FILE id="ebGlDe" name="IOHIDLib_.h" compile="0" resource="1" file="HIDManager/IOHIDLib_.h"/>
     </GROUP>
-    <GROUP id="{17707EFA-D5BA-4533-678C-40B034B62098}" name="liblo">
-      <GROUP id="{5459C3B4-ABF5-9F1D-9C5A-DA0511119ED9}" name="lo">
-        <FILE id="hpyuoz" name="lo.h" compile="0" resource="0" file="liblo/lo/lo.h"/>
-        <FILE id="Y3JMl5" name="lo_endian.h" compile="0" resource="0" file="liblo/lo/lo_endian.h"/>
-        <FILE id="M4HxXF" name="lo_errors.h" compile="0" resource="0" file="liblo/lo/lo_errors.h"/>
-        <FILE id="I7KvwN" name="lo_lowlevel.h" compile="0" resource="0" file="liblo/lo/lo_lowlevel.h"/>
-        <FILE id="bZmzuU" name="lo_macros.h" compile="0" resource="0" file="liblo/lo/lo_macros.h"/>
-        <FILE id="U3TzZ3" name="lo_osc_types.h" compile="0" resource="0" file="liblo/lo/lo_osc_types.h"/>
-        <FILE id="ehYajU" name="lo_throw.h" compile="0" resource="0" file="liblo/lo/lo_throw.h"/>
-        <FILE id="PuN6g4" name="lo_types.h" compile="0" resource="0" file="liblo/lo/lo_types.h"/>
-      </GROUP>
-      <FILE id="n5flUc" name="loconfig.h" compile="0" resource="0" file="liblo/loconfig.h"/>
-      <GROUP id="{FB4C906C-B596-A218-BC64-95D84358A64C}" name="src">
-        <FILE id="NDqOxt" name="address.c" compile="1" resource="0" file="liblo/src/address.c"/>
-        <FILE id="hx5uXB" name="blob.c" compile="1" resource="0" file="liblo/src/blob.c"/>
-        <FILE id="BilMoE" name="bundle.c" compile="1" resource="0" file="liblo/src/bundle.c"/>
-        <FILE id="GK5sTe" name="lo_internal.h" compile="0" resource="0" file="liblo/src/lo_internal.h"/>
-        <FILE id="Nuf26d" name="lo_types_internal.h" compile="0" resource="0"
-              file="liblo/src/lo_types_internal.h"/>
-        <FILE id="rRAhfR" name="message.c" compile="1" resource="0" file="liblo/src/message.c"/>
-        <FILE id="CC5xit" name="method.c" compile="1" resource="0" file="liblo/src/method.c"/>
-        <FILE id="HlJelR" name="pattern_match.c" compile="1" resource="0" file="liblo/src/pattern_match.c"/>
-        <FILE id="c5NIvy" name="send.c" compile="1" resource="0" file="liblo/src/send.c"/>
-        <FILE id="PvNepZ" name="server.c" compile="1" resource="0" file="liblo/src/server.c"/>
-        <FILE id="DhSEXd" name="server_thread.c" compile="1" resource="0" file="liblo/src/server_thread.c"/>
-        <FILE id="eFQ1gR" name="subtest.c" compile="1" resource="0" file="liblo/src/subtest.c"/>
-        <FILE id="XJhZRE" name="timetag.c" compile="1" resource="0" file="liblo/src/timetag.c"/>
-      </GROUP>
-    </GROUP>
     <GROUP id="{89B00B3D-3E60-2792-C7A4-D570AF057C40}" name="Source">
       <FILE id="bDIKcy" name="HIDDelegate.cpp" compile="1" resource="0" file="Source/HIDDelegate.cpp"/>
       <FILE id="QwSZHu" name="HIDDelegate.h" compile="0" resource="0" file="Source/HIDDelegate.h"/>
@@ -139,6 +110,7 @@
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2010 targetFolder="Builds/VisualStudio2010" vstFolder="C:\SDKs\vstsdk2.4"
@@ -161,6 +133,7 @@
         <MODULEPATH id="juce_audio_processors" path="../../juce"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="juce_osc" path="../../juce"/>
       </MODULEPATHS>
     </VS2010>
     <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK"
@@ -191,14 +164,15 @@
         <MODULEPATH id="juce_audio_processors" path="../../juce"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="juce_osc" path="../../juce"/>
       </MODULEPATHS>
     </VS2013>
     <VS2015 targetFolder="Builds/VisualStudio2015" vstFolder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK"
             vst3Folder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="Octogris" headerPath="C:\Users\barth\Documents\sdks\liblo-0.28&#10;C:\Users\barth\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\barth\Documents\sdks\liblo-0.28\lib\ReleaseLib"/>
+                       isDebug="1" optimisation="1" targetName="Octogris" headerPath=""
+                       libraryPath=""/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="0" optimisation="3" targetName="Octogris"/>
       </CONFIGURATIONS>
@@ -212,6 +186,7 @@
         <MODULEPATH id="juce_audio_processors" path="../../juce"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="juce_osc" path="../../juce"/>
       </MODULEPATHS>
     </VS2015>
   </EXPORTFORMATS>
@@ -225,6 +200,7 @@
     <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="1"/>
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="1"/>
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="1"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
 </JUCERPROJECT>
