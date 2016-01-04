@@ -399,6 +399,7 @@ AudioProcessorEditor (ownerFilter)
 , mMover(ownerFilter)
 , m_logoImage()
 , mTrCycleCount(-1)
+, mOsc (NULL)
 {
     if (s_bUseNewGui){
         //this works, but everything is too small. This appears to be the only way that I found to change the
@@ -2160,7 +2161,9 @@ void OctogrisAudioProcessorEditor::timerCallback()
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
     
-    if (mOsc) mOsc->heartbeat();
+	if (mOsc) {
+		mOsc->heartbeat();
+	}
     
     startTimer(kTimerDelay);
 }
