@@ -67,8 +67,9 @@ public:
 	:
 		mFilter(filter),
 		mEditor(editor),
-		mServer(NULL),
-		mAddress(NULL),
+		//LIBLO
+		//mServer(NULL),
+		//mAddress(NULL),
 		mNeedToEnd(false)
 	{
         
@@ -147,8 +148,9 @@ public:
     };
 	
 	~OscComponent() {
-		lo_server_thread_free(mServer);
-		lo_address_free(mAddress);
+		//LIBLO
+		//lo_server_thread_free(mServer);
+		//lo_address_free(mAddress);
 	}
 	
 	void textEditorTextChanged (TextEditor &te) {
@@ -166,27 +168,45 @@ public:
 			//LIBLO
 			//free memory used by server
 			//lo_server_thread_free(mServer);
-			mServer = NULL;
+			//mServer = NULL;
 			
+			//we're already connected and receiving
 			if (mReceive->getToggleState()) {
-				String p = mReceivePort->getText();
-				mServer = lo_server_thread_new(p.toRawUTF8(), osc_err_handler);
-				if (!mServer) {
-					fprintf(stderr, "lo_server_thread_new failed (port in use ?)\n");
-					mReceive->setToggleState(false, dontSendNotification);
-					mReceivePort->setEnabled(true);
-				} else {
-					lo_server_thread_add_method(mServer, NULL, NULL, osc_method_handler, this);
-					lo_server_thread_start(mServer);
+				//LIBLO
+				//String p = mReceivePort->getText();
+				//mServer = lo_server_thread_new(p.toRawUTF8(), osc_err_handler);
+				//if (!mServer) {
+				//	fprintf(stderr, "lo_server_thread_new failed (port in use ?)\n");
+				//	mReceive->setToggleState(false, dontSendNotification);
+				//	mReceivePort->setEnabled(true);
+				//} else {
+				//	lo_server_thread_add_method(mServer, NULL, NULL, osc_method_handler, this);
+				//	lo_server_thread_start(mServer);
+				//	mReceivePort->setEnabled(false);
+				//}
+
+				//really not sure what the above code does.... this is what I think makes sense
+				if (disconnect()) {
 					mReceivePort->setEnabled(false);
+				} else {
+					DBG("lo_server_thread_new failed (port in use ?)");
 				}
+
+			//not connected, so we connect
 			} else {
-				mReceivePort->setEnabled(true);
+				int p = mReceivePort->getText().getIntValue();
+				if (!connect(9001)) {
+					DBG("Error: could not connect to UDP port 9001.");
+				} else {
+					addListener(this, "/Octo/");
+					mReceivePort->setEnabled(true);
+				}
 			}
 			mFilter->setOscReceiveEnabled(mReceive->getToggleState());
 		} else if (button == mSend) {
-			lo_address_free(mAddress);
-			mAddress = NULL;
+			//LIBLO
+			//lo_address_free(mAddress);
+			//mAddress = NULL;
 			
 			if (mSend->getToggleState()) {
 				String i = mSendIp->getText();
@@ -214,37 +234,58 @@ public:
 			printf("unknown button clicked...\n");
 		}
 	}
-	int method_handler(const char *path, const char *types, lo_arg ** argv, int argc, lo_message msg, void *user_data) {
-		const bool debug = false;
-		if (debug) {
-			fprintf(stderr, "osc_method_handler path: %s types: %s argc: %d\n",
-								path ? path : "(null)",
-								types ? types : "(null)",
-								argc);
-			for (int i = 0; types[i]; i++) {
-				switch(types[i]) {
-					case 'f': fprintf(stderr, "arg %d = %f\n", i, argv[i]->f); break;
-				}
-			}
-		}
+	//LIBLO
+	//int method_handler(const char *path, const char *types, lo_arg ** argv, int argc, lo_message msg, void *user_data) {
+	//	const bool debug = false;
+	//	if (debug) {
+	//		fprintf(stderr, "osc_method_handler path: %s types: %s argc: %d\n",
+	//							path ? path : "(null)",
+	//							types ? types : "(null)",
+	//							argc);
+	//		for (int i = 0; types[i]; i++) {
+	//			switch(types[i]) {
+	//				case 'f': fprintf(stderr, "arg %d = %f\n", i, argv[i]->f); break;
+	//			}
+	//		}
+	//	}
+	//	if (!strcmp(path, kSourceXYPath) && !strcmp(types, "ff") && argc == 2) {
+	//		float y = argv[0]->f;
+	//		float x = argv[1]->f;
+	//	
+	//		mEditor->getMover()->begin(mEditor->getOscLeapSource(), kOsc);
+	//		mEditor->getMover()->move(FPoint(x, y), kOsc);
+	//		mEditor->fieldChanged();
+	//		
+	//		mNeedToEnd = true;
+	//		mLastXYTime = Time::getCurrentTime();
+	//	} else if (	!strncmp(path, kSelectSourcePath, strlen(kSelectSourcePath))
+	//			&&	strlen(path) == strlen(kSelectSourcePath) + 1
+	//			&&	!strcmp(types, "f") && argc == 1
+	//			&&	argv[0]->f < 0.5 ) {
+	//		int src = path[strlen(kSelectSourcePath)] - '1';
+	//		mEditor->setOscLeapSource(src);
+	//	}
+	//	return 0;
+	//}
+	void oscMessageReceived(const OSCMessage& message) override {
 		if (!strcmp(path, kSourceXYPath) && !strcmp(types, "ff") && argc == 2) {
 			float y = argv[0]->f;
 			float x = argv[1]->f;
-		
+
 			mEditor->getMover()->begin(mEditor->getOscLeapSource(), kOsc);
 			mEditor->getMover()->move(FPoint(x, y), kOsc);
 			mEditor->fieldChanged();
-			
+
 			mNeedToEnd = true;
-			mLastXYTime = Time::getCurrentTime();
-		} else if (	!strncmp(path, kSelectSourcePath, strlen(kSelectSourcePath))
-				&&	strlen(path) == strlen(kSelectSourcePath) + 1
-				&&	!strcmp(types, "f") && argc == 1
-				&&	argv[0]->f < 0.5 ) {
+			mLastXYTime = Time::getCurrentTime(); 
+		}
+		else if (!strncmp(path, kSelectSourcePath, strlen(kSelectSourcePath))
+			&& strlen(path) == strlen(kSelectSourcePath) + 1
+			&& !strcmp(types, "f") && argc == 1
+			&& argv[0]->f < 0.5) {
 			int src = path[strlen(kSelectSourcePath)] - '1';
 			mEditor->setOscLeapSource(src);
 		}
-		return 0;
 	}
 	
 	void heartbeat() {
