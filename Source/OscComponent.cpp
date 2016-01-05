@@ -108,8 +108,9 @@ public:
 		x += cw + m;
 		
 		mSendIp = new TextEditor();
-		mSendIp->setText(String(mFilter->getOscSendIp()));
+		mSendIp->setText(mFilter->getOscSendIp());
 		mSendIp->setSize(iw, dh);
+        mSendIp->addListener(this);
 		mSendIp->setTopLeftPosition(x, y);
 		addAndMakeVisible(mSendIp);
 		
@@ -131,7 +132,7 @@ public:
         mReceiveIp->setText(getLocalIPAddress());
         mReceivePort->setText(String(mFilter->getOscReceivePort()));
         mSend->setToggleState(mFilter->getOscSendEnabled(), dontSendNotification);
-        mSendIp->setText(String(mFilter->getOscSendIp()));
+        mSendIp->setText(mFilter->getOscSendIp());
         mSendPort->setText(String(mFilter->getOscSendPort()));
         
         if (mReceive->getToggleState()) buttonClicked(mReceive);
@@ -139,9 +140,6 @@ public:
     };
 	
 	~OscComponent() {
-		//LIBLO
-		//lo_server_thread_free(mServer);
-		//lo_address_free(mAddress);
         disconnect();
         mEditor->getMover()->end(kOsc);
     }
@@ -152,7 +150,7 @@ public:
 		} else if (&te == mSendPort) {
 			mFilter->setOscSendPort(mSendPort->getText().getIntValue());
 		} else if (&te == mSendIp){
-			mFilter->setOscSendIp(mSendIp->getText().toRawUTF8());
+			mFilter->setOscSendIp(mSendIp->getText());
 		}
 	}
 	
@@ -286,9 +284,6 @@ private:
 	ScopedPointer<TextEditor> mSendIp;
 	ScopedPointer<TextEditor> mSendPort;
 	
-	//LIBLO
-	//lo_server_thread mServer;
-	//lo_address mAddress;
 	OSCSender mOscSender;
 	String mOscIpAddress;
 	
@@ -300,16 +295,9 @@ private:
 	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscComponent)
 };
-
 HeartbeatComponent * CreateOscComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor){
 	return new OscComponent(filter, editor);
 }
-
 void updateOscComponent(HeartbeatComponent* oscComponent){
     dynamic_cast<OscComponent*>(oscComponent)->updateInfo();
 }
-
-//LIBLO
-//static int osc_method_handler(const char *path, const char *types, lo_arg ** argv, int argc, lo_message msg, void *user_data){
-//    return ((OscComponent*)user_data)->method_handler(path, types, argv, argc, msg, user_data);
-//}

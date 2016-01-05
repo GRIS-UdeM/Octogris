@@ -401,9 +401,9 @@ public:
 	
 	int getOscSendPort() const { return mOscSendPort; }
 	void setOscSendPort(int s) { mOscSendPort = s; }
-	
-	const char * getOscSendIp() const { return mOscSendIp; }
-	void setOscSendIp(const char *s) { strlcpy(mOscSendIp, s, sizeof(mOscSendIp)); }
+    
+	const String getOscSendIp() const { return mOscSendIp; }
+	void setOscSendIp(String s) { mOscSendIp = s;}
 	
 	float getLevel(int index) const { return mLevels.getUnchecked(index); }
 	void setCalculateLevels(bool c);
@@ -667,7 +667,8 @@ private:
 	int mOscReceivePort;
 	int mOscSendEnabled;
 	int mOscSendPort;
-	char mOscSendIp[64]; // if changing size, change kDataVersion
+    String mOscSendIp;
+	//char mOscSendIp[64]; // if changing size, change kDataVersion
 	uint64_t mHostChangedParameter;
 	uint64_t mHostChangedProperty;
 	uint64_t mProcessCounter;

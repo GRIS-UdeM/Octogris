@@ -79,8 +79,8 @@ int IndexedAngleCompare(const void *a, const void *b)
 }
 
 //==============================================================================
-OctogrisAudioProcessor::OctogrisAudioProcessor():
-mFilters()
+OctogrisAudioProcessor::OctogrisAudioProcessor()
+:mFilters()
 ,m_bIsRecordingAutomation(false)
 ,m_iSourceLocationChanged(-1)
 ,m_bPreventSourceLocationUpdate(false)
@@ -1802,7 +1802,7 @@ void OctogrisAudioProcessor::restoreCurrentLocations(int p_iLocToRestore){
     }
 }
 
-static const int kDataVersion = 15;
+static const int kDataVersion = 16;
 void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     XmlElement xml ("OCTOGRIS_SETTINGS");
@@ -1908,8 +1908,8 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mOscSendEnabled     = xmlState->getIntAttribute ("mOscSendEnabled", 0);
             mOscSendPort        = xmlState->getIntAttribute ("mOscSendPort", 9000);
             
-            JUCE_COMPILER_WARNING("check this... this will not run on windows")
-            strlcpy(mOscSendIp, xmlState->getStringAttribute(mOscSendIp, "192.168.1.100").toStdString().c_str(), 64);
+            //strlcpy(mOscSendIp, xmlState->getStringAttribute(mOscSendIp, "192.168.1.100").toStdString().c_str(), 64);
+            mOscSendIp          = xmlState->getStringAttribute ("mOscSendIp", mOscSendIp);
             
             mProcessMode        = xmlState->getIntAttribute ("mProcessMode", kPanVolumeMode);
             mApplyFilter        = xmlState->getIntAttribute ("mApplyFilter", 1);
@@ -1995,7 +1995,9 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
                 mOscReceivePort = readIntData(data, sizeInBytes, 8000);
                 mOscSendEnabled = readIntData(data, sizeInBytes, 0);
                 mOscSendPort = readIntData(data, sizeInBytes, 9000);
-                readStringData(data, sizeInBytes, "192.168.1.100", mOscSendIp, sizeof(mOscSendIp));
+                char mOscSendIpChar[64];
+                readStringData(data, sizeInBytes, "192.168.1.100", mOscSendIpChar, sizeof(mOscSendIp));
+                mOscSendIp = String(mOscSendIpChar);
             }
             if (version >= 3) mProcessMode = readIntData(data, sizeInBytes, kPanVolumeMode);
             if (version >= 6) mApplyFilter = readIntData(data, sizeInBytes, 1);

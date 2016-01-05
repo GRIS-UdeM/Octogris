@@ -2149,22 +2149,12 @@ void OctogrisAudioProcessorEditor::timerCallback()
     } else if (m_pSourceUpdateThread->isThreadRunning()){
             m_pSourceUpdateThread->stopThread(500);
     }
-    
-//    if(mEnableJoystick->getToggleState()) {
-//        if(!m_pJoystickUpdateThread->isThreadRunning()){
-//            m_pJoystickUpdateThread->startThread();
-//        }
-//    } else if (m_pJoystickUpdateThread->isThreadRunning()){
-//        m_pJoystickUpdateThread->stopThread(500);
-//
-//    }
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
     
 	if (mOsc) {
 		mOsc->heartbeat();
 	}
-    
     startTimer(kTimerDelay);
 }
 
