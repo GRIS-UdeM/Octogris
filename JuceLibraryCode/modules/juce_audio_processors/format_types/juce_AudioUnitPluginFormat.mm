@@ -379,8 +379,8 @@ public:
         desc.category = AudioUnitFormatHelpers::getCategory (componentDesc.componentType);
         desc.manufacturerName = manufacturer;
         desc.version = version;
-        desc.numInputChannels = getNumInputChannels();
-        desc.numOutputChannels = getNumOutputChannels();
+        desc.numInputChannels = getTotalNumInputChannels();
+        desc.numOutputChannels = getTotalNumOutputChannels();
         desc.isInstrument = (componentDesc.componentType == kAudioUnitType_MusicDevice);
     }
 
@@ -578,7 +578,7 @@ public:
         else
         {
             // Plugin not working correctly, so just bypass..
-            for (int i = 0; i < getNumOutputChannels(); ++i)
+            for (int i = getTotalNumOutputChannels(); --i >= 0;)
                 buffer.clear (i, 0, buffer.getNumSamples());
         }
 
@@ -597,7 +597,7 @@ public:
     //==============================================================================
     const String getInputChannelName (int index) const override
     {
-        if (isPositiveAndBelow (index, getNumInputChannels()))
+        if (isPositiveAndBelow (index, getTotalNumInputChannels()))
             return "Input " + String (index + 1);
 
         return String();
@@ -605,14 +605,14 @@ public:
 
     const String getOutputChannelName (int index) const override
     {
-        if (isPositiveAndBelow (index, getNumOutputChannels()))
+        if (isPositiveAndBelow (index, getTotalNumOutputChannels()))
             return "Output " + String (index + 1);
 
         return String();
     }
 
-    bool isInputChannelStereoPair (int index) const override    { return isPositiveAndBelow (index, getNumInputChannels()); }
-    bool isOutputChannelStereoPair (int index) const override   { return isPositiveAndBelow (index, getNumOutputChannels()); }
+    bool isInputChannelStereoPair (int index) const override    { return isPositiveAndBelow (index, getTotalNumInputChannels()); }
+    bool isOutputChannelStereoPair (int index) const override   { return isPositiveAndBelow (index, getTotalNumOutputChannels()); }
 
     //==============================================================================
     int getNumParameters() override              { return parameters.size(); }
@@ -1002,6 +1002,10 @@ private:
 
             event.mEventType = kAudioUnitEvent_PropertyChange;
             AUEventListenerAddEventType (eventListenerRef, nullptr, &event);
+
+            // Add a listener for parameter list changes
+            event.mArgument.mProperty.mPropertyID = kAudioUnitProperty_ParameterList;
+            AUEventListenerAddEventType (eventListenerRef, nullptr, &event);
         }
     }
 
@@ -1032,7 +1036,11 @@ private:
                 break;
 
             default:
-                sendAllParametersChangedEvents();
+                if (event.mArgument.mProperty.mPropertyID == kAudioUnitProperty_ParameterList)
+                    updateHostDisplay();
+                else if (event.mArgument.mProperty.mPropertyID == kAudioUnitProperty_PresentPreset)
+                    sendAllParametersChangedEvents();
+
                 break;
         }
     }

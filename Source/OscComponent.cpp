@@ -319,7 +319,7 @@ public:
 			s << (src+1);
 			//LIBLO
 			//lo_send(mAddress, kSelectSourcePath, "s", s.toRawUTF8());
-			if (!mOscSender.send(mOscAddress, s)) {
+			if (!mOscSender.send(String(kSelectSourcePath), s)) {
 				DBG("Error: could not send OSC message.");
 			}
 			mSource = src;
@@ -331,7 +331,9 @@ public:
 			//LIBLO
 			//lo_send(mAddress, kSourceXYPath, "ff", p.y, p.x);
 
-			OSCMessage message(mOscAddress);
+            String ridiculous(kSourceXYPath);
+            OSCAddressPattern oscPattern(ridiculous);
+			OSCMessage message(oscPattern);
 			message.addFloat32(p.y);
 			message.addFloat32(p.x);
 

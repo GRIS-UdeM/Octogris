@@ -86,7 +86,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK;..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.2.8;JUCE_APP_VERSION_HEX=0x20208;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -116,9 +116,6 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\Octogris2.bsc</OutputFile>
     </Bscmake>
-    <PostBuildEvent>
-      <Command>copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">
     <Midl>
@@ -131,7 +128,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK;..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.2.8;JUCE_APP_VERSION_HEX=0x20208;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -161,9 +158,6 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\Octogris2.bsc</OutputFile>
     </Bscmake>
-    <PostBuildEvent>
-      <Command>copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -175,7 +169,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK;..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.2.8;JUCE_APP_VERSION_HEX=0x20208;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -207,9 +201,6 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\Octogris2.bsc</OutputFile>
     </Bscmake>
-    <PostBuildEvent>
-      <Command>copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'">
     <Midl>
@@ -221,7 +212,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK;..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\Vincent\Documents\sdks\liblo-0.28;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2013_78A5020=1;JUCE_APP_VERSION=2.2.8;JUCE_APP_VERSION_HEX=0x20208;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -253,9 +244,6 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\Octogris2.bsc</OutputFile>
     </Bscmake>
-    <PostBuildEvent>
-      <Command>copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\HIDManager\HID_Config_Utilities.cpp"/>

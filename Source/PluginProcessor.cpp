@@ -1856,7 +1856,7 @@ void OctogrisAudioProcessor::getStateInformation (MemoryBlock& destData)
     xml.setAttribute ("kFilterFar", mParameters[kFilterFar]);
     
     for (int i = 0; i < JucePlugin_MaxNumInputChannels; ++i) {
-		String srcX = "src" + toString(i) + "x";
+		String srcX = "src" + to_string(i) + "x";
         xml.setAttribute (srcX, mParameters[getParamForSourceX(i)]);
         String srcY = "src" + to_string(i) + "y";
         xml.setAttribute (srcY, mParameters[getParamForSourceY(i)]);
