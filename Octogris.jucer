@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="ZtKxiG" name="Octogris" projectType="audioplug" version="2.2.8"
+<JUCERPROJECT id="ZtKxiG" name="Octogris" projectType="audioplug" version="2.2.9"
               bundleIdentifier="com.UdeM.Octogris2" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="0" buildAU="1" buildRTAS="0" buildAAX="0"
               pluginName="Octogris2" pluginDesc="Octogris2" pluginManufacturer="UdeM"
@@ -8,7 +8,8 @@
               pluginIsSynth="0" pluginWantsMidiIn="0" pluginProducesMidiOut="0"
               pluginSilenceInIsSilenceOut="1" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="OctogrisAU" pluginRTASCategory="" aaxIdentifier="com.UdeM.Octogris2"
-              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="4.0.2">
+              pluginAAXCategory="AAX_ePlugInCategory_SoundField" jucerVersion="4.1.0"
+              pluginIsMidiEffectPlugin="0">
   <MAINGROUP id="rRl79u" name="Octogris">
     <GROUP id="{48A026D6-2EE7-E714-8C68-003BA85B16C8}" name="GrisCommonFiles">
       <FILE id="jDkaGa" name="GrisLookAndFeel.h" compile="1" resource="0"
@@ -171,10 +172,12 @@
             vst3Folder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="Octogris" headerPath=""
+                       isDebug="1" optimisation="1" targetName="OctogrisWin32" headerPath=""
                        libraryPath=""/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="3" targetName="Octogris"/>
+                       isDebug="0" optimisation="3" targetName="OctogrisWin32"/>
+        <CONFIGURATION name="Release_x64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       optimisation="3" targetName="OctogrisWin64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>

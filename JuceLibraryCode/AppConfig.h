@@ -161,15 +161,6 @@
 #ifndef  JucePlugin_PluginCode
  #define JucePlugin_PluginCode             'Octo'
 #endif
-#ifndef  JucePlugin_MaxNumInputChannels
- #define JucePlugin_MaxNumInputChannels    8
-#endif
-#ifndef  JucePlugin_MaxNumOutputChannels
- #define JucePlugin_MaxNumOutputChannels   16
-#endif
-#ifndef  JucePlugin_PreferredChannelConfigurations
- #define JucePlugin_PreferredChannelConfigurations  {8,16}, {1,2}, {1,4}, {1,6}, {1,8}, {1,16}, {2,2}, {2,4}, {2,6}, {2,8}, {2,16}, {4,4}, {4,6}, {4,8}, {4,16}, {6,6}, {6,8}, {6,16}, {8,8}, {8,16}
-#endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                0
 #endif
@@ -179,6 +170,9 @@
 #ifndef  JucePlugin_ProducesMidiOutput
  #define JucePlugin_ProducesMidiOutput     0
 #endif
+#ifndef  JucePlugin_IsMidiEffect
+ #define JucePlugin_IsMidiEffect           0
+#endif
 #ifndef  JucePlugin_SilenceInProducesSilenceOut
  #define JucePlugin_SilenceInProducesSilenceOut  1
 #endif
@@ -186,13 +180,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                2.2.8
+ #define JucePlugin_Version                2.2.9
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x20208
+ #define JucePlugin_VersionCode            0x20209
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "2.2.8"
+ #define JucePlugin_VersionString          "2.2.9"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
@@ -250,6 +244,15 @@
 #endif
 #ifndef  JucePlugin_AAXDisableMultiMono
  #define JucePlugin_AAXDisableMultiMono    0
+#endif
+#ifndef  JucePlugin_MaxNumInputChannels
+ #define JucePlugin_MaxNumInputChannels    8
+#endif
+#ifndef  JucePlugin_MaxNumOutputChannels
+ #define JucePlugin_MaxNumOutputChannels   16
+#endif
+#ifndef  JucePlugin_PreferredChannelConfigurations
+ #define JucePlugin_PreferredChannelConfigurations  {8,16}, {1,2}, {1,4}, {1,6}, {1,8}, {1,16}, {2,2}, {2,4}, {2,6}, {2,8}, {2,16}, {4,4}, {4,6}, {4,8}, {4,16}, {6,6}, {6,8}, {6,16}, {8,8}, {8,16}
 #endif
 
 #endif  // __JUCE_APPCONFIG_ZTKXIG__
