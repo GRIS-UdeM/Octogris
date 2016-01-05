@@ -27,10 +27,10 @@
 #include "OscComponent.h"
 //LIBLO
 //#include "lo.h"
-//const char *kSourceXYPath = "/Octo/SourceXY";
-//const char *kSelectSourcePath = "/Octo/Source";
-const string kSourceXYPath = "/Octo/SourceXY";
-const string kSelectSourcePath = "/Octo/Source";
+//const char *kOscPathSourceXY = "/Octo/SourceXY";
+//const char *kOscPathSelectSource = "/Octo/Source";
+const string kOscPathSourceXY = "/Octo/SourceXY";
+const string kOscPathSelectSource = "/Octo/Source";
 
 static void osc_err_handler(int num, const char *msg, const char *path){
 	fprintf(stderr, "osc_err_handler num: %d msg: %s path: %s\n",
@@ -167,82 +167,86 @@ public:
 		}
 	}
 	
-	void buttonClicked (Button *button) {
-		if (button == mReceive){
-			//LIBLO
-			//free memory used by server
-			//lo_server_thread_free(mServer);
-			//mServer = NULL;
-			
-			//we're already connected and receiving
-			if (mReceive->getToggleState()) {
-				//LIBLO
-				//String p = mReceivePort->getText();
-				//mServer = lo_server_thread_new(p.toRawUTF8(), osc_err_handler);
-				//if (!mServer) {
-				//	fprintf(stderr, "lo_server_thread_new failed (port in use ?)\n");
-				//	mReceive->setToggleState(false, dontSendNotification);
-				//	mReceivePort->setEnabled(true);
-				//} else {
-				//	lo_server_thread_add_method(mServer, NULL, NULL, osc_method_handler, this);
-				//	lo_server_thread_start(mServer);
-				//	mReceivePort->setEnabled(false);
-				//}
-
-				//really not sure what the above code does.... this is what I think makes sense
-				if (disconnect()) {
-					mReceivePort->setEnabled(false);
-				} else {
-					DBG("lo_server_thread_new failed (port in use ?)");
-				}
-			//not connected, so we connect
-			} else {
-				int p = mReceivePort->getText().getIntValue();
-				if (!connect(9001)) {
-					DBG("Error: could not connect to UDP port 9001.");
-				} else {
-					addListener(this, "/Octo/");
-					mReceivePort->setEnabled(true);
-				}
-			}
-			mFilter->setOscReceiveEnabled(mReceive->getToggleState());
-		} else if (button == mSend) {
-			//LIBLO
-			//lo_address_free(mAddress);
-			//mAddress = NULL;
-			
-			if (mSend->getToggleState()) {
-				//LIBLO
-				//String i = mSendIp->getText();
-				//String p = mSendPort->getText();
-				//mAddress = lo_address_new(i.toRawUTF8(), p.toRawUTF8());
-
-				mOscAddress = mSendIp->getText();
-				int p = mSendPort->getText().getIntValue();
-				//LIBLO
-				//if (!mAddress) {
-				if(!mOscSender.connect(mOscAddress, p)){
-					fprintf(stderr, "lo_address_new failed (port in use ?)\n");
-					mSend->setToggleState(false, dontSendNotification);
-					mSendIp->setEnabled(true);
-					mSendPort->setEnabled(true);
-				} else {
-					//fprintf(stderr, "osc to %s %s\n", i.toRawUTF8(), p.toRawUTF8());
-					mSourceXY = FPoint(-1, -1);
-					mSource = -1;
-					
-					mSendIp->setEnabled(false);
-					mSendPort->setEnabled(false);
-				}
-			} else {
-				mSendIp->setEnabled(true);
-				mSendPort->setEnabled(true);
-			}
-			mFilter->setOscSendEnabled(mSend->getToggleState());
-		} else {
-			printf("unknown button clicked...\n");
-		}
-	}
+    void buttonClicked (Button *button) {
+        try {
+            if (button == mReceive){
+                //LIBLO
+                //free memory used by server
+                //lo_server_thread_free(mServer);
+                //mServer = NULL;
+                
+                //we're already connected and receiving
+                if (!mReceive->getToggleState()) {
+                    //LIBLO
+                    //String p = mReceivePort->getText();
+                    //mServer = lo_server_thread_new(p.toRawUTF8(), osc_err_handler);
+                    //if (!mServer) {
+                    //	fprintf(stderr, "lo_server_thread_new failed (port in use ?)\n");
+                    //	mReceive->setToggleState(false, dontSendNotification);
+                    //	mReceivePort->setEnabled(true);
+                    //} else {
+                    //	lo_server_thread_add_method(mServer, NULL, NULL, osc_method_handler, this);
+                    //	lo_server_thread_start(mServer);
+                    //	mReceivePort->setEnabled(false);
+                    //}
+                    
+                    //really not sure what the above code does.... this is what I think makes sense
+                    if (disconnect()) {
+                        mReceivePort->setEnabled(false);
+                    } else {
+                        DBG("lo_server_thread_new failed (port in use ?)");
+                    }
+                    //not connected, so we connect
+                } else {
+                    int p = mReceivePort->getText().getIntValue();
+                    if (!connect(p)) {
+                        DBG("Error: could not connect to UDP port.");
+                    } else {
+                        addListener(this, "/Octo/SourceXY");
+                        mReceivePort->setEnabled(true);
+                    }
+                }
+                mFilter->setOscReceiveEnabled(mReceive->getToggleState());
+            } else if (button == mSend) {
+                //LIBLO
+                //lo_address_free(mAddress);
+                //mAddress = NULL;
+                
+                if (mSend->getToggleState()) {
+                    //LIBLO
+                    //String i = mSendIp->getText();
+                    //String p = mSendPort->getText();
+                    //mAddress = lo_address_new(i.toRawUTF8(), p.toRawUTF8());
+                    
+                    mOscAddress = mSendIp->getText();
+                    int p = mSendPort->getText().getIntValue();
+                    //LIBLO
+                    //if (!mAddress) {
+                    if(!mOscSender.connect(mOscAddress, p)){
+                        fprintf(stderr, "lo_address_new failed (port in use ?)\n");
+                        mSend->setToggleState(false, dontSendNotification);
+                        mSendIp->setEnabled(true);
+                        mSendPort->setEnabled(true);
+                    } else {
+                        //fprintf(stderr, "osc to %s %s\n", i.toRawUTF8(), p.toRawUTF8());
+                        mSourceXY = FPoint(-1, -1);
+                        mSource = -1;
+                        
+                        mSendIp->setEnabled(false);
+                        mSendPort->setEnabled(false);
+                    }
+                } else {
+                    mSendIp->setEnabled(true);
+                    mSendPort->setEnabled(true);
+                }
+                mFilter->setOscSendEnabled(mSend->getToggleState());
+            } else {
+                printf("unknown button clicked...\n");
+            }
+        } catch (exception& e) {
+            cout << e.what() << '\n';
+        }
+    }
 	//LIBLO
 	//int method_handler(const char *path, const char *types, lo_arg ** argv, int argc, lo_message msg, void *user_data) {
 	//	const bool debug = false;
@@ -257,7 +261,7 @@ public:
 	//			}
 	//		}
 	//	}
-	//	if (!strcmp(path, kSourceXYPath) && !strcmp(types, "ff") && argc == 2) {
+	//	if (!strcmp(path, kOscPathSourceXY) && !strcmp(types, "ff") && argc == 2) {
 	//		float y = argv[0]->f;
 	//		float x = argv[1]->f;
 	//	
@@ -267,11 +271,11 @@ public:
 	//		
 	//		mNeedToEnd = true;
 	//		mLastXYTime = Time::getCurrentTime();
-	//	} else if (	!strncmp(path, kSelectSourcePath, strlen(kSelectSourcePath))
-	//			&&	strlen(path) == strlen(kSelectSourcePath) + 1
+	//	} else if (	!strncmp(path, kOscPathSelectSource, strlen(kOscPathSelectSource))
+	//			&&	strlen(path) == strlen(kOscPathSelectSource) + 1
 	//			&&	!strcmp(types, "f") && argc == 1
 	//			&&	argv[0]->f < 0.5 ) {
-	//		int src = path[strlen(kSelectSourcePath)] - '1';
+	//		int src = path[strlen(kOscPathSelectSource)] - '1';
 	//		mEditor->setOscLeapSource(src);
 	//	}
 	//	return 0;
@@ -279,7 +283,7 @@ public:
 	void oscMessageReceived(const OSCMessage& message) override {
 		string address = message.getAddressPattern().toString().toStdString();
 		//set position for current source
-		if (address == kSourceXYPath && message.size() == 2 && message[0].isFloat32() && message[1].isFloat32()){
+		if (address == kOscPathSourceXY && message.size() == 2 && message[0].isFloat32() && message[1].isFloat32()){
 			float y = message[0].getFloat32();
 			float x = message[1].getFloat32();
 
@@ -290,7 +294,7 @@ public:
 			mNeedToEnd = true;
 			mLastXYTime = Time::getCurrentTime(); 
 		//set current source
-		} else if (address.substr(0, address.size()-1) == kSelectSourcePath && address.size() == kSelectSourcePath.size() + 1
+		} else if (address.substr(0, address.size()-1) == kOscPathSelectSource && address.size() == kOscPathSelectSource.size() + 1
 			&& message.size() == 1 && message[0].isFloat32() && message[0].getFloat32() < .5) {
 			string src_str = address.substr(address.size() - 1);
 			String src_jstr(src_str);
@@ -318,8 +322,8 @@ public:
 			String s = "Source "; 
 			s << (src+1);
 			//LIBLO
-			//lo_send(mAddress, kSelectSourcePath, "s", s.toRawUTF8());
-			if (!mOscSender.send(String(kSelectSourcePath), s)) {
+			//lo_send(mAddress, kOscPathSelectSource, "s", s.toRawUTF8());
+			if (!mOscSender.send(String(kOscPathSelectSource), s)) {
 				DBG("Error: could not send OSC message.");
 			}
 			mSource = src;
@@ -327,11 +331,11 @@ public:
 		
 		FPoint p = mFilter->getSourceXY01(src);
 		if (mSourceXY != p) {
-			//fprintf(stderr, "sent new pos to %s\n", kSourceXYPath);
+			//fprintf(stderr, "sent new pos to %s\n", kOscPathSourceXY);
 			//LIBLO
-			//lo_send(mAddress, kSourceXYPath, "ff", p.y, p.x);
-
-            String ridiculous(kSourceXYPath);
+			//lo_send(mAddress, kOscPathSourceXY, "ff", p.y, p.x);
+            JUCE_COMPILER_WARNING("make kOscPathSourceXY a String")
+            String ridiculous(kOscPathSourceXY);
             OSCAddressPattern oscPattern(ridiculous);
 			OSCMessage message(oscPattern);
 			message.addFloat32(p.y);
