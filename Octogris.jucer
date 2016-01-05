@@ -95,7 +95,7 @@
                vst3Folder="~/Documents/sdks/steinberg/VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="Native"
-                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
+                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="~/Documents/sdks/LeapSDK/include"
                        libraryPath="~/Documents/sdks/LeapSDK/lib&#10;"/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="64BitUniversal"
                        isDebug="0" optimisation="3" targetName="Octogris2" headerPath="~/Documents/sdks/LeapSDK/include&#10;"
@@ -169,15 +169,18 @@
       </MODULEPATHS>
     </VS2013>
     <VS2015 targetFolder="Builds/VisualStudio2015" vstFolder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK"
-            vst3Folder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK">
+            vst3Folder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK"
+            externalLibraries="Leap.lib">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="OctogrisWin32" headerPath=""
-                       libraryPath=""/>
+                       isDebug="1" optimisation="1" targetName="OctogrisWin32" headerPath="C:\Users\barth\Documents\sdks\LeapSDK\include"
+                       libraryPath="C:\Users\barth\Documents\sdks\LeapSDK\lib\x86"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="3" targetName="OctogrisWin32"/>
+                       isDebug="0" optimisation="3" targetName="OctogrisWin32" headerPath="C:\Users\barth\Documents\sdks\LeapSDK\include"
+                       libraryPath="C:\Users\barth\Documents\sdks\LeapSDK\lib\x86"/>
         <CONFIGURATION name="Release_x64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       optimisation="3" targetName="OctogrisWin64"/>
+                       optimisation="3" targetName="OctogrisWin64" headerPath="C:\Users\barth\Documents\sdks\LeapSDK\include"
+                       libraryPath="C:\Users\barth\Documents\sdks\LeapSDK\lib\x64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>

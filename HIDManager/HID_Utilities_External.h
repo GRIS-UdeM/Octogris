@@ -46,7 +46,7 @@
 #ifndef _HID_Utilities_External_h_
 #define _HID_Utilities_External_h_
 
-extern int gIsLeapConnected;
+//extern int gIsLeapConnected;
 
 #ifdef WIN32
 

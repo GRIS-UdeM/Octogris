@@ -46,7 +46,7 @@
 #pragma mark - includes & imports
 // -----------------------------------------------------
 #include <stddef.h>
-int gIsLeapConnected = NULL;
+
 
 #if WIN32
 
