@@ -203,6 +203,14 @@ public:
                         DBG("Error: could not connect to UDP port.");
                     } else {
                         addListener(this, "/Octo/SourceXY");
+                        addListener(this, "/Octo/Source1");
+                        addListener(this, "/Octo/Source2");
+                        addListener(this, "/Octo/Source3");
+                        addListener(this, "/Octo/Source4");
+                        addListener(this, "/Octo/Source5");
+                        addListener(this, "/Octo/Source6");
+                        addListener(this, "/Octo/Source7");
+                        addListener(this, "/Octo/Source8");
                         mReceivePort->setEnabled(true);
                     }
                 }
@@ -298,12 +306,12 @@ public:
 			&& message.size() == 1 && message[0].isFloat32() && message[0].getFloat32() < .5) {
 			string src_str = address.substr(address.size() - 1);
 			String src_jstr(src_str);
-			int iSrc = src_jstr.getIntValue();
+			int iSrc = src_jstr.getIntValue()-1;
 			mEditor->setOscLeapSource(iSrc);
 		}
 	}
 	
-	void heartbeat() {
+	void heartbeat() override{
 		if (mNeedToEnd) {
 			Time now = Time::getCurrentTime();
 			RelativeTime dt = (now - mLastXYTime);
