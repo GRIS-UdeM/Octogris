@@ -229,17 +229,14 @@ private:
 	ComboBox *mOscLeapSourceCb;
 #if WIN32
 #else
+	//leap
     ReferenceCountedObjectPtr<OctoLeap> mleap;
+	//joystick
+	ReferenceCountedObjectPtr<HIDDelegate>  mJoystick;
 #endif
 	HeartbeatComponent *mOsc;
-    
-    //joystick
-#if WIN32
-#else
-    ReferenceCountedObjectPtr<HIDDelegate>  mJoystick;
-#endif
+
 	// for resizing/repaint:
-	//Component *mField;
     FieldComponent *mField;
     Component *mSourcesBoxLabel;
 	Box *mSourcesBox;

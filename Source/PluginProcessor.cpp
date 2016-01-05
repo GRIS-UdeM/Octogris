@@ -116,8 +116,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 
 #if WIN32
 	bIsWindows = true;
-
-
 #else
 	bIsWindows = false;
 #endif

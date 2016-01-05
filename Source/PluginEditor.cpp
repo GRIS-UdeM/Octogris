@@ -1035,18 +1035,13 @@ AudioProcessorEditor (ownerFilter)
         mSpT->addListener(this);
 	}
     
-    
-
     //--------------- INTERFACE TAB ---------------- //
-#if WIN32
-    
-#else
     box = mTabs->getTabContentComponent(5);
     {
         int x = kMargin, y = kMargin;
         const int m = 10, dh = 18, cw = 300;
         int comboW = 40, w = (box->getWidth() - kMargin) / 3 - kMargin;
-        
+    
         addLabel(leapSupported ? "OSC/Leap source:" : "OSC source:", x, y, w-comboW, dh, box);
         {
             mOscLeapSourceCb = new ComboBox();
@@ -1064,9 +1059,10 @@ AudioProcessorEditor (ownerFilter)
             mComponents.add(mOscLeapSourceCb);            
             mOscLeapSourceCb->addListener(this);
         }
-        
         y += dh + 5;
-        
+#if WIN32
+
+#else            
         mEnableLeap = new ToggleButton();
         mEnableLeap->setButtonText("Enable Leap");
         mEnableLeap->setSize(cw-100, dh);
@@ -1106,7 +1102,7 @@ AudioProcessorEditor (ownerFilter)
         mComponents.add(mStateJoystick);
         
         y += dh;
-        
+#endif        
         mOsc = CreateOscComponent(mFilter, this);
         if (mOsc) {
             mOsc->setTopLeftPosition(0, y);
@@ -1115,7 +1111,7 @@ AudioProcessorEditor (ownerFilter)
             mComponents.add(mOsc);
         }
     }
-#endif
+
     
     int selectedTab = mFilter->getGuiTab();
     if (selectedTab >= 0 && selectedTab < mTabs->getNumTabs())
@@ -1886,7 +1882,6 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         }
     }
 	//fin de changements lié a l'ajout de joystick à l'onglet leap
-    
 #endif
     
  else {
@@ -2183,9 +2178,10 @@ void OctogrisAudioProcessorEditor::uncheckJoystickButton()
     mEnableJoystick->setToggleState(false, dontSendNotification);
     buttonClicked(mEnableJoystick);
 }
+#endif
 int OctogrisAudioProcessorEditor::getNbSources()
 {
     return mFilter->getNumberOfSources();
 }
-#endif
+
 
