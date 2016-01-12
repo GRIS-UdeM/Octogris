@@ -399,7 +399,7 @@ AudioProcessorEditor (ownerFilter)
 , mMover(ownerFilter)
 , m_logoImage()
 , mTrCycleCount(-1)
-, mOsc (NULL)
+, mOsc (nullptr)
 {
     if (s_bUseNewGui){
         //this works, but everything is too small. This appears to be the only way that I found to change the
@@ -1263,7 +1263,8 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 #endif
     if(mController) {
         mController->enableGesture(Leap::Gesture::TYPE_INVALID);
-        mController=NULL;
+        //mController=NULL;
+		mController.release();
         gIsLeapConnected = 0;
     }
     getMover()->end(kLeap);
@@ -1878,8 +1879,8 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             if(gIsLeapConnected) {
                 mController->enableGesture(Leap::Gesture::TYPE_INVALID);
                 mController->removeListener(*mleap);
-                mController = NULL;
-                gIsLeapConnected = 0;
+				gIsLeapConnected = 0;
+				mController.release();
                 mStateLeap->setText("", dontSendNotification);
             }
         }

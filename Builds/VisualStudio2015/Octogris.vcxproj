@@ -194,6 +194,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\OctogrisWin64.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy /yr "C:\Users\barth\Documents\sdks\LeapSDK\lib\x64\Leap.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\HIDManager\HID_Config_Utilities.cpp" />

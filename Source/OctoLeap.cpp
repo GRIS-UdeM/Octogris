@@ -47,7 +47,7 @@ int gIsLeapConnected = NULL;
 OctoLeap::OctoLeap(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor):
 mFilter(filter),
 mEditor(editor),
-mController(NULL),
+mController(nullptr),
 mPointableId(-1),
 mLastPositionValid(0)
 { }
