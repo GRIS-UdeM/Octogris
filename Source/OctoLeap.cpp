@@ -26,17 +26,17 @@
 
 #include <iostream>
 
-//#if WIN32
-//class Component;
-//class OctogrisAudioProcessor;
-//class OctogrisAudioProcessorEditor;
-//Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
-//{
-//    // not implemented yet on windows
-//    return NULL;
-//}
-//
-//#else
+#if WIN32
+class Component;
+class OctogrisAudioProcessor;
+class OctogrisAudioProcessorEditor;
+Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)
+{
+    // not implemented yet on windows
+    return NULL;
+}
+
+#else
 
 
 #include "OctoLeap.h"
@@ -132,4 +132,4 @@ OctoLeap::Ptr OctoLeap::CreateLeapComponent(OctogrisAudioProcessor *filter, Octo
 {
     return new OctoLeap(filter, editor);
 }
-//#endif
+#endif

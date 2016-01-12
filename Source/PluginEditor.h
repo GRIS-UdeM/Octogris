@@ -31,11 +31,11 @@
 #include "LevelComponent.h"
 #include "SourceMover.h"
 #include "../../GrisCommonFiles/GrisLookAndFeel.h"
-//#if WIN32
-//
-//#else
+#if WIN32
+
+#else
 #include "Leap.h"
-//#endif
+#endif
 
 class FieldComponent;
 class SourceUpdateThread;
@@ -180,12 +180,12 @@ private:
     
     ImageComponent m_logoImage;
 	
-//#if WIN32
-//    
-//#else
+#if WIN32
+    
+#else
     ScopedPointer<Leap::Controller> mController;
     Leap::Listener leapList;
-//#endif
+#endif
     // sources
     TextButton *mApplySrcPlacementButton;
     TextEditor *mSrcR, *mSrcT;
@@ -227,12 +227,12 @@ private:
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
-//#if WIN32
-//#else
-	//leap
-    ReferenceCountedObjectPtr<OctoLeap> mleap;
 #if WIN32
 #else
+	//leap
+    ReferenceCountedObjectPtr<OctoLeap> mleap;
+//#if WIN32
+//#else
 	//joystick
 	ReferenceCountedObjectPtr<HIDDelegate>  mJoystick;
 #endif

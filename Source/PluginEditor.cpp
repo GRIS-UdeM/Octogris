@@ -1060,9 +1060,9 @@ AudioProcessorEditor (ownerFilter)
             mOscLeapSourceCb->addListener(this);
         }
         y += dh + 5;
-/*#if WIN32
+#if WIN32
 
-#else*/            
+#else            
         mEnableLeap = new ToggleButton();
         mEnableLeap->setButtonText("Enable Leap");
         mEnableLeap->setSize(cw-100, dh);
@@ -1082,9 +1082,9 @@ AudioProcessorEditor (ownerFilter)
         mComponents.add(mStateLeap);
        
         y += dh + 10;
-#if WIN32
+/*#if WIN32
 
-#else        
+#else  */      
         mEnableJoystick = new ToggleButton();
         mEnableJoystick->setButtonText("Enable Joystick");
         mEnableJoystick->setSize(cw-150, dh);
@@ -1260,7 +1260,7 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
         gElementCFArrayRef = NULL;
     }
     mJoystick = NULL;
-#endif
+//#endif
     if(mController) {
         mController->enableGesture(Leap::Gesture::TYPE_INVALID);
         //mController=NULL;
@@ -1269,7 +1269,7 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
     }
     getMover()->end(kLeap);
     getMover()->end(kHID);
-//#endif
+#endif
 }
 
 void OctogrisAudioProcessorEditor::resized()
@@ -1851,7 +1851,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
             }
         }
     }
-#endif    
+//#endif    
     else if(button == mEnableLeap) {
         bool state = mEnableLeap->getToggleState();
         
@@ -1886,7 +1886,7 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
         }
     }
 	//fin de changements lié a l'ajout de joystick à l'onglet leap
-
+#endif    
     
  else {
 		printf("unknown button clicked...\n");

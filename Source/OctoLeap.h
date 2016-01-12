@@ -29,9 +29,9 @@
 
 extern int gIsLeapConnected;
 
-//#if WIN32
-//
-//#else
+#if WIN32
+
+#else
 
 #include "PluginEditor.h"
 class OctoLeap : public ReferenceCountedObject , public Leap::Listener
@@ -72,6 +72,6 @@ private:
 
 void updateLeapComponent(Component * leapComponent);
 
-//#endif
+#endif
 
 #endif  // OCTOLEAP_H_INCLUDED
