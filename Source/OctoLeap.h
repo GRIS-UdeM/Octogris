@@ -26,14 +26,13 @@
 
 #ifndef OCTOLEAP_H_INCLUDED
 #define OCTOLEAP_H_INCLUDED
+#include "PluginEditor.h"
 
 extern int gIsLeapConnected;
 
-#if WIN32
+#ifdef USE_LEAP
 
-#else
 
-#include "PluginEditor.h"
 class OctoLeap : public ReferenceCountedObject , public Leap::Listener
 {
 public:

@@ -227,12 +227,12 @@ private:
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
-#if WIN32
-#else
+#ifdef USE_LEAP    
 	//leap
     ReferenceCountedObjectPtr<OctoLeap> mleap;
-//#if WIN32
-//#else
+#endif
+#if WIN32
+#else
 	//joystick
 	ReferenceCountedObjectPtr<HIDDelegate>  mJoystick;
 #endif

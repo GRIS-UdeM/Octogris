@@ -1060,9 +1060,7 @@ AudioProcessorEditor (ownerFilter)
             mOscLeapSourceCb->addListener(this);
         }
         y += dh + 5;
-#if WIN32
-
-#else            
+#ifdef USE_LEAP           
         mEnableLeap = new ToggleButton();
         mEnableLeap->setButtonText("Enable Leap");
         mEnableLeap->setSize(cw-100, dh);
@@ -1082,9 +1080,10 @@ AudioProcessorEditor (ownerFilter)
         mComponents.add(mStateLeap);
        
         y += dh + 10;
-/*#if WIN32
+#endif
+#if WIN32
 
-#else  */      
+#else        
         mEnableJoystick = new ToggleButton();
         mEnableJoystick->setButtonText("Enable Joystick");
         mEnableJoystick->setSize(cw-150, dh);

@@ -23,6 +23,10 @@
  ==============================================================================
  */
 
+//#ifndef USE_LEAP
+//#define USE_LEAP
+//#endif
+
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
