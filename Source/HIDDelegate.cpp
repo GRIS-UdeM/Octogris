@@ -7,8 +7,7 @@
  
  ==============================================================================
  */
-#if WIN32
-#else
+#if USE_JOYSTICK
 
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"

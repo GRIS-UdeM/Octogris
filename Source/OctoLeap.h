@@ -30,8 +30,8 @@
 
 extern int gIsLeapConnected;
 
-#ifdef USE_LEAP
-
+#if USE_LEAP
+#include "Leap.h"
 
 class OctoLeap : public ReferenceCountedObject , public Leap::Listener
 {
@@ -49,7 +49,7 @@ public:
     void onFrame(const Leap::Controller& controller);
     //! Called when a Leap Motion service is unreachable (Crashed)
     void onServiceDisconnect(const Leap::Controller& controller);
-    //! Destroyer
+
     virtual ~OctoLeap(){
     }
     
@@ -68,8 +68,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctoLeap)
     
 };
-
-void updateLeapComponent(Component * leapComponent);
 
 #endif
 

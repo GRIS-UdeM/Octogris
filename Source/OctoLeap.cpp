@@ -25,12 +25,11 @@
  */
 
 #include <iostream>
-//#include "PluginProcessor.h"
-
-#ifdef USE_LEAP
-
 #include "OctoLeap.h"
-#include "Leap.h"
+
+#if USE_LEAP
+
+//#include "Leap.h"
 
 int gIsLeapConnected = NULL;
 

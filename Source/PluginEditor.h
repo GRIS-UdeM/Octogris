@@ -31,9 +31,8 @@
 #include "LevelComponent.h"
 #include "SourceMover.h"
 #include "../../GrisCommonFiles/GrisLookAndFeel.h"
-#if WIN32
 
-#else
+#if USE_LEAP
 #include "Leap.h"
 #endif
 
@@ -116,8 +115,7 @@ public:
 	SourceMover * getMover() { return &mMover; }
     Label * getmStateLeap() {return mStateLeap;}
     
-#if WIN32
-#else
+#if USE_JOYSTICK
     HIDDelegate * getHIDDel() {return mJoystick;};
 #endif    
     //! Method unchecking the joystick check box
@@ -129,8 +127,6 @@ public:
     
     void setDefaultPendulumEndpoint();
     
-//    void readAndUseJoystickValues();
-	
 private:
 	OctogrisAudioProcessor *mFilter;
 	SourceMover mMover;
@@ -180,9 +176,7 @@ private:
     
     ImageComponent m_logoImage;
 	
-#if WIN32
-    
-#else
+#if USE_LEAP
     ScopedPointer<Leap::Controller> mController;
     Leap::Listener leapList;
 #endif
@@ -227,13 +221,11 @@ private:
 	
 	// osc, leap
 	ComboBox *mOscLeapSourceCb;
-#ifdef USE_LEAP    
+#if USE_LEAP    
 	//leap
     ReferenceCountedObjectPtr<OctoLeap> mleap;
 #endif
-#if WIN32
-#else
-	//joystick
+#if USE_JOYSTICK
 	ReferenceCountedObjectPtr<HIDDelegate>  mJoystick;
 #endif
 	HeartbeatComponent *mOsc;
