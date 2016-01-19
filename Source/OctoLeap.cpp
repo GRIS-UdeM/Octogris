@@ -122,7 +122,7 @@ OctoLeap::Ptr OctoLeap::CreateLeapComponent(OctogrisAudioProcessor *filter, Octo
 
 #else
 
-class Component;
+//class Component;
 class OctogrisAudioProcessor;
 class OctogrisAudioProcessorEditor;
 Component * CreateLeapComponent(OctogrisAudioProcessor *filter, OctogrisAudioProcessorEditor *editor)

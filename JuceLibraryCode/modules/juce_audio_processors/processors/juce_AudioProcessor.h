@@ -423,7 +423,7 @@ public:
         This can be called from your processBlock() method - it's not guaranteed
         to be valid at any other time, and may return 0 if it's unknown.
     */
-    double getSampleRate() const noexcept                       { return sampleRate; }
+    double getSampleRate() const noexcept                       { return currentSampleRate; }
 
     /** Returns the current typical block size that is being used.
 
@@ -464,6 +464,9 @@ public:
 
     /** Returns true if the processor produces midi messages. */
     virtual bool producesMidi() const = 0;
+
+    /** Returns true if the processor supports MPE. */
+    virtual bool supportsMPE() const                            { return false; }
 
     //==============================================================================
     /** This returns a critical section that will automatically be locked while the host
@@ -968,7 +971,7 @@ protected:
 private:
     Array<AudioProcessorListener*> listeners;
     Component::SafePointer<AudioProcessorEditor> activeEditor;
-    double sampleRate;
+    double currentSampleRate;
     int blockSize, latencySamples;
    #if JUCE_DEBUG
     bool textRecursionCheck;
