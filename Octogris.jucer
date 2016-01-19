@@ -115,14 +115,17 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2010 targetFolder="Builds/VisualStudio2010" vstFolder="C:\SDKs\vstsdk2.4"
-            aaxFolder="C:\SDKs\AAX_SDK_2p1p1" vst3Folder="c:\SDKs\VST3 SDK">
+            aaxFolder="C:\SDKs\AAX_SDK_2p1p1" vst3Folder="c:\SDKs\VST3 SDK"
+            externalLibraries="Leap.lib">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="&#9;&#9;&#9;C:\SDKs\liblo-0.28&#10;C:\SDKs\liblo-0.28\lo"
-                       libraryPath="C:\SDKs\liblo-0.28\lib\ReleaseLib"/>
+                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath=""
+                       libraryPath=""/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="3" targetName="Octogris2" headerPath="C:\SDKs\liblo-0.28&#10;C:\SDKs\liblo-0.28\lo"
-                       libraryPath="C:\SDKs\liblo-0.28\lib\ReleaseLib"/>
+                       isDebug="0" optimisation="3" targetName="Octogris2" headerPath=""
+                       libraryPath=""/>
+        <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       targetName="Octogris2" optimisation="3"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
@@ -137,37 +140,6 @@
         <MODULEPATH id="juce_osc" path="../../juce"/>
       </MODULEPATHS>
     </VS2010>
-    <VS2013 targetFolder="Builds/VisualStudio2013" vstFolder="C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK"
-            aaxFolder="C:\SDKs\AAX_SDK_2p1p1" externalLibraries="" vst3Folder="C:\Users\Vincent\Documents\sdks\steinberg\VST3 SDK">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib"/>
-        <CONFIGURATION name="Debug64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib64"
-                       optimisation="1" targetName="Octogris2"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="Octogris2" headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib"/>
-        <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       headerPath="C:\Users\Vincent\Documents\sdks\liblo-0.28&#10;C:\Users\Vincent\Documents\sdks\liblo-0.28\lo"
-                       libraryPath="C:\Users\Vincent\Documents\sdks\liblo-0.28\lib\ReleaseLib64"
-                       optimisation="3" targetName="Octogris2"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
-        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
-        <MODULEPATH id="juce_graphics" path="../../juce"/>
-        <MODULEPATH id="juce_events" path="../../juce"/>
-        <MODULEPATH id="juce_data_structures" path="../../juce"/>
-        <MODULEPATH id="juce_core" path="../../juce"/>
-        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
-        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
-        <MODULEPATH id="juce_osc" path="../../juce"/>
-      </MODULEPATHS>
-    </VS2013>
     <VS2015 targetFolder="Builds/VisualStudio2015" vstFolder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK"
             vst3Folder="C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK"
             externalLibraries="Leap.lib">
