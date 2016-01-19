@@ -868,10 +868,10 @@ public:
         if (getVstCategory() != kPlugCategShell) // (workaround for Waves 5 plugins which crash during this call)
             updateStoredProgramNames();
 
-        wantsMidiMessages = pluginCanDo ("receiveVstMidiEvent") > 0;
+        wantsMidiMessages = dispatch (effCanDo, 0, 0, (void*) "receiveVstMidiEvent", 0) > 0;
 
        #if JUCE_MAC && JUCE_SUPPORT_CARBON
-        usesCocoaNSView = (pluginCanDo ("hasCockosViewAsConfig") & (int) 0xffff0000) == 0xbeef0000;
+        usesCocoaNSView = (dispatch (effCanDo, 0, 0, (void*) "hasCockosViewAsConfig", 0) & (int) 0xffff0000) == 0xbeef0000;
        #endif
 
         setLatencySamples (effect->initialDelay);
@@ -900,22 +900,19 @@ public:
         if (effect == nullptr)
             return 0.0;
 
-        const double sampleRate = getSampleRate();
+        const double currentSampleRate = getSampleRate();
 
-        if (sampleRate <= 0)
+        if (currentSampleRate <= 0)
             return 0.0;
 
         VstIntPtr samples = dispatch (effGetTailSize, 0, 0, 0, 0);
-        return samples / sampleRate;
+        return samples / currentSampleRate;
     }
 
     bool acceptsMidi() const override    { return wantsMidiMessages; }
-    bool producesMidi() const override   { return pluginCanDo ("sendVstMidiEvent") > 0; }
-    bool supportsMPE() const override    { return pluginCanDo ("MPE") > 0; }
+    bool producesMidi() const override   { return dispatch (effCanDo, 0, 0, (void*) "sendVstMidiEvent", 0) > 0; }
 
     VstPlugCategory getVstCategory() const noexcept     { return (VstPlugCategory) dispatch (effGetPlugCategory, 0, 0, 0, 0); }
-
-    int pluginCanDo (const char* text) const     { return (int) dispatch (effCanDo, 0, 0, (void*) text,  0); }
 
     //==============================================================================
     void prepareToPlay (double rate, int samplesPerBlockExpected) override
@@ -933,7 +930,8 @@ public:
 
         if (initialised)
         {
-            wantsMidiMessages = wantsMidiMessages || (pluginCanDo ("receiveVstMidiEvent") > 0);
+            wantsMidiMessages = wantsMidiMessages
+                                    || (dispatch (effCanDo, 0, 0, (void*) "receiveVstMidiEvent", 0) > 0);
 
             if (wantsMidiMessages)
                 midiEventsToSend.ensureSize (256);

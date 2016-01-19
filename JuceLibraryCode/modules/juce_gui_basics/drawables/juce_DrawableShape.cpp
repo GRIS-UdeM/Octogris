@@ -32,7 +32,6 @@ DrawableShape::DrawableShape()
 DrawableShape::DrawableShape (const DrawableShape& other)
     : Drawable (other),
       strokeType (other.strokeType),
-      dashLengths (other.dashLengths),
       mainFill (other.mainFill),
       strokeFill (other.strokeFill)
 {
@@ -133,15 +132,6 @@ void DrawableShape::setStrokeType (const PathStrokeType& newStrokeType)
     }
 }
 
-void DrawableShape::setDashLengths (const Array<float>& newDashLengths)
-{
-    if (dashLengths != newDashLengths)
-    {
-        dashLengths = newDashLengths;
-        strokeChanged();
-    }
-}
-
 void DrawableShape::setStrokeThickness (const float newThickness)
 {
     setStrokeType (PathStrokeType (newThickness, strokeType.getJointStyle(), strokeType.getEndStyle()));
@@ -188,13 +178,7 @@ void DrawableShape::pathChanged()
 void DrawableShape::strokeChanged()
 {
     strokePath.clear();
-    const float extraAccuracy = 4.0f;
-
-    if (dashLengths.empty())
-        strokeType.createStrokedPath (strokePath, path, AffineTransform(), extraAccuracy);
-    else
-        strokeType.createDashedStroke (strokePath, path, dashLengths.getRawDataPointer(),
-                                       dashLengths.size(), AffineTransform(), extraAccuracy);
+    strokeType.createStrokedPath (strokePath, path, AffineTransform(), 4.0f);
 
     setBoundsToEnclose (getDrawableBounds());
     repaint();

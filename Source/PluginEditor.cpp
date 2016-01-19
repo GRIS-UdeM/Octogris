@@ -1078,9 +1078,10 @@ AudioProcessorEditor (ownerFilter)
         box->addAndMakeVisible(mStateLeap);
         mComponents.add(mStateLeap);
        
-        y += dh + 10;
+        y += dh;
 #endif
-#if USE_JOYSTICK        
+#if USE_JOYSTICK  
+		y += 10;
         mEnableJoystick = new ToggleButton();
         mEnableJoystick->setButtonText("Enable Joystick");
         mEnableJoystick->setSize(cw-150, dh);

@@ -26,17 +26,6 @@ MPEZoneLayout::MPEZoneLayout() noexcept
 {
 }
 
-MPEZoneLayout::MPEZoneLayout (const MPEZoneLayout& other)
-    : zones (other.zones)
-{
-}
-
-MPEZoneLayout& MPEZoneLayout::operator= (const MPEZoneLayout& other)
-{
-    zones = other.zones;
-    return *this;
-}
-
 //==============================================================================
 bool MPEZoneLayout::addZone (MPEZone newZone)
 {
@@ -57,7 +46,6 @@ bool MPEZoneLayout::addZone (MPEZone newZone)
     }
 
     zones.add (newZone);
-    listeners.call (&MPEZoneLayout::Listener::zoneLayoutChanged, *this);
     return noOtherZonesModified;
 }
 
@@ -78,7 +66,6 @@ MPEZone* MPEZoneLayout::getZoneByIndex (int index) const noexcept
 void MPEZoneLayout::clearAllZones()
 {
     zones.clear();
-    listeners.call (&MPEZoneLayout::Listener::zoneLayoutChanged, *this);
 }
 
 //==============================================================================
@@ -119,23 +106,12 @@ void MPEZoneLayout::processPitchbendRangeRpnMessage (MidiRPNMessage rpn)
 {
     if (MPEZone* zone = getZoneByFirstNoteChannel (rpn.channel))
     {
-        if (zone->getPerNotePitchbendRange() != rpn.value)
-        {
-            zone->setPerNotePitchbendRange (rpn.value);
-            listeners.call (&MPEZoneLayout::Listener::zoneLayoutChanged, *this);
-            return;
-        }
+        zone->setPerNotePitchbendRange (rpn.value);
+        return;
     }
 
     if (MPEZone* zone = getZoneByMasterChannel (rpn.channel))
-    {
-        if (zone->getMasterPitchbendRange() != rpn.value)
-        {
-            zone->setMasterPitchbendRange (rpn.value);
-            listeners.call (&MPEZoneLayout::Listener::zoneLayoutChanged, *this);
-            return;
-        }
-    }
+        zone->setMasterPitchbendRange (rpn.value);
 }
 
 //==============================================================================
@@ -184,25 +160,6 @@ MPEZone* MPEZoneLayout::getZoneByNoteChannel (int channel) const noexcept
             return zone;
 
     return nullptr;
-}
-
-//==============================================================================
-void MPEZoneLayout::addListener (Listener* const listenerToAdd) noexcept
-{
-    listeners.add (listenerToAdd);
-}
-
-void MPEZoneLayout::removeListener (Listener* const listenerToRemove) noexcept
-{
-    listeners.remove (listenerToRemove);
-}
-
-MPEZoneLayout::Listener::Listener()
-{
-}
-
-MPEZoneLayout::Listener::~Listener()
-{
 }
 
 //==============================================================================

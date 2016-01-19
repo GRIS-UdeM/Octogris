@@ -248,7 +248,7 @@ public:
         setAlwaysOnTop (true);
 
         setLookAndFeel (parent != nullptr ? &(parent->getLookAndFeel())
-                                          : menu.lookAndFeel.get());
+                                          : menu.lookAndFeel);
 
         setOpaque (getLookAndFeel().findColour (PopupMenu::backgroundColourId).isOpaque()
                      || ! Desktop::canUseSemiTransparentWindows());
@@ -1234,6 +1234,7 @@ private:
 
 //==============================================================================
 PopupMenu::PopupMenu()
+    : lookAndFeel (nullptr)
 {
 }
 

@@ -118,8 +118,6 @@ using namespace juce;
 - (void) willRotateToInterfaceOrientation: (UIInterfaceOrientation) toInterfaceOrientation duration: (NSTimeInterval) duration;
 - (void) didRotateFromInterfaceOrientation: (UIInterfaceOrientation) fromInterfaceOrientation;
 - (void) viewWillTransitionToSize: (CGSize) size withTransitionCoordinator: (id<UIViewControllerTransitionCoordinator>) coordinator;
-- (BOOL) prefersStatusBarHidden;
-- (UIStatusBarStyle) preferredStatusBarStyle;
 
 - (void) viewDidLoad;
 - (void) viewWillAppear: (BOOL) animated;
@@ -300,15 +298,6 @@ static void sendScreenBoundsUpdate (JuceUIViewController* c)
     juceView->owner->updateTransformAndScreenBounds();
 }
 
-static bool isKioskModeView (JuceUIViewController* c)
-{
-    JuceUIView* juceView = (JuceUIView*) [c view];
-    jassert (juceView != nil && juceView->owner != nullptr);
-
-    return Desktop::getInstance().getKioskModeComponent() == &(juceView->owner->getComponent());
-}
-
-
 } // (juce namespace)
 
 //==============================================================================
@@ -348,16 +337,6 @@ static bool isKioskModeView (JuceUIViewController* c)
     // On some devices the screen-size isn't yet updated at this point, so also trigger another
     // async update to double-check..
     MessageManager::callAsync ([=]() { sendScreenBoundsUpdate (self); });
-}
-
-- (BOOL) prefersStatusBarHidden
-{
-    return isKioskModeView (self);
-}
-
-- (UIStatusBarStyle) preferredStatusBarStyle
-{
-    return UIStatusBarStyleDefault;
 }
 
 - (void) viewDidLoad
@@ -1012,15 +991,13 @@ bool UIViewComponentPeer::canBecomeKeyWindow()
 //==============================================================================
 void Desktop::setKioskComponent (Component* kioskModeComp, bool enableOrDisable, bool /*allowMenusAndBars*/)
 {
+    [[UIApplication sharedApplication] setStatusBarHidden: enableOrDisable
+                                            withAnimation: UIStatusBarAnimationSlide];
+
     displays->refresh();
 
-    if (ComponentPeer* peer = kioskModeComp->getPeer())
-    {
-        if (UIViewComponentPeer* uiViewPeer = dynamic_cast<UIViewComponentPeer*> (peer))
-            [uiViewPeer->controller setNeedsStatusBarAppearanceUpdate];
-
+    if (ComponentPeer* const peer = kioskModeComp->getPeer())
         peer->setFullScreen (enableOrDisable);
-    }
 }
 
 //==============================================================================

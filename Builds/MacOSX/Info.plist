@@ -8,7 +8,7 @@
     <key>CFBundleIconFile</key>
     <string></string>
     <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <string>com.UdeM.Octogris2</string>
     <key>CFBundleName</key>
     <string>Octogris</string>
     <key>CFBundlePackageType</key>

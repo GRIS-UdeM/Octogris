@@ -120,12 +120,6 @@ struct JUCE_API  MPEZone
     */
     bool truncateToFit (MPEZone zoneToAvoid) noexcept;
 
-    /** @returns true if this zone is equal to the one passed in. */
-    bool operator== (const MPEZone& other) const noexcept;
-
-    /** @returns true if this zone is not equal to the one passed in. */
-    bool operator!= (const MPEZone& other) const noexcept;
-
 private:
     //==========================================================================
     int masterChannel;
