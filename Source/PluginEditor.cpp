@@ -1257,16 +1257,11 @@ OctogrisAudioProcessorEditor::~OctogrisAudioProcessorEditor()
 #endif
 #if USE_LEAP
     if(mController) {
-  //      mController->enableGesture(Leap::Gesture::TYPE_INVALID);
-		//mController.release();
-  //      gIsLeapConnected = 0;
 		mController->enableGesture(Leap::Gesture::TYPE_INVALID);
 		mController->removeListener(*mleap);
 		gIsLeapConnected = 0;
 		mController.release();
 	}
-
-
     getMover()->end(kLeap);
     getMover()->end(kHID);
 #endif

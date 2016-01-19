@@ -60,6 +60,7 @@ size_t strlcpy(char * dst, const char * src, size_t dstsize)
 
 #include <sstream>
 #include <string>
+#include <windows.h>
 
 	template<class T>
 	string toString(const T &value) {
@@ -85,6 +86,13 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 ,m_iSourceLocationChanged(-1)
 ,m_bPreventSourceLocationUpdate(false)
 {
+//
+//#if USE_LEAP
+//	char winDir[MAX_PATH];//will hold path of above dll
+//	GetCurrentDirectory(sizeof(winDir), winDir);//dll is in same dir as exe
+//	strcat(winDir, "\\Leap.dll");//concentrate dll name with path
+//	HINSTANCE DLL = LoadLibrary(winDir);//load example dll
+//#endif
     
     //SET PARAMETERS
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
