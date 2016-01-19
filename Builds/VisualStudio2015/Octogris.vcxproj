@@ -17,7 +17,6 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{85B349BE-0514-8781-EF8C-E922FF5EEC35}</ProjectGuid>
     <PlatformToolset>v140</PlatformToolset>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -57,7 +56,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release_x64|x64'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release_x64|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release_x64|x64'">$(LibraryPath);C:\Users\barth\Documents\sdks\LeapSDK\lib\x64</LibraryPath>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -103,9 +102,6 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\Octogris2.bsc</OutputFile>
     </Bscmake>
-    <PostBuildEvent>
-      <Command>xcopy /yr "$(LEAP_SDK)\lib\x86\Leap.dll" "$(TargetDir)"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -151,6 +147,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\Octogris2.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy /yr "$(LEAP_SDK)\lib\x86\Leap.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_x64|x64'">
     <Midl>
