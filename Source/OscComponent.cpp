@@ -184,6 +184,7 @@ public:
                 }
                 mFilter->setOscReceiveEnabled(mReceive->getToggleState());
             } else if (button == mSend) {
+#if USE_OSC
                 if (mSend->getToggleState()) {
                     mOscIpAddress = mSendIp->getText();
                     int iSendPort = mSendPort->getText().getIntValue();
@@ -198,11 +199,13 @@ public:
                         mSendIp->setEnabled(false);
                         mSendPort->setEnabled(false);
                     }
+
                 } else {
                     mSendIp->setEnabled(true);
                     mSendPort->setEnabled(true);
                 }
                 mFilter->setOscSendEnabled(mSend->getToggleState());
+#endif
             } else {
                 printf("unknown button clicked...\n");
             }
@@ -245,6 +248,7 @@ public:
         if (!mSend->getToggleState()){
             return;
         }
+#if USE_OSC
 		int src = mEditor->getOscLeapSource();
 		if (src != mSource) {
 			String s = "Source "; 
@@ -269,6 +273,7 @@ public:
 			}
 			mSourceXY = p;
 		}
+#endif
 	}
 
 
@@ -283,8 +288,9 @@ private:
 	ScopedPointer<ToggleButton> mSend;
 	ScopedPointer<TextEditor> mSendIp;
 	ScopedPointer<TextEditor> mSendPort;
-	
+#if USE_OSC
 	OSCSender mOscSender;
+#endif
 	String mOscIpAddress;
 	
 	bool mNeedToEnd;

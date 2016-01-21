@@ -148,7 +148,8 @@
       <OutputFile>$(IntDir)\Octogris2.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /yr "$(LEAP_SDK)\lib\x86\Leap.dll" "$(TargetDir)"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_x64|x64'">
