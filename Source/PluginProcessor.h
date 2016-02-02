@@ -27,9 +27,9 @@
 #define USE_LEAP 1
 #endif
 
-//#ifndef USE_OSC
-//#define USE_OSC 1
-//#endif
+#ifndef USE_OSC
+#define USE_OSC 1
+#endif
 
 #if !WIN32
 #ifndef USE_JOYSTICK
