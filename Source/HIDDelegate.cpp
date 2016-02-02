@@ -7,11 +7,11 @@
  
  ==============================================================================
  */
-#if USE_JOYSTICK
+#include "HIDDelegate.h"
 
+#if USE_JOYSTICK
 #include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "HIDDelegate.h"
 #include "FieldComponent.h"
 
 /*#if JUCE_WINDOWS
