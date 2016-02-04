@@ -228,19 +228,36 @@ public:
 
 protected:
     void spProcess(float duration, float seconds) {
+        
         float da, integralPart;
         float fTranslationFactor = modf(mDone / mDurationSingleTraj, &integralPart);
+        bool bReturningToStart = false;
         if (mRT) {
-            da = mDone / mDurationSingleTraj;
-            if (da > .5){
-                fTranslationFactor = 1 - da;
+//            da = mDone / mDurationSingleTraj;
+//            //change direction when we reach halfway
+//            if (da > .5){
+//                fTranslationFactor = 1 - da;
+//            }
+//            fTranslationFactor *=2;
+//            da *= 2 * M_PI;
+            if (mDone < mTotalDuration){
+                da = 2 * fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+                cout << mDone << "\t" << da << endl;
+                if (da >= M_PI){
+                    //reverse direction when we reach halfway
+                    fTranslationFactor = 1-fTranslationFactor;
+                }
+            } else {
+                da = M_PI; //only done at the very end of the trajectory
             }
-            fTranslationFactor *=2;
-            da *= 2 * M_PI;
         } else {
-            if (mDone < mTotalDuration) da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
-            else da = M_PI;
+            if (mDone < mTotalDuration){
+                da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+            } else {
+                da = M_PI; //only done at the very end of the trajectory
+            }
         }
+        
         if (!mCCW) da = -da;
 
         FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
@@ -248,10 +265,11 @@ protected:
         float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
         float t = p.y + m_fTurns*2*da;
         
+        //convert rt to xy and do translation
         FPoint pointXY01 = mFilter->convertRt2Xy01(r, t);
-        JUCE_COMPILER_WARNING("i suspect that some of the weirdness in some of the spiral movements can be tweaked by modifying fTranslationFactor, perhaps by making it vary along the trajectory")
         pointXY01.x += fTranslationFactor * (m_fEndPair.first-.5);
         pointXY01.y -= fTranslationFactor * (m_fEndPair.second-.5);
+
         mMover->move(pointXY01, kTrajectory);
     }
 
