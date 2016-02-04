@@ -1154,7 +1154,6 @@ void OctogrisAudioProcessorEditor::updateEndLocationTextEditors(){
 
 void OctogrisAudioProcessorEditor::updateNonSelectedSourcePositions(){
     int iSourceChanged = mFilter->getSourceLocationChanged();
-//    if (!mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && iSourceChanged != -1) {
     if (iSourceChanged != -1){
         mMover.begin(iSourceChanged, kSourceThread);
         mMover.move(mFilter->getSourceXY01(iSourceChanged), kSourceThread);
@@ -1448,10 +1447,9 @@ void OctogrisAudioProcessorEditor::updateMovementModeCombo(){
         }
     }
     int iCurMode = mFilter->getMovementMode() + 1;
-    //iCurMode > mMovementModeCombo->getNumItems() ? mMovementModeCombo->setSelectedId(1) : mMovementModeCombo->setSelectedId(iCurMode);
-    if (mMovementModeCombo->getItemText(iCurMode) == ""){
+    if (mMovementModeCombo->getItemText(iCurMode-1) == ""){
         mMovementModeCombo->setSelectedId(1);
-        mFilter->setMovementMode(0);
+        mFilter->setMovementMode(0);    //0 is independent
     } else {
         mMovementModeCombo->setSelectedId(iCurMode);
     }

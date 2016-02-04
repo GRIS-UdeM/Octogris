@@ -54,6 +54,7 @@
 		AAAC67D4263DA75F7C541EE3 /* juce_gui_basics.mm in Sources */ = {isa = PBXBuildFile; fileRef = AE7E5DF6F838ED6446019124 /* juce_gui_basics.mm */; };
 		ADE606E9654B3EF899191559 /* PluginEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50E3B03A738441659AEC9376 /* PluginEditor.cpp */; };
 		B0B72164C8A3ED7CD83D2858 /* juce_osc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D8C6565CAF670C7129B196DF /* juce_osc.cpp */; };
+		B19D24AB1C63E7B10088B5DB /* libLeap.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96508569D95E3978172EFA00 /* libLeap.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B378F196776FD008F0ED4EA2 /* AUBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 965B3F877D7BEA87D4489B8B /* AUBuffer.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		B6B84F39203CE00BE267B359 /* CAVectorUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6F46516B5ACBA00B9606D180 /* CAVectorUnit.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 		B6D7952F46E362B1A5B4BE2F /* juce_core.mm in Sources */ = {isa = PBXBuildFile; fileRef = F8B94EB70412EFA7441864D8 /* juce_core.mm */; };
@@ -82,6 +83,19 @@
 		F78409593DB775450C268216 /* RecentFilesMenuTemplate.nib in Resources */ = {isa = PBXBuildFile; fileRef = 281829C2382995B67A43416C /* RecentFilesMenuTemplate.nib */; };
 		F9FB6055178C7DBBA8A431BE /* MusicDeviceBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE474CB5F842D6FBF9D1B6FC /* MusicDeviceBase.cpp */; settings = {COMPILER_FLAGS = "-w"; }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B19D24AA1C63E7AA0088B5DB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				B19D24AB1C63E7B10088B5DB /* libLeap.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0002F2A143E7973693EADE79 /* juce_FileOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_FileOutputStream.h; path = ../../JuceLibraryCode/modules/juce_core/files/juce_FileOutputStream.h; sourceTree = SOURCE_ROOT; };
@@ -2641,6 +2655,7 @@
 				AFBAB6135653C9B7B9F10AA5 /* Sources */,
 				AE1FAB299C5E8BE3F6E82000 /* Frameworks */,
 				ACB59ACAAF55A1838119385D /* Post-build script */,
+				B19D24AA1C63E7AA0088B5DB /* CopyFiles */,
 			);
 			buildRules = (
 			);
