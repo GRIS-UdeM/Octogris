@@ -256,7 +256,11 @@ protected:
         
         FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
         float l = (cos(da)+1) * 0.5;
-        float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
+        
+        
+        JUCE_COMPILER_WARNING(")not sure what the part after : did, but what it needs to do is reverse the spiral, so that when we're going out, the start point is like the end of when we're going in")
+        float r = mIn ? (p.x * l) : (p.x * (1-l));//(p.x + (2 - p.x) * (1 - l));
+        
         float t = p.y + m_fTurns*2*da;
         
         //convert rt to xy and do translation
