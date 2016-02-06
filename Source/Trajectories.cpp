@@ -220,15 +220,15 @@ public:
     , mCCW(ccw)
     , mRT(rt)
     , m_fTurns(p_fTurns)
-    , m_fEndPair(endPair)
+    , m_fEndPairXY01(endPair)
     { }
 
 protected:
     void spInit() {
         FPoint startPoint = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
         //if start ray is bigger than end ray, we are going in. Otherwise we're not
-        FPoint endPointRt = mFilter->convertXy012Rt(FPoint(m_fEndPair.first, m_fEndPair.second));
-        if (startPoint.x > endPointRt.x){
+        m_fEndPointRt = mFilter->convertXy012Rt(FPoint(m_fEndPairXY01.first, m_fEndPairXY01.second));
+        if (startPoint.x > m_fEndPointRt.x){
             mIn = true;
         } else {
             mIn = false;
@@ -254,27 +254,33 @@ protected:
             da = -da;
         }
         
-        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+        FPoint initialPointRT = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
         float l = (cos(da)+1) * 0.5;
+        cout << da << "\t" << l << newLine;
         
+        float r = mIn ? (initialPointRT.x * l) : (initialPointRT.x + (2 - initialPointRT.x) * (1 - l)); //(initialPoint.x * (1-l));
         
-        JUCE_COMPILER_WARNING(")not sure what the part after : did, but what it needs to do is reverse the spiral, so that when we're going out, the start point is like the end of when we're going in")
-        float r = mIn ? (p.x * l) : (p.x * (1-l));//(p.x + (2 - p.x) * (1 - l));
-        
-        float t = p.y + m_fTurns*2*da;
+        float t = initialPointRT.y + m_fTurns * 2 * da;
         
         //convert rt to xy and do translation
-        FPoint pointXY01 = mFilter->convertRt2Xy01(r, t);
-        pointXY01.x += fTranslationFactor * (m_fEndPair.first-.5);
-        pointXY01.y -= fTranslationFactor * (m_fEndPair.second-.5);
+        FPoint curPointXY01 = mFilter->convertRt2Xy01(r, t);
 
-        mMover->move(pointXY01, kTrajectory);
+        if (mIn){
+            curPointXY01.x += fTranslationFactor * (m_fEndPairXY01.first-.5);
+            curPointXY01.y -= fTranslationFactor * (m_fEndPairXY01.second-.5);
+        } else {
+            FPoint untranslatedEndOutPointXY = mFilter->convertRt2Xy01(2, initialPointRT.y);
+            curPointXY01.x += fTranslationFactor * (m_fEndPairXY01.first - untranslatedEndOutPointXY.x);
+            curPointXY01.y -= fTranslationFactor * (m_fEndPairXY01.second- untranslatedEndOutPointXY.y);
+        }
+        mMover->move(curPointXY01, kTrajectory);
     }
 
 private:
 	bool mCCW, mIn, mRT;
     float m_fTurns;
-    std::pair<float, float> m_fEndPair;
+    std::pair<float, float> m_fEndPairXY01;
+    FPoint m_fEndPointRt;
 };
 
 // ================================================================================================
