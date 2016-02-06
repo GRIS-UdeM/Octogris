@@ -231,31 +231,36 @@ protected:
         
         float da, integralPart;
         float fTranslationFactor = modf(mDone / mDurationSingleTraj, &integralPart);
-        bool bReturningToStart = false;
-        if (mRT) {
-//            da = mDone / mDurationSingleTraj;
-//            //change direction when we reach halfway
-//            if (da > .5){
-//                fTranslationFactor = 1 - da;
+
+//        if (mRT) {
+//            if (mDone < mTotalDuration){
+//                //since this is a return spiral, the delta angle goes twice as fast
+//                da = 2 * fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+//                if (da >= M_PI){
+//                    //reverse direction when we reach halfway
+//                    fTranslationFactor = 1-fTranslationFactor;
+//                }
+//            } else {
+//                da = M_PI; //only done at the very end of the trajectory
 //            }
-//            fTranslationFactor *=2;
-//            da *= 2 * M_PI;
-            if (mDone < mTotalDuration){
-                da = 2 * fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
-                cout << mDone << "\t" << da << endl;
-                if (da >= M_PI){
-                    //reverse direction when we reach halfway
-                    fTranslationFactor = 1-fTranslationFactor;
-                }
-            } else {
-                da = M_PI; //only done at the very end of the trajectory
+//        } else {
+//            if (mDone < mTotalDuration){
+//                da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+//            } else {
+//                da = M_PI; //only done at the very end of the trajectory
+//            }
+//        }
+
+        if (mDone < mTotalDuration){
+            //in return spiral, delta angle goes twice as fast
+            int iMultiple = (mRT ? 2 : 1);
+            da = iMultiple * fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+            if (mRT && da >= M_PI){
+                //reverse direction when we reach halfway in return spiral
+                fTranslationFactor = 1-fTranslationFactor;
             }
         } else {
-            if (mDone < mTotalDuration){
-                da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
-            } else {
-                da = M_PI; //only done at the very end of the trajectory
-            }
+            da = M_PI; //only done at the very end of the trajectory
         }
         
         if (!mCCW) da = -da;
