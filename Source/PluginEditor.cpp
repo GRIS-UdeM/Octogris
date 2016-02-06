@@ -2023,7 +2023,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			} else {
 				mTrWriteButton->setButtonText("Ready");
                 mTrWriteButton->setToggleState(false, dontSendNotification);
-                mFilter->restoreCurrentLocations(mFilter->getSrcSelected());
+                mFilter->restoreCurrentLocations(-1);
 				mTrProgressBar->setVisible(false);
                 mTrStateEditor = kTrReady;
 				mFilter->setTrState(mTrStateEditor);
