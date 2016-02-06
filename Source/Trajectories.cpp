@@ -24,7 +24,6 @@
  ==============================================================================
  */
 
-
 #include "Trajectories.h"
 #include "PluginProcessor.h"
 #include "SourceMover.h"
@@ -219,38 +218,26 @@ public:
 	SpiralTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, bool ccw, bool in, bool rt, float p_fTurns, const std::pair<float, float> &endPair)
 	: Trajectory(filter, p_pMover, duration, beats, times)
     , mCCW(ccw)
-    , mIn(in)
     , mRT(rt)
     , m_fTurns(p_fTurns)
     , m_fEndPair(endPair)
-    {
-    }
+    { }
 
 protected:
+    void spInit() {
+        FPoint startPoint = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+        //if start ray is bigger than end ray, we are going in. Otherwise we're not
+        FPoint endPointRt = mFilter->convertXy012Rt(FPoint(m_fEndPair.first, m_fEndPair.second));
+        if (startPoint.x > endPointRt.x){
+            mIn = true;
+        } else {
+            mIn = false;
+        }
+    }
     void spProcess(float duration, float seconds) {
-        
         float da, integralPart;
         float fTranslationFactor = modf(mDone / mDurationSingleTraj, &integralPart);
-
-//        if (mRT) {
-//            if (mDone < mTotalDuration){
-//                //since this is a return spiral, the delta angle goes twice as fast
-//                da = 2 * fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
-//                if (da >= M_PI){
-//                    //reverse direction when we reach halfway
-//                    fTranslationFactor = 1-fTranslationFactor;
-//                }
-//            } else {
-//                da = M_PI; //only done at the very end of the trajectory
-//            }
-//        } else {
-//            if (mDone < mTotalDuration){
-//                da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
-//            } else {
-//                da = M_PI; //only done at the very end of the trajectory
-//            }
-//        }
-
+        
         if (mDone < mTotalDuration){
             //in return spiral, delta angle goes twice as fast
             int iMultiple = (mRT ? 2 : 1);
@@ -263,10 +250,12 @@ protected:
             da = M_PI; //only done at the very end of the trajectory
         }
         
-        if (!mCCW) da = -da;
-
+        if (!mCCW){
+            da = -da;
+        }
+        
         FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
-        float l = (cos(da)+1)*0.5;
+        float l = (cos(da)+1) * 0.5;
         float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
         float t = p.y + m_fTurns*2*da;
         

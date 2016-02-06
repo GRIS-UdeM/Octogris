@@ -480,7 +480,6 @@ public:
         return FPoint(x, y);
     }
     
-    
     //01 here means that the output is normalized to [0,1]
     FPoint convertRt2Xy01(float r, float t) {
         float x = r * cosf(t);
