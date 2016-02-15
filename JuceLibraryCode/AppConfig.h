@@ -141,10 +141,10 @@
  #define JucePlugin_Build_AAX              0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "Octogris2"
+ #define JucePlugin_Name                   "Octogris3"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "Octogris2"
+ #define JucePlugin_Desc                   "Octogris3"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "UdeM"
@@ -180,13 +180,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                2.2.9
+ #define JucePlugin_Version                3.0.0
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x20209
+ #define JucePlugin_VersionCode            0x30000
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "2.2.9"
+ #define JucePlugin_VersionString          "3.0.0"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
@@ -210,7 +210,7 @@
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.UdeM.Octogris2
+ #define JucePlugin_CFBundleIdentifier     com.UdeM.Octogris3
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           ePlugInCategory_None
@@ -228,7 +228,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.UdeM.Octogris2
+ #define JucePlugin_AAXIdentifier          com.UdeM.Octogris3
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
