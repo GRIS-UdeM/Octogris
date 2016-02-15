@@ -17,12 +17,13 @@
 #ifndef __Octogris2__HIDDelegate__
 #define __Octogris2__HIDDelegate__
 
+#include "PluginProcessor.h"
+
 #if USE_JOYSTICK
 
 #include <stdio.h>
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginEditor.h"
-#include "PluginProcessor.h"
 #include "HID_Utilities_External.h"
 
 class HIDDelegate : public ReferenceCountedObject

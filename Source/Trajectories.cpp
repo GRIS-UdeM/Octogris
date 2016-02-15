@@ -24,7 +24,6 @@
  ==============================================================================
  */
 
-
 #include "Trajectories.h"
 #include "PluginProcessor.h"
 #include "SourceMover.h"
@@ -219,46 +218,69 @@ public:
 	SpiralTrajectory(OctogrisAudioProcessor *filter, SourceMover *p_pMover, float duration, bool beats, float times, bool ccw, bool in, bool rt, float p_fTurns, const std::pair<float, float> &endPair)
 	: Trajectory(filter, p_pMover, duration, beats, times)
     , mCCW(ccw)
-    , mIn(in)
     , mRT(rt)
     , m_fTurns(p_fTurns)
-    , m_fEndPair(endPair)
-    {
-    }
+    , m_fEndPairXY01(endPair)
+    { }
 
 protected:
+    void spInit() {
+        FPoint startPoint = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+        //if start ray is bigger than end ray, we are going in. Otherwise we're not
+        m_fEndPointRt = mFilter->convertXy012Rt(FPoint(m_fEndPairXY01.first, m_fEndPairXY01.second));
+        if (startPoint.x > m_fEndPointRt.x){
+            mIn = true;
+        } else {
+            mIn = false;
+        }
+    }
     void spProcess(float duration, float seconds) {
         float da, integralPart;
         float fTranslationFactor = modf(mDone / mDurationSingleTraj, &integralPart);
-        if (mRT) {
-            da = mDone / mDurationSingleTraj;
-            if (da > .5){
-                fTranslationFactor = 1 - da;
-            }
-            fTranslationFactor *=2;
-            da *= 2 * M_PI;
-        } else {
-            if (mDone < mTotalDuration) da = fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
-            else da = M_PI;
-        }
-        if (!mCCW) da = -da;
-
-        FPoint p = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
-        float l = (cos(da)+1)*0.5;
-        float r = mIn ? (p.x * l) : (p.x + (2 - p.x) * (1 - l));
-        float t = p.y + m_fTurns*2*da;
         
-        FPoint pointXY01 = mFilter->convertRt2Xy01(r, t);
-        JUCE_COMPILER_WARNING("i suspect that some of the weirdness in some of the spiral movements can be tweaked by modifying fTranslationFactor, perhaps by making it vary along the trajectory")
-        pointXY01.x += fTranslationFactor * (m_fEndPair.first-.5);
-        pointXY01.y -= fTranslationFactor * (m_fEndPair.second-.5);
-        mMover->move(pointXY01, kTrajectory);
+        if (mDone < mTotalDuration){
+            //in return spiral, delta angle goes twice as fast
+            int iMultiple = (mRT ? 2 : 1);
+            da = iMultiple * fmodf(mDone / mDurationSingleTraj * M_PI, M_PI);
+            if (mRT && da >= M_PI){
+                //reverse direction when we reach halfway in return spiral
+                fTranslationFactor = 1-fTranslationFactor;
+            }
+        } else {
+            da = M_PI; //only done at the very end of the trajectory
+        }
+        
+        if (!mCCW){
+            da = -da;
+        }
+        
+        FPoint initialPointRT = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
+        float l = (cos(da)+1) * 0.5;
+        cout << da << "\t" << l << newLine;
+        
+        float r = mIn ? (initialPointRT.x * l) : (initialPointRT.x + (2 - initialPointRT.x) * (1 - l)); //(initialPoint.x * (1-l));
+        
+        float t = initialPointRT.y + m_fTurns * 2 * da;
+        
+        //convert rt to xy and do translation
+        FPoint curPointXY01 = mFilter->convertRt2Xy01(r, t);
+
+        if (mIn){
+            curPointXY01.x += fTranslationFactor * (m_fEndPairXY01.first-.5);
+            curPointXY01.y -= fTranslationFactor * (m_fEndPairXY01.second-.5);
+        } else {
+            FPoint untranslatedEndOutPointXY = mFilter->convertRt2Xy01(2, initialPointRT.y);
+            curPointXY01.x += fTranslationFactor * (m_fEndPairXY01.first - untranslatedEndOutPointXY.x);
+            curPointXY01.y -= fTranslationFactor * (m_fEndPairXY01.second- untranslatedEndOutPointXY.y);
+        }
+        mMover->move(curPointXY01, kTrajectory);
     }
 
 private:
 	bool mCCW, mIn, mRT;
     float m_fTurns;
-    std::pair<float, float> m_fEndPair;
+    std::pair<float, float> m_fEndPairXY01;
+    FPoint m_fEndPointRt;
 };
 
 // ================================================================================================

@@ -79,7 +79,7 @@ FPoint FieldComponent::getSourcePoint(int i)
 	float y = p.y * (fieldWidth - kSourceDiameter) + kSourceRadius;
 	return FPoint(x, fieldWidth - y);
 }
-
+JUCE_COMPILER_WARNING("is this is a duplicate of one of the convert functions in processor.h?")
 FPoint FieldComponent::convertSourceRT(float r, float t)
 {
 	const int fieldWidth = getWidth();
