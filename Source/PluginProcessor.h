@@ -23,9 +23,9 @@
  ==============================================================================
  */
 
-//#ifndef USE_LEAP
-//#define USE_LEAP 1
-//#endif
+#ifndef USE_LEAP
+#define USE_LEAP 1
+#endif
 
 #ifndef USE_OSC
 #define USE_OSC 1
