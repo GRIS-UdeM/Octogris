@@ -57,7 +57,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release_x64|x64'">Octogris2</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release_x64|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release_x64|x64'">$(LibraryPath);C:\Users\barth\Documents\sdks\LeapSDK\lib\x64</LibraryPath>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -72,7 +72,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK;..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\barth\Documents\sdks\LeapSDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2.2.9;JUCE_APP_VERSION_HEX=0x20209;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader />
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
@@ -116,7 +116,7 @@
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK;..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\barth\Documents\sdks\LeapSDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2.2.9;JUCE_APP_VERSION_HEX=0x20209;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader />
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
@@ -165,7 +165,7 @@
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>C:\Users\barth\Documents\sdks\steinberg\3.6.5\VST3 SDK;..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;C:\Users\barth\Documents\sdks\LeapSDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2.2.9;JUCE_APP_VERSION_HEX=0x20209;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader />
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
