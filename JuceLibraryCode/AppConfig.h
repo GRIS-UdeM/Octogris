@@ -129,7 +129,7 @@
  #define JucePlugin_Build_VST              1
 #endif
 #ifndef  JucePlugin_Build_VST3
- #define JucePlugin_Build_VST3             0
+ #define JucePlugin_Build_VST3             1
 #endif
 #ifndef  JucePlugin_Build_AU
  #define JucePlugin_Build_AU               1
@@ -159,7 +159,16 @@
  #define JucePlugin_ManufacturerCode       'UdeM'
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             'Octo'
+ #define JucePlugin_PluginCode             'Oct3'
+#endif
+#ifndef  JucePlugin_MaxNumInputChannels
+ #define JucePlugin_MaxNumInputChannels    8
+#endif
+#ifndef  JucePlugin_MaxNumOutputChannels
+ #define JucePlugin_MaxNumOutputChannels   16
+#endif
+#ifndef  JucePlugin_PreferredChannelConfigurations
+ #define JucePlugin_PreferredChannelConfigurations  {8,16}, {1,2}, {1,4}, {1,6}, {1,8}, {1,16}, {2,2}, {2,4}, {2,6}, {2,8}, {2,16}, {4,4}, {4,6}, {4,8}, {4,16}, {6,6}, {6,8}, {6,16}, {8,8}, {8,16}
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                0
@@ -170,9 +179,6 @@
 #ifndef  JucePlugin_ProducesMidiOutput
  #define JucePlugin_ProducesMidiOutput     0
 #endif
-#ifndef  JucePlugin_IsMidiEffect
- #define JucePlugin_IsMidiEffect           0
-#endif
 #ifndef  JucePlugin_SilenceInProducesSilenceOut
  #define JucePlugin_SilenceInProducesSilenceOut  1
 #endif
@@ -180,13 +186,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                3.0.0
+ #define JucePlugin_Version                3.0.1
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x30000
+ #define JucePlugin_VersionCode            0x30001
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "3.0.0"
+ #define JucePlugin_VersionString          "3.0.1"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
@@ -244,15 +250,6 @@
 #endif
 #ifndef  JucePlugin_AAXDisableMultiMono
  #define JucePlugin_AAXDisableMultiMono    0
-#endif
-#ifndef  JucePlugin_MaxNumInputChannels
- #define JucePlugin_MaxNumInputChannels    8
-#endif
-#ifndef  JucePlugin_MaxNumOutputChannels
- #define JucePlugin_MaxNumOutputChannels   16
-#endif
-#ifndef  JucePlugin_PreferredChannelConfigurations
- #define JucePlugin_PreferredChannelConfigurations  {8,16}, {1,2}, {1,4}, {1,6}, {1,8}, {1,16}, {2,2}, {2,4}, {2,6}, {2,8}, {2,16}, {4,4}, {4,6}, {4,8}, {4,16}, {6,6}, {6,8}, {6,16}, {8,8}, {8,16}
 #endif
 
 #endif  // __JUCE_APPCONFIG_ZTKXIG__

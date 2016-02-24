@@ -22,8 +22,11 @@
   ==============================================================================
 */
 
-#include "../../juce_core/system/juce_TargetPlatform.h"
+// Your project must contain an AppConfig.h file with your project-specific settings in it,
+// and your header search path must make it accessible to the module's files.
+#include "AppConfig.h"
 #include "../utility/juce_CheckSettingMacros.h"
+#include "../../juce_core/native/juce_mac_ClangBugWorkaround.h"
 
 #if JucePlugin_Build_VST
 
@@ -31,13 +34,27 @@
  #pragma warning (disable : 4996 4100)
 #endif
 
-#include "../utility/juce_IncludeSystemHeaders.h"
+#ifdef _WIN32
+ #undef _WIN32_WINNT
+ #define _WIN32_WINNT 0x500
+ #undef STRICT
+ #define STRICT 1
+ #include <windows.h>
+#elif defined (LINUX)
+ #include <X11/Xlib.h>
+ #include <X11/Xutil.h>
+ #include <X11/Xatom.h>
+ #undef KeyPress
+#else
+ #include <Carbon/Carbon.h>
+#endif
 
 #ifdef PRAGMA_ALIGN_SUPPORTED
  #undef PRAGMA_ALIGN_SUPPORTED
  #define PRAGMA_ALIGN_SUPPORTED 1
 #endif
 
+//==============================================================================
 #ifndef _MSC_VER
  #define __cdecl
 #endif
@@ -437,7 +454,7 @@ public:
 
     VstIntPtr vendorSpecific (VstInt32 lArg, VstIntPtr lArg2, void* ptrArg, float floatArg) override
     {
-        ignoreUnused (lArg, lArg2, ptrArg, floatArg);
+        (void) lArg; (void) lArg2; (void) ptrArg; (void) floatArg;
 
        #if JucePlugin_Build_VST3 && JUCE_VST3_CAN_REPLACE_VST2
         if ((lArg == 'stCA' || lArg == 'stCa') && lArg2 == 'FUID' && ptrArg != nullptr)
@@ -471,7 +488,7 @@ public:
         VSTMidiEventList::addEventsToMidiBuffer (events, midiEvents);
         return 1;
        #else
-        ignoreUnused (events);
+        (void) events;
         return 0;
        #endif
     }
@@ -1137,26 +1154,26 @@ public:
         {
             switch (type)
             {
-                case AudioChannelSet::ChannelType::left:              return kSpeakerL;
-                case AudioChannelSet::ChannelType::right:             return kSpeakerR;
-                case AudioChannelSet::ChannelType::centre:            return kSpeakerC;
-                case AudioChannelSet::ChannelType::subbass:           return kSpeakerLfe;
-                case AudioChannelSet::ChannelType::surroundLeft:      return kSpeakerLs;
-                case AudioChannelSet::ChannelType::surroundRight:     return kSpeakerRs;
-                case AudioChannelSet::ChannelType::centreLeft:        return kSpeakerLc;
-                case AudioChannelSet::ChannelType::centreRight:       return kSpeakerRc;
-                case AudioChannelSet::ChannelType::surround:          return kSpeakerS;
-                case AudioChannelSet::ChannelType::sideLeft:          return kSpeakerSl;
-                case AudioChannelSet::ChannelType::sideRight:         return kSpeakerSr;
-                case AudioChannelSet::ChannelType::topMiddle:         return kSpeakerTm;
-                case AudioChannelSet::ChannelType::topFrontLeft:      return kSpeakerTfl;
-                case AudioChannelSet::ChannelType::topFrontCentre:    return kSpeakerTfc;
-                case AudioChannelSet::ChannelType::topFrontRight:     return kSpeakerTfr;
-                case AudioChannelSet::ChannelType::topRearLeft:       return kSpeakerTrl;
-                case AudioChannelSet::ChannelType::topRearCentre:     return kSpeakerTrc;
-                case AudioChannelSet::ChannelType::topRearRight:      return kSpeakerTrr;
-                case AudioChannelSet::ChannelType::subbass2:          return kSpeakerLfe2;
-                default: break;
+            case AudioChannelSet::ChannelType::left:              return kSpeakerL;
+            case AudioChannelSet::ChannelType::right:             return kSpeakerR;
+            case AudioChannelSet::ChannelType::centre:            return kSpeakerC;
+            case AudioChannelSet::ChannelType::subbass:           return kSpeakerLfe;
+            case AudioChannelSet::ChannelType::surroundLeft:      return kSpeakerLs;
+            case AudioChannelSet::ChannelType::surroundRight:     return kSpeakerRs;
+            case AudioChannelSet::ChannelType::centreLeft:        return kSpeakerLc;
+            case AudioChannelSet::ChannelType::centreRight:       return kSpeakerRc;
+            case AudioChannelSet::ChannelType::surround:          return kSpeakerS;
+            case AudioChannelSet::ChannelType::sideLeft:          return kSpeakerSl;
+            case AudioChannelSet::ChannelType::sideRight:         return kSpeakerSr;
+            case AudioChannelSet::ChannelType::topMiddle:         return kSpeakerTm;
+            case AudioChannelSet::ChannelType::topFrontLeft:      return kSpeakerTfl;
+            case AudioChannelSet::ChannelType::topFrontCentre:    return kSpeakerTfc;
+            case AudioChannelSet::ChannelType::topFrontRight:     return kSpeakerTfr;
+            case AudioChannelSet::ChannelType::topRearLeft:       return kSpeakerTrl;
+            case AudioChannelSet::ChannelType::topRearCentre:     return kSpeakerTrc;
+            case AudioChannelSet::ChannelType::topRearRight:      return kSpeakerTrr;
+            case AudioChannelSet::ChannelType::subbass2:          return kSpeakerLfe2;
+            default: break;
             }
 
             return 0;
@@ -1166,26 +1183,26 @@ public:
         {
             switch (type)
             {
-                case kSpeakerL:     return AudioChannelSet::ChannelType::left;
-                case kSpeakerR:     return AudioChannelSet::ChannelType::right;
-                case kSpeakerC:     return AudioChannelSet::ChannelType::centre;
-                case kSpeakerLfe:   return AudioChannelSet::ChannelType::subbass;
-                case kSpeakerLs:    return AudioChannelSet::ChannelType::surroundLeft;
-                case kSpeakerRs:    return AudioChannelSet::ChannelType::surroundRight;
-                case kSpeakerLc:    return AudioChannelSet::ChannelType::centreLeft;
-                case kSpeakerRc:    return AudioChannelSet::ChannelType::centreRight;
-                case kSpeakerS:     return AudioChannelSet::ChannelType::surround;
-                case kSpeakerSl:    return AudioChannelSet::ChannelType::sideLeft;
-                case kSpeakerSr:    return AudioChannelSet::ChannelType::sideRight;
-                case kSpeakerTm:    return AudioChannelSet::ChannelType::topMiddle;
-                case kSpeakerTfl:   return AudioChannelSet::ChannelType::topFrontLeft;
-                case kSpeakerTfc:   return AudioChannelSet::ChannelType::topFrontCentre;
-                case kSpeakerTfr:   return AudioChannelSet::ChannelType::topFrontRight;
-                case kSpeakerTrl:   return AudioChannelSet::ChannelType::topRearLeft;
-                case kSpeakerTrc:   return AudioChannelSet::ChannelType::topRearCentre;
-                case kSpeakerTrr:   return AudioChannelSet::ChannelType::topRearRight;
-                case kSpeakerLfe2:  return AudioChannelSet::ChannelType::subbass2;
-                default: break;
+            case kSpeakerL:     return AudioChannelSet::ChannelType::left;
+            case kSpeakerR:     return AudioChannelSet::ChannelType::right;
+            case kSpeakerC:     return AudioChannelSet::ChannelType::centre;
+            case kSpeakerLfe:   return AudioChannelSet::ChannelType::subbass;
+            case kSpeakerLs:    return AudioChannelSet::ChannelType::surroundLeft;
+            case kSpeakerRs:    return AudioChannelSet::ChannelType::surroundRight;
+            case kSpeakerLc:    return AudioChannelSet::ChannelType::centreLeft;
+            case kSpeakerRc:    return AudioChannelSet::ChannelType::centreRight;
+            case kSpeakerS:     return AudioChannelSet::ChannelType::surround;
+            case kSpeakerSl:    return AudioChannelSet::ChannelType::sideLeft;
+            case kSpeakerSr:    return AudioChannelSet::ChannelType::sideRight;
+            case kSpeakerTm:    return AudioChannelSet::ChannelType::topMiddle;
+            case kSpeakerTfl:   return AudioChannelSet::ChannelType::topFrontLeft;
+            case kSpeakerTfc:   return AudioChannelSet::ChannelType::topFrontCentre;
+            case kSpeakerTfr:   return AudioChannelSet::ChannelType::topFrontRight;
+            case kSpeakerTrl:   return AudioChannelSet::ChannelType::topRearLeft;
+            case kSpeakerTrc:   return AudioChannelSet::ChannelType::topRearCentre;
+            case kSpeakerTrr:   return AudioChannelSet::ChannelType::topRearRight;
+            case kSpeakerLfe2:  return AudioChannelSet::ChannelType::subbass2;
+            default: break;
             }
 
             return AudioChannelSet::ChannelType::unknown;
@@ -1689,11 +1706,17 @@ private:
             {
                 MessageManager::getInstance()->setCurrentThreadAsMessageThread();
 
-                struct MessageThreadCallback  : public CallbackMessage
+                class MessageThreadCallback  : public CallbackMessage
                 {
+                public:
                     MessageThreadCallback (bool& tr) : triggered (tr) {}
-                    void messageCallback() override     { triggered = true; }
 
+                    void messageCallback() override
+                    {
+                        triggered = true;
+                    }
+
+                private:
                     bool& triggered;
                 };
 

@@ -317,14 +317,15 @@ static void sendScreenBoundsUpdate (JuceUIViewController* c)
 - (void) willRotateToInterfaceOrientation: (UIInterfaceOrientation) toInterfaceOrientation
                                  duration: (NSTimeInterval) duration
 {
-    ignoreUnused (toInterfaceOrientation, duration);
+    (void) toInterfaceOrientation;
+    (void) duration;
 
     [UIView setAnimationsEnabled: NO]; // disable this because it goes the wrong way and looks like crap.
 }
 
 - (void) didRotateFromInterfaceOrientation: (UIInterfaceOrientation) fromInterfaceOrientation
 {
-    ignoreUnused (fromInterfaceOrientation);
+    (void) fromInterfaceOrientation;
     sendScreenBoundsUpdate (self);
     [UIView setAnimationsEnabled: YES];
 }
@@ -346,13 +347,13 @@ static void sendScreenBoundsUpdate (JuceUIViewController* c)
 
 - (void) viewWillAppear: (BOOL) animated
 {
-    ignoreUnused (animated);
+    (void) animated;
     [self viewDidLoad];
 }
 
 - (void) viewDidAppear: (BOOL) animated
 {
-    ignoreUnused (animated);
+    (void) animated;
     [self viewDidLoad];
 }
 
@@ -404,7 +405,7 @@ static void sendScreenBoundsUpdate (JuceUIViewController* c)
 //==============================================================================
 - (void) touchesBegan: (NSSet*) touches withEvent: (UIEvent*) event
 {
-    ignoreUnused (touches);
+    (void) touches;
 
     if (owner != nullptr)
         owner->handleTouches (event, true, false, false);
@@ -412,7 +413,7 @@ static void sendScreenBoundsUpdate (JuceUIViewController* c)
 
 - (void) touchesMoved: (NSSet*) touches withEvent: (UIEvent*) event
 {
-    ignoreUnused (touches);
+    (void) touches;
 
     if (owner != nullptr)
         owner->handleTouches (event, false, false, false);
@@ -420,7 +421,7 @@ static void sendScreenBoundsUpdate (JuceUIViewController* c)
 
 - (void) touchesEnded: (NSSet*) touches withEvent: (UIEvent*) event
 {
-    ignoreUnused (touches);
+    (void) touches;
 
     if (owner != nullptr)
         owner->handleTouches (event, false, true, false);
@@ -458,7 +459,7 @@ static void sendScreenBoundsUpdate (JuceUIViewController* c)
 
 - (BOOL) textView: (UITextView*) textView shouldChangeTextInRange: (NSRange) range replacementText: (NSString*) text
 {
-    ignoreUnused (textView);
+    (void) textView;
     return owner->textViewReplaceCharacters (Range<int> ((int) range.location, (int) (range.location + range.length)),
                                              nsStringToJuce (text));
 }
@@ -768,16 +769,6 @@ static float getMaximumTouchForce (UITouch* touch) noexcept
     return 0.0f;
 }
 
-static float getTouchForce (UITouch* touch) noexcept
-{
-   #if defined (__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
-    if ([touch respondsToSelector: @selector (force)])
-        return (float) touch.force;
-   #endif
-
-    return 0.0f;
-}
-
 void UIViewComponentPeer::handleTouches (UIEvent* event, const bool isDown, const bool isUp, bool isCancel)
 {
     NSArray* touches = [[event touchesForView: view] allObjects];
@@ -833,7 +824,7 @@ void UIViewComponentPeer::handleTouches (UIEvent* event, const bool isDown, cons
         }
 
         // NB: some devices return 0 or 1.0 if pressure is unknown, so we'll clip our value to a believable range:
-        float pressure = maximumForce > 0 ? jlimit (0.0001f, 0.9999f, getTouchForce (touch) / maximumForce)
+        float pressure = maximumForce > 0 ? jlimit (0.0001f, 0.9999f, (float) (touch.force / maximumForce))
                                           : MouseInputSource::invalidPressure;
 
         handleMouseEvent (touchIndex, pos, modsToSend, pressure, time);

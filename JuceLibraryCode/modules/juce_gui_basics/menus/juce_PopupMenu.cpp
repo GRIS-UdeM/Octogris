@@ -1544,7 +1544,7 @@ int PopupMenu::showWithOptionalCallback (const Options& options, ModalComponentM
         if (userCallback == nullptr && canBeModal)
             return window->runModalLoop();
        #else
-        ignoreUnused (canBeModal);
+        (void) canBeModal;
         jassert (! (userCallback == nullptr && canBeModal));
        #endif
     }

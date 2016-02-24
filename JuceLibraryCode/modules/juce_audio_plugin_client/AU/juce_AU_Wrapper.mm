@@ -22,8 +22,12 @@
   ==============================================================================
 */
 
-#include "../../juce_core/system/juce_TargetPlatform.h"
+// Your project must contain an AppConfig.h file with your project-specific settings in it,
+// and your header search path must make it accessible to the module's files.
+#include "AppConfig.h"
+
 #include "../utility/juce_CheckSettingMacros.h"
+#include "../../juce_core/native/juce_mac_ClangBugWorkaround.h"
 
 #if JucePlugin_Build_AU
 
@@ -262,21 +266,9 @@ public:
     }
 
     //==============================================================================
-    bool BusCountWritable (AudioUnitScope scope) override
+    bool BusCountWritable (AudioUnitScope) override
     {
-        bool isInput;
-
-        if (scopeToDirection (scope, isInput) != noErr)
-            return false;
-
-       #if JucePlugin_IsMidiEffect
-        return false;
-       #elif JucePlugin_IsSynth
-        if (isInput) return busUtils.hasDynamicInBuses();
-       #endif
-
-        return isInput ? (busUtils.getBusCount (true)  > 1 && busUtils.hasDynamicInBuses())
-                       : (busUtils.getBusCount (false) > 1 && busUtils.hasDynamicOutBuses());
+        return busUtils.hasDynamicInBuses() || busUtils.hasDynamicOutBuses();
     }
 
     OSStatus SetBusCount (AudioUnitScope scope, UInt32 count) override

@@ -416,7 +416,7 @@ struct OSCReceiver::Pimpl   : private Thread,
         catch (OSCFormatError)
         {
             if (formatErrorHandler != nullptr)
-                formatErrorHandler (data, (int) dataSize);
+                formatErrorHandler (data, dataSize);
         }
     }
 

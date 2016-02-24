@@ -154,7 +154,7 @@ void JUCE_CALLTYPE Thread::setCurrentThreadName (const String& name)
     __except (EXCEPTION_CONTINUE_EXECUTION)
     {}
    #else
-    ignoreUnused (name);
+    (void) name;
    #endif
 }
 
@@ -259,9 +259,14 @@ void JUCE_CALLTYPE Process::setPriority (ProcessPriority prior)
     }
 }
 
-JUCE_API bool JUCE_CALLTYPE juce_isRunningUnderDebugger() noexcept
+JUCE_API bool JUCE_CALLTYPE juce_isRunningUnderDebugger()
 {
     return IsDebuggerPresent() != FALSE;
+}
+
+bool JUCE_CALLTYPE Process::isRunningUnderDebugger()
+{
+    return juce_isRunningUnderDebugger();
 }
 
 static void* currentModuleHandle = nullptr;
@@ -309,17 +314,27 @@ bool juce_isRunningInWine()
 bool DynamicLibrary::open (const String& name)
 {
     close();
-    handle = LoadLibrary (name.toWideCharPointer());
+
+    JUCE_TRY
+    {
+        handle = LoadLibrary (name.toWideCharPointer());
+    }
+    JUCE_CATCH_ALL
+
     return handle != nullptr;
 }
 
 void DynamicLibrary::close()
 {
-    if (handle != nullptr)
+    JUCE_TRY
     {
-        FreeLibrary ((HMODULE) handle);
-        handle = nullptr;
+        if (handle != nullptr)
+        {
+            FreeLibrary ((HMODULE) handle);
+            handle = nullptr;
+        }
     }
+    JUCE_CATCH_ALL
 }
 
 void* DynamicLibrary::getFunction (const String& functionName) noexcept

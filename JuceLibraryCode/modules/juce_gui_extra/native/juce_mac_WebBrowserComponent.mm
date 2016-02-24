@@ -98,7 +98,7 @@ private:
                 [resultListener chooseFilename: juceStringToNS (files.getReference(i).getFullPathName())];
         }
        #else
-        ignoreUnused (resultListener, allowMultipleFiles);
+        (void) resultListener; (void) allowMultipleFiles;
         jassertfalse; // Can't use this without modal loops being enabled!
        #endif
     }
@@ -122,7 +122,8 @@ private:
 - (BOOL) gestureRecognizer: (UIGestureRecognizer*) gestureRecognizer
          shouldRecognizeSimultaneouslyWithGestureRecognizer: (UIGestureRecognizer*) otherGestureRecognizer
 {
-    ignoreUnused (gestureRecognizer, otherGestureRecognizer);
+    (void) gestureRecognizer;
+    (void) otherGestureRecognizer;
     return YES;
 }
 
@@ -152,7 +153,8 @@ private:
 - (BOOL) webView: (UIWebView*) webView shouldStartLoadWithRequest: (NSURLRequest*) request
                                                    navigationType: (UIWebViewNavigationType) navigationType
 {
-    ignoreUnused (webView, navigationType);
+    (void) webView;
+    (void) navigationType;
     return ownerComponent->pageAboutToLoad (nsStringToJuce (request.URL.absoluteString));
 }
 

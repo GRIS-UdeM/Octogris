@@ -22,7 +22,10 @@
   ==============================================================================
 */
 
-#include "../../juce_core/system/juce_TargetPlatform.h"
+// Your project must contain an AppConfig.h file with your project-specific settings in it,
+// and your header search path must make it accessible to the module's files.
+#include "AppConfig.h"
+
 #include "../utility/juce_CheckSettingMacros.h"
 
 #if JucePlugin_Build_RTAS
@@ -495,8 +498,8 @@ public:
         midiTransport = new CEffectMIDITransport (&mMIDIWorld);
         midiEvents.ensureSize (2048);
 
-        channels.calloc (jmax (juceFilter->getTotalNumInputChannels(),
-                               juceFilter->getTotalNumOutputChannels()));
+        channels.calloc (jmax (juceFilter->getNumInputChannels(),
+                               juceFilter->getNumOutputChannels()));
 
         juceFilter->setPlayHead (this);
         juceFilter->addListener (this);
@@ -536,14 +539,14 @@ public:
 
        #if JUCE_DEBUG || JUCE_LOG_ASSERTIONS
         const int numMidiEventsComingIn = midiEvents.getNumEvents();
-        ignoreUnused (numMidiEventsComingIn);
+        (void) numMidiEventsComingIn;
        #endif
 
         {
             const ScopedLock sl (juceFilter->getCallbackLock());
 
-            const int numIn  = juceFilter->getTotalNumInputChannels();
-            const int numOut = juceFilter->getTotalNumOutputChannels();
+            const int numIn = juceFilter->getNumInputChannels();
+            const int numOut = juceFilter->getNumOutputChannels();
             const int totalChans = jmax (numIn, numOut);
 
             if (juceFilter->isSuspended())

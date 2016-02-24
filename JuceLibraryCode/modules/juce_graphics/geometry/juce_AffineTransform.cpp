@@ -219,9 +219,11 @@ AffineTransform AffineTransform::inverted() const noexcept
         return AffineTransform (dst00, dst01, -mat02 * dst00 - mat12 * dst01,
                                 dst10, dst11, -mat02 * dst10 - mat12 * dst11);
     }
-
-    // singularity..
-    return *this;
+    else
+    {
+        // singularity..
+        return *this;
+    }
 }
 
 bool AffineTransform::isSingularity() const noexcept
