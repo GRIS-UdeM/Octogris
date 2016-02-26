@@ -165,9 +165,12 @@ std::unique_ptr<vector<String>> Trajectory::getTrajectoryPossibleReturns(int p_i
     switch(p_iTrajectory) {
         case Spiral:
         case Pendulum:
-        case RandomTarget:
             vReturns->push_back("One Way");
             vReturns->push_back("Return");
+            break;
+        case RandomTarget:
+            vReturns->push_back("Continuous");
+            vReturns->push_back("Discontinuous");
             break;
         case Circle:
         case EllipseTr:

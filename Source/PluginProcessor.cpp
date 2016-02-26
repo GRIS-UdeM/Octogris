@@ -741,16 +741,16 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
         JUCE_COMPILER_WARNING("fix this mess")
         PluginHostType host;
         if (host.isLogic() || host.isDigitalPerformer()){
-            setNumberOfSources(getNumInputChannels(), true);
-            setNumberOfSpeakers(getNumOutputChannels(), true);
+            setNumberOfSources(getTotalNumInputChannels(), true);
+            setNumberOfSpeakers(getTotalNumOutputChannels(), true);
         } else {
             setNumberOfSources(mNumberOfSources, true);
             setNumberOfSpeakers(mNumberOfSpeakers, true);
         }
         updateInputOutputMode();
     } else {
-        int sources = getNumInputChannels();
-        int speakers = getNumOutputChannels();
+        int sources = getTotalNumInputChannels();
+        int speakers = getTotalNumOutputChannels();
         setNumberOfSources(sources, true);
         setNumberOfSpeakers(speakers, true);
     }
