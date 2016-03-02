@@ -436,15 +436,13 @@ public:
 
     //==============================================================================
     /** Fills a path using the currently selected colour or brush. */
-    void fillPath (const Path& path) const;
-
-    /** Fills a path using the currently selected colour or brush, and adds a transform. */
-    void fillPath (const Path& path, const AffineTransform& transform) const;
+    void fillPath (const Path& path,
+                   const AffineTransform& transform = AffineTransform::identity) const;
 
     /** Draws a path's outline using the currently selected colour or brush. */
     void strokePath (const Path& path,
                      const PathStrokeType& strokeType,
-                     const AffineTransform& transform = AffineTransform()) const;
+                     const AffineTransform& transform = AffineTransform::identity) const;
 
     /** Draws a line with an arrowhead at its end.
 
@@ -609,7 +607,7 @@ public:
         @returns true if the resulting clipping region is non-zero in size
         @see reduceClipRegion
     */
-    bool reduceClipRegion (const Path& path, const AffineTransform& transform = AffineTransform());
+    bool reduceClipRegion (const Path& path, const AffineTransform& transform = AffineTransform::identity);
 
     /** Intersects the current clipping region with an image's alpha-channel.
 

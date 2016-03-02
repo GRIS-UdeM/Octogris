@@ -39,6 +39,14 @@
  #define WM_APPCOMMAND                     0x0319
 #endif
 
+#ifndef MI_WP_SIGNATURE
+ #define MI_WP_SIGNATURE 0xFF515700
+#endif
+
+#ifndef SIGNATURE_MASK
+ #define SIGNATURE_MASK 0xFFFFFF00
+#endif
+
 extern void juce_repeatLastProcessPriority();
 extern void juce_checkCurrentlyFocusedTopLevelWindow();  // in juce_TopLevelWindow.cpp
 extern bool juce_isRunningInWine();
@@ -65,6 +73,7 @@ bool Desktop::canUseSemiTransparentWindows() noexcept
 //==============================================================================
 #ifndef WM_TOUCH
  #define WM_TOUCH 0x0240
+ #define TOUCH_COORD_TO_PIXEL(l)  ((l) / 100)
  #define TOUCHEVENTF_MOVE    0x0001
  #define TOUCHEVENTF_DOWN    0x0002
  #define TOUCHEVENTF_UP      0x0004
@@ -1120,16 +1129,19 @@ public:
         JUCE_DECLARE_NON_COPYABLE (JuceDropTarget)
     };
 
+   #if JUCE_MODULE_AVAILABLE_juce_audio_plugin_client
     static bool offerKeyMessageToJUCEWindow (MSG& m)
     {
         if (m.message == WM_KEYDOWN || m.message == WM_KEYUP)
             if (Component::getCurrentlyFocusedComponent() != nullptr)
                 if (HWNDComponentPeer* h = getOwnerOfWindow (m.hwnd))
-                    return m.message == WM_KEYDOWN ? h->doKeyDown (m.wParam)
-                                                   : h->doKeyUp (m.wParam);
+                    if (m.message == WM_KEYDOWN ? h->doKeyDown (m.wParam)
+                                                : h->doKeyUp (m.wParam))
+                        return true;
 
         return false;
     }
+   #endif
 
 private:
     HWND hwnd, parentToAddTo;
@@ -1682,7 +1694,7 @@ private:
 
     void setCurrentRenderingEngine (int index) override
     {
-        ignoreUnused (index);
+        (void) index;
 
        #if JUCE_DIRECT2D
         if (getAvailableRenderingEngines().size() > 1)
@@ -1707,14 +1719,12 @@ private:
         if (registerTouchWindow == nullptr)
             return false;
 
-        // Relevent info about touch/pen detection flags:
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/ms703320(v=vs.85).aspx
-        // http://www.petertissen.de/?p=4
-
-        return (GetMessageExtraInfo() & 0xFFFFFF80 /*SIGNATURE_MASK*/) == 0xFF515780 /*MI_WP_SIGNATURE*/;
+        LPARAM dw = GetMessageExtraInfo();
+        // see https://msdn.microsoft.com/en-us/library/windows/desktop/ms703320(v=vs.85).aspx
+        return (dw & SIGNATURE_MASK) == MI_WP_SIGNATURE;
     }
 
-    void doMouseMove (Point<float> position, bool isMouseDownEvent)
+    void doMouseMove (Point<float> position)
     {
         // this will be handled by WM_TOUCH
         if (isTouchEvent())
@@ -1723,13 +1733,7 @@ private:
         if (! isMouseOver)
         {
             isMouseOver = true;
-
-            // This avoids a rare stuck-button problem when focus is lost unexpectedly, but must
-            // not be called as part of a move, in case it's actually a mouse-drag from another
-            // app which ends up here when we get focus before the mouse is released..
-            if (isMouseDownEvent)
-                ModifierKeys::getCurrentModifiersRealtime();
-
+            ModifierKeys::getCurrentModifiersRealtime(); // (This avoids a rare stuck-button problem when focus is lost unexpectedly)
             updateKeyModifiers();
 
             TRACKMOUSEEVENT tme;
@@ -1769,7 +1773,7 @@ private:
         if (GetCapture() != hwnd)
             SetCapture (hwnd);
 
-        doMouseMove (position, true);
+        doMouseMove (position);
 
         if (isValidPeer (this))
         {
@@ -1919,8 +1923,8 @@ private:
         bool isCancel = false;
         const int touchIndex = currentTouches.getIndexOfTouch (touch.dwID);
         const int64 time = getMouseEventTime();
-        const Point<float> pos (globalToLocal (Point<float> (touch.x / 100.0f,
-                                                             touch.y / 100.0f)));
+        const Point<float> pos (globalToLocal (Point<float> (static_cast<float> (TOUCH_COORD_TO_PIXEL (touch.x)),
+                                                             static_cast<float> (TOUCH_COORD_TO_PIXEL (touch.y)))));
         const float pressure = MouseInputSource::invalidPressure;
         ModifierKeys modsToSend (currentModifiers);
 
@@ -1930,7 +1934,7 @@ private:
             modsToSend = currentModifiers;
 
             // this forces a mouse-enter/up event, in case for some reason we didn't get a mouse-up before.
-            handleMouseEvent (touchIndex, pos, modsToSend.withoutMouseButtons(), pressure, time);
+            handleMouseEvent (touchIndex, pos.toFloat(), modsToSend.withoutMouseButtons(), pressure, time);
 
             if (! isValidPeer (this)) // (in case this component was deleted by the event)
                 return false;
@@ -1954,7 +1958,7 @@ private:
             currentModifiers = currentModifiers.withoutMouseButtons();
         }
 
-        handleMouseEvent (touchIndex, pos, modsToSend, pressure, time);
+        handleMouseEvent (touchIndex, pos.toFloat(), modsToSend, pressure, time);
 
         if (! isValidPeer (this)) // (in case this component was deleted by the event)
             return false;
@@ -2446,7 +2450,7 @@ private:
                 return 1;
 
             //==============================================================================
-            case WM_MOUSEMOVE:          doMouseMove (getPointFromLParam (lParam), false); return 0;
+            case WM_MOUSEMOVE:          doMouseMove (getPointFromLParam (lParam)); return 0;
             case WM_MOUSELEAVE:         doMouseExit(); return 0;
 
             case WM_LBUTTONDOWN:
@@ -2753,7 +2757,7 @@ private:
             reset();
 
             if (TextInputTarget* const target = owner.findCurrentTextInputTarget())
-                target->insertTextAtCaret (String());
+                target->insertTextAtCaret (String::empty);
         }
 
         void handleEndComposition (ComponentPeer& owner, HWND hWnd)
@@ -2764,7 +2768,7 @@ private:
                 if (TextInputTarget* const target = owner.findCurrentTextInputTarget())
                 {
                     target->setHighlightedRegion (compositionRange);
-                    target->insertTextAtCaret (String());
+                    target->insertTextAtCaret (String::empty);
                     compositionRange.setLength (0);
 
                     target->setHighlightedRegion (Range<int>::emptyRange (compositionRange.getEnd()));
@@ -2839,7 +2843,7 @@ private:
                 return String (buffer);
             }
 
-            return String();
+            return String::empty;
         }
 
         int getCompositionCaretPos (HIMC hImc, LPARAM lParam, const String& currentIMEString) const
@@ -3017,8 +3021,9 @@ bool KeyPress::isKeyCurrentlyDown (const int keyCode)
     return HWNDComponentPeer::isKeyDown (k);
 }
 
-// (This internal function is used by the plugin client module)
+#if JUCE_MODULE_AVAILABLE_juce_audio_plugin_client
 bool offerKeyMessageToJUCEWindow (MSG& m)   { return HWNDComponentPeer::offerKeyMessageToJUCEWindow (m); }
+#endif
 
 //==============================================================================
 bool JUCE_CALLTYPE Process::isForegroundProcess()

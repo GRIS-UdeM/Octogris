@@ -545,7 +545,7 @@ void CoreGraphicsContext::drawLine (const Line<float>& line)
     {
         Path p;
         p.addLineSegment (line, 1.0f);
-        fillPath (p, AffineTransform());
+        fillPath (p, AffineTransform::identity);
     }
 }
 
@@ -656,7 +656,7 @@ bool CoreGraphicsContext::drawTextLayout (const AttributedString& text, const Re
     CoreTextTypeLayout::drawToCGContext (text, area, context, (float) flipHeight);
     return true;
    #else
-    ignoreUnused (text, area);
+    (void) text; (void) area;
     return false;
    #endif
 }

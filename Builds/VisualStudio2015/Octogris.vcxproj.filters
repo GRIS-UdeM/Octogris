@@ -2783,6 +2783,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\GrisCommonFiles\Fonts\sinkin-sans\SinkinSans-400Regular.otf">
+      <Filter>Octogris\Resources</Filter>
+    </None>
     <None Include="..\..\logoGris.png">
       <Filter>Octogris\Resources</Filter>
     </None>

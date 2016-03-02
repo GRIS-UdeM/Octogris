@@ -82,8 +82,6 @@
  #include <pluginterfaces/vst/ivstmidicontrollers.h>
  #include <public.sdk/source/common/memorystream.h>
 #else
- #define Point CarbonDummyPointName // The VST headers include some system headers that need
-                                    // to match the name our hacky Carbon workaround used.
  #include <base/source/baseiids.cpp>
  #include <base/source/fatomic.cpp>
  #include <base/source/fbuffer.cpp>
@@ -109,7 +107,6 @@
  #include <public.sdk/source/vst/vstcomponentbase.cpp>
  #include <public.sdk/source/vst/vstparameters.cpp>
  #include <public.sdk/source/vst/hosting/hostclasses.cpp>
- #undef Point
 
 //==============================================================================
 namespace Steinberg

@@ -153,7 +153,7 @@ void FileSearchPathListComponent::returnKeyPressed (int row)
         changed();
     }
    #else
-    ignoreUnused (row);
+    (void) row;
    #endif
 }
 

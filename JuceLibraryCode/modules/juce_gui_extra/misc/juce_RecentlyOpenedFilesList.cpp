@@ -141,6 +141,6 @@ void RecentlyOpenedFilesList::registerRecentFileNatively (const File& file)
             noteNewRecentDocumentURL: [NSURL fileURLWithPath: juceStringToNS (file.getFullPathName())]];
     }
    #else
-    ignoreUnused (file);
+    (void) file;
    #endif
 }

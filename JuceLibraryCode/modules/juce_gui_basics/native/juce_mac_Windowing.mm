@@ -270,7 +270,7 @@ public:
                                                         kIOPMAssertionLevelOn,
                                                         CFSTR ("JUCE Playback"),
                                                         &assertionID);
-            jassert (res == kIOReturnSuccess); ignoreUnused (res);
+            jassert (res == kIOReturnSuccess); (void) res;
         }
 
         ~PMAssertion()
@@ -443,7 +443,7 @@ void Process::setDockIconVisible (bool isVisible)
     [NSApp setActivationPolicy: isVisible ? NSApplicationActivationPolicyRegular
                                           : NSApplicationActivationPolicyProhibited];
    #else
-    ignoreUnused (isVisible);
+    (void) isVisible;
     jassertfalse; // sorry, not available in 10.5!
    #endif
 }

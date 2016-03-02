@@ -512,13 +512,13 @@ void Synthesiser::handleSostenutoPedal (int midiChannel, bool isDown)
 
 void Synthesiser::handleSoftPedal (int midiChannel, bool /*isDown*/)
 {
-    ignoreUnused (midiChannel);
+    (void) midiChannel;
     jassert (midiChannel > 0 && midiChannel <= 16);
 }
 
 void Synthesiser::handleProgramChange (int midiChannel, int programNumber)
 {
-    ignoreUnused (midiChannel, programNumber);
+    (void) midiChannel; (void) programNumber;
     jassert (midiChannel > 0 && midiChannel <= 16);
 }
 

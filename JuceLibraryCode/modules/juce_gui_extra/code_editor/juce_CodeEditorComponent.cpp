@@ -870,7 +870,7 @@ void CodeEditorComponent::indentSelectedLines (const int spacesToAdd)
 
 void CodeEditorComponent::cut()
 {
-    insertText (String());
+    insertText (String::empty);
 }
 
 bool CodeEditorComponent::copyToClipboard()

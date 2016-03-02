@@ -469,7 +469,7 @@ public:
             }
         }
 
-        return String();
+        return String::empty;
     }
    #endif
 #else
@@ -701,11 +701,6 @@ private:
 static const int defaultVSTSampleRateValue = 44100;
 static const int defaultVSTBlockSizeValue = 512;
 
-#if JUCE_MSVC
- #pragma warning (push)
- #pragma warning (disable: 4996) // warning about overriding deprecated methods
-#endif
-
 //==============================================================================
 //==============================================================================
 class VSTPluginInstance     : public AudioPluginInstance,
@@ -820,8 +815,8 @@ public:
         }
 
         desc.version = getVersion();
-        desc.numInputChannels = getTotalNumInputChannels();
-        desc.numOutputChannels = getTotalNumOutputChannels();
+        desc.numInputChannels = getNumInputChannels();
+        desc.numOutputChannels = getNumOutputChannels();
         desc.isInstrument = (effect != nullptr && (effect->flags & effFlagsIsSynth) != 0);
     }
 
@@ -868,10 +863,10 @@ public:
         if (getVstCategory() != kPlugCategShell) // (workaround for Waves 5 plugins which crash during this call)
             updateStoredProgramNames();
 
-        wantsMidiMessages = pluginCanDo ("receiveVstMidiEvent") > 0;
+        wantsMidiMessages = dispatch (effCanDo, 0, 0, (void*) "receiveVstMidiEvent", 0) > 0;
 
        #if JUCE_MAC && JUCE_SUPPORT_CARBON
-        usesCocoaNSView = (pluginCanDo ("hasCockosViewAsConfig") & (int) 0xffff0000) == 0xbeef0000;
+        usesCocoaNSView = (dispatch (effCanDo, 0, 0, (void*) "hasCockosViewAsConfig", 0) & (int) 0xffff0000) == 0xbeef0000;
        #endif
 
         setLatencySamples (effect->initialDelay);
@@ -900,22 +895,19 @@ public:
         if (effect == nullptr)
             return 0.0;
 
-        const double sampleRate = getSampleRate();
+        const double currentSampleRate = getSampleRate();
 
-        if (sampleRate <= 0)
+        if (currentSampleRate <= 0)
             return 0.0;
 
         VstIntPtr samples = dispatch (effGetTailSize, 0, 0, 0, 0);
-        return samples / sampleRate;
+        return samples / currentSampleRate;
     }
 
     bool acceptsMidi() const override    { return wantsMidiMessages; }
-    bool producesMidi() const override   { return pluginCanDo ("sendVstMidiEvent") > 0; }
-    bool supportsMPE() const override    { return pluginCanDo ("MPE") > 0; }
+    bool producesMidi() const override   { return dispatch (effCanDo, 0, 0, (void*) "sendVstMidiEvent", 0) > 0; }
 
     VstPlugCategory getVstCategory() const noexcept     { return (VstPlugCategory) dispatch (effGetPlugCategory, 0, 0, 0, 0); }
-
-    int pluginCanDo (const char* text) const     { return (int) dispatch (effCanDo, 0, 0, (void*) text,  0); }
 
     //==============================================================================
     void prepareToPlay (double rate, int samplesPerBlockExpected) override
@@ -933,7 +925,8 @@ public:
 
         if (initialised)
         {
-            wantsMidiMessages = wantsMidiMessages || (pluginCanDo ("receiveVstMidiEvent") > 0);
+            wantsMidiMessages = wantsMidiMessages
+                                    || (dispatch (effCanDo, 0, 0, (void*) "receiveVstMidiEvent", 0) > 0);
 
             if (wantsMidiMessages)
                 midiEventsToSend.ensureSize (256);
@@ -1024,19 +1017,19 @@ public:
     //==============================================================================
     const String getInputChannelName (int index) const override
     {
-        if (isValidChannel (index, true))
+        if (index >= 0 && index < getNumInputChannels())
         {
             VstPinProperties pinProps;
             if (dispatch (effGetInputProperties, index, 0, &pinProps, 0.0f) != 0)
                 return String (pinProps.label, sizeof (pinProps.label));
         }
 
-        return String();
+        return String::empty;
     }
 
     bool isInputChannelStereoPair (int index) const override
     {
-        if (! isValidChannel (index, true))
+        if (index < 0 || index >= getNumInputChannels())
             return false;
 
         VstPinProperties pinProps;
@@ -1048,19 +1041,19 @@ public:
 
     const String getOutputChannelName (int index) const override
     {
-        if (isValidChannel (index, false))
+        if (index >= 0 && index < getNumOutputChannels())
         {
             VstPinProperties pinProps;
             if (dispatch (effGetOutputProperties, index, 0, &pinProps, 0.0f) != 0)
                 return String (pinProps.label, sizeof (pinProps.label));
         }
 
-        return String();
+        return String::empty;
     }
 
     bool isOutputChannelStereoPair (int index) const override
     {
-        if (! isValidChannel (index, false))
+        if (index < 0 || index >= getNumOutputChannels())
             return false;
 
         VstPinProperties pinProps;
@@ -1070,10 +1063,9 @@ public:
         return true;
     }
 
-    bool isValidChannel (int index, bool isInput) const noexcept
+    bool isValidChannel (int index, bool isInput) const
     {
-        return isPositiveAndBelow (index, isInput ? getTotalNumInputChannels()
-                                                  : getTotalNumOutputChannels());
+        return isPositiveAndBelow (index, isInput ? getNumInputChannels() : getNumOutputChannels());
     }
 
     //==============================================================================
@@ -1694,7 +1686,7 @@ private:
         else
         {
             // Not initialised, so just bypass..
-            for (int i = getTotalNumOutputChannels(); --i >= 0;)
+            for (int i = 0; i < getNumOutputChannels(); ++i)
                 buffer.clear (i, 0, buffer.getNumSamples());
         }
 
@@ -1758,7 +1750,7 @@ private:
     String getTextForOpcode (const int index, const AEffectOpcodes opcode) const
     {
         if (effect == nullptr)
-            return String();
+            return String::empty;
 
         jassert (index >= 0 && index < effect->numParams);
         char nm [256] = { 0 };
@@ -1783,7 +1775,7 @@ private:
             if (index >= 0 && programNames[index].isEmpty())
             {
                 while (programNames.size() < index)
-                    programNames.add (String());
+                    programNames.add (String::empty);
 
                 programNames.set (index, progName);
             }
@@ -2165,7 +2157,7 @@ public:
     //==============================================================================
     void mouseDown (const MouseEvent& e) override
     {
-        ignoreUnused (e);
+        (void) e;
 
        #if JUCE_LINUX
         if (pluginWindow == 0)
@@ -2687,10 +2679,6 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VSTPluginWindow)
 };
-
-#if JUCE_MSVC
- #pragma warning (pop)
-#endif
 
 //==============================================================================
 AudioProcessorEditor* VSTPluginInstance::createEditor()

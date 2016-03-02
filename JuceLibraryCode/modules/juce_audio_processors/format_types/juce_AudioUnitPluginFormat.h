@@ -53,10 +53,3 @@ private:
 };
 
 #endif
-
-//==============================================================================
-enum
-{
-    /** Custom AudioUnit property used to indicate MPE support */
-    kAudioUnitProperty_SupportsMPE = 75001
-};

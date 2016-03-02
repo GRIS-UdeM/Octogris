@@ -86,25 +86,22 @@ void Thread::threadEntryPoint()
     const CurrentThreadHolder::Ptr currentThreadHolder (getCurrentThreadHolder());
     currentThreadHolder->value = this;
 
-    if (threadName.isNotEmpty())
-        setCurrentThreadName (threadName);
-
-    if (startSuspensionEvent.wait (10000))
+    JUCE_TRY
     {
-        jassert (getCurrentThreadId() == threadId);
+        if (threadName.isNotEmpty())
+            setCurrentThreadName (threadName);
 
-        if (affinityMask != 0)
-            setCurrentThreadAffinityMask (affinityMask);
-
-        try
+        if (startSuspensionEvent.wait (10000))
         {
+            jassert (getCurrentThreadId() == threadId);
+
+            if (affinityMask != 0)
+                setCurrentThreadAffinityMask (affinityMask);
+
             run();
         }
-        catch (...)
-        {
-            jassertfalse; // Your run() method mustn't throw any exceptions!
-        }
     }
+    JUCE_CATCH_ALL_ASSERT
 
     currentThreadHolder->value.releaseCurrentThreadStorage();
     closeThreadHandle();
@@ -266,12 +263,6 @@ void SpinLock::enter() const noexcept
         while (! tryEnter())
             Thread::yield();
     }
-}
-
-//==============================================================================
-bool JUCE_CALLTYPE Process::isRunningUnderDebugger() noexcept
-{
-    return juce_isRunningUnderDebugger();
 }
 
 //==============================================================================

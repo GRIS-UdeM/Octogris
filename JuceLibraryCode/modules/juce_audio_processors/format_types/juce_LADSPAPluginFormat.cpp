@@ -225,8 +225,8 @@ public:
         desc.category = getCategory();
         desc.manufacturerName = plugin != nullptr ? String (plugin->Maker) : String();
         desc.version = getVersion();
-        desc.numInputChannels  = getTotalNumInputChannels();
-        desc.numOutputChannels = getTotalNumOutputChannels();
+        desc.numInputChannels  = getNumInputChannels();
+        desc.numOutputChannels = getNumOutputChannels();
         desc.isInstrument = false;
     }
 
@@ -327,16 +327,16 @@ public:
             jassertfalse; // no callback to use?
         }
 
-        for (int i = getTotalNumInputChannels(), e = getTotalNumOutputChannels(); i < e; ++i)
+        for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
             buffer.clear (i, 0, numSamples);
     }
 
-    bool isInputChannelStereoPair (int index) const    { return isPositiveAndBelow (index, getTotalNumInputChannels()); }
-    bool isOutputChannelStereoPair (int index) const   { return isPositiveAndBelow (index, getTotalNumOutputChannels()); }
+    bool isInputChannelStereoPair (int index) const    { return isPositiveAndBelow (index, getNumInputChannels()); }
+    bool isOutputChannelStereoPair (int index) const   { return isPositiveAndBelow (index, getNumInputChannels()); }
 
     const String getInputChannelName (const int index) const
     {
-        if (isPositiveAndBelow (index, getTotalNumInputChannels()))
+        if (isPositiveAndBelow (index, getNumInputChannels()))
             return String (plugin->PortNames [inputs [index]]).trim();
 
         return String();
@@ -344,7 +344,7 @@ public:
 
     const String getOutputChannelName (const int index) const
     {
-        if (isPositiveAndBelow (index, getTotalNumInputChannels()))
+        if (isPositiveAndBelow (index, getNumInputChannels()))
             return String (plugin->PortNames [outputs [index]]).trim();
 
         return String();

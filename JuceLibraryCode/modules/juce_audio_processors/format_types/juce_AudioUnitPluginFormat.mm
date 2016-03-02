@@ -379,8 +379,8 @@ public:
         desc.category = AudioUnitFormatHelpers::getCategory (componentDesc.componentType);
         desc.manufacturerName = manufacturer;
         desc.version = version;
-        desc.numInputChannels = getTotalNumInputChannels();
-        desc.numOutputChannels = getTotalNumOutputChannels();
+        desc.numInputChannels = getNumInputChannels();
+        desc.numOutputChannels = getNumOutputChannels();
         desc.isInstrument = (componentDesc.componentType == kAudioUnitType_MusicDevice);
     }
 
@@ -445,7 +445,12 @@ public:
                                   (int) (numOutputBusChannels * numOutputBusses),
                                   (double) newSampleRate, estimatedSamplesPerBlock);
 
-            updateLatency();
+            Float64 latencySecs = 0.0;
+            UInt32 latencySize = sizeof (latencySecs);
+            AudioUnitGetProperty (audioUnit, kAudioUnitProperty_Latency, kAudioUnitScope_Global,
+                                  0, &latencySecs, &latencySize);
+
+            setLatencySamples (roundToInt (latencySecs * newSampleRate));
 
             {
                 AudioStreamBasicDescription stream;
@@ -573,7 +578,7 @@ public:
         else
         {
             // Plugin not working correctly, so just bypass..
-            for (int i = getTotalNumOutputChannels(); --i >= 0;)
+            for (int i = 0; i < getNumOutputChannels(); ++i)
                 buffer.clear (i, 0, buffer.getNumSamples());
         }
 
@@ -592,7 +597,7 @@ public:
     //==============================================================================
     const String getInputChannelName (int index) const override
     {
-        if (isPositiveAndBelow (index, getTotalNumInputChannels()))
+        if (isPositiveAndBelow (index, getNumInputChannels()))
             return "Input " + String (index + 1);
 
         return String();
@@ -600,14 +605,14 @@ public:
 
     const String getOutputChannelName (int index) const override
     {
-        if (isPositiveAndBelow (index, getTotalNumOutputChannels()))
+        if (isPositiveAndBelow (index, getNumOutputChannels()))
             return "Output " + String (index + 1);
 
         return String();
     }
 
-    bool isInputChannelStereoPair (int index) const override    { return isPositiveAndBelow (index, getTotalNumInputChannels()); }
-    bool isOutputChannelStereoPair (int index) const override   { return isPositiveAndBelow (index, getTotalNumOutputChannels()); }
+    bool isInputChannelStereoPair (int index) const override    { return isPositiveAndBelow (index, getNumInputChannels()); }
+    bool isOutputChannelStereoPair (int index) const override   { return isPositiveAndBelow (index, getNumOutputChannels()); }
 
     //==============================================================================
     int getNumParameters() override              { return parameters.size(); }
@@ -884,16 +889,6 @@ public:
         }
     }
 
-    void updateLatency()
-    {
-        Float64 latencySecs = 0.0;
-        UInt32 latencySize = sizeof (latencySecs);
-        AudioUnitGetProperty (audioUnit, kAudioUnitProperty_Latency, kAudioUnitScope_Global,
-                              0, &latencySecs, &latencySize);
-
-        setLatencySamples (roundToInt (latencySecs * getSampleRate()));
-    }
-
     void handleIncomingMidiMessage (void*, const MidiMessage& message)
     {
         const ScopedLock sl (midiInLock);
@@ -998,22 +993,16 @@ private:
                 AUEventListenerAddEventType (eventListenerRef, nullptr, &event);
             }
 
-            addPropertyChangeListener (kAudioUnitProperty_PresentPreset);
-            addPropertyChangeListener (kAudioUnitProperty_ParameterList);
-            addPropertyChangeListener (kAudioUnitProperty_Latency);
-        }
-    }
+            // Add a listener for program changes
+            AudioUnitEvent event;
+            event.mArgument.mProperty.mAudioUnit = audioUnit;
+            event.mArgument.mProperty.mPropertyID = kAudioUnitProperty_PresentPreset;
+            event.mArgument.mProperty.mScope = kAudioUnitScope_Global;
+            event.mArgument.mProperty.mElement = 0;
 
-    void addPropertyChangeListener (AudioUnitPropertyID type) const
-    {
-        AudioUnitEvent event;
-        event.mEventType = kAudioUnitEvent_PropertyChange;
-        event.mArgument.mProperty.mPropertyID = type;
-        event.mArgument.mProperty.mAudioUnit = audioUnit;
-        event.mArgument.mProperty.mPropertyID = kAudioUnitProperty_PresentPreset;
-        event.mArgument.mProperty.mScope = kAudioUnitScope_Global;
-        event.mArgument.mProperty.mElement = 0;
-        AUEventListenerAddEventType (eventListenerRef, nullptr, &event);
+            event.mEventType = kAudioUnitEvent_PropertyChange;
+            AUEventListenerAddEventType (eventListenerRef, nullptr, &event);
+        }
     }
 
     void eventCallback (const AudioUnitEvent& event, AudioUnitParameterValue newValue)
@@ -1043,13 +1032,7 @@ private:
                 break;
 
             default:
-                if (event.mArgument.mProperty.mPropertyID == kAudioUnitProperty_ParameterList)
-                    updateHostDisplay();
-                else if (event.mArgument.mProperty.mPropertyID == kAudioUnitProperty_PresentPreset)
-                    sendAllParametersChangedEvents();
-                else if (event.mArgument.mProperty.mPropertyID == kAudioUnitProperty_Latency)
-                    updateLatency();
-
+                sendAllParametersChangedEvents();
                 break;
         }
     }
@@ -1332,27 +1315,6 @@ private:
                 bool result = (CFArrayGetCount (midiArray) > 0);
                 CFRelease (midiArray);
                 return result;
-            }
-        }
-
-        return false;
-    }
-
-    bool supportsMPE() const override
-    {
-        UInt32 dataSize = 0;
-        Boolean isWritable = false;
-
-        if (AudioUnitGetPropertyInfo (audioUnit, kAudioUnitProperty_SupportsMPE,
-                                      kAudioUnitScope_Global, 0, &dataSize, &isWritable) == noErr
-            && dataSize == sizeof (UInt32))
-        {
-            UInt32 result = 0;
-
-            if (AudioUnitGetProperty (audioUnit, kAudioUnitProperty_SupportsMPE,
-                                      kAudioUnitScope_Global, 0, &result, &dataSize) == noErr)
-            {
-                return result > 0;
             }
         }
 

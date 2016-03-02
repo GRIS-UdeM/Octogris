@@ -172,7 +172,7 @@ String XmlDocument::getFileContents (const String& filename) const
             return in->readEntireStreamAsString();
     }
 
-    return String();
+    return String::empty;
 }
 
 juce_wchar XmlDocument::readNextChar() noexcept

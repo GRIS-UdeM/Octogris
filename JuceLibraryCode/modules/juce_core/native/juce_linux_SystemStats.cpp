@@ -197,7 +197,7 @@ bool Time::setSystemTimeToThisTime() const
     return settimeofday (&t, 0) == 0;
 }
 
-JUCE_API bool JUCE_CALLTYPE juce_isRunningUnderDebugger() noexcept
+JUCE_API bool JUCE_CALLTYPE juce_isRunningUnderDebugger()
 {
    #if JUCE_BSD
     return false;

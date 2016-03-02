@@ -52,7 +52,7 @@ public:
                             less lines, so can be generated faster, but will be less smooth.
     */
     PathFlatteningIterator (const Path& path,
-                            const AffineTransform& transform = AffineTransform(),
+                            const AffineTransform& transform = AffineTransform::identity,
                             float tolerance = defaultTolerance);
 
     /** Destructor. */

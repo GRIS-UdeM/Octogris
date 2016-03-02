@@ -43,7 +43,7 @@ bool File::isOnRemovableDrive() const
 
 String File::getVersion() const
 {
-    return String();
+    return String::empty;
 }
 
 File File::getSpecialLocation (const SpecialLocationType type)
