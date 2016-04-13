@@ -278,7 +278,6 @@ void FieldComponent::paint (Graphics& g)
             trajectoryPath.lineTo (m_dqAllPathPoints[iCurPoint].x, m_dqAllPathPoints[iCurPoint].y);
         }
         g.setColour(Colour(0, 102, 255));
-        g.setColour(Colours::coral);
         g.strokePath (trajectoryPath, PathStrokeType (2.0f, PathStrokeType::JointStyle::curved));
     }
     
