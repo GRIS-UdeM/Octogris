@@ -66,13 +66,15 @@ private:
 	float mSavedValue;
 
 	FPoint convertSourceRT(float r, float t);
-    Path m_oTrajectoryPath;
-    float m_fStartPathX;
-    float m_fStartPathY;
-    float m_fEndPathX;
-    float m_fEndPathY;
-    bool m_bPathJustStarted;
-
+//    Path m_oTrajectoryPath;
+//    float m_fStartPathX;
+//    float m_fStartPathY;
+//    float m_fEndPathX;
+//    float m_fEndPathY;
+//    bool m_bPathJustStarted;
+    int m_iCurPathLines;
+    int m_iMaxPathLines;
+    std::vector<FPoint> m_vAllPathPoints;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FieldComponent)
 };
