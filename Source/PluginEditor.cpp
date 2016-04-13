@@ -2128,9 +2128,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
     clock_t timeField = clock();
     oss << "field\t" << timeField - timeProperty << "\t";
 #endif
-    
-    for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
+    if (!mFilter->getIsRecordingAutomation()){
+        for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++){
         mLevels.getUnchecked(i)->refreshIfNeeded();
+        }
+    }
 
 #if TIME_THINGS
     clock_t timeLevels = clock();

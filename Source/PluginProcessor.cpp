@@ -821,11 +821,8 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	unsigned int inFramesToProcess = oriFramesToProcess;
 	
 	Trajectory::Ptr trajectory = mTrajectory;
-	if (trajectory)
-	{
-
-		
-        if (m_bIsPlaying) // (cpi.timeInSamples != mLastTimeInSamples)
+	if (trajectory) {
+        if (m_bIsPlaying) // (cpi.timeInSamples != 
 		{
 			// we're playing!
 			//mLastTimeInSamples = cpi.timeInSamples;
