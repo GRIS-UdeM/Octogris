@@ -2129,8 +2129,8 @@ void OctogrisAudioProcessorEditor::timerCallback()
     oss << "field\t" << timeField - timeProperty << "\t";
 #endif
     
-//    for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-//        mLevels.getUnchecked(i)->refreshIfNeeded();
+    for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
+        mLevels.getUnchecked(i)->refreshIfNeeded();
 
 #if TIME_THINGS
     clock_t timeLevels = clock();
@@ -2152,27 +2152,50 @@ void OctogrisAudioProcessorEditor::timerCallback()
             mTabs->getTabContentComponent(1)->addAndMakeVisible(mMovementModeCombo);
         }
         
+#if TIME_THINGS
+        clock_t timeGuiTab = clock();
+        oss << "GuiTab\t" << timeGuiTab - timeLevels << "\t";
+#endif
+        
         mSmoothing->setValue(mFilter->getParameter(kSmooth));
         mVolumeFar->setValue(mFilter->getParameter(kVolumeFar));
         mVolumeMid->setValue(mFilter->getParameter(kVolumeMid));
         mVolumeNear->setValue(mFilter->getParameter(kVolumeNear));
         mMaxSpanVolume->setValue(mFilter->getParameter(kMaxSpanVolume));
-        
         mFilterNear->setValue(mFilter->getParameter(kFilterNear));
         mFilterMid->setValue(mFilter->getParameter(kFilterMid));
         mFilterFar->setValue(mFilter->getParameter(kFilterFar));
-        
+#if TIME_THINGS
+        clock_t timeValues = clock();
+        oss << "Values\t" << timeValues - timeGuiTab << "\t";
+#endif
+
         updateSourceLocationTextEditor(false);
         updateSpeakerLocationTextEditor();
+
+        
+#if TIME_THINGS
+        clock_t timeTextEd = clock();
+        oss << "TextEd\t" << timeTextEd - timeValues << "\t";
+#endif
         
         for (int i = 0; i < mFilter->getNumberOfSources(); i++) {
 			mDistances.getUnchecked(i)->setValue(1.f - mFilter->getSourceD(i), dontSendNotification);
         }
+
+#if TIME_THINGS
+        clock_t timeSources = clock();
+        oss << "Sources\t" << timeSources - timeTextEd << "\t";
+#endif
         
         for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++){
 			mAttenuations.getUnchecked(i)->setValue(mFilter->getSpeakerA(i), dontSendNotification);
 			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
         }
+#if TIME_THINGS
+        clock_t timeSpeakers = clock();
+        oss << "Speakers\t" << timeSpeakers - timeSources << "\t";
+#endif
     }
     
 #if TIME_THINGS
