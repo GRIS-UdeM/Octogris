@@ -259,6 +259,8 @@ private:
     
     LookAndFeel_V2 mV2Feel;
     GrisLookAndFeel mGrisFeel;
+    
+    std::vector<string> mTimingVector;
 };
 
 #endif  // PLUGINEDITOR_H_INCLUDED

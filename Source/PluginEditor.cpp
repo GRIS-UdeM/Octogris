@@ -31,6 +31,15 @@
 #include "OscComponent.h"
 #include <iomanip>
 
+
+#define TIME_THINGS 1
+#if TIME_THINGS
+    #include <ctime>
+#endif
+
+
+
+
 #if WIN32
 
 #include <sstream>
@@ -1620,6 +1629,12 @@ void OctogrisAudioProcessorEditor::buttonClicked (Button *button){
     }
     
     if (button == mTrWriteButton) {
+#if TIME_THINGS
+        for(auto line : mTimingVector){
+            cout << line << newLine;
+            mTimingVector.clear();
+        }
+#endif
         Trajectory::Ptr t = mFilter->getTrajectory();
         //a trajectory exists, so we want to cancel it
         if (t) {
@@ -2008,6 +2023,11 @@ void OctogrisAudioProcessorEditor::updateSpeakerLocationTextEditor(){
 //==============================================================================
 void OctogrisAudioProcessorEditor::timerCallback()
 {
+#if TIME_THINGS
+    std::ostringstream oss;
+    clock_t init = clock();
+#endif
+    
 	switch(mTrStateEditor)	{
 		case kTrWriting: {
 			Trajectory::Ptr t = mFilter->getTrajectory();
@@ -2032,6 +2052,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
 		}
 		break;
 	}
+    
+#if TIME_THINGS
+    clock_t timeTraj = clock();
+    oss << "traj\t" << timeTraj - init << "\t";
+#endif
     
     if (mFilter->justSelectedEndPoint()){
         updateEndLocationTextEditors();
@@ -2084,6 +2109,11 @@ void OctogrisAudioProcessorEditor::timerCallback()
         mApplyFilter->setToggleState(mFilter->getApplyFilter(), dontSendNotification);
     }
     
+#if TIME_THINGS
+    clock_t timeProperty = clock();
+    oss << "property\t" << timeProperty - timeTraj << "\t";
+#endif
+    
     hcp = mFilter->getHostChangedParameter();
     if (hcp != mHostChangedParameter) {
         mHostChangedParameter = hcp;
@@ -2093,9 +2123,19 @@ void OctogrisAudioProcessorEditor::timerCallback()
     if (mFieldNeedRepaint || mNeedRepaint){
         mField->repaint();
     }
+
+#if TIME_THINGS
+    clock_t timeField = clock();
+    oss << "field\t" << timeField - timeProperty << "\t";
+#endif
     
-    for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
-        mLevels.getUnchecked(i)->refreshIfNeeded();
+//    for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++)
+//        mLevels.getUnchecked(i)->refreshIfNeeded();
+
+#if TIME_THINGS
+    clock_t timeLevels = clock();
+    oss << "levels\t" << timeLevels - timeField << "\t";
+#endif
     
     if (mNeedRepaint){
         if(mFilter->getGuiTab() == 0){
@@ -2134,7 +2174,13 @@ void OctogrisAudioProcessorEditor::timerCallback()
 			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
         }
     }
+    
+#if TIME_THINGS
+    clock_t timeRepaint = clock();
+    oss << "repaint\t" << timeRepaint - timeLevels << "\t";
+#endif
 
+    JUCE_COMPILER_WARNING("#112: need to move this to processor")
     if (!mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && mFilter->getSourceLocationChanged() != -1) {
         if(!m_pSourceUpdateThread->isThreadRunning()){
             m_pSourceUpdateThread->startThread();
@@ -2145,9 +2191,21 @@ void OctogrisAudioProcessorEditor::timerCallback()
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
     
+#if TIME_THINGS
+    clock_t timeSourceUpdate = clock();
+    oss << "SourceUpdate\t" << timeSourceUpdate - timeRepaint << "\t";
+#endif
+    
 	if (mOsc) {
 		mOsc->heartbeat();
 	}
+    
+#if TIME_THINGS
+    clock_t timeOsc = clock();
+    oss << "osc\t" << timeOsc - timeSourceUpdate;
+    mTimingVector.push_back(oss.str());
+#endif
+    
     startTimer(kTimerDelay);
 }
 
