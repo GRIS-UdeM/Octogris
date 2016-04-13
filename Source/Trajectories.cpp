@@ -259,7 +259,6 @@ protected:
         
         FPoint initialPointRT = mSourcesInitialPositionRT.getUnchecked(mFilter->getSrcSelected());
         float l = (cos(da)+1) * 0.5;
-        cout << da << "\t" << l << newLine;
         
         float r = mIn ? (initialPointRT.x * l) : (initialPointRT.x + (2 - initialPointRT.x) * (1 - l)); //(initialPoint.x * (1-l));
         

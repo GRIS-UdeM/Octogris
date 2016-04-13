@@ -47,8 +47,6 @@ void FirFilter::setSampleRate(int sr)
 	{
 		if (kSampleRates[i] == sr)
 		{
-//            std::cout << "mFir: " << mFir << std::endl;
-//            std::cout << "i: " << i << std::endl;
 			mFir = i;
 			return;
 		}
