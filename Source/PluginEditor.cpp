@@ -2169,10 +2169,10 @@ void OctogrisAudioProcessorEditor::timerCallback()
         clock_t timeValues = clock();
         oss << "Values\t" << timeValues - timeGuiTab << "\t";
 #endif
-
-        updateSourceLocationTextEditor(false);
-        updateSpeakerLocationTextEditor();
-
+        if (!mFilter->isPlaying()){
+            updateSourceLocationTextEditor(false);
+            updateSpeakerLocationTextEditor();
+        }
         
 #if TIME_THINGS
         clock_t timeTextEd = clock();

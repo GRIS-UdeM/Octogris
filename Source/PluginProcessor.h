@@ -627,7 +627,8 @@ public:
     void    setOldSrcLocRT(int id, FPoint pointRT){
         mOldSrcLocRT[id] = pointRT;
     }
-
+    
+    bool isPlaying(){ return m_bIsPlaying;}
     
 	
 private:
@@ -734,6 +735,7 @@ private:
     bool m_bIsSettingEndPoint;
     std::pair <float, float> m_fEndLocationXY;
     bool m_bJustSelectedEndPoint;
+    bool m_bIsPlaying;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)
 };

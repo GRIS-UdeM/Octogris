@@ -798,7 +798,11 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		printf("unexpected channel count %d vs %dx%d rmode: %d\n", buffer.getNumChannels(), mNumberOfSources, mNumberOfSpeakers, mRoutingMode);
 		return;
 	}
-
+    
+    AudioPlayHead::CurrentPositionInfo cpi;
+    getPlayHead()->getCurrentPosition(cpi);
+    m_bIsPlaying = cpi.isPlaying;
+    
 	unsigned int oriFramesToProcess = buffer.getNumSamples();
 	
 	if (mRoutingMode > 1) {
@@ -819,10 +823,9 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	Trajectory::Ptr trajectory = mTrajectory;
 	if (trajectory)
 	{
-		AudioPlayHead::CurrentPositionInfo cpi;
-		getPlayHead()->getCurrentPosition(cpi);
+
 		
-        if (cpi.isPlaying) // (cpi.timeInSamples != mLastTimeInSamples)
+        if (m_bIsPlaying) // (cpi.timeInSamples != mLastTimeInSamples)
 		{
 			// we're playing!
 			//mLastTimeInSamples = cpi.timeInSamples;
