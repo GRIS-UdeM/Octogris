@@ -32,7 +32,7 @@
 #include <iomanip>
 
 
-#define TIME_THINGS 1
+#define TIME_THINGS 0
 #if TIME_THINGS
     #include <ctime>
 #endif
