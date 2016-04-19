@@ -345,33 +345,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParamSlider)
 };
 
-//==================================== SourceUpdateThread ===================================================================
-class SourceUpdateThread : public Thread, public Component
-{
-public:
-    SourceUpdateThread(OctogrisAudioProcessorEditor* p_pEditor)
-    : Thread ("SourceUpdateThread")
-    ,m_iInterval(50)
-    ,m_pEditor(p_pEditor)
-    { }
-    
-    ~SourceUpdateThread() {
-        stopThread (500);
-    }
-    
-    void run() override {
-        while (! threadShouldExit()) {
-            wait (m_iInterval);
-            m_pEditor->updateNonSelectedSourcePositions();
-        }
-    }
-    
-private:
-    int m_iInterval;
-    OctogrisAudioProcessorEditor* m_pEditor;
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SourceUpdateThread)
-};
 //==================================== JoystickUpdateThread ===================================================================
 //class JoystickUpdateThread : public Thread, public Component {
 //public:
