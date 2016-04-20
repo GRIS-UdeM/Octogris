@@ -177,7 +177,7 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mCalculateLevels = 0;
 	mApplyFilter = true;
 	mLinkDistances = false;
-	mMovementMode = 0;
+    setMovementMode(0);
 	mShowGridLines = false;
 	mTrSeparateAutomationMode = false;
     mIsNumberSourcesChanged = false;
@@ -258,10 +258,10 @@ OctogrisAudioProcessor::~OctogrisAudioProcessor()
 void OctogrisAudioProcessor::startOrStopSourceUpdateThread(){
     if (mNumberOfSources == 1 || m_bIsRecordingAutomation || mMovementMode == 0) {
         m_pSourceUpdateThread->stopThread(500);
-        DBG("stop thread");
+        DBG("OCTO STOP thread, sources: " << mNumberOfSources << ", isRecording: " << m_bIsRecordingAutomation << ", mMovementMode: " << mMovementMode);
     } else if (!m_pSourceUpdateThread->isThreadRunning()){
         m_pSourceUpdateThread->startThread();
-        DBG("start thread");
+        DBG("OCTO START thread, sources: " << mNumberOfSources << ", isRecording: " << m_bIsRecordingAutomation << ", mMovementMode: " << mMovementMode);
     }
 }
 
@@ -1964,7 +1964,7 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             
             mShowGridLines      = xmlState->getIntAttribute ("mShowGridLines", 0);
             mTrSeparateAutomationMode  = xmlState->getIntAttribute ("mTrIndependentMode", mTrSeparateAutomationMode);
-            mMovementMode       = xmlState->getIntAttribute ("mMovementMode", 0);
+            setMovementMode(xmlState->getIntAttribute ("mMovementMode", 0));
             mLinkDistances      = xmlState->getIntAttribute ("mLinkDistances", 0);
             mGuiWidth           = xmlState->getIntAttribute ("mGuiWidth", kDefaultWidth);
             mGuiHeight          = xmlState->getIntAttribute ("mGuiHeight", kDefaultHeight);

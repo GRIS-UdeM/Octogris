@@ -319,8 +319,8 @@ public:
     
 	int getMovementMode() const { return mMovementMode; }
 	void setMovementMode(int s) {
-        startOrStopSourceUpdateThread();
         mMovementMode = s;
+        startOrStopSourceUpdateThread();
     }
 	
 	bool getLinkDistances() const { return mLinkDistances; }
@@ -595,8 +595,8 @@ public:
     void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
     
     void setIsRecordingAutomation(bool b)   {
-        startOrStopSourceUpdateThread();
         m_bIsRecordingAutomation = b;
+        startOrStopSourceUpdateThread();
     }
     bool getIsRecordingAutomation()         { return m_bIsRecordingAutomation;  }
 
