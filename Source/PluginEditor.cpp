@@ -2162,14 +2162,6 @@ void OctogrisAudioProcessorEditor::timerCallback()
     oss << "repaint\t" << timeRepaint - timeLevels << "\t";
 #endif
 
-    JUCE_COMPILER_WARNING("#112: need to move this to processor")
-    if (!mFilter->getIsRecordingAutomation() && mFilter->getMovementMode() != 0 && mFilter->getSourceLocationChanged() != -1) {
-        if(!m_pSourceUpdateThread->isThreadRunning()){
-            m_pSourceUpdateThread->startThread();
-        }
-    } else if (m_pSourceUpdateThread->isThreadRunning()){
-            m_pSourceUpdateThread->stopThread(500);
-    }
     mNeedRepaint = false;
     mFieldNeedRepaint = false;
     
