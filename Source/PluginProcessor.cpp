@@ -122,6 +122,10 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 //	HINSTANCE DLL = LoadLibrary(winDir);//load example dll
 //#endif
     
+    m_pSourceUpdateThread   = new SourceUpdateThread(this);
+    m_OwnedThreads.add(m_pSourceUpdateThread);
+    
+    
     //SET PARAMETERS
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
     for (int i = 0; i < kNumberOfParameters; i++){
@@ -245,6 +249,14 @@ OctogrisAudioProcessor::~OctogrisAudioProcessor()
     Trajectory::Ptr t = getTrajectory();
     if (t){
         t->stop();
+    }
+}
+
+void OctogrisAudioProcessor::startOrStopSourceUpdateThread(){
+    if (mNumberOfSources == 1 || m_bIsRecordingAutomation || mMovementMode == 0) {
+        m_pSourceUpdateThread->stopThread(500);
+    } else if (!m_pSourceUpdateThread->isThreadRunning()){
+        m_pSourceUpdateThread->startThread();
     }
 }
 

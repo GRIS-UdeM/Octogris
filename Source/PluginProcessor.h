@@ -229,6 +229,8 @@ typedef struct
 } IndexedAngle;
 int IndexedAngleCompare(const void *a, const void *b);
 
+class SourceUpdateThread;
+
 //==============================================================================
 class OctogrisAudioProcessor : public AudioProcessor
 {
@@ -316,7 +318,10 @@ public:
     void setIndependentMode(bool b) { mTrSeparateAutomationMode = b; }
     
 	int getMovementMode() const { return mMovementMode; }
-	void setMovementMode(int s) { mMovementMode = s; }
+	void setMovementMode(int s) {
+        startOrStopSourceUpdateThread();
+        mMovementMode = s;
+    }
 	
 	bool getLinkDistances() const { return mLinkDistances; }
 	void setLinkDistances(bool s) { mLinkDistances = s; }
@@ -629,7 +634,7 @@ public:
     }
     
     bool isPlaying(){ return m_bIsPlaying;}
-    
+    void startOrStopSourceUpdateThread();
 	
 private:
 
@@ -736,6 +741,8 @@ private:
     std::pair <float, float> m_fEndLocationXY;
     bool m_bJustSelectedEndPoint;
     bool m_bIsPlaying;
+    SourceUpdateThread* m_pSourceUpdateThread;
+    OwnedArray<Thread>  m_OwnedThreads;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)
 };

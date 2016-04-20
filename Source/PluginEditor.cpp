@@ -387,9 +387,6 @@ AudioProcessorEditor (ownerFilter)
     } else {
         LookAndFeel::setDefaultLookAndFeel(&mV2Feel);
     }
-    
-    m_pSourceUpdateThread = new SourceUpdateThread(this);
-    mComponents.add(m_pSourceUpdateThread);
 
 //    m_pJoystickUpdateThread = new JoystickUpdateThread(this);
 //    mComponents.add(m_pJoystickUpdateThread);
