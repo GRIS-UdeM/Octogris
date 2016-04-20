@@ -247,8 +247,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 
 OctogrisAudioProcessor::~OctogrisAudioProcessor()
 {
-    //delete[] mFilters;
-    
     Trajectory::Ptr t = getTrajectory();
     if (t){
         t->stop();
@@ -258,10 +256,8 @@ OctogrisAudioProcessor::~OctogrisAudioProcessor()
 void OctogrisAudioProcessor::startOrStopSourceUpdateThread(){
     if (mNumberOfSources == 1 || m_bIsRecordingAutomation || mMovementMode == 0) {
         m_pSourceUpdateThread->stopThread(500);
-        DBG("OCTO STOP thread, sources: " << mNumberOfSources << ", isRecording: " << m_bIsRecordingAutomation << ", mMovementMode: " << mMovementMode);
     } else if (!m_pSourceUpdateThread->isThreadRunning()){
         m_pSourceUpdateThread->startThread();
-        DBG("OCTO START thread, sources: " << mNumberOfSources << ", isRecording: " << m_bIsRecordingAutomation << ", mMovementMode: " << mMovementMode);
     }
 }
 

@@ -1880,31 +1880,33 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 {
     if (comboBox == mMovementModeCombo) {
         int iSelectedMode = comboBox->getSelectedId() - 1;
-        if(!mFilter->isPlaying()){
-            mFilter->setMovementMode(iSelectedMode);
-        } else {
+        //if we're playing, just set combobox back to what it was and return
+        if(mFilter->isPlaying()){
             int iCurMode = mFilter->getMovementMode() + 1;
             mMovementModeCombo->setSelectedId(iCurMode);
-        }
-        if(mFilter->getNumberOfSources() > 1){
-            switch (iSelectedMode) {
-                case 2:
-                    m_pMover->setEqualRadius();
-                    break;
-                case 3:
-                    m_pMover->setEqualAngles();
-                    break;
-                case 4:
-                    m_pMover->setEqualRadiusAndAngles();
-                    break;
-                case 6:
-                    m_pMover->setSymmetricX();
-                    break;
-                case 7:
-                    m_pMover->setSymmetricY();
-                    break;
-                default:
-                    break;
+            return;
+        } else {
+            mFilter->setMovementMode(iSelectedMode);
+            if(mFilter->getNumberOfSources() > 1){
+                switch (iSelectedMode) {
+                    case 2:
+                        m_pMover->setEqualRadius();
+                        break;
+                    case 3:
+                        m_pMover->setEqualAngles();
+                        break;
+                    case 4:
+                        m_pMover->setEqualRadiusAndAngles();
+                        break;
+                    case 6:
+                        m_pMover->setSymmetricX();
+                        break;
+                    case 7:
+                        m_pMover->setSymmetricY();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
