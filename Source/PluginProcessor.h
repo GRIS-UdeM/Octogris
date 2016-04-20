@@ -595,6 +595,7 @@ public:
     void setIsSpeakersChanged(bool pIsNumberSpeakersChanged){ mIsNumberSpeakersChanged = pIsNumberSpeakersChanged;}
     
     void setIsRecordingAutomation(bool b)   {
+        startOrStopSourceUpdateThread();
         m_bIsRecordingAutomation = b;
     }
     bool getIsRecordingAutomation()         { return m_bIsRecordingAutomation;  }

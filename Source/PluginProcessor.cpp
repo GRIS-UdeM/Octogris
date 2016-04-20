@@ -258,8 +258,10 @@ OctogrisAudioProcessor::~OctogrisAudioProcessor()
 void OctogrisAudioProcessor::startOrStopSourceUpdateThread(){
     if (mNumberOfSources == 1 || m_bIsRecordingAutomation || mMovementMode == 0) {
         m_pSourceUpdateThread->stopThread(500);
+        DBG("stop thread");
     } else if (!m_pSourceUpdateThread->isThreadRunning()){
         m_pSourceUpdateThread->startThread();
+        DBG("start thread");
     }
 }
 
@@ -622,6 +624,12 @@ void OctogrisAudioProcessor::setNumberOfSources(int p_iNewNumberOfSources, bool 
     
     //restart audio processing
     suspendProcessing (false);
+    
+    if (mNumberOfSources > 1 && m_pSourceUpdateThread != NULL && !m_pSourceUpdateThread->isThreadRunning()){
+        m_pSourceUpdateThread->startThread();
+    } else if (m_pSourceUpdateThread != NULL && m_pSourceUpdateThread->isThreadRunning()){
+        m_pSourceUpdateThread->stopThread(500);
+    }
 }
 
 void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, bool bUseDefaultValues){

@@ -1880,7 +1880,12 @@ void OctogrisAudioProcessorEditor::comboBoxChanged (ComboBox* comboBox)
 {
     if (comboBox == mMovementModeCombo) {
         int iSelectedMode = comboBox->getSelectedId() - 1;
-        mFilter->setMovementMode(iSelectedMode);
+        if(!mFilter->isPlaying()){
+            mFilter->setMovementMode(iSelectedMode);
+        } else {
+            int iCurMode = mFilter->getMovementMode() + 1;
+            mMovementModeCombo->setSelectedId(iCurMode);
+        }
         if(mFilter->getNumberOfSources() > 1){
             switch (iSelectedMode) {
                 case 2:
@@ -2110,6 +2115,7 @@ void OctogrisAudioProcessorEditor::timerCallback()
             mMovementModeCombo->setBounds(x, y, w, kDefaultLabelHeight);
             mTabs->getTabContentComponent(1)->addAndMakeVisible(mMovementModeCombo);
         }
+        
         
 #if TIME_THINGS
         clock_t timeGuiTab = clock();
