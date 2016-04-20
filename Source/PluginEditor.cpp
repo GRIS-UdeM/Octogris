@@ -455,7 +455,7 @@ AudioProcessorEditor (ownerFilter)
         addAndMakeVisible(mSourcesBox);
         mComponents.add(mSourcesBox);
         
-        mSourcesBoxLabel = addLabel("Surface:", 0, 0, kCenterColumnWidth, kDefaultLabelHeight, this);
+        mSourcesBoxLabel = addLabel("Surface/Span:", 0, 0, kCenterColumnWidth, kDefaultLabelHeight, this);
 
         Component *ct = mSourcesBox->getContent();
         

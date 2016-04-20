@@ -86,8 +86,8 @@ public:
     
     void run() override {
         while (! threadShouldExit()) {
-            wait (m_iInterval);
             m_pProcessor->updateNonSelectedSourcePositions();
+            wait (m_iInterval);
         }
     }
     
@@ -124,7 +124,6 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
     
     m_pSourceUpdateThread   = new SourceUpdateThread(this);
     m_OwnedThreads.add(m_pSourceUpdateThread);
-    
     
     //SET PARAMETERS
 	mParameters.ensureStorageAllocated(kNumberOfParameters);
