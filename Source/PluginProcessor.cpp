@@ -74,10 +74,10 @@ size_t strlcpy(char * dst, const char * src, size_t dstsize)
 class SourceUpdateThread : public Thread, public Component
 {
 public:
-    SourceUpdateThread(OctogrisAudioProcessorEditor* p_pEditor)
+    SourceUpdateThread(OctogrisAudioProcessor* p_pProcessor)
     : Thread ("SourceUpdateThread")
     ,m_iInterval(50)
-    ,m_pEditor(p_pEditor)
+    ,m_pProcessor(p_pProcessor)
     { }
     
     ~SourceUpdateThread() {
@@ -87,13 +87,13 @@ public:
     void run() override {
         while (! threadShouldExit()) {
             wait (m_iInterval);
-            m_pEditor->updateNonSelectedSourcePositions();
+            m_pProcessor->updateNonSelectedSourcePositions();
         }
     }
     
 private:
     int m_iInterval;
-    OctogrisAudioProcessorEditor* m_pEditor;
+    OctogrisAudioProcessor* m_pProcessor;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SourceUpdateThread)
 };
@@ -240,6 +240,9 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
         mParameters.set(getParamForSpeakerA(i), normalize(kSpeakerMinAttenuation, kSpeakerMaxAttenuation, kSpeakerDefaultAttenuation));
         mParameters.set(getParamForSpeakerM(i), 0);
     }
+    
+    std::unique_ptr<SourceMover> pMover(new SourceMover(this));
+    m_pMover = std::move(pMover);
 }
 
 OctogrisAudioProcessor::~OctogrisAudioProcessor()
@@ -257,6 +260,16 @@ void OctogrisAudioProcessor::startOrStopSourceUpdateThread(){
         m_pSourceUpdateThread->stopThread(500);
     } else if (!m_pSourceUpdateThread->isThreadRunning()){
         m_pSourceUpdateThread->startThread();
+    }
+}
+
+void OctogrisAudioProcessor::updateNonSelectedSourcePositions(){
+    int iSourceChanged = getSourceLocationChanged();
+    if (iSourceChanged != -1){
+        m_pMover->begin(iSourceChanged, kSourceThread);
+        m_pMover->move(getSourceXY01(iSourceChanged), kSourceThread);
+        m_pMover->end(kSourceThread);
+        setSourceLocationChanged(-1);
     }
 }
 
@@ -1741,7 +1754,7 @@ bool OctogrisAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* OctogrisAudioProcessor::createEditor()
 {
-    return new OctogrisAudioProcessorEditor (this);
+    return new OctogrisAudioProcessorEditor (this, m_pMover.get());
 }
 
 //==============================================================================

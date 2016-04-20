@@ -634,6 +634,7 @@ public:
     }
     
     bool isPlaying(){ return m_bIsPlaying;}
+    void updateNonSelectedSourcePositions();
     void startOrStopSourceUpdateThread();
 	
 private:
@@ -743,6 +744,7 @@ private:
     bool m_bIsPlaying;
     SourceUpdateThread* m_pSourceUpdateThread;
     OwnedArray<Thread>  m_OwnedThreads;
+    unique_ptr<SourceMover> m_pMover;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)
 };
