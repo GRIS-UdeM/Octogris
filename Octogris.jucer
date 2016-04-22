@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="ZtKxiG" name="Octogris" projectType="audioplug" version="3.0.2"
+<JUCERPROJECT id="ZtKxiG" name="Octogris" projectType="audioplug" version="3.0.3"
               bundleIdentifier="com.UdeM.Octogris3" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildRTAS="0" buildAAX="0"
               pluginName="Octogris3" pluginDesc="Octogris3" pluginManufacturer="UdeM"
