@@ -27,6 +27,10 @@
 #define USE_LEAP 1
 #endif
 
+//#ifndef USE_DB_METERS
+//#define USE_DB_METERS 1
+//#endif
+
 #ifndef USE_OSC
 #define USE_OSC 1
 #endif
@@ -424,7 +428,13 @@ public:
 	const String getOscSendIp() const { return mOscSendIp; }
 	void setOscSendIp(String s) { mOscSendIp = s;}
 	
-	float getLevel(int index) const { return mLevels.getUnchecked(index); }
+	float getLevel(int index) const {
+#if USE_DB_METERS
+        return mLevels.getUnchecked(index);
+#else
+        return -1.f;
+#endif
+    }
 	void setCalculateLevels(bool c);
 	
 	bool getIsAllowInputOutputModeSelection(){
@@ -649,8 +659,9 @@ private:
 	Array<float> mParameters;
 	
 	int mCalculateLevels;
+#if USE_DB_METERS
 	Array<float> mLevels;
-	
+#endif
 	bool mApplyFilter;
 	bool mLinkDistances;
 	int mMovementMode;

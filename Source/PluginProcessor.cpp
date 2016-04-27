@@ -274,10 +274,13 @@ void OctogrisAudioProcessor::updateNonSelectedSourcePositions(){
 //==============================================================================
 void OctogrisAudioProcessor::setCalculateLevels(bool c)
 {
-	if (!mCalculateLevels && c)
-		for (int i = 0; i < mNumberOfSpeakers; i++)
+#if USE_DB_METERS
+    if (!mCalculateLevels && c){
+        for (int i = 0; i < mNumberOfSpeakers; i++){
 			mLevels.setUnchecked(i, 0);
-
+        }
+    }
+#endif
 	// keep count of number of editors
 	if (c) mCalculateLevels++;
 	else mCalculateLevels--;
@@ -641,13 +644,15 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
     
     mNumberOfSpeakers = p_iNewNumberOfSpeakers;
 
-    mLevels.ensureStorageAllocated(mNumberOfSpeakers);
     if (mRoutingMode == 1) {
         updateRoutingTemp();
     }
+#if USE_DB_METERS
+    mLevels.ensureStorageAllocated(mNumberOfSpeakers);
     for (int i = 0; i < mNumberOfSpeakers; i++){
         mLevels.add(0);
     }
+#endif
 
     if (bUseDefaultValues){
         //updateSpeakerLocation(true, false, true);
@@ -821,14 +826,17 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 
 void OctogrisAudioProcessor::reset()
 {
-	if (mCalculateLevels)
-		for (int i = 0; i < mNumberOfSpeakers; i++)
+#if USE_DB_METERS
+    if (mCalculateLevels){
+        for (int i = 0; i < mNumberOfSpeakers; i++){
 			mLevels.setUnchecked(i, 0);
+        }
+    }
+#endif
 		
 	mSmoothedParametersInited = false;
 
-	for (int i = 0; i < mNumberOfSources; i++)
-    {
+	for (int i = 0; i < mNumberOfSources; i++) {
         mFilters[i].reset();
     }
 	
@@ -1019,7 +1027,8 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 				output[f] *= ramp[f];
 		}
 	}
-	
+    
+#if USE_DB_METERS
 	if (mCalculateLevels) {
 		const float attack = kLevelAttackDefault; //params[kLevelAttackParam]; // milliseconds
 		const float release = kLevelReleaseDefault; //params[kLevelReleaseParam]; // milliseconds
@@ -1038,9 +1047,9 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			mLevels.setUnchecked(o, env);
 		}
 	}
-	
-	if (mRoutingMode == 1)
-	{
+#endif
+    
+	if (mRoutingMode == 1) {
 		// accumulate in internal buffer
 		Router::instance().accumulate(mNumberOfSpeakers, oriFramesToProcess, mRoutingTemp);
 		buffer.clear();

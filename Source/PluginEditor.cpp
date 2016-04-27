@@ -485,15 +485,19 @@ AudioProcessorEditor (ownerFilter)
         int dh = kDefaultLabelHeight;
         
         int x = 0, y = 0, w = kRightColumnWidth;
-        
+#if USE_DB_METERS
         mSpeakersBoxLabel = addLabel("Speaker attenuation:", 0, 0, kRightColumnWidth, kDefaultLabelHeight, this);
+#else
+        mSpeakersBoxLabel = addLabel("Speaker activation", 0, 0, kRightColumnWidth, kDefaultLabelHeight, this);
+#endif
 
         Component *ct = mSpeakersBox->getContent();
         const int muteWidth = 50;
         addLabel("Mute", x, y, muteWidth, dh, ct);
+#if USE_DB_METERS
         addLabel("Attenuation (dB)", x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
         addLabel("Level", x+w*2/3, y, w/3, dh, ct);
-        
+#endif
         mSpSelect = new ComboBox();
         mTabs->getTabContentComponent(4)->addAndMakeVisible(mSpSelect);
         mComponents.add(mSpSelect);
@@ -1337,18 +1341,21 @@ void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor)
 
     //remove old stuff
     Component *ct = mSpeakersBox->getContent();
-    for (int iCurLevelComponent = 0; iCurLevelComponent < mLevels.size(); ++iCurLevelComponent){
+    for (int iCurLevelComponent = 0; iCurLevelComponent < mMutes.size(); ++iCurLevelComponent){
         ct->removeChildComponent(mMutes.getUnchecked(iCurLevelComponent));
+#if USE_DB_METERS
         ct->removeChildComponent(mAttenuations.getUnchecked(iCurLevelComponent));
         ct->removeChildComponent(mLevels.getUnchecked(iCurLevelComponent));
-        
         mComponents.removeObject(mLevels.getUnchecked(iCurLevelComponent));
+#endif
     }
     mMutes.clear();
+    mSpSelect->clear();
+#if USE_DB_METERS
     mAttenuations.clear();
     mLevels.clear();
-    mSpSelect->clear();
-    
+#endif
+   
     
     //put new stuff
     int iCurSpeakers = mFilter->getNumberOfSpeakers();
@@ -1358,15 +1365,18 @@ void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor)
     y += dh + 5;
 
     for (int i = 0; i < iCurSpeakers; i++){
-        String s; s << i+1; s << ":";
-        
+
+        String s; s << i+1;
+#if USE_DB_METERS
+        s << ":";
+#endif
 		float fMute = mFilter->getSpeakerM(i);
 		ToggleButton *mute = addCheckbox(s, fMute, x, y, muteWidth, dh, ct);
         mMutes.add(mute);
         
+#if USE_DB_METERS
         float att = mFilter->getSpeakerA(i);
         Slider *slider = addParamSlider(kParamSpeaker, i, att, x+muteWidth, y, w*2/3 - muteWidth, dh, ct);
-        
         slider->setTextBoxStyle(Slider::TextBoxLeft, false, 40, dh);
         mAttenuations.add(slider);
         
@@ -1377,6 +1387,7 @@ void OctogrisAudioProcessorEditor::updateSpeakers(bool p_bCalledFromConstructor)
         ct->addAndMakeVisible(lc);
         mComponents.add(lc);
         mLevels.add(lc);
+#endif
         
         y += dh + 5;
     }
@@ -2092,11 +2103,13 @@ void OctogrisAudioProcessorEditor::timerCallback()
     clock_t timeField = clock();
     oss << "field\t" << timeField - timeProperty << "\t";
 #endif
+#if USE_DB_METERS
     if (!mFilter->getIsRecordingAutomation()){
         for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++){
         mLevels.getUnchecked(i)->refreshIfNeeded();
         }
     }
+#endif
 
 #if TIME_THINGS
     clock_t timeLevels = clock();
@@ -2156,7 +2169,9 @@ void OctogrisAudioProcessorEditor::timerCallback()
 #endif
         
         for (int i = 0; i < mFilter->getNumberOfSpeakers(); i++){
+#if USE_DB_METERS
 			mAttenuations.getUnchecked(i)->setValue(mFilter->getSpeakerA(i), dontSendNotification);
+#endif
 			mMutes.getUnchecked(i)->setToggleState(mFilter->getSpeakerM(i), dontSendNotification);
         }
 #if TIME_THINGS

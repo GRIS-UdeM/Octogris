@@ -142,9 +142,13 @@ private:
 	uint64_t mHostChangedProperty;
 	Array<Slider*> mDistances;
 	Array<Component*> mLabels;
-	Array<Slider*> mAttenuations;
 	Array<ToggleButton*> mMutes;
+    
+#if USE_DB_METERS
 	Array<LevelComponent*> mLevels;
+   	Array<Slider*> mAttenuations;
+#endif
+    
     ToggleButton *mEnableJoystick;
     ToggleButton *mEnableLeap;
 	ToggleButton *mShowGridLines;
