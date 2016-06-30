@@ -191,7 +191,8 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mProcessMode = kPanVolumeMode;
 	mRoutingMode = 0;
     //version 9
-    mInputOutputMode = i8o16;  //by default we have 8 inputs and 16 outputs
+//    mInputOutputMode = i8o16;  //by default we have 8 inputs and 16 outputs
+    updateInputOutputMode();
     mSrcPlacementMode = 1;
     mSrcSelected = 0;
     
@@ -816,6 +817,7 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
         int speakers = getTotalNumOutputChannels();
         setNumberOfSources(sources, true);
         setNumberOfSpeakers(speakers, true);
+        updateInputOutputMode();
     }
 	
 	int sr = sampleRate;
@@ -2013,7 +2015,8 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mProcessMode        = xmlState->getIntAttribute ("mProcessMode", kPanVolumeMode);
             mApplyFilter        = xmlState->getIntAttribute ("mApplyFilter", 1);
             
-            mInputOutputMode    = xmlState->getIntAttribute ("mInputOutputMode", mInputOutputMode);
+            //mInputOutputMode    = xmlState->getIntAttribute ("mInputOutputMode", mInputOutputMode);
+            setInputOutputMode(xmlState->getIntAttribute ("mInputOutputMode", mInputOutputMode)+1);
             
             mSrcPlacementMode   = xmlState->getIntAttribute ("mSrcPlacementMode", 1);
             mSpPlacementMode    = xmlState->getIntAttribute ("mSpPlacementMode", 1);

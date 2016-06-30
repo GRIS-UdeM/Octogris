@@ -468,10 +468,10 @@ AudioProcessorEditor (ownerFilter)
         mTabs->getTabContentComponent(3)->addAndMakeVisible(mSrcSelect);
         mComponents.add(mSrcSelect);
         mSrcSelect->addListener(this);
-        //believe it or not, this actually does something useful...! Not quite sure what, but removing it messes up the number of sources and speakers when loading some presets
-        if (mFilter->getIsAllowInputOutputModeSelection()){
-            mFilter->setInputOutputMode(mFilter->getInputOutputMode());
-        }
+        JUCE_COMPILER_WARNING("believe it or not, this actually does something useful...! Not quite sure what, but removing it messes up the number of sources and speakers when loading some presets")
+//        if (mFilter->getIsAllowInputOutputModeSelection()){
+//            mFilter->setInputOutputMode(mFilter->getInputOutputMode());
+//        }
         updateSources(true);
     }
     
@@ -579,8 +579,17 @@ AudioProcessorEditor (ownerFilter)
             if (iMaxSources >=8 && iMaxSpeakers >=8)  { mInputOutputModeCombo->addItem("8x8",  i8o8+1);  }
             if (iMaxSources >=8 && iMaxSpeakers >=16) { mInputOutputModeCombo->addItem("8x16", i8o16+1); }
             
+//            int mode = mFilter->getInputOutputMode();
+//            mInputOutputModeCombo->setSelectedId(mode);
             int mode = mFilter->getInputOutputMode();
+            if (mode > mInputOutputModeCombo->getNumItems()){
+                int last = mInputOutputModeCombo->getNumItems();
+                int id = mInputOutputModeCombo->getItemId(last-1);
+                mFilter->setInputOutputMode(id);
+            }
             mInputOutputModeCombo->setSelectedId(mode);
+            
+            
             mInputOutputModeCombo->setSize(w - iButtonW, dh);
             mInputOutputModeCombo->setTopLeftPosition(x, y);
             box->addAndMakeVisible(mInputOutputModeCombo);
