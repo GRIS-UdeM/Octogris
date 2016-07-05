@@ -24,12 +24,12 @@
  */
 
 #ifndef USE_LEAP
-#define USE_LEAP 1
+#define USE_LEAP 0
 #endif
 
-//#ifndef USE_DB_METERS
-//#define USE_DB_METERS 1
-//#endif
+#ifndef USE_DB_METERS
+#define USE_DB_METERS 1
+#endif
 
 #ifndef USE_OSC
 #define USE_OSC 1
@@ -718,6 +718,8 @@ private:
 	
 	Array<float> mLockedThetas;
 	
+	Array<Array<float> > mOutVolumes;
+	
 	#define kChunkSize (256)
 	struct IOBuf { float b[kChunkSize]; };
 	Array<IOBuf> mInputsCopy;
@@ -737,7 +739,9 @@ private:
 	
 	void findLeftAndRightSpeakers(float t, float *params, int &left, int &right, float &dLeft, float &dRight, int skip = -1);
     
-	void addToOutput(float s, float **outputs, int o, int f);
+	void setOutputVolume(int source, float volume, float sm_o, float sm_n, int o, bool *setCalled);
+	void addToOutputs(int source, float sample, float **outputs, int f);
+	
 	void ProcessData(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataFreeVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);
 	void ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames);

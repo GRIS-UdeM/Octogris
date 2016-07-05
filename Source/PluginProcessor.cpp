@@ -658,8 +658,15 @@ void OctogrisAudioProcessor::setNumberOfSpeakers(int p_iNewNumberOfSpeakers, boo
         //updateSpeakerLocation(true, false, true);
         updateSpeakerLocation(true, false, false);
     }
-
-    
+	
+	mOutVolumes.clear();
+	for (int i = 0; i < mNumberOfSources; i++)
+	{
+		mOutVolumes.add(Array<float>());
+		for (int j = 0; j < mNumberOfSpeakers; j++)
+			mOutVolumes[j].add(0);
+	}
+	
 	mHostChangedParameter++;
     
     //starts audio processing again
@@ -839,6 +846,10 @@ void OctogrisAudioProcessor::reset()
 	for (int i = 0; i < mNumberOfSources; i++) {
         mFilters[i].reset();
     }
+	
+	for (int i = 0; i < mNumberOfSources; i++)
+		for (int j = 0; j < mNumberOfSpeakers; j++)
+			mOutVolumes.getReference(i).set(j, 0);
 	
 	Router::instance().reset();
 }
@@ -1151,16 +1162,31 @@ void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetAngle, floa
 //    }
 }
 
-
-void OctogrisAudioProcessor::addToOutput(float s, float **outputs, int o, int f)
+void OctogrisAudioProcessor::setOutputVolume(int source, float volume, float sm_o, float sm_n, int o, bool *setCalled)
 {
-	float *output_m = mSmoothedParametersRamps.getReference(getParamForSpeakerM(o)).b;
-	float *output_a = mSmoothedParametersRamps.getReference(getParamForSpeakerA(o)).b;
-	float a = dbToLinear(output_a[f]);
-	float m = 1 - output_m[f];
-	float output_adj = a * m;
-	float *output = outputs[o];
-	output[f] += s * output_adj;
+	float oldVolume = mOutVolumes[source][o];
+	float targetVolume = volume;
+	float currentVolume = oldVolume * sm_o + targetVolume * sm_n;
+	mOutVolumes.getReference(source).set(o, currentVolume);	// with exp. smoothing on volume
+	//mOutVolumes.getReference(source).set(o, volume);		// no exp. smoothing on volume
+	if (setCalled) setCalled[o] = true;
+}
+
+void OctogrisAudioProcessor::addToOutputs(int source, float sample, float **outputs, int f)
+{
+	const Array<float> &volumes = mOutVolumes[source];
+	
+	for (int o = 0; o < mNumberOfSpeakers; o++)
+	{
+		float *output_m = mSmoothedParametersRamps.getReference(getParamForSpeakerM(o)).b;
+		float *output_a = mSmoothedParametersRamps.getReference(getParamForSpeakerA(o)).b;
+		float a = dbToLinear(output_a[f]);
+		float m = 1 - output_m[f];
+		float output_adj = a * m;
+		float *output = outputs[o];
+		
+		output[f] += sample * volumes[o] * output_adj;
+	}
 }
 
 void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
@@ -1176,18 +1202,27 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	{
 		bool isSpeakerXY = (i >= sourceParameters && i < (sourceParameters + speakerParameters) && ((i - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
 		if (isSpeakerXY) continue;
-	
+		
+		bool isSourceXY = (i < sourceParameters && (i % kParamsPerSource) <= kSourceY);
+		
 		float currentParam = mSmoothedParameters[i];
 		float targetParam = params[i];
 		float *ramp = mSmoothedParametersRamps.getReference(i).b;
 	
 		//float ori = currentParam;
 		
-		for (unsigned int f = 0; f < frames; f++)
+		if (isSourceXY)
 		{
-			currentParam = currentParam * sm_o + targetParam * sm_n;
-			ramp[f] = currentParam;
+			currentParam = targetParam;
+			for (unsigned int f = 0; f < frames; f++)
+				ramp[f] = targetParam;
 		}
+		else
+			for (unsigned int f = 0; f < frames; f++)
+			{
+				currentParam = currentParam * sm_o + targetParam * sm_n;
+				ramp[f] = currentParam;
+			}
 		
 		//if (i == 0 && ori != currentParam) printf("param %i -> %f -> %f\n", i, ori, currentParam);
 
@@ -1200,6 +1235,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 		float *output = outputs[o];
 		memset(output, 0, frames * sizeof(float));
 	}
+	
+	bool setCalled[mNumberOfSpeakers];
 
 	// compute
 	// in this context: input_x and input_x are actually source T and R
@@ -1211,6 +1248,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	
 		for (unsigned int f = 0; f < frames; f++)
 		{
+			memset(setCalled, 0, sizeof(setCalled));
+		
 			float s = input[f];
 			float x = input_x[f];
 			float y = input_y[f];
@@ -1278,8 +1317,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					float vLeft = 1 - dLeft / dTotal;
 					float vRight = 1 - dRight / dTotal;
 					
-					addToOutput(s * vLeft, outputs, left, f);
-					addToOutput(s * vRight, outputs, right, f);
+					setOutputVolume(i, vLeft, sm_o, sm_n, left, setCalled);
+					setOutputVolume(i, vRight, sm_o, sm_n, right, setCalled);
 				}
 				else
 				{
@@ -1287,7 +1326,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					int o = (left >= 0) ? left : right;
 					jassert(o >= 0);
 					
-					addToOutput(s, outputs, o, f);
+					setOutputVolume(i, 1, sm_o, sm_n, o, setCalled);
 				}
 			}
 			else
@@ -1315,8 +1354,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					float vLeft = 1 - dFrontLeft / dTotal;
 					float vRight = 1 - dFrontRight / dTotal;
 					
-					addToOutput(s * vLeft * front, outputs, frontLeft, f);
-					addToOutput(s * vRight * front, outputs, frontRight, f);
+					setOutputVolume(i, vLeft * front, sm_o, sm_n, frontLeft, setCalled);
+					setOutputVolume(i, vRight * front, sm_o, sm_n, frontRight, setCalled);
 				}
 				else
 				{
@@ -1324,7 +1363,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					int o = (frontLeft >= 0) ? frontLeft : frontRight;
 					jassert(o >= 0);
 					
-					addToOutput(s * front, outputs, o, f);
+					setOutputVolume(i, front, sm_o, sm_n, o, setCalled);
 				}
 				
 				// add to back output
@@ -1334,8 +1373,8 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					float vLeft = 1 - dBackLeft / dTotal;
 					float vRight = 1 - dBackRight / dTotal;
 					
-					addToOutput(s * vLeft * back, outputs, backLeft, f);
-					addToOutput(s * vRight * back, outputs, backRight, f);
+					setOutputVolume(i, vLeft * back, sm_o, sm_n, backLeft, setCalled);
+					setOutputVolume(i, vRight * back, sm_o, sm_n, backRight, setCalled);
 				}
 				else
 				{
@@ -1343,9 +1382,15 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					int o = (backLeft >= 0) ? backLeft : backRight;
 					jassert(o >= 0);
 					
-					addToOutput(s * back, outputs, o, f);
+					setOutputVolume(i, back, sm_o, sm_n, o, setCalled);
 				}
 			}
+			
+			for (int o = 0; o < mNumberOfSpeakers; o++)
+				if (!setCalled[o])
+					setOutputVolume(i, 0, sm_o, sm_n, o, NULL);
+
+			addToOutputs(i, s, outputs, f);
 		}
 	}
 }
@@ -1463,6 +1508,8 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
     {
         bool isSpeakerXY = (iCurParamId >= sourceParameters && iCurParamId < (sourceParameters + speakerParameters) && ((iCurParamId - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
         if (isSpeakerXY) continue;
+		
+		bool isSourceXY = (iCurParamId < sourceParameters && (iCurParamId % kParamsPerSource) <= kSourceY);
         
         float currentParam = mSmoothedParameters[iCurParamId];
         float targetParam = params[iCurParamId];
@@ -1470,11 +1517,18 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
         
         //float ori = currentParam;
         
-        for (unsigned int f = 0; f < frames; f++)
-        {
-            currentParam = currentParam * sm_o + targetParam * sm_n;
-            ramp[f] = currentParam;
-        }
+       if (isSourceXY)
+		{
+			currentParam = targetParam;
+			for (unsigned int f = 0; f < frames; f++)
+				ramp[f] = targetParam;
+		}
+		else
+			for (unsigned int f = 0; f < frames; f++)
+			{
+				currentParam = currentParam * sm_o + targetParam * sm_n;
+				ramp[f] = currentParam;
+			}
         
         //if (i == 0 && ori != currentParam) printf("param %i -> %f -> %f\n", i, ori, currentParam);
         
@@ -1615,6 +1669,8 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             //float outFactors[mNumberOfSpeakers];
             //memset(outFactors, 0, sizeof(outFactors));
 			float *outFactors = new float[mNumberOfSpeakers]();
+			JUCE_COMPILER_WARNING("memory allocation not on sound thread")
+
 
             
             float factor = (r < 1) ? (r * 0.5f + 0.5f) : 1;
@@ -1652,9 +1708,10 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             
             float adj = tv / total;
             for (int o = 0; o < mNumberOfSpeakers; o++)
-                if (outFactors[o])
-                    addToOutput(s * outFactors[o] * adj, outputs, o, f);
+                    setOutputVolume(i, outFactors[o] * adj, sm_o, sm_n, o, NULL);
 			delete[] outFactors;
+			
+			addToOutputs(i, s, outputs, f);
         }
     }
 }
