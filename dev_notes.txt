@@ -252,3 +252,8 @@ enregistrer plusieurs automations en meme temps
 
 -2.2.8 2 spirales en meme temps chie ben raide, drette au debut
 ok, robert dit d'oublier ça pour l'instant...
+------------------------
+2016-07-05
+#112. In reaper, AU, we get the wrong max number of input and outputs with mFilter->getTotalNumInputChannels() in editor line 550. Reaper VST doesn't have this problem . 
+With DP AU, processBlock reports mismatching information. Seems to be because mInputOutputMode was saved at 18, the max.
+Right, saving the project fixed this. Will need to retreive projects from earlier versions to see if this is problematic. 
