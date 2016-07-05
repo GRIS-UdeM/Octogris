@@ -761,6 +761,13 @@ private:
     SourceUpdateThread* m_pSourceUpdateThread;
     OwnedArray<Thread>  m_OwnedThreads;
     unique_ptr<SourceMover> m_pMover;
+    
+    
+    vector<float> allThetas;
+    vector<float> allRs;
+    vector<float> allFRs;
+    bool bThetasPrinted = false;
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OctogrisAudioProcessor)
 };

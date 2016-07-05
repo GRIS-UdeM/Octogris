@@ -392,7 +392,6 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
     mInputOutputMode = p_iInputOutputMode-1;
     
     switch (mInputOutputMode){
-            
         case i1o2:
             setNumberOfSources(1, false);
             setNumberOfSpeakers(2, false);
@@ -475,66 +474,68 @@ void OctogrisAudioProcessor::setInputOutputMode (int p_iInputOutputMode){
 }
 
 void OctogrisAudioProcessor::updateInputOutputMode (){
+    bool bFound = false;
     if (mNumberOfSources == 1 && mNumberOfSpeakers == 2){
         mInputOutputMode =  i1o2;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 1 && mNumberOfSpeakers == 4){
         mInputOutputMode =  i1o4;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 1 && mNumberOfSpeakers == 6){
         mInputOutputMode =  i1o6;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 1 && mNumberOfSpeakers == 8){
         mInputOutputMode =  i1o8;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 1 && mNumberOfSpeakers == 16){
         mInputOutputMode =  i1o16;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 2 && mNumberOfSpeakers == 2){
         mInputOutputMode =  i2o2;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 2 && mNumberOfSpeakers == 4){
         mInputOutputMode =  i2o4;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 2 && mNumberOfSpeakers == 6){
         mInputOutputMode =  i2o6;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 2 && mNumberOfSpeakers == 8){
         mInputOutputMode =  i2o8;
-        return;
+        bFound = true;
     }  else if (mNumberOfSources == 2 && mNumberOfSpeakers == 16){
         mInputOutputMode =  i2o16;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 4 && mNumberOfSpeakers == 4){
         mInputOutputMode =  i4o4;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 4 && mNumberOfSpeakers == 6){
         mInputOutputMode =  i4o6;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 4 && mNumberOfSpeakers == 8){
         mInputOutputMode =  i4o8;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 4 && mNumberOfSpeakers == 16){
         mInputOutputMode =  i4o16;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 6 && mNumberOfSpeakers == 6){
         mInputOutputMode =  i6o6;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 6 && mNumberOfSpeakers == 8){
         mInputOutputMode =  i6o8;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 6 && mNumberOfSpeakers == 16){
         mInputOutputMode =  i6o16;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 8 && mNumberOfSpeakers == 8){
         mInputOutputMode =  i8o8;
-        return;
+        bFound = true;
     } else if (mNumberOfSources == 8 && mNumberOfSpeakers == 16){
         mInputOutputMode =  i8o16;
-        return;
+        bFound = true;
     }
     
-    jassert(0);
+    cout << mInputOutputMode << newLine;
+    jassert(bFound);
     
 }
 
@@ -815,6 +816,7 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
             setNumberOfSources(mNumberOfSources, true);
             setNumberOfSpeakers(mNumberOfSpeakers, true);
         }
+        cout << "prepare to play: ";
         updateInputOutputMode();
     } else {
         int sources = getTotalNumInputChannels();
@@ -1384,6 +1386,32 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					
 					setOutputVolume(i, back, sm_o, sm_n, o, setCalled);
 				}
+                
+                
+                //PRINTING
+//                if (i == 0){
+//                    allRs.push_back(r);
+//                    allThetas.push_back(t);
+//                    allFRs.push_back(frontRight);
+//                    float fTotalSamples = 10 * getSampleRate(); //10000;
+//                    if (allThetas.size() >= fTotalSamples && !bThetasPrinted ){
+//                        cout << "i \ttheta\tray\tfront right\n";
+//                        float prev = -1.f;
+//                        for (int i=0; i<allThetas.size(); ++i) {
+//                            float curTheta = allThetas[i];
+//                            if (abs(curTheta - prev) > .001){
+//                                cout << i << "\t" << curTheta << "\t" << allRs[i] <<  "\t" << allFRs[i] << newLine;
+//                                prev = curTheta;
+//                            }
+//                        }
+//                        bThetasPrinted = true;
+//                    }
+//                    
+//                }
+                
+                
+                
+                
 			}
 			
 			for (int o = 0; o < mNumberOfSpeakers; o++)
