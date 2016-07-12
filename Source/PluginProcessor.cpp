@@ -1347,32 +1347,6 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					
 					addToOutput(s * back, outputs, o, f);
 				}
-                
-                
-                //PRINTING 
-                if (i == 0){
-                    allRs.push_back(r);
-                    allThetas.push_back(t);
-                    allFRs.push_back(frontRight);
-                    float fTotalSamples = 2 * getSampleRate(); //10000;
-                    if (allThetas.size() >= fTotalSamples && !bThetasPrinted ){
-                        cout << "i \ttheta\tray\tfront right\n";
-                        float prev = -1.f;
-                        for (int i=0; i<allThetas.size(); ++i) {
-                            float curTheta = allThetas[i];
-//                            if (abs(curTheta - prev) > .001){
-                                cout << i << "\t" << curTheta << "\t" << allRs[i] <<  "\t" << allFRs[i] << newLine;
-                                prev = curTheta;
-//                            }
-                        }
-                        bThetasPrinted = true;
-                    }
-                    
-                }
-                
-                
-                
-                
 			}
 		}
 	}
