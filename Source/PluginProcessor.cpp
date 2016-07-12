@@ -191,7 +191,8 @@ OctogrisAudioProcessor::OctogrisAudioProcessor()
 	mProcessMode = kPanVolumeMode;
 	mRoutingMode = 0;
     //version 9
-    mInputOutputMode = i8o16;  //by default we have 8 inputs and 16 outputs
+//    mInputOutputMode = i8o16;  //by default we have 8 inputs and 16 outputs
+    updateInputOutputMode();
     mSrcPlacementMode = 1;
     mSrcSelected = 0;
     
@@ -534,7 +535,6 @@ void OctogrisAudioProcessor::updateInputOutputMode (){
         bFound = true;
     }
     
-    cout << mInputOutputMode << newLine;
     jassert(bFound);
     
 }
@@ -816,13 +816,13 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
             setNumberOfSources(mNumberOfSources, true);
             setNumberOfSpeakers(mNumberOfSpeakers, true);
         }
-        cout << "prepare to play: ";
         updateInputOutputMode();
     } else {
         int sources = getTotalNumInputChannels();
         int speakers = getTotalNumOutputChannels();
         setNumberOfSources(sources, true);
         setNumberOfSpeakers(speakers, true);
+        updateInputOutputMode();
     }
 	
 	int sr = sampleRate;
@@ -1386,32 +1386,6 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					
 					setOutputVolume(i, back, sm_o, sm_n, o, setCalled);
 				}
-                
-                
-                //PRINTING
-//                if (i == 0){
-//                    allRs.push_back(r);
-//                    allThetas.push_back(t);
-//                    allFRs.push_back(frontRight);
-//                    float fTotalSamples = 10 * getSampleRate(); //10000;
-//                    if (allThetas.size() >= fTotalSamples && !bThetasPrinted ){
-//                        cout << "i \ttheta\tray\tfront right\n";
-//                        float prev = -1.f;
-//                        for (int i=0; i<allThetas.size(); ++i) {
-//                            float curTheta = allThetas[i];
-//                            if (abs(curTheta - prev) > .001){
-//                                cout << i << "\t" << curTheta << "\t" << allRs[i] <<  "\t" << allFRs[i] << newLine;
-//                                prev = curTheta;
-//                            }
-//                        }
-//                        bThetasPrinted = true;
-//                    }
-//                    
-//                }
-                
-                
-                
-                
 			}
 			
 			for (int o = 0; o < mNumberOfSpeakers; o++)
@@ -2070,7 +2044,8 @@ void OctogrisAudioProcessor::setStateInformation (const void* data, int sizeInBy
             mProcessMode        = xmlState->getIntAttribute ("mProcessMode", kPanVolumeMode);
             mApplyFilter        = xmlState->getIntAttribute ("mApplyFilter", 1);
             
-            mInputOutputMode    = xmlState->getIntAttribute ("mInputOutputMode", mInputOutputMode);
+            //mInputOutputMode    = xmlState->getIntAttribute ("mInputOutputMode", mInputOutputMode);
+            setInputOutputMode(xmlState->getIntAttribute ("mInputOutputMode", mInputOutputMode)+1);
             
             mSrcPlacementMode   = xmlState->getIntAttribute ("mSrcPlacementMode", 1);
             mSpPlacementMode    = xmlState->getIntAttribute ("mSpPlacementMode", 1);

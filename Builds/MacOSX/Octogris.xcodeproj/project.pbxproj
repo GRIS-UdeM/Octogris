@@ -2656,8 +2656,8 @@
 				9B535A1C434303D4AA33E340 /* Rez */,
 				AFBAB6135653C9B7B9F10AA5 /* Sources */,
 				AE1FAB299C5E8BE3F6E82000 /* Frameworks */,
-				ACB59ACAAF55A1838119385D /* Post-build script */,
 				B1288C181CCAB09B0010199F /* CopyFiles */,
+				ACB59ACAAF55A1838119385D /* Post-build script */,
 			);
 			buildRules = (
 			);
