@@ -1459,7 +1459,7 @@ static void AddArea(int speaker, float ix1, float iy1, float ix2, float iy2, vec
         areas[areaCount++] = Area(speaker, ix1, iy1, ix2, iy2);
     }
 }
-static void Integrate(float x1, float x2, const vector<Area> &areas, int areaCount, float *outFactors, float factor)
+static void Integrate(float x1, float x2, const vector<Area> &areas, int areaCount, vector<float> &outFactors, float factor)
 {
     if (x1 == x2)
     {
@@ -1668,10 +1668,8 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             jassert(t >= 0 && t <= kThetaMax);
             jassert(angle > 0 && angle <= kHalfCircle);
             
-            //float outFactors[mNumberOfSpeakers];
-            //memset(outFactors, 0, sizeof(outFactors));
-			float *outFactors = new float[mNumberOfSpeakers]();
-			JUCE_COMPILER_WARNING("memory allocation not on sound thread")
+            vector<float> outFactors;
+            outFactors.resize(mNumberOfSpeakers);
 
 
             
@@ -1711,7 +1709,6 @@ void OctogrisAudioProcessor::ProcessDataPanSpanMode(float **inputs, float **outp
             float adj = tv / total;
             for (int o = 0; o < mNumberOfSpeakers; o++)
                     setOutputVolume(i, outFactors[o] * adj, sm_o, sm_n, o, NULL);
-			delete[] outFactors;
 			
 			addToOutputs(i, s, outputs, f);
         }
