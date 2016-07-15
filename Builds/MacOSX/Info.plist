@@ -16,9 +16,9 @@
     <key>CFBundleSignature</key>
     <string>PTul</string>
     <key>CFBundleShortVersionString</key>
-    <string>3.0.3</string>
+    <string>3.0.4</string>
     <key>CFBundleVersion</key>
-    <string>3.0.3</string>
+    <string>3.0.4</string>
     <key>NSHumanReadableCopyright</key>
     <string></string>
     <key>NSHighResolutionCapable</key>
@@ -39,7 +39,7 @@
         <key>subtype</key>
         <string>Oct3</string>
         <key>version</key>
-        <integer>196611</integer>
+        <integer>196612</integer>
       </dict>
     </array>
   </dict>
