@@ -1204,27 +1204,18 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	{
 		bool isSpeakerXY = (i >= sourceParameters && i < (sourceParameters + speakerParameters) && ((i - sourceParameters) % kParamsPerSpeakers) <= kSpeakerY);
 		if (isSpeakerXY) continue;
-		
-		bool isSourceXY = (i < sourceParameters && (i % kParamsPerSource) <= kSourceY);
-		
+	
 		float currentParam = mSmoothedParameters[i];
 		float targetParam = params[i];
 		float *ramp = mSmoothedParametersRamps.getReference(i).b;
 	
 		//float ori = currentParam;
 		
-		if (isSourceXY)
-		{
-			currentParam = targetParam;
-			for (unsigned int f = 0; f < frames; f++)
-				ramp[f] = targetParam;
-		}
-		else
-			for (unsigned int f = 0; f < frames; f++)
-			{
-				currentParam = currentParam * sm_o + targetParam * sm_n;
-				ramp[f] = currentParam;
-			}
+        for (unsigned int f = 0; f < frames; f++)
+        {
+            currentParam = currentParam * sm_o + targetParam * sm_n;
+            ramp[f] = currentParam;
+        }
 		
 		//if (i == 0 && ori != currentParam) printf("param %i -> %f -> %f\n", i, ori, currentParam);
 
