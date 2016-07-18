@@ -1171,15 +1171,15 @@ void OctogrisAudioProcessor::setOutputVolume(int source, float volume, float sm_
 	float currentVolume = oldVolume * sm_o + targetVolume * sm_n;
 	mOutVolumes.getReference(source).set(o, currentVolume);	// with exp. smoothing on volume
 	//mOutVolumes.getReference(source).set(o, volume);		// no exp. smoothing on volume
-	if (setCalled) setCalled[o] = true;
+    if (setCalled){
+        setCalled[o] = true;
+    }
 }
 
 void OctogrisAudioProcessor::addToOutputs(int source, float sample, float **outputs, int f)
 {
 	const Array<float> &volumes = mOutVolumes[source];
-	
-	for (int o = 0; o < mNumberOfSpeakers; o++)
-	{
+	for (int o = 0; o < mNumberOfSpeakers; o++){
 		float *output_m = mSmoothedParametersRamps.getReference(getParamForSpeakerM(o)).b;
 		float *output_a = mSmoothedParametersRamps.getReference(getParamForSpeakerA(o)).b;
 		float a = dbToLinear(output_a[f]);

@@ -253,7 +253,7 @@ protected:
             da = M_PI; //only done at the very end of the trajectory
         }
         
-        if (!mCCW){
+        if (mCCW){
             da = -da;
         }
         
