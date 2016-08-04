@@ -24,7 +24,7 @@
  */
 
 #ifndef USE_LEAP
-#define USE_LEAP 0
+#define USE_LEAP 1
 #endif
 
 #ifndef USE_DB_METERS
