@@ -753,6 +753,8 @@ private:
     bool m_bIsRecordingAutomation;
     int m_iSourceLocationChanged;
     
+    float mAvgTime = 0.f;
+    
     bool m_bPreventSourceLocationUpdate;
     bool m_bIsSettingEndPoint;
     std::pair <float, float> m_fEndLocationXY;
