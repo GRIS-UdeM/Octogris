@@ -1227,6 +1227,11 @@ void OctogrisAudioProcessor::setOutputVolume(int source, float volume, float sm_
     if (setCalled){
         setCalled[o] = true;
     }
+    
+    
+//    if (source == 0 && o == 0){
+//        cout << mOutVolumes[0][0] << "\t" << targetVolume << "\n";
+//    }
 }
 
 void OctogrisAudioProcessor::addToOutputs(int source, float sample, float **outputs, int f)
@@ -1302,6 +1307,11 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 			
 			// could use the Accelerate framework on mac for these
 			float r = hypotf(x, y);
+            
+//            if (i == 0){
+//                cout << r << "\n";
+//            }
+            
 			if (r > kRadiusMax) r = kRadiusMax;
 			
 			float it = atan2f(y, x);
@@ -1349,7 +1359,7 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				//if (f == 0) printf("it: %f lt: %f lt2: %f t: %f c: %f\n", it, mLockedThetas.getUnchecked(i), lt, t, c);
 			}
 			
-			if (r >= 1)
+            if (r >= 1 || mNumberOfSpeakers == 2)
 			{
 				// find left and right speakers
 				int left, right;
