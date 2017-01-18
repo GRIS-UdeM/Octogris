@@ -41,6 +41,10 @@
 #endif
 #endif
 
+#ifndef FIX_116
+#define FIX_116 0
+#endif
+
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 

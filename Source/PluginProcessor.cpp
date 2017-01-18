@@ -1121,7 +1121,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     int n = 50;
     mAvgTime += (endTime - beginTime).inMilliseconds()/(float)n;
     if (mProcessCounter % n == 0){
-        cout << "processBlock: " << mAvgTime << newLine;
+        cout << "OCTOGRIS processblock total: " << mAvgTime << newLine;
         mAvgTime = 0;
     }
 }
@@ -1219,19 +1219,17 @@ void OctogrisAudioProcessor::findLeftAndRightSpeakers(float p_fTargetAngle, floa
 
 void OctogrisAudioProcessor::setOutputVolume(int source, float volume, float sm_o, float sm_n, int o, bool *setCalled)
 {
-	float oldVolume = mOutVolumes[source][o];
+#if FIX_116
+    float oldVolume = mOutVolumes[source][o];
 	float targetVolume = volume;
 	float currentVolume = oldVolume * sm_o + targetVolume * sm_n;
 	mOutVolumes.getReference(source).set(o, currentVolume);	// with exp. smoothing on volume
-	//mOutVolumes.getReference(source).set(o, volume);		// no exp. smoothing on volume
+#else
+	mOutVolumes.getReference(source).set(o, volume);		// no exp. smoothing on volume
+#endif
     if (setCalled){
         setCalled[o] = true;
     }
-    
-    
-//    if (source == 0 && o == 0){
-//        cout << mOutVolumes[0][0] << "\t" << targetVolume << "\n";
-//    }
 }
 
 void OctogrisAudioProcessor::addToOutputs(int source, float sample, float **outputs, int f)
