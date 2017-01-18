@@ -45,6 +45,14 @@
 #define FIX_116 0
 #endif
 
+#ifndef TIME_PROCESS_DETAILED
+#define TIME_PROCESS_DETAILED 1
+#endif
+
+#ifndef TIME_PROCESS_TOTAL
+#define TIME_PROCESS_TOTAL 0
+#endif
+
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
@@ -757,7 +765,19 @@ private:
     bool m_bIsRecordingAutomation;
     int m_iSourceLocationChanged;
     
-    float mAvgTime = 0.f;
+#if TIME_PROCESS_DETAILED
+#define kTimeSlots (10)
+    float mAvgTime [kTimeSlots] = {0};
+    float timeAvgParamRamp  = 0.f;
+    float timeAvgFilter     = 0.f;
+    float timeAvgVolume     = 0.f;
+    float timeAvgSpatial    = 0.f;
+    float timeAvgOutputs    = 0.f;
+#endif
+    
+#if TIME_PROCESS_TOTAL
+    float mAvgTimeLikeOcto = 0;
+#endif
     
     bool m_bPreventSourceLocationUpdate;
     bool m_bIsSettingEndPoint;

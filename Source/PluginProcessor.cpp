@@ -913,7 +913,9 @@ void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, Mi
 
 void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
+#if TIME_PROCESS_DETAILED || TIME_PROCESS_TOTAL
     Time beginTime = Time::getCurrentTime();
+#endif
     
 	// sanity check for auval
 	if (buffer.getNumChannels() < ((mRoutingMode == 1) ? mNumberOfSources : jmax(mNumberOfSources, mNumberOfSpeakers))) {
@@ -957,6 +959,10 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
             if (done) mTrajectory = NULL;
 		}
 	}
+    
+#if TIME_PROCESS_DETAILED
+    Time time1Trajectories = Time::getCurrentTime();
+#endif
 	
 	// cache values
 	float params[kNumberOfParameters];
@@ -977,6 +983,10 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	if (mRoutingMode == 1) {
 		params[kRoutingVolume] = denormalize(kRoutingVolumeMin, kRoutingVolumeMax, params[kRoutingVolume]);
 	}
+    
+#if TIME_PROCESS_DETAILED
+    Time time2ParamCopy = Time::getCurrentTime();
+#endif
 	
 	//float *inputs[iActualNumberOfSources];
 	float **inputs = new float* [mNumberOfSources];
@@ -1028,6 +1038,10 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	
 	bool processesInPlaceIsIgnored = (mRoutingMode != 1);
 	
+#if TIME_PROCESS_DETAILED
+    Time time3SourceSpeakers = Time::getCurrentTime();
+#endif
+    
 	// process data
     unsigned int numFramesToDo;
 	while(1)
@@ -1061,6 +1075,10 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
             outputs[o] += numFramesToDo;
         }
 	}
+    
+#if TIME_PROCESS_DETAILED
+    Time time4ProcessData = Time::getCurrentTime();
+#endif
 	
 	if (mRoutingMode == 1)
 	{
@@ -1117,13 +1135,57 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	delete[] outputs;
 	mProcessCounter++;
     
+#if TIME_PROCESS_DETAILED
+    Time time5DbMeters = Time::getCurrentTime();
+    int n = 250;
+    mAvgTime[0] += (time1Trajectories     - beginTime).inMilliseconds()/(float)n;
+    mAvgTime[1] += (time2ParamCopy        - time1Trajectories).inMilliseconds()/(float)n;
+    mAvgTime[2] += (time3SourceSpeakers   - time2ParamCopy).inMilliseconds()/(float)n;
+    mAvgTime[3] += (time4ProcessData      - time3SourceSpeakers).inMilliseconds()/(float)n;
+    
+    //from processData
+    mAvgTime[4] += timeAvgParamRamp/(float)n;
+    mAvgTime[5] += timeAvgFilter/(float)n;
+    mAvgTime[6] += timeAvgVolume/(float)n;
+    mAvgTime[7] += timeAvgSpatial/(float)n;
+    mAvgTime[8] += timeAvgOutputs/(float)n;
+    timeAvgParamRamp     = 0.f;
+    timeAvgFilter   = 0.f;
+    timeAvgVolume   = 0.f;
+    timeAvgSpatial  = 0.f;
+    timeAvgOutputs  = 0.f;
+    
+    mAvgTime[9] += (time5DbMeters         - time4ProcessData).inMilliseconds()/(float)n;
+    if (mProcessCounter % n == 0){
+        
+        cout << "OCTOgris\n";
+        cout << "trajectories:  " << mAvgTime[0] << "\n";
+        cout << "paramCopy:     " << mAvgTime[1] << "\n";
+        cout << "prepareSrcSpk: " << mAvgTime[2] << "\n";
+        cout << "totProcesData: " << mAvgTime[3] << "\n";
+        cout << "AvgParamRamp:  " << mAvgTime[4] << "\n";
+        cout << "AvgFilter:     " << mAvgTime[5] << "\n";
+        cout << "AvgVolume:     " << mAvgTime[6] << "\n";
+        cout << "AvgSpatial:    " << mAvgTime[7] << "\n";
+        cout << "AvgAddOutputs: " << mAvgTime[8] << "\n";
+        cout << "DbMeters:      " << mAvgTime[9] << "\n";
+        cout << "=====================================================\n";
+        
+        for (int i = 0; i < kTimeSlots; ++i){
+            mAvgTime[i] = 0;
+        }
+    }
+#endif
+    
+#if TIME_PROCESS_TOTAL
     Time endTime = Time::getCurrentTime();
     int n = 50;
-    mAvgTime += (endTime - beginTime).inMilliseconds()/(float)n;
+    mAvgTimeTotal += (endTime - beginTime).inMilliseconds()/(float)n;
     if (mProcessCounter % n == 0){
-        cout << "OCTOGRIS processblock total: " << mAvgTime << newLine;
-        mAvgTime = 0;
+        cout << "SPATgris processblock total: " << mAvgTimeTotal << newLine;
+        mAvgTimeTotal = 0;
     }
+#endif
 }
 
 void OctogrisAudioProcessor::ProcessData(float **inputs, float **outputs, float *params, float sampleRate, unsigned int frames)
@@ -1297,6 +1359,9 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 	
 		for (unsigned int f = 0; f < frames; f++)
 		{
+#if TIME_PROCESS_DETAILED
+            Time timeBeginSample = Time::getCurrentTime();
+#endif
 			memset(setCalled, 0, sizeof(setCalled));
 		
 			float s = input[f];
@@ -1314,7 +1379,9 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 			
 			float it = atan2f(y, x);
 			if (it < 0) it += kThetaMax;
-			
+#if TIME_PROCESS_DETAILED
+            Time timeParameterRamps = Time::getCurrentTime();
+#endif
 			if (mApplyFilter)
 			{
 				float distance;
@@ -1322,7 +1389,9 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				else distance = denormalize(params[kFilterNear], params[kFilterMid], r);
 				s = mFilters[i].process(s, distance);
 			}
-			
+#if TIME_PROCESS_DETAILED
+            Time timeFilter = Time::getCurrentTime();
+#endif
 			// adjust input volume
 			{
 				float dbSource;
@@ -1330,7 +1399,9 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 				else dbSource = denormalize(params[kVolumeNear], params[kVolumeMid], r);
 				s *= dbToLinear(dbSource);
 			}
-			
+#if TIME_PROCESS_DETAILED
+            Time timeVolume = Time::getCurrentTime();
+#endif
 			float t;
 			if (r >= kThetaLockRadius)
 			{
@@ -1439,13 +1510,23 @@ void OctogrisAudioProcessor::ProcessDataPanVolumeMode(float **inputs, float **ou
 					setOutputVolume(i, back, sm_o, sm_n, o, setCalled);
 				}
 			}
-			
+#if TIME_PROCESS_DETAILED
+            Time timeSpatial = Time::getCurrentTime();
+#endif
 			for (int o = 0; o < mNumberOfSpeakers; o++)
 				if (!setCalled[o])
 					setOutputVolume(i, 0, sm_o, sm_n, o, NULL);
 
 			addToOutputs(i, s, outputs, f);
-		}
+#if TIME_PROCESS_DETAILED
+            Time timeOutput = Time::getCurrentTime();
+            timeAvgParamRamp+= 1000*(timeParameterRamps - timeBeginSample).     inMilliseconds()/(float)frames;
+            timeAvgFilter   += 1000*(timeFilter         - timeParameterRamps).  inMilliseconds()/(float)frames;
+            timeAvgVolume   += 1000*(timeVolume         - timeFilter).          inMilliseconds()/(float)frames;
+            timeAvgSpatial  += 1000*(timeSpatial        - timeVolume).          inMilliseconds()/(float)frames;
+            timeAvgOutputs  += 1000*(timeOutput         - timeSpatial).         inMilliseconds()/(float)frames;
+#endif
+        }
 	}
 }
 
