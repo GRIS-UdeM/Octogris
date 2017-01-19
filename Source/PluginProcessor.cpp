@@ -874,6 +874,10 @@ void OctogrisAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     {
         mFilters[i].setSampleRate(sr);
     }
+    
+#if TIME_PROCESS_DETAILED
+    cout << "OCTOgris\ntrajectories\tparamCopy\tprepareSrcSpk\ttotProcesData\tAvgParamRamp\tAvgFilter\tAvgVolume\tAvgSpatial\tAvgAddOutputs\tDbMeters\n";
+#endif
 }
 
 void OctogrisAudioProcessor::reset()
@@ -913,7 +917,7 @@ void OctogrisAudioProcessor::processBlockBypassed (AudioSampleBuffer& buffer, Mi
 
 void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-#if TIME_PROCESS_DETAILED || TIME_PROCESS_TOTAL
+#if TIME_PROCESS_DETAILED
     Time beginTime = Time::getCurrentTime();
 #endif
     
@@ -1137,7 +1141,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     
 #if TIME_PROCESS_DETAILED
     Time time5DbMeters = Time::getCurrentTime();
-    int n = 250;
+    int n = 50;
     mAvgTime[0] += (time1Trajectories     - beginTime).inMilliseconds()/(float)n;
     mAvgTime[1] += (time2ParamCopy        - time1Trajectories).inMilliseconds()/(float)n;
     mAvgTime[2] += (time3SourceSpeakers   - time2ParamCopy).inMilliseconds()/(float)n;
@@ -1154,36 +1158,14 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     timeAvgVolume   = 0.f;
     timeAvgSpatial  = 0.f;
     timeAvgOutputs  = 0.f;
-    
     mAvgTime[9] += (time5DbMeters         - time4ProcessData).inMilliseconds()/(float)n;
+
     if (mProcessCounter % n == 0){
-        
-        cout << "OCTOgris\n";
-        cout << "trajectories:  " << mAvgTime[0] << "\n";
-        cout << "paramCopy:     " << mAvgTime[1] << "\n";
-        cout << "prepareSrcSpk: " << mAvgTime[2] << "\n";
-        cout << "totProcesData: " << mAvgTime[3] << "\n";
-        cout << "AvgParamRamp:  " << mAvgTime[4] << "\n";
-        cout << "AvgFilter:     " << mAvgTime[5] << "\n";
-        cout << "AvgVolume:     " << mAvgTime[6] << "\n";
-        cout << "AvgSpatial:    " << mAvgTime[7] << "\n";
-        cout << "AvgAddOutputs: " << mAvgTime[8] << "\n";
-        cout << "DbMeters:      " << mAvgTime[9] << "\n";
-        cout << "=====================================================\n";
-        
         for (int i = 0; i < kTimeSlots; ++i){
+            cout << mAvgTime[i] << "\t";
             mAvgTime[i] = 0;
         }
-    }
-#endif
-    
-#if TIME_PROCESS_TOTAL
-    Time endTime = Time::getCurrentTime();
-    int n = 50;
-    mAvgTimeTotal += (endTime - beginTime).inMilliseconds()/(float)n;
-    if (mProcessCounter % n == 0){
-        cout << "SPATgris processblock total: " << mAvgTimeTotal << newLine;
-        mAvgTimeTotal = 0;
+        cout << "\n";
     }
 #endif
 }
