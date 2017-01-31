@@ -1161,7 +1161,7 @@ void OctogrisAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     mAvgTime[9] += (time5DbMeters         - time4ProcessData).inMilliseconds()/(float)n;
 
     if (mProcessCounter % n == 0){
-        for (int i = 0; i < kTimeSlots; ++i){
+        for (int i = 3; i < kTimeSlots; ++i){
             cout << mAvgTime[i] << "\t";
             mAvgTime[i] = 0;
         }
